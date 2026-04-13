@@ -1,0 +1,10 @@
+# テンプレート対象ファイル
+# リポジトリ直下のパス → template/ 内に同じパスでコピーされる
+#
+# 空行・#始まりの行は無視される
+# ADRインデックス (docs/decisions/README.md) は同期スクリプトが空版を自動生成する
+
+.github/copilot-instructions.md
+docs/principles.md
+skills/decision-log/SKILL.md
+skills/pre-action-review/SKILL.md

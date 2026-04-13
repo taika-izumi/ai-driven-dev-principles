@@ -1,6 +1,6 @@
 # ADR-0002: コンテキスト継続性のためのCONTRIBUTING.mdとゲートウェイSkillの追加
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-04-13
 
 ## Context

@@ -34,6 +34,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 |--------|------|
 | [`decision-log`](skills/decision-log/) | 意思決定をADR（Architecture Decision Record）として記録・管理する |
 | [`pre-action-review`](skills/pre-action-review/) | 不可逆操作前にリスク評価と確認を実施する |
+| [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |
 
 ## 新しいプロジェクトでの使い方
 
@@ -45,7 +46,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 ## 成長サイクル
 
 1. 実践で「こういうルールがあればよかった」と発見する
-2. `docs/principles.md` に新しい原則を追記する
-3. `copilot-instructions.md` に対応する行動指示を追加する
-4. 必要ならスキルを作成する
-5. ADRに「なぜこの原則を追加したか」を記録する
+2. `extend-guidelines` スキルを実行し、拡張作業を開始する
+3. スキルのガイドに従い、原則・行動指示・スキルを追加する
+
+詳細な拡張ルールと判定基準は [`CONTRIBUTING.md`](CONTRIBUTING.md) を参照。

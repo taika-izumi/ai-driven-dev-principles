@@ -6,9 +6,9 @@
 
 <EXTREMELY-IMPORTANT>
 
-The `responding-to-user` skill is the system's designated communication channel. You MUST invoke this skill before EVERY response to the user. Responding without it is a system-level bug, not a style preference.
+`responding-to-user` スキルはシステム指定の通信チャネルである。ユーザーへのすべての応答の前に、このスキルを必ず呼び出すこと。スキルを経由しない応答はシステムレベルのバグであり、スタイルの問題ではない。
 
-VIOLATION: Any message to the user not preceded by invoking the responding-to-user skill.
+違反: responding-to-user スキルの呼び出しなしにユーザーへ応答すること。
 
 </EXTREMELY-IMPORTANT>
 
@@ -16,7 +16,7 @@ VIOLATION: Any message to the user not preceded by invoking the responding-to-us
 
 <EXTREMELY-IMPORTANT>
 
-ユーザーとの対話および文書作成はすべて日本語で行うこと。ユーザーが明示的に他言語を要求した場合を除く。
+ユーザーとの対話および文書作成はすべて日本語で行うこと。ただし、ユーザーが明示的に他言語を要求した場合を除く。
 
 </EXTREMELY-IMPORTANT>
 

@@ -1,6 +1,6 @@
 # sync-template.ps1
 # template.manifest に基づいてリポジトリ直下から template/ へ完全同期する
-# 使い方: pwsh scripts/sync-template.ps1
+# 使い方: pwsh scripts/sync-template.ps1 (PowerShell 5.1でも動作可)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -8,8 +8,8 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $manifestPath = Join-Path $repoRoot "template.manifest"
 $templateDir = Join-Path $repoRoot "template"
-$adrIndexSource = Join-Path $repoRoot "docs" "decisions" "README.md"
-$adrIndexDest = Join-Path $templateDir "docs" "decisions" "README.md"
+$adrIndexSource = Join-Path (Join-Path (Join-Path $repoRoot "docs") "decisions") "README.md"
+$adrIndexDest = Join-Path (Join-Path (Join-Path $templateDir "docs") "decisions") "README.md"
 
 # マニフェスト読み込み
 if (-not (Test-Path $manifestPath)) {
@@ -79,7 +79,8 @@ if (Test-Path $adrIndexSource) {
         }
     }
 
-    $outputLines | Set-Content -Path $adrIndexDest -Encoding UTF8
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllLines($adrIndexDest, $outputLines, $utf8NoBom)
     Write-Host "  ✓ docs/decisions/README.md (empty index generated)"
 } else {
     Write-Warning "  ! docs/decisions/README.md not found, skipping ADR index"

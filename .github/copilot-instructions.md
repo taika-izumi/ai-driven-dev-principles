@@ -16,7 +16,7 @@ VIOLATION: Any message to the user not preceded by invoking the responding-to-us
 
 <EXTREMELY-IMPORTANT>
 
-Use Japanese for all user interactions and all documentation unless user explicitly requests otherwise.
+ユーザーとの対話および文書作成はすべて日本語で行うこと。ユーザーが明示的に他言語を要求した場合を除く。
 
 </EXTREMELY-IMPORTANT>
 

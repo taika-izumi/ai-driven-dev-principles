@@ -38,10 +38,8 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 
 ## 新しいプロジェクトでの使い方
 
-1. `.github/copilot-instructions.md` を新プロジェクトにコピーする
-2. `skills/` ディレクトリを新プロジェクトにコピーする
-3. プロジェクト固有の指示を `copilot-instructions.md` に追記する
-4. `docs/decisions/` ディレクトリを作成し、`README.md`（ADRインデックス）を配置する
+1. `template/` フォルダの中身を新プロジェクトのルートにコピーする
+2. `copilot-instructions.md` にプロジェクト固有の指示を追記する
 
 ## 成長サイクル
 

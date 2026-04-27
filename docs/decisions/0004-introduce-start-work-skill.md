@@ -1,6 +1,6 @@
 # ADR-0004: ワークフロー起点スキル（start-work）の導入
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-04-27
 
 ## Context

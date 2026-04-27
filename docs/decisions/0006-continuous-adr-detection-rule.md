@@ -1,6 +1,6 @@
 # ADR-0006: 意思決定の継続検出ルールの導入
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-04-27
 
 ## Context

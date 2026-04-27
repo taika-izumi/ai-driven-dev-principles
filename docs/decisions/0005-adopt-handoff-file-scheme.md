@@ -1,6 +1,6 @@
 # ADR-0005: セッション継続のためのハンドオフファイル方式の採用
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-04-27
 
 ## Context

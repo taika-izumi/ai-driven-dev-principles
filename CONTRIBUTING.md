@@ -205,3 +205,36 @@
 - rubber-duck 呼び出しは1サイクルにつき1回に留まっているか
 - 採用判断と実装着手の分離原則（採用時に ADR ドラフト起票、実装は次セッションで `start-work` から開始）が崩れていないか
 - ドメイン知識抽出のスコープ（ADR-0012 で C 範囲外と決定済み）に踏み込んでいないか
+
+
+## シナリオ: 振り返りで採用された改善提案を取り込みたいとき
+
+### 背景
+
+`retrospective` スキルが `docs/retrospectives/YYYY-MM-DD-<topic>.md` に記録した Improvement Drafts のうち「採用」と判定された提案は、retrospective 実施時に ADR ドラフト（Status: Proposed）として起票され、実装は次セッション以降に持ち越される（採用判断と実装着手の分離）。本シナリオは、その持ち越された ADR ドラフトを実装サイクルへ取り込むときの手順である。
+
+### 判定基準
+
+以下に該当する場合に本シナリオを使う:
+
+- `docs/retrospectives/<...>.md` の Improvement Drafts に「採用」かつ未実装の提案がある
+- 対応する ADR が Proposed のまま残っている
+- 次サブプロジェクトの起点を未定義のまま `start-work` に入ろうとしている
+
+### 手順
+
+1. `docs/retrospectives/` から最新ファイルを開き、Improvement Drafts セクションの「採用」項目と紐付く ADR 番号を一覧する
+2. 同ファイルの「Handoff Forward」セクションを読み、優先順位と推奨フローの粒度（フルサイクル / 軽量サイクル）を確認する
+3. `start-work` を起動し、新規サブプロジェクトとして扱う
+4. 提案規模に応じて以下のいずれかへ進む:
+   - 中規模以上（複数ファイル / 設計判断あり）: brainstorming → feature-block-design 適用判定 → spec → plan → 実装
+   - 小規模（1〜2 ファイル / 規約追加のみ）: brainstorming を省略し、`start-work` Phase 2 から writing-plans に直行してよい
+5. 着手対象の ADR について、必要に応じて Context / Decision を補強し、実装完了時に Status を `Accepted` へ昇格させる
+6. 取り込み元の retrospective ファイルは**書き換えない**（ADR-0011 の追記型規約）。実装結果のフィードバックは次回の retrospective で記録する
+
+### チェックリスト
+
+- 採用提案が複数ある場合、Handoff Forward の優先順位に従っているか
+- 紐付く ADR ドラフトの Status が Proposed のまま実装着手していないか（必ず Accepted 化を伴う）
+- retrospective ファイルへの加筆をしていないか（追記型規約違反を避ける）
+- 取り込みサイクル完了後の retrospective で「前回採用提案の実装結果」を Done または Tech Notes に明示的に書く準備ができているか

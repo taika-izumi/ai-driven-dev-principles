@@ -1,6 +1,6 @@
 # ADR-0010: 開発サイクル末尾の振り返りフェーズ導入
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-05-01
 
 ## Context

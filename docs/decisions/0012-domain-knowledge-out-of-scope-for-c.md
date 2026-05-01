@@ -1,6 +1,6 @@
 # ADR-0012: ドメイン知識抽出は次サイクル課題
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-05-01
 
 ## Context

@@ -1,83 +1,86 @@
 # Handoff: AI駆動開発メタ・ガイドラインの段階的整備
 
 - **Branch**: master
-- **Last Updated**: 2026-05-01 15:58 (Asia/Tokyo)
+- **Last Updated**: 2026-05-01 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: サブプロジェクトA完了 / サブプロジェクトB完了 / サブプロジェクトC未着手（未定）
+- **Current Phase**: サブプロジェクトA完了 / サブプロジェクトB完了 / サブプロジェクトC実装完了（master merge 済み、retrospective 未実施）
 
 ## 作業の目的・背景
 
 本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AIエージェント駆動開発のメタ・ガイドライン（5原則 + スキル群 + ADR）を整備するプロジェクト。プロジェクト全体は複数のサブプロジェクトに分割して段階的に進行している。
 
-- **サブプロジェクトA「記録の強化」**: 完了済み。意思決定の即時検出ルール（ADR）と、セッション継続のためのハンドオフファイル方式、そしてそれらを束ねる起点スキル `start-work` を導入した。
-- **サブプロジェクトB「機能ブロック駆動の設計＋仕様書分割」**: 完了済み。brainstorming と writing-plans の間で機能ブロック分割を行う新スキル `feature-block-design` を導入し、原則2「関心の分離」をエージェント設計だけでなくコード・ドキュメント・仕様書に拡張し、`copilot-instructions.md` に「分割設計」と「仕様書スナップショット規約」を常時ルールとして追加した。
-- **サブプロジェクトC**: 未定。次セッションで brainstorming から開始する。
+- **サブプロジェクトA「記録の強化」**: 完了済み。意思決定の即時検出ルール、ハンドオフファイル方式、起点スキル `start-work` を導入。
+- **サブプロジェクトB「機能ブロック駆動の設計＋仕様書分割」**: 完了済み。`feature-block-design` スキル導入、原則2の適用範囲拡張、仕様書スナップショット規約導入。
+- **サブプロジェクトC「振り返りフェーズ導入」**: 実装完了・master merge 済み。サブプロジェクト末尾で `retrospective` スキルを起動し、Done / Went Well / Struggled / Tech Notes / Improvement Drafts を抽出、採用提案を ADR ドラフト化する仕組みを導入した。**ただしドッグフーディング（C 自身に対する初回 retrospective）は未実施**。次セッションの最初のアクションとして実行する。
 
 ## 関連ドキュメント
 
-- 原則: `docs/principles.md`（原則2は ADR-0009 により拡張済み）
+- 原則: `docs/principles.md`（原則5に振り返り運用を追記済み）
 - サブプロジェクトA plan: `docs/plans/2026-04-27-record-strengthening-plan.md`
 - サブプロジェクトB plan: `docs/plans/2026-05-01-feature-block-design-plan.md`
-- サブプロジェクトB spec: `docs/specs/2026-05-01-feature-block-design/`（00-overview.md + 01〜04 ブロック詳細）
-- 関連ADR: ADR-0004（start-work導入）, ADR-0005（ハンドオフファイル方式採用）, ADR-0006（継続的ADR検出ルール）, ADR-0007（feature-block-design導入）, ADR-0008（仕様書ディレクトリ分割形式とスナップショット規約）, ADR-0009（原則2の適用範囲拡張）
-- スキル一覧: `README.md` のテーブル参照
+- サブプロジェクトC plan: `docs/plans/2026-05-01-retrospective-phase-plan.md`
+- サブプロジェクトC spec: `docs/specs/2026-05-01-retrospective-design.md`
+- 関連ADR: ADR-0004〜0009（A/B 由来）, ADR-0010（振り返りフェーズ導入）, ADR-0011（振り返り出力の保管規約）, ADR-0012（ドメイン知識抽出は次サイクル課題）
+- スキル一覧: `README.md` のテーブル参照（`retrospective` 追加済み）
 
 ## 完了済みタスク
 
-- [x] サブプロジェクトA: 全12タスク完了（2026-04-27 〜 2026-04-28）
-  - ADR-0004 / 0005 / 0006 作成・Accepted 化
-  - `skills/start-work/` 新規作成（横断関心ゲートウェイ + 次手ナビゲーター）
-  - `skills/session-handoff/` 新規作成（read/create/update/finalize の4操作）
-  - `skills/decision-log/` 強化（検出トリガー一覧化、即時呼び出し誘導）
-  - `.github/copilot-instructions.md` 更新（「作業の起点」「意思決定の即時記録」を常時ルール化）
-  - `template/` 同期（sync-template.ps1 で再生成、差分ゼロ確認済み）
-  - `CONTRIBUTING.md` / `README.md` 更新
-  - `feature/record-strengthening` を master に `--no-ff` マージ済み、push 済み（`6bd8a08`）
-
-- [x] サブプロジェクトB: 全14タスク完了（2026-05-01）
-  - ADR-0007 / 0008 / 0009 作成・Accepted 化
-  - `skills/feature-block-design/` 新規作成（適用要否判定 + 機能ブロック抽出 + 分割仕様書出力）
-  - `docs/principles.md` 原則2を拡張（エージェント設計だけでなくコード・ドキュメント・仕様書にも適用）
-  - `.github/copilot-instructions.md` に「タスク構造」追記（高凝集・疎結合・単一責任、feature-block-design 適用ルール）と「ドキュメント運用」セクション新設（スナップショット規約）
-  - `skills/start-work/SKILL.md` の Phase 2 ナビゲーション表に新スキル追加
+- [x] サブプロジェクトA: 全12タスク完了（2026-04-27 〜 2026-04-28）— master merge 済み（`6bd8a08`）
+- [x] サブプロジェクトB: 全14タスク完了（2026-05-01）— master merge 済み（`6e3a845`）
+- [x] サブプロジェクトC: 全16タスク完了（2026-05-01、Task 17 = 初回 retrospective 実行を除く）— master merge 済み（`<merge-commit-sha>`、Task 16 で確定）
+  - ADR-0010 / 0011 / 0012 作成・Accepted 化
+  - `skills/retrospective/` 新規作成（SKILL.md + template.md）
+  - `docs/retrospectives/` 初期化（README.md + .gitkeep）
+  - `docs/principles.md` 原則5に振り返り運用1文追記
+  - `.github/copilot-instructions.md` 「検証」セクションに振り返り運用1文追記
+  - `skills/start-work/SKILL.md` Phase 2 マッピング表に retrospective 追加 + セッション終了処理に retrospective 起動提案を組込
+  - `skills/decision-log/SKILL.md` 強トリガーに「振り返りで採用された改善提案」を追加
   - `template.manifest` / `template/` 同期（再実行で差分ゼロ確認済み）
   - `README.md` / `CONTRIBUTING.md` 更新
-  - 設計仕様書を `docs/specs/2026-05-01-feature-block-design/` にディレクトリ分割形式で配置（ドッグフーディング）
-  - `feature/feature-block-design` を master に `--no-ff` マージ済み、push 済み
 
 ## 進行中のタスク
 
-なし（サブプロジェクトBは完全クローズ）
+なし
 
 ## 未着手のタスク
 
-- [ ] **サブプロジェクトC（仮）**
-  - 状態: 未定。要件・スコープは未定義。
-  - 残り: 別セッションで brainstorming から開始。
+- [ ] **サブプロジェクトC Task 17: 初回 retrospective の実行**
+  - 対象: 本サブプロジェクトC 自身
+  - 出力: `docs/retrospectives/<実施日>-retrospective-phase.md`
+  - 期待される副成果物: 採用された Improvement Draft → ADR-0013 ドラフト起票（実装は別セッションで `start-work` から）
+  - ドッグフーディングを兼ねるため、フォーマット・運用上の違和感を観察し Improvement Drafts に積極的に記録する
+
+- [ ] **サブプロジェクトD（仮）**
+  - 状態: 未定。retrospective 完了後の Improvement Drafts と ADR-0013 ドラフトを起点に決定する。
 
 ## 既知のブロッカー・懸念
 
-- サブプロジェクトCの具体的なゴール・スコープが未言語化。次セッションの brainstorming で何を扱うか擦り合わせる必要がある。
-- `docs/conversation_log.md` および `docs/images/` が untracked のまま残っている（サブプロジェクトA 開始前から存在する作業外ファイル、扱い未確認）。
+- 初回 retrospective がまだ実施されていないため、振り返りスキルの実運用妥当性は未検証。
+- `docs/conversation_log.md` および `docs/images/` が untracked のまま残っている（A 開始前から存在する作業外ファイル、扱い未確認）。
 
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフファイルを read してくれる）
 2. **最初に確認すべきファイル**:
    - 本ファイル `docs/handoff/master.md`
-   - `README.md`（プロジェクト全体像）
-   - `docs/principles.md`（5原則の現行版、原則2拡張済み）
-   - `.github/copilot-instructions.md`（「ドキュメント運用」セクション含む現行版）
-   - `skills/feature-block-design/SKILL.md`（B で導入された新スキルの仕様）
+   - `skills/retrospective/SKILL.md` と `skills/retrospective/template.md`（次に呼ぶスキルの仕様）
+   - `docs/specs/2026-05-01-retrospective-design.md`（C の設計仕様）
+   - `docs/plans/2026-05-01-retrospective-phase-plan.md`（C の plan、Task 17 詳細含む）
+   - `docs/decisions/0010-introduce-retrospective-phase.md` / `0011-retrospective-storage-policy.md` / `0012-domain-knowledge-out-of-scope-for-c.md`
 3. **最初に実行すべきコマンド**:
-   - `git --no-pager log --oneline -15` で直近の変更を確認
+   - `git --no-pager log --oneline -20` で C の merge までを確認
    - `git status` で untracked ファイルの扱いを判断
-4. **次に走らせるスキル**: `superpowers:brainstorming`（次サブプロジェクトの要件定義から開始）
+4. **次に走らせるスキル**: `retrospective`（Task 17 = 初回ドッグフーディングを実行）
+   - 対象サブプロジェクトの一文サマリ: 「サブプロジェクトC『AI駆動開発フローの末尾に振り返りフェーズを導入する』」
+   - rubber-duck 呼び出しは Phase 3 で1回のみ
+   - 採用された Improvement Draft があれば即 ADR ドラフト起票（ADR-0013〜）。実装は別セッションで `start-work` から開始する
+   - 完了後、本ハンドオフファイルを再更新し master へ push する
 5. **留意点**:
-   - サブプロジェクトBで導入した `feature-block-design` スキルが実運用初回となる。中規模以上のシステムを設計する際は brainstorming 後に必ず使うこと（適用要否判定はスキル内で実施）。
-   - 仕様書はスナップショット規約に従い、差分仕様書を作らず常に書き換えで更新すること（ADR-0008）。
-   - master 直接作業は禁止。次サブプロジェクトも feature ブランチ（例: `feature/<topic>`）を切ること。
-   - brainstorming 中に2案以上比較したらルール通り decision-log を即時呼び出すこと（ADR-0006）。
+   - `retrospective` スキル自体はコミットを行わない。出力ファイル作成・ADR ドラフト起票・handoff 更新の各ステップで個別にコミットする
+   - 出力規約は ADR-0011（時系列追記型・上書き禁止・インデックスは行追加のみ）。ADR-0008 のスナップショット規約（spec / handoff）とは別ポリシーであることに注意
+   - ドメイン知識抽出は ADR-0012 により C のスコープ外。初回 retrospective の議題には載せず、Improvement Draft に「次サイクル候補」としてのみ記録する
+   - master 直接作業は禁止。retrospective 出力 / ADR-0013 ドラフト / handoff 更新は新しい feature ブランチ（例: `feature/retro-c`）で行うこと
+   - 検出した意思決定は ADR-0006（即時検出）に従い即ドラフト起票
 
 ## 重要な意思決定の履歴
 
@@ -87,3 +90,6 @@
 - ADR-0007: 機能ブロック駆動の設計スキル（feature-block-design）の導入（2026-05-01, Accepted）
 - ADR-0008: 仕様書のディレクトリ分割形式とスナップショット規約の採用（2026-05-01, Accepted）
 - ADR-0009: 原則2「関心の分離」の適用範囲拡張（2026-05-01, Accepted）
+- ADR-0010: 開発サイクル末尾の振り返りフェーズ導入（2026-05-01, Accepted）
+- ADR-0011: 振り返り出力の保管規約（時系列追記型）（2026-05-01, Accepted）
+- ADR-0012: ドメイン知識抽出は次サイクル課題（C 範囲外、ADR ベースのスコープ宣言）（2026-05-01, Accepted）

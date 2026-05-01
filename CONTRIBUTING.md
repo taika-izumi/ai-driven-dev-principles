@@ -169,3 +169,39 @@
 - スナップショット規約（差分仕様書を作らない）が守られる手順になっているか
 - brainstorming スキルの "design for isolation and clarity" 指針と責務重複していないか
 - 粒度ガイドラインがパラダイムを問わず適用可能な抽象度になっているか
+
+
+## シナリオ: 振り返りスキル（retrospective）を変更するとき
+
+### 背景
+
+`retrospective` はサブプロジェクトを master へ merge した直後に1回だけ起動するスキルで、Done / Went Well / Struggled / Tech Notes / Improvement Drafts / Independent Review Notes / Handoff Forward の7セクションを対話的に埋め、採用された改善提案を ADR ドラフトに転写する役割を担う。
+
+出力規約は ADR-0011 が定める「時系列追記型」（`docs/retrospectives/YYYY-MM-DD-<topic>.md` を上書き禁止、インデックスは行追加のみ）であり、これは ADR-0008 の「スナップショット規約（spec / handoff）」とは対象が異なる別ポリシーである。両規約の境界を崩さないこと。
+
+### 判定基準
+
+以下に該当する場合に `retrospective` の変更を検討する:
+
+- セクション構成・観点の見直し（例: ドメイン知識セクションの新設）
+- rubber-duck 呼び出しのプロンプトや観点の調整
+- 起動タイミング（サブプロジェクト単位）の粒度変更
+- ADR ドラフト転写ルール（採用判断と実装着手の分離）の見直し
+- テンプレート（`skills/retrospective/template.md`）の構造変更
+
+### 手順
+
+1. ADR を作成して変更理由を記録する（重要な変更の場合。新セクション追加など出力構造に影響するものは必須）
+2. `skills/retrospective/SKILL.md` を更新する
+3. テンプレート構造を変えた場合は `skills/retrospective/template.md` を同期する
+4. `start-work` の Phase 2 マッピング表 / セッション終了処理との整合を確認する
+5. `decision-log` の検出トリガー（「振り返りで採用された改善提案」）との整合を確認する
+6. テンプレート対象なので `scripts/sync-template.ps1` を実行する
+
+### チェックリスト
+
+- 起動タイミングがサブプロジェクト単位 = merge 直後1回 のままか（粒度を変える場合は ADR-0010 の更新も必要）
+- 出力ファイル規約（ADR-0011: 上書き禁止、インデックス追記のみ）が手順内で守られているか
+- rubber-duck 呼び出しは1サイクルにつき1回に留まっているか
+- 採用判断と実装着手の分離原則（採用時に ADR ドラフト起票、実装は次セッションで `start-work` から開始）が崩れていないか
+- ドメイン知識抽出のスコープ（ADR-0012 で C 範囲外と決定済み）に踏み込んでいないか

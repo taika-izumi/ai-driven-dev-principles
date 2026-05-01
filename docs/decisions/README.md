@@ -18,3 +18,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0010](0010-introduce-retrospective-phase.md) | 開発サイクル末尾の振り返りフェーズ導入 | Accepted | 2026-05-01 |
 | [0011](0011-retrospective-storage-policy.md) | 振り返り出力の保管規約（時系列追記型） | Accepted | 2026-05-01 |
 | [0012](0012-domain-knowledge-out-of-scope-for-c.md) | ドメイン知識抽出は次サイクル課題 | Accepted | 2026-05-01 |
+| [0013](0013-introduce-knowledge-distillation-skill.md) | knowledge-distillation スキル新設 | Proposed | 2026-05-01 |
+| [0014](0014-parent-dir-check-before-file-create.md) | 新規ファイル作成時の親ディレクトリ先行確認 | Proposed | 2026-05-01 |

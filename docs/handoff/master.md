@@ -27,7 +27,7 @@
 
 - [x] サブプロジェクトA: 全12タスク完了（2026-04-27 〜 2026-04-28）— master merge 済み（`6bd8a08`）
 - [x] サブプロジェクトB: 全14タスク完了（2026-05-01）— master merge 済み（`6e3a845`）
-- [x] サブプロジェクトC: 全16タスク完了（2026-05-01、Task 17 = 初回 retrospective 実行を除く）— master merge 済み（`<merge-commit-sha>`、Task 16 で確定）
+- [x] サブプロジェクトC: 全16タスク完了（2026-05-01、Task 17 = 初回 retrospective 実行を除く）— master merge 済み（`49906e8`）
   - ADR-0010 / 0011 / 0012 作成・Accepted 化
   - `skills/retrospective/` 新規作成（SKILL.md + template.md）
   - `docs/retrospectives/` 初期化（README.md + .gitkeep）

@@ -16,3 +16,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0008](0008-adopt-spec-directory-split-and-snapshot-rule.md) | 仕様書のディレクトリ分割形式とスナップショット規約の採用 | Accepted | 2026-05-01 |
 | [0009](0009-extend-principle-2-scope.md) | 原則2「関心の分離」の適用範囲拡張 | Accepted | 2026-05-01 |
 | [0010](0010-introduce-retrospective-phase.md) | 開発サイクル末尾の振り返りフェーズ導入 | Proposed | 2026-05-01 |
+| [0011](0011-retrospective-storage-policy.md) | 振り返り出力の保管規約（時系列追記型） | Proposed | 2026-05-01 |

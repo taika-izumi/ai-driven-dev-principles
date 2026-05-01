@@ -34,6 +34,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 |--------|------|
 | [`start-work`](skills/start-work/) | 新しい作業の起点。横断関心（handoff、ADR検出、不可逆操作レビュー）を一貫適用し、次手のスキルへナビゲートする |
 | [`session-handoff`](skills/session-handoff/) | セッション間の作業引き継ぎファイル（ハンドオフ）を読む・作成する・更新する・確定する |
+| [`feature-block-design`](skills/feature-block-design/) | brainstorming と writing-plans の間で、システムを機能ブロックに分割し分割仕様書を作成・更新する |
 | [`decision-log`](skills/decision-log/) | 意思決定をADR（Architecture Decision Record）として記録・管理する |
 | [`pre-action-review`](skills/pre-action-review/) | 不可逆操作前にリスク評価と確認を実施する |
 | [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |

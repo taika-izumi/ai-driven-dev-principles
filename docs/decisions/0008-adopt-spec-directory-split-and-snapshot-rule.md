@@ -1,6 +1,6 @@
 # ADR-0008: 仕様書のディレクトリ分割形式とスナップショット規約の採用
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-05-01
 
 ## Context

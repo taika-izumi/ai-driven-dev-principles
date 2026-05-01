@@ -1,6 +1,6 @@
 # ADR-0009: 原則2「関心の分離」の適用範囲拡張
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-05-01
 
 ## Context

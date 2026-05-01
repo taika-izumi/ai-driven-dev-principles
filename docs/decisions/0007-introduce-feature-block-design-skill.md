@@ -1,6 +1,6 @@
 # ADR-0007: 機能ブロック駆動の設計スキル（feature-block-design）の導入
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-05-01
 
 ## Context

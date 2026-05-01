@@ -59,6 +59,7 @@ AIエージェントを活用した作業のフローを定義し、フロー通
 | 作業意図 | 推奨スキル | フォールバック |
 |----------|----------|--------------|
 | 新規開発・機能追加・改修 | superpowers:brainstorming | インライン簡易ヒアリング |
+| brainstorming 完了後・計画作成前の機能ブロック分割 | feature-block-design（適用要否を内部判定） | スキップして writing-plans へ |
 | 既存仕様からの計画作成 | superpowers:writing-plans | インライン簡易plan作成 |
 | 既存planの実装 | superpowers:executing-plans または superpowers:subagent-driven-development | インラインTDDサイクル |
 | バグ修正・デバッグ | superpowers:systematic-debugging | インライン仮説立案→検証→修正 |

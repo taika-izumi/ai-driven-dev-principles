@@ -139,3 +139,33 @@
 - 推奨スキルマッピングと現実の superpowers スキル群が一致しているか
 - インラインフォールバックが各フェーズで提供されているか
 - 横断関心の追加が他スキルとの責務重複を生んでいないか
+
+
+## シナリオ: 機能ブロック駆動の設計スキル（feature-block-design）を変更するとき
+
+### 背景
+
+`feature-block-design` は brainstorming と writing-plans の間に挟まる中間スキルで、システムを疎結合な機能ブロックに分割し、分割仕様書（`docs/specs/YYYY-MM-DD-<topic>/` 配下のディレクトリ分割形式）を作成・更新する役割を担う。
+
+### 判定基準
+
+以下に該当する場合に `feature-block-design` の変更を検討する:
+
+- 適用要否判定のしきい値を見直す必要がある（実運用で過剰適用 / 適用漏れが目立つ）
+- 機能ブロックの粒度ガイドラインを更新する必要がある
+- 出力ディレクトリ構造を変更する必要がある
+- brainstorming や writing-plans との責務境界を再定義する必要がある
+
+### 手順
+
+1. ADRを作成して変更理由を記録する（重要な変更の場合）
+2. `skills/feature-block-design/SKILL.md` を更新する
+3. brainstorming / writing-plans / start-work との責務重複を確認する
+4. テンプレート対象なので `scripts/sync-template.ps1` を実行する
+
+### チェックリスト
+
+- 適用要否判定のしきい値が明示されているか
+- スナップショット規約（差分仕様書を作らない）が守られる手順になっているか
+- brainstorming スキルの "design for isolation and clarity" 指針と責務重複していないか
+- 粒度ガイドラインがパラダイムを問わず適用可能な抽象度になっているか

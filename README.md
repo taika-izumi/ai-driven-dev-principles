@@ -38,6 +38,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 | [`decision-log`](skills/decision-log/) | 意思決定をADR（Architecture Decision Record）として記録・管理する |
 | [`pre-action-review`](skills/pre-action-review/) | 不可逆操作前にリスク評価と確認を実施する |
 | [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |
+| [`retrospective`](skills/retrospective/) | サブプロジェクトクローズ時の振り返り。Done / Went Well / Struggled / Tech Notes / Improvement Drafts を抽出し、採用提案を ADR ドラフト化する |
 
 ## 新しいプロジェクトでの使い方
 

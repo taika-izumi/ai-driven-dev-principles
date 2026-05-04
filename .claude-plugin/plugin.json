@@ -1,0 +1,18 @@
+{
+  "name": "ai-driven-dev-principles",
+  "description": "AI駆動開発のメタ・ガイドラインを実装するスキル群（start-work, decision-log, session-handoff, feature-block-design, retrospective ほか）。本リポジトリの copilot-instructions.md と組み合わせて使用する。",
+  "version": "0.1.0",
+  "author": {
+    "name": "taika-izumi"
+  },
+  "homepage": "https://github.com/taika-izumi/ai-driven-dev-principles",
+  "repository": "https://github.com/taika-izumi/ai-driven-dev-principles",
+  "license": "MIT",
+  "keywords": [
+    "ai-driven-development",
+    "skills",
+    "meta-guidelines",
+    "adr",
+    "workflow"
+  ]
+}

@@ -40,6 +40,47 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 | [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |
 | [`retrospective`](skills/retrospective/) | サブプロジェクトクローズ時の振り返り。Done / Went Well / Struggled / Tech Notes / Improvement Drafts を抽出し、採用提案を ADR ドラフト化する |
 
+## Copilot CLI へのインストール
+
+本リポジトリのスキル群を Copilot CLI の `skill:` ツールから構造化呼び出しできるようにするには、Copilot CLI プラグインとしてインストールする。詳細は ADR-0015 を参照。
+
+### A. 利用者向け（公式インストール）
+
+`~/.copilot/settings.json` の `extraKnownMarketplaces` と `enabledPlugins` に以下を追記する:
+
+```jsonc
+{
+  "extraKnownMarketplaces": {
+    "ai-driven-dev-principles": {
+      "source": {
+        "source": "github",
+        "repo": "taika-izumi/ai-driven-dev-principles"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "ai-driven-dev-principles@ai-driven-dev-principles": true
+  }
+}
+```
+
+その後 Copilot CLI を起動し、必要に応じて `/plugin` でインストールを完了させる。`/env` でスキルが認識されているか確認できる。
+
+### B. 本リポジトリの開発者向け（dev-link）
+
+開発中の `skills/` 編集を即時反映したい場合、再インストール不要の junction/symlink 方式を使う:
+
+- Windows (PowerShell):
+  ```powershell
+  pwsh -File scripts/dev-link.ps1
+  ```
+- macOS / Linux:
+  ```bash
+  bash scripts/dev-link.sh
+  ```
+
+スクリプト実行後、`~/.copilot/settings.json` の `enabledPlugins` にスクリプトが表示する行を手動で追加し、Copilot CLI を再起動する。
+
 ## 新しいプロジェクトでの使い方
 
 1. `template/` フォルダの中身を新プロジェクトのルートにコピーする

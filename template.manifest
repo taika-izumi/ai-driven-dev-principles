@@ -3,14 +3,10 @@
 #
 # 空行・#始まりの行は無視される
 # ADRインデックス (docs/decisions/README.md) は同期スクリプトが空版を自動生成する
+#
+# ADR-0016 により、skills/ 関連エントリは template から除外している
+# （スキル本体は Copilot CLI プラグイン ai-driven-dev-principles から提供されるため）
 
 .github/copilot-instructions.md
 docs/principles.md
-skills/decision-log/SKILL.md
-skills/pre-action-review/SKILL.md
-skills/start-work/SKILL.md
-skills/session-handoff/SKILL.md
-skills/feature-block-design/SKILL.md
-skills/retrospective/SKILL.md
-skills/retrospective/template.md
 docs/retrospectives/README.md

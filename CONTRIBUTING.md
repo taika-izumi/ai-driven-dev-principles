@@ -84,8 +84,8 @@
 1. 上の判定表でSkill化が適切か確認する
 2. `skills/<skill-name>/SKILL.md` を作成する（YAMLフロントマター + markdown本文）
 3. 対応する原則との紐付けをSkill内に記載する
-4. テンプレート対象か判断する: 新プロジェクトで汎用的に使えるSkillなら `template.manifest` に追加する。このリポジトリの運用専用Skillなら追加しない
-5. テンプレート対象の場合、`scripts/sync-template.ps1` を実行してテンプレートフォルダを同期する
+4. プラグイン経由で利用者に届く（ADR-0015 / ADR-0016）。`template.manifest` には追加しないこと。スキルはコピー対象ではなくプラグイン配信対象である
+5. README のスキル一覧テーブルに新スキルを追加する（人間向けの索引）
 6. ADRで作成理由を記録する
 
 ### チェックリスト
@@ -94,7 +94,8 @@
 - Skill名が動作を端的に表しているか
 - YAML frontmatter（`name`, `description`）が正しいか
 - 対応する原則への参照があるか
-- テンプレート対象の場合、`template.manifest` に追加したか
+- README のスキル一覧テーブルを更新したか
+- `template.manifest` には skills/ を追加していないか（ADR-0016 で除外規約）
 
 ## シナリオ: ADRを記録するとき
 

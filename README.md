@@ -40,10 +40,70 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 | [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |
 | [`retrospective`](skills/retrospective/) | サブプロジェクトクローズ時の振り返り。Done / Went Well / Struggled / Tech Notes / Improvement Drafts を抽出し、採用提案を ADR ドラフト化する |
 
+## Copilot CLI へのインストール
+
+本リポジトリは **private リポジトリ**であり、利用想定はリポジトリ所有者および招待された知人に限定される。スキル群を Copilot CLI の `skill:` ツールから構造化呼び出しできるようにするには、Copilot CLI プラグインとしてインストールする（ADR-0015, ADR-0017）。
+
+### A. GitHub 経由でインストール（別 PC やリポジトリ所有者の通常利用）
+
+`copilot login` で GitHub 認証済みのアカウントが本 private リポジトリへのアクセス権を持っていれば、以下のコマンドでインストールできる:
+
+```sh
+copilot login   # 既に Copilot CLI を使えていれば済んでいる
+copilot plugin marketplace add taika-izumi/ai-driven-dev-principles
+copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+更新時:
+
+```sh
+copilot plugin update ai-driven-dev-principles
+```
+
+> **注意**: private リポジトリでの GitHub source 経由 install は CLI 側の認証フローに依存する。動作しない場合は方式 B（ローカル clone）にフォールバックすること。
+
+### B. ローカルパスからインストール（開発時／GitHub source が使えないとき）
+
+本リポジトリを clone 済みのマシンでは、ローカル絶対パスをマーケットプレイスとして登録できる（ADR-0017）:
+
+```sh
+copilot plugin marketplace add <このリポジトリの絶対パス>
+copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+`skills/` を編集したら以下で反映する（install はファイルコピーのため、編集の即時反映はされない）:
+
+```sh
+copilot plugin update ai-driven-dev-principles
+```
+
+リポジトリのフォルダを別の場所へ移動した場合は、登録パスを更新する必要がある:
+
+```sh
+copilot plugin uninstall ai-driven-dev-principles
+copilot plugin marketplace remove ai-driven-dev-principles
+copilot plugin marketplace add <新しい絶対パス>
+copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+> **注意**: 本リポジトリは過去に `scripts/dev-link.{ps1,sh}` で junction を張る方式を提供していたが、CLI に「local」マーケットプレイスは存在せずプラグインが認識されないことが判明したため、ADR-0017 で当該方式を廃止した。既存利用者は `~/.copilot/installed-plugins/local/ai-driven-dev-principles` の junction と `~/.copilot/settings.json` の `enabledPlugins."ai-driven-dev-principles@local"` エントリを手動で削除のうえ、上記の正規手順で再インストールすること。
+
 ## 新しいプロジェクトでの使い方
 
-1. `template/` フォルダの中身を新プロジェクトのルートにコピーする
-2. `copilot-instructions.md` にプロジェクト固有の指示を追記する
+### 前提条件
+
+新規プロジェクトで本ガイドラインを使うには、Copilot CLI プラグイン `ai-driven-dev-principles` をインストールしておく必要がある（ADR-0016）。スキル群（`start-work`, `decision-log` 等）はプラグイン経由でのみ Copilot CLI に認識されるため、template をコピーしただけでは機能しない。
+
+### 手順
+
+1. **このリポジトリをプラグインとして 1 度インストール**（上記「Copilot CLI へのインストール」節を参照）
+2. `template/` フォルダの中身を新プロジェクトのルートにコピーする
+3. `copilot-instructions.md` にプロジェクト固有の指示を追記する
+
+### 注意
+
+- コピー先プロジェクトには `skills/` ディレクトリは含まれない（ADR-0016）。スキル定義の参照や改善提案は本リポジトリ（中央管理）で行うこと
+- スキルのバージョンアップは `/plugin update` でプラグインを更新すれば全プロジェクトに反映される
 
 ## 成長サイクル
 

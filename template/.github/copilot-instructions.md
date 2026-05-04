@@ -1,5 +1,17 @@
 # Copilot Instructions
 
+## 前提条件: Copilot CLI プラグインのインストール
+
+<EXTREMELY-IMPORTANT>
+
+本ガイドラインで指示する `start-work`, `decision-log`, `session-handoff`, `feature-block-design`, `pre-action-review`, `retrospective`, `extend-guidelines` などのスキルは、Copilot CLI プラグイン `ai-driven-dev-principles` から提供される。本ファイルが配置されたプロジェクトで作業する前に、当該プラグインをインストール・有効化しておくこと。
+
+インストール手順は本リポジトリ（[taika-izumi/ai-driven-dev-principles](https://github.com/taika-izumi/exercise-makeAiInstructions)）の README「Copilot CLI へのインストール」節を参照。
+
+プラグイン未インストール環境では本ガイドラインの大半が機能しないため、利用者は事前に環境準備を完了させること。
+
+</EXTREMELY-IMPORTANT>
+
 ## システム設定
 
 ### responding-to-user スキル

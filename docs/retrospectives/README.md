@@ -17,6 +17,7 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 | 実施日 | サブプロジェクト | Branch | Plan | Spec | Reviewer | 備考 |
 |--------|----------------|--------|------|------|----------|------|
 | 2026-05-01 | C: 振り返りフェーズ導入 | feature/retrospective-phase (merge: 49906e8) | [plan](../plans/2026-05-01-retrospective-phase-plan.md) | [spec](../specs/2026-05-01-retrospective-design.md) | rubber-duck | 初回ドッグフーディング。採用提案2件 → ADR-0013/0014 起票 |
+| 2026-05-05 | Copilot CLI プラグイン配布化 | feature/plugin-distribution (merge: a92dc81) | （探索型・なし） | （なし） | rubber-duck | 採用提案1件 → ADR-0018 起票。ADR-0015→0017 連鎖が事実上の plan として機能 |
 
 ## 関連
 

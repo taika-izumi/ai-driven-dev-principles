@@ -23,3 +23,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0015](0015-distribute-skills-as-copilot-cli-plugin.md) | スキル群を Copilot CLI プラグインとして配布（公式プラグイン化 + dev-link ハイブリッド） | Accepted | 2026-05-04 |
 | [0016](0016-redesign-template-workflow-plugin-only.md) | template ワークフローの再設計（skills/ を除外し、プラグイン一本化） | Accepted | 2026-05-04 |
 | [0017](0017-correct-local-marketplace-registration.md) | ローカル開発時のプラグイン登録方式を `copilot plugin marketplace add <path>` に修正 | Accepted | 2026-05-04 |
+| [0018](0018-mandate-brainstorming-for-medium-or-multi-option-work.md) | 中規模以上 / 複数解決策の作業着手前に brainstorming skill 必須化 | Proposed | 2026-05-05 |

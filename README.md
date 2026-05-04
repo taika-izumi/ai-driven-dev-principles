@@ -66,20 +66,25 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 
 その後 Copilot CLI を起動し、必要に応じて `/plugin` でインストールを完了させる。`/env` でスキルが認識されているか確認できる。
 
-### B. 本リポジトリの開発者向け（dev-link）
+### B. ローカルパスからのインストール（開発・未公開時）
 
-開発中の `skills/` 編集を即時反映したい場合、再インストール不要の junction/symlink 方式を使う:
+リポジトリがまだ GitHub に公開されていない、もしくは手元の改修を試したい場合、ローカルパスをマーケットプレイスとして登録する方式が使える（ADR-0017）:
 
-- Windows (PowerShell):
-  ```powershell
-  pwsh -File scripts/dev-link.ps1
-  ```
-- macOS / Linux:
-  ```bash
-  bash scripts/dev-link.sh
-  ```
+```sh
+# ローカルパスをマーケットプレイスとして登録（marketplace.json の plugins[].name がマーケットプレイス名になる）
+copilot plugin marketplace add <このリポジトリの絶対パス>
 
-スクリプト実行後、`~/.copilot/settings.json` の `enabledPlugins` にスクリプトが表示する行を手動で追加し、Copilot CLI を再起動する。
+# プラグインをインストール
+copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+`skills/` を編集した後は以下で反映する（インストールはファイルコピーのため、編集の即時反映はされない）:
+
+```sh
+copilot plugin update ai-driven-dev-principles
+```
+
+> **注意**: 本リポジトリは過去に `scripts/dev-link.{ps1,sh}` で junction を張る方式を提供していたが、CLI に「local」マーケットプレイスは存在せずプラグインが認識されないことが判明したため、ADR-0017 で当該方式を廃止した。既存利用者は `~/.copilot/installed-plugins/local/ai-driven-dev-principles` の junction と `~/.copilot/settings.json` の `enabledPlugins."ai-driven-dev-principles@local"` エントリを手動で削除のうえ、上記の正規手順で再インストールすること。
 
 ## 新しいプロジェクトでの使い方
 

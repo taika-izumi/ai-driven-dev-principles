@@ -68,7 +68,7 @@ docs/retrospectives/README.md
 - 利用者にプラグインインストールという追加ステップを必須化する（ハードル上昇）
 - プラグイン未インストール環境では `copilot-instructions.md` が指示するスキルが機能しない（明示的な前提条件として README で警告）
 - 既に template をコピー済の既存プロジェクトは、次回テンプレ同期時に `skills/` が消えることになる（移行ガイドが必要）
-- オフライン/隔離環境ではプラグインインストールが困難な場合がある（ローカル clone + dev-link で対応可、別途案内）
+- オフライン/隔離環境ではプラグインインストールが困難な場合がある（ローカル clone + `copilot plugin marketplace add <local-path>` で対応可、別途案内）
 
 ### 派生する将来 ADR 候補
 

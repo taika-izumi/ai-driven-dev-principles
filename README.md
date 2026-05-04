@@ -42,46 +42,48 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 
 ## Copilot CLI へのインストール
 
-本リポジトリのスキル群を Copilot CLI の `skill:` ツールから構造化呼び出しできるようにするには、Copilot CLI プラグインとしてインストールする。詳細は ADR-0015 を参照。
+本リポジトリは **private リポジトリ**であり、利用想定はリポジトリ所有者および招待された知人に限定される。スキル群を Copilot CLI の `skill:` ツールから構造化呼び出しできるようにするには、Copilot CLI プラグインとしてインストールする（ADR-0015, ADR-0017）。
 
-### A. 利用者向け（公式インストール）
+### A. GitHub 経由でインストール（別 PC やリポジトリ所有者の通常利用）
 
-`~/.copilot/settings.json` の `extraKnownMarketplaces` と `enabledPlugins` に以下を追記する:
-
-```jsonc
-{
-  "extraKnownMarketplaces": {
-    "ai-driven-dev-principles": {
-      "source": {
-        "source": "github",
-        "repo": "taika-izumi/ai-driven-dev-principles"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "ai-driven-dev-principles@ai-driven-dev-principles": true
-  }
-}
-```
-
-その後 Copilot CLI を起動し、必要に応じて `/plugin` でインストールを完了させる。`/env` でスキルが認識されているか確認できる。
-
-### B. ローカルパスからのインストール（開発・未公開時）
-
-リポジトリがまだ GitHub に公開されていない、もしくは手元の改修を試したい場合、ローカルパスをマーケットプレイスとして登録する方式が使える（ADR-0017）:
+`copilot login` で GitHub 認証済みのアカウントが本 private リポジトリへのアクセス権を持っていれば、以下のコマンドでインストールできる:
 
 ```sh
-# ローカルパスをマーケットプレイスとして登録（marketplace.json の plugins[].name がマーケットプレイス名になる）
-copilot plugin marketplace add <このリポジトリの絶対パス>
-
-# プラグインをインストール
+copilot login   # 既に Copilot CLI を使えていれば済んでいる
+copilot plugin marketplace add taika-izumi/ai-driven-dev-principles
 copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
 ```
 
-`skills/` を編集した後は以下で反映する（インストールはファイルコピーのため、編集の即時反映はされない）:
+更新時:
 
 ```sh
 copilot plugin update ai-driven-dev-principles
+```
+
+> **注意**: private リポジトリでの GitHub source 経由 install は CLI 側の認証フローに依存する。動作しない場合は方式 B（ローカル clone）にフォールバックすること。
+
+### B. ローカルパスからインストール（開発時／GitHub source が使えないとき）
+
+本リポジトリを clone 済みのマシンでは、ローカル絶対パスをマーケットプレイスとして登録できる（ADR-0017）:
+
+```sh
+copilot plugin marketplace add <このリポジトリの絶対パス>
+copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+`skills/` を編集したら以下で反映する（install はファイルコピーのため、編集の即時反映はされない）:
+
+```sh
+copilot plugin update ai-driven-dev-principles
+```
+
+リポジトリのフォルダを別の場所へ移動した場合は、登録パスを更新する必要がある:
+
+```sh
+copilot plugin uninstall ai-driven-dev-principles
+copilot plugin marketplace remove ai-driven-dev-principles
+copilot plugin marketplace add <新しい絶対パス>
+copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
 ```
 
 > **注意**: 本リポジトリは過去に `scripts/dev-link.{ps1,sh}` で junction を張る方式を提供していたが、CLI に「local」マーケットプレイスは存在せずプラグインが認識されないことが判明したため、ADR-0017 で当該方式を廃止した。既存利用者は `~/.copilot/installed-plugins/local/ai-driven-dev-principles` の junction と `~/.copilot/settings.json` の `enabledPlugins."ai-driven-dev-principles@local"` エントリを手動で削除のうえ、上記の正規手順で再インストールすること。

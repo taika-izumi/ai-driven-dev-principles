@@ -71,3 +71,12 @@ ADR-0015 で「公式プラグイン化 + dev-link スクリプト併用」を�
 
 - ADR ステータス語彙に `Amended` を追加するか、新規 ADR で完全置換する慣習を採るかの整理
 - 編集即時反映が必要なワークフローを取り戻すための CLI 機能要望／ハック手順の標準化（案3 を再検討）
+
+## 補足: private リポジトリ前提での運用
+
+本リポジトリは public 化予定がない private リポジトリである。利用想定は所有者および招待された知人に限定される。したがって本 ADR の手順は以下の二段階運用となる（README 参照）:
+
+- **方式 A (GitHub 経由)**: `copilot login` で認証済みかつ private リポへアクセス権を持つアカウントから `copilot plugin marketplace add taika-izumi/ai-driven-dev-principles` で登録。別 PC への展開や知人共有時の標準。
+- **方式 B (ローカル directory)**: 本リポジトリを clone し、絶対パスで登録。本ファイルの「Decision」項で実証した手順そのもの。フォルダ移動時は uninstall → marketplace remove → marketplace add（新パス）→ install で再構成する。
+
+private リポでの方式 A の動作は CLI 認証フローに依存し未検証のため、初回の別 PC 利用時に動作確認し、不可なら方式 B にフォールバックする。

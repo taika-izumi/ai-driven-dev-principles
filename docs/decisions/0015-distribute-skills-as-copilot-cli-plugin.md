@@ -1,6 +1,6 @@
 # ADR-0015: スキル群を Copilot CLI プラグインとして配布（公式プラグイン化 + dev-link ハイブリッド）
 
-- **Status**: Accepted
+- **Status**: Accepted (amended by ADR-0017)
 - **Date**: 2026-05-04
 
 ## Context

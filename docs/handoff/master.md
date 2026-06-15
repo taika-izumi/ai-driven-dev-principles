@@ -1,9 +1,9 @@
 # Handoff: ガイドライン/スキル改善 — ユーザーフィードバック対応
 
 - **Branch**: master
-- **Last Updated**: 2026-06-15 19:40 (Asia/Tokyo)
+- **Last Updated**: 2026-06-15 19:54 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: フィードバック対応 3テーマ中 Theme B 完了 / Theme A・C 未着手
+- **Current Phase**: フィードバック対応 Theme B 完了 / 別件「responding-to-user 撤去」完了 / Theme A・C 未着手
 
 ## 作業の目的・背景
 
@@ -38,6 +38,14 @@
 ## 進行中のタスク
 
 なし
+
+## 別件: responding-to-user 撤去（完了）
+
+- [x] **responding-to-user 必須化の廃止 + ask-user-enforcer プラグイン撤去**: master merge 済（`8a64619`）。ADR-0020 Accepted。
+  - `.github/copilot-instructions.md` の「システム設定 / responding-to-user スキル」節を削除（template同期済）
+  - `ask-user-enforcer` プラグイン（arche-plugins, v4.0.0）を `copilot plugin uninstall` で撤去（config.json / キャッシュ削除を確認）
+  - 効果は次セッション以降（応答前の responding-to-user 強制呼び出しは不要になる）
+  - 過去サイクルの plan/spec に残る言及は履歴として保持
 
 ## 未着手のタスク
 
@@ -83,4 +91,5 @@
 ## 重要な意思決定の履歴
 
 - ADR-0019: ADR記述規律 — 決定のみ記載・未決事項の分離・承認の遅延昇格（2026-06-15, Accepted）
+- ADR-0020: responding-to-user 必須化の廃止 + ask-user-enforcer プラグイン撤去（2026-06-15, Accepted）
 - （ADR-0001〜0018 は `docs/decisions/README.md` 参照）

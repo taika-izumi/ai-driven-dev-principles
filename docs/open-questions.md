@@ -16,4 +16,4 @@
 
 ## 未解決の論点
 
-（現在、未解決の論点はありません）
+- [ ] template 同期の非対称性 — `sync-template.ps1` は ADRインデックス(`docs/decisions/README.md`)を空生成するが、`docs/retrospectives/README.md` は repo固有の振り返り履歴行ごと verbatim コピーしてしまう。両インデックスとも新規プロジェクトでは空で始まるべきだが扱いが不揃い（発生源: Theme B コードレビュー, 2026-06-15）

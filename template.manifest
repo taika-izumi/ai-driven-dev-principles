@@ -5,8 +5,8 @@
 # ADRインデックス (docs/decisions/README.md) は同期スクリプトが空版を自動生成する
 #
 # ADR-0016 により、skills/ 関連エントリは template から除外している
-# （スキル本体は Copilot CLI プラグイン ai-driven-dev-principles から提供されるため）
+# （スキル本体は GitHub Copilot CLI / Claude Code プラグイン ai-driven-dev-principles から提供されるため）
 
-.github/copilot-instructions.md
+CLAUDE.md
 docs/principles.md
 docs/retrospectives/README.md

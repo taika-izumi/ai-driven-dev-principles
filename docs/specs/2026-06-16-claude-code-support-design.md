@@ -42,6 +42,13 @@
    - Layer 2 の表記を `CLAUDE.md` に更新（構造表・該当記述）。
    - 「Claude Code へのインストール」節を新設（既存の「Copilot CLI へのインストール」節は維持）。Claude Code のプラグイン導入手順（`/plugin marketplace add`、`/plugin install` 等）を記載。
    - 「新しいプロジェクトでの使い方」の前提条件・手順で、コピー対象が `CLAUDE.md` であることを反映。
+   - 概要・位置づけの説明文言（例: 「GitHub Copilot で実践するための仕組み」）を、Copilot CLI / Claude Code 両対応の表現に更新する。
+
+8. **`.claude-plugin/plugin.json` の更新**
+   - プラグイン説明文の「本リポジトリの copilot-instructions.md と組み合わせて使用する」を `CLAUDE.md` ベースに更新する（配信されるメタデータ）。
+
+9. **`template.manifest` コメントの中立化**
+   - 「スキル本体は Copilot CLI プラグイン … から提供される」というコメントを、Copilot CLI / Claude Code 両対応の表現に更新する（template に同梱されるコメント）。
 
 5. **`CONTRIBUTING.md` の更新**
    - 設計思想の Layer 2 行（`.github/copilot-instructions.md` → `CLAUDE.md`）。
@@ -67,17 +74,18 @@
 |---|---|
 | `CLAUDE.md`（新規・ルート） | 作成（旧 copilot-instructions.md の内容＋中立化） |
 | `.github/copilot-instructions.md` | 削除 |
-| `template.manifest` | エントリ差し替え |
 | `template/CLAUDE.md` / `template/.github/copilot-instructions.md` | sync-template 実行で置換 |
 | `README.md` | Layer 2 表記更新＋Claude Code 節追加 |
 | `CONTRIBUTING.md` | Layer 2 行・シナリオ更新 |
 | `skills/start-work/SKILL.md` | 参照更新 |
 | `skills/extend-guidelines/SKILL.md` | description・本文・同期案内更新 |
+| `.claude-plugin/plugin.json` | プラグイン説明文の参照更新 |
+| `template.manifest` | エントリ差し替え＋コメント中立化 |
 | `docs/decisions/0023-*.md` | 既に作成済（実装完了後に Accepted 昇格） |
 
 ## 検証
 
-1. **網羅性チェック**: リポジトリ全体（ADR・過去 spec/plan を除く現行ドキュメントとスキル）に `copilot-instructions` 参照が残っていないことを `grep` で確認する。
+1. **網羅性チェック**: リポジトリ全体（ADR・過去 spec/plan・retrospective・handoff・conversation_log 等の歴史的記録を除く現行ドキュメントとスキル）に `copilot-instructions` の残留参照がないことを `grep` で確認する。あわせて `Copilot CLI` 単独前提の説明文言が生きたファイル（README・CONTRIBUTING・スキル・plugin.json・template.manifest）に残っていないか確認する。
 2. **template 同期**: `pwsh scripts/sync-template.ps1` を実行し、`template/CLAUDE.md` が生成され `template/.github/copilot-instructions.md` が存在しないことを確認する。
 3. **読み込み確認**: Copilot CLI がルート `CLAUDE.md` を Layer 2 として読むことを動作確認する（公式記載済みだが念のため。可能な範囲で）。
 4. **内容同一性**: CLAUDE.md の本文（5原則の行動指示）が旧 copilot-instructions.md と意味的に同一であることを確認する。

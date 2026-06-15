@@ -1,6 +1,6 @@
 # ADR-0019: ADR記述規律 — 決定のみ記載・未決事項の分離・承認の遅延昇格
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-06-15
 
 ## Context

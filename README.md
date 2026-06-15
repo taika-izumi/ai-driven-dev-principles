@@ -4,7 +4,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 
 ## 概要
 
-このリポジトリは、AIエージェントとの協働開発において有用な普遍的原則（メタ・ガイドライン）と、それを GitHub Copilot で実践するための仕組みを提供する。
+このリポジトリは、AIエージェントとの協働開発において有用な普遍的原則（メタ・ガイドライン）と、それを GitHub Copilot CLI / Claude Code で実践するための仕組みを提供する。
 
 対象とする「システム」には、通常のソフトウェア（Webアプリ、API、CLIなど）だけでなく、AIエージェントによる情報収集・分析・意思決定を含むワークフロー型システムも含む。
 
@@ -15,7 +15,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 | レイヤー | ファイル | 役割 |
 |----------|----------|------|
 | Layer 1 | [`docs/principles.md`](docs/principles.md) | ツール非依存のメタ・ガイドライン原則集 |
-| Layer 2 | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) | Copilot向け行動指示 |
+| Layer 2 | [`CLAUDE.md`](CLAUDE.md) | エージェント向け行動指示（GitHub Copilot CLI / Claude Code 共通） |
 | Layer 3 | [`skills/`](skills/) | ワークフローを実装するスキル群 |
 
 ## 5つの原則
@@ -88,17 +88,43 @@ copilot plugin install ai-driven-dev-principles@ai-driven-dev-principles
 
 > **注意**: 本リポジトリは過去に `scripts/dev-link.{ps1,sh}` で junction を張る方式を提供していたが、CLI に「local」マーケットプレイスは存在せずプラグインが認識されないことが判明したため、ADR-0017 で当該方式を廃止した。既存利用者は `~/.copilot/installed-plugins/local/ai-driven-dev-principles` の junction と `~/.copilot/settings.json` の `enabledPlugins."ai-driven-dev-principles@local"` エントリを手動で削除のうえ、上記の正規手順で再インストールすること。
 
+## Claude Code へのインストール
+
+Claude Code でも同じスキル群をプラグインとして利用できる。本リポジトリには Claude Code ネイティブのプラグイン定義（`.claude-plugin/plugin.json` と `.claude-plugin/marketplace.json`）が含まれており、追加変換なしでインストールできる。
+
+### A. GitHub 経由でインストール
+
+Claude Code 上で以下を実行する:
+
+```sh
+/plugin marketplace add taika-izumi/ai-driven-dev-principles
+/plugin install ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+### B. ローカルパスからインストール（開発時）
+
+本リポジトリを clone 済みのマシンでは、ローカルパスをマーケットプレイスとして登録できる:
+
+```sh
+/plugin marketplace add <このリポジトリの絶対パス>
+/plugin install ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+`skills/` を編集した場合は `/plugin marketplace update ai-driven-dev-principles` で反映する。
+
+> **Layer 2 について**: GitHub Copilot CLI と Claude Code はいずれもリポジトリルートの `CLAUDE.md` を行動指示として読み込む。本リポジトリの Layer 2 はこの単一ファイルに統一されている（ADR-0023）。
+
 ## 新しいプロジェクトでの使い方
 
 ### 前提条件
 
-新規プロジェクトで本ガイドラインを使うには、Copilot CLI プラグイン `ai-driven-dev-principles` をインストールしておく必要がある（ADR-0016）。スキル群（`start-work`, `decision-log` 等）はプラグイン経由でのみ Copilot CLI に認識されるため、template をコピーしただけでは機能しない。
+新規プロジェクトで本ガイドラインを使うには、GitHub Copilot CLI / Claude Code プラグイン `ai-driven-dev-principles` をインストールしておく必要がある（ADR-0016）。スキル群（`start-work`, `decision-log` 等）はプラグイン経由でのみツールに認識されるため、template をコピーしただけでは機能しない。
 
 ### 手順
 
-1. **このリポジトリをプラグインとして 1 度インストール**（上記「Copilot CLI へのインストール」節を参照）
+1. **このリポジトリをプラグインとして 1 度インストール**（上記「Copilot CLI へのインストール」または「Claude Code へのインストール」節を参照）
 2. `template/` フォルダの中身を新プロジェクトのルートにコピーする
-3. `copilot-instructions.md` にプロジェクト固有の指示を追記する
+3. `CLAUDE.md` にプロジェクト固有の指示を追記する
 
 ### 注意
 

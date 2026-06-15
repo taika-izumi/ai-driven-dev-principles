@@ -1,6 +1,6 @@
 # ADR-0020: responding-to-user スキルの必須化を廃止し ask-user-enforcer プラグインを撤去
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-06-15
 
 ## Context

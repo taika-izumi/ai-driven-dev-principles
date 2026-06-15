@@ -80,6 +80,8 @@ description: "重要な意思決定をADR（Architecture Decision Record）と�
 （この判断の結果起きることを記述する。良い影響・悪い影響の両方を含める）
 ```
 
+> **記述規律（ADR-0019）**: ADRには「下した決定」のみを記載する。仕様検討の途中で生じた**未解決の論点（未決事項）は ADR に書かない**。未決事項は `docs/open-questions.md` に分離する（後述「未決事項（open questions）の扱い」）。
+
 ### 3. インデックスを更新する
 
 `docs/decisions/README.md` のテーブルに新しいエントリを追加する:
@@ -97,30 +99,79 @@ git add docs/decisions/NNNN-slug.md docs/decisions/README.md
 git commit -m "adr: NNNN - タイトル"
 ```
 
+## 未決事項（open questions）の扱い
+
+ADRは「下した決定」だけを記録する。仕様検討の議論中に増えていく未解決の論点（「これからこれを決めないといけない」「ここに課題が潜んでいる」）は ADR ではなく `docs/open-questions.md` に分離して一元管理する。
+
+### フォーマット
+
+`docs/open-questions.md` は現在未解決の論点だけを映す**スナップショット型**の文書である。各項目は1行で記述する:
+
+```
+- [ ] ★ <論点> — <なぜケアが必要か / 背景>（発生源: brainstorming / spec / 実装 等, YYYY-MM-DD）
+```
+
+- `★` は優先対応項目のマーカー（任意。優先度が高いものだけ付ける）
+- `[ ]` は未解決を表す
+
+### ライフサイクル
+
+1. 議論中に未決事項を検出したら `docs/open-questions.md` に1行追加する。ファイルが存在しなければこのフォーマットで新規作成する（オンデマンド作成）。
+2. その論点について意思決定を下したら、通常どおり ADR を作成する。
+3. ADR 化（＝解決）したら、`docs/open-questions.md` から**該当行を削除する**。解決の跡は ADR（Context / Decision）に残るため、open-questions.md 側に Resolved 履歴を残さない。
+
+### 注意
+
+- `docs/open-questions.md` はリポジトリ固有の中身を持つ生きた文書なので、template には同期しない（新規プロジェクトでは初回検出時にオンデマンド作成される）。
+- スナップショット型のため「上書きで最新化」する。解決済み項目を残さないこと。
+
 ## ADR更新手順
 
 ### ステータス変更
 
-ADRのステータスを変更する場合:
+ADRのステータスを変更する場合（Deprecated、Superseded、いったん Accepted にした決定の見直しなど）:
 
-1. 該当ADRファイルの `Status` を更新する（Accepted, Deprecated, Superseded by ADR-XXXX）
+1. 該当ADRファイルの `Status` を更新する（Deprecated, Superseded by ADR-XXXX 等）
 2. `docs/decisions/README.md` のテーブルのステータスも更新する
 3. 変更理由をADRのConsequencesセクションに追記する
 4. コミットする
 
-### 承認（Proposed → Accepted）
+ただし、Proposed → Accepted への初回昇格は次の「承認の昇格」に従い、Consequences への追記は不要とする。
 
-ユーザーがADRの内容を確認し承認した場合、Status を `Accepted` に変更する。
+### 承認の昇格（Proposed → Accepted、ADR-0019）
+
+ADRは**原則 Proposed で作成する**。Accepted への昇格は、その決定が確定（議論が収束）した**チェックポイント**で行う。作成直後に即 Accepted 化しないこと。議論の途中（とくに brainstorming 中）は決定が覆りうるため、Proposed のまま据え置く。
+
+チェックポイントの目安:
+
+| 決定の文脈 | Accepted へ昇格するチェックポイント |
+|------------|-----------------------------------|
+| brainstorming 起点の決定 | 設計承認時（ユーザーが設計案を承認したタイミング） |
+| 実装を伴う決定 | 実装完了・検証後 |
+| retrospective で採用した改善提案 | 取り込みサイクルの実装完了後 |
+| 上記に当てはまらない決定（純粋なスコープ・方針決定など） | ユーザーがその決定を確定したことを確認した時 |
+
+昇格手順:
+
+1. 該当ADRファイルの `Status` を `Accepted` に更新する
+2. `docs/decisions/README.md` のテーブルのステータスも更新する
+3. コミットする
+
+`start-work` の Phase 2 Post でも、確定した据え置きADRの昇格漏れがないか確認される。
 
 ## ユーザーへの確認
 
-ADR作成後、ユーザーに以下を提示する:
+ADR作成後（Proposed）、ユーザーに以下を提示する:
 
-「ADR-NNNN を作成しました。内容を確認して以下から選んでください:
-- 承認 → Status を Accepted に更新します
+「ADR-NNNN を作成しました（Status: Proposed）。内容を確認して以下から選んでください:
+- 確定 → この決定で確定済みなら Status を Accepted に昇格します
+- 保留 → まだ議論中なら Proposed のまま据え置きます（後日チェックポイントで昇格）
 - 修正依頼 → 該当箇所を修正します
 - 却下 → ファイルとインデックスエントリを削除します」
 
+探索・議論の最中（brainstorming 中など）は「保留」を既定とする。
+
 ユーザー応答に応じて確定処理を実施する:
-- 承認: Status を Accepted に更新 → インデックスも更新 → コミット
+- 確定: 「承認の昇格」の手順で Status を Accepted へ → インデックスも更新 → コミット
+- 保留: Proposed のまま。確定チェックポイントで改めて昇格させる
 - 却下: ADRファイル削除 → インデックスエントリ削除 → コミット（理由を commit message に残す）

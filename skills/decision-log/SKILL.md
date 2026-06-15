@@ -129,12 +129,14 @@ ADRは「下した決定」だけを記録する。仕様検討の議論中に�
 
 ### ステータス変更
 
-ADRのステータスを変更する場合:
+ADRのステータスを変更する場合（Deprecated、Superseded、いったん Accepted にした決定の見直しなど）:
 
-1. 該当ADRファイルの `Status` を更新する（Accepted, Deprecated, Superseded by ADR-XXXX）
+1. 該当ADRファイルの `Status` を更新する（Deprecated, Superseded by ADR-XXXX 等）
 2. `docs/decisions/README.md` のテーブルのステータスも更新する
 3. 変更理由をADRのConsequencesセクションに追記する
 4. コミットする
+
+ただし、Proposed → Accepted への初回昇格は次の「承認の昇格」に従い、Consequences への追記は不要とする。
 
 ### 承認の昇格（Proposed → Accepted、ADR-0019）
 
@@ -147,6 +149,7 @@ ADRは**原則 Proposed で作成する**。Accepted への昇格は、その決
 | brainstorming 起点の決定 | 設計承認時（ユーザーが設計案を承認したタイミング） |
 | 実装を伴う決定 | 実装完了・検証後 |
 | retrospective で採用した改善提案 | 取り込みサイクルの実装完了後 |
+| 上記に当てはまらない決定（純粋なスコープ・方針決定など） | ユーザーがその決定を確定したことを確認した時 |
 
 昇格手順:
 

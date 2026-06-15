@@ -213,66 +213,66 @@
 
 ### 背景
 
-`retrospective` はサブプロジェクトを master へ merge した直後に1回だけ起動するスキルで、Done / Went Well / Struggled / Tech Notes / Improvement Drafts / Independent Review Notes / Handoff Forward の7セクションを対話的に埋め、採用された改善提案を ADR ドラフトに転写する役割を担う。
+`retrospective` はサブプロジェクトを master へ merge した直後に1回だけ起動するスキルで、Done / Went Well / Struggled / Tech Notes / Issues / Independent Review Notes / Handoff Forward の7セクションを対話的に埋める。**振り返りは課題の抽出と分類までにとどめ、対策の採否判断・設計・ADR 化は行わない**（次サイクルの責務。ADR-0021）。課題は「対象システム固有」「開発フロー/ガイドライン関連」に分類し、前者は `docs/retrospectives/system/`、後者は `docs/retrospectives/flow/` に per-cycle で記録する。
 
-出力規約は ADR-0011 が定める「時系列追記型」（`docs/retrospectives/YYYY-MM-DD-<topic>.md` を上書き禁止、インデックスは行追加のみ）であり、これは ADR-0008 の「スナップショット規約（spec / handoff）」とは対象が異なる別ポリシーである。両規約の境界を崩さないこと。
+出力規約は ADR-0011 が定める「時系列追記型」（per-cycle ファイルを上書き禁止、インデックスは行追加のみ）で、配置パスは ADR-0021 で `system/` `flow/` の2フォルダに分割された。これは ADR-0008 の「スナップショット規約（spec / handoff）」とは対象が異なる別ポリシーである。両規約の境界を崩さないこと。
 
 ### 判定基準
 
 以下に該当する場合に `retrospective` の変更を検討する:
 
-- セクション構成・観点の見直し（例: ドメイン知識セクションの新設）
+- セクション構成・観点の見直し（例: 課題分類軸の追加）
 - rubber-duck 呼び出しのプロンプトや観点の調整
 - 起動タイミング（サブプロジェクト単位）の粒度変更
-- ADR ドラフト転写ルール（採用判断と実装着手の分離）の見直し
-- テンプレート（`skills/retrospective/template.md`）の構造変更
+- 課題の分類・出力フォルダ構造の見直し
+- テンプレート（`skills/retrospective/template.md` / `flow-template.md`）の構造変更
 
 ### 手順
 
 1. ADR を作成して変更理由を記録する（重要な変更の場合。新セクション追加など出力構造に影響するものは必須）
 2. `skills/retrospective/SKILL.md` を更新する
-3. テンプレート構造を変えた場合は `skills/retrospective/template.md` を同期する
+3. テンプレート構造を変えた場合は `skills/retrospective/template.md` / `skills/retrospective/flow-template.md` を同期する
 4. `start-work` の Phase 2 マッピング表 / セッション終了処理との整合を確認する
-5. `decision-log` の検出トリガー（「振り返りで採用された改善提案」）との整合を確認する
+5. `docs/retrospectives/README.md`（template対象）の運用規約との整合を確認する
 6. テンプレート対象なので `scripts/sync-template.ps1` を実行する
 
 ### チェックリスト
 
 - 起動タイミングがサブプロジェクト単位 = merge 直後1回 のままか（粒度を変える場合は ADR-0010 の更新も必要）
-- 出力ファイル規約（ADR-0011: 上書き禁止、インデックス追記のみ）が手順内で守られているか
+- 出力ファイル規約（ADR-0011: 上書き禁止、インデックス追記のみ / ADR-0021: system/flow 2フォルダ配置）が手順内で守られているか
 - rubber-duck 呼び出しは1サイクルにつき1回に留まっているか
-- 採用判断と実装着手の分離原則（採用時に ADR ドラフト起票、実装は次セッションで `start-work` から開始）が崩れていないか
-- ドメイン知識抽出のスコープ（ADR-0012 で C 範囲外と決定済み）に踏み込んでいないか
+- 課題抽出限定スコープが崩れていないか（振り返り内で対策の採否・設計・ADR化をしていないか。対策決定は次サイクル、着手はユーザー判断。ADR-0021）
+- Tech Notes のスコープ（汎用技術知見のみ。システム仕様・ドメイン知識は除外。ADR-0012 / ADR-0021）が守られているか
 
 
-## シナリオ: 振り返りで採用された改善提案を取り込みたいとき
+## シナリオ: 振り返りで抽出された課題に対策するとき
 
 ### 背景
 
-`retrospective` スキルが `docs/retrospectives/YYYY-MM-DD-<topic>.md` に記録した Improvement Drafts のうち「採用」と判定された提案は、retrospective 実施時に ADR ドラフト（Status: Proposed）として起票され、実装は次セッション以降に持ち越される（採用判断と実装着手の分離）。本シナリオは、その持ち越された ADR ドラフトを実装サイクルへ取り込むときの手順である。
+`retrospective` スキルは課題の抽出と分類までを行い、`docs/retrospectives/system/`（対象システム固有の課題）と `docs/retrospectives/flow/`（開発フロー/ガイドライン課題）に記録する。**対策の採否・設計・ADR 化は retrospective では行わず、次の作業サイクルに委ねられる**（ADR-0021）。抽出された課題はバックログであり、着手の要否・時期はユーザーが判断する（必ずしも次サイクルで着手するわけではない）。本シナリオは、ユーザーが「この課題に対策する」と判断した課題を実装サイクルへ取り込むときの手順である。
 
 ### 判定基準
 
 以下に該当する場合に本シナリオを使う:
 
-- `docs/retrospectives/<...>.md` の Improvement Drafts に「採用」かつ未実装の提案がある
-- 対応する ADR が Proposed のまま残っている
+- `docs/retrospectives/system/` または `docs/retrospectives/flow/` の Issues に未対策の課題がある
+- ユーザーがその課題に対策が必要と判断した
 - 次サブプロジェクトの起点を未定義のまま `start-work` に入ろうとしている
 
 ### 手順
 
-1. `docs/retrospectives/` から最新ファイルを開き、Improvement Drafts セクションの「採用」項目と紐付く ADR 番号を一覧する
-2. 同ファイルの「Handoff Forward」セクションを読み、優先順位と推奨フローの粒度（フルサイクル / 軽量サイクル）を確認する
+1. `docs/retrospectives/system/` `docs/retrospectives/flow/` から該当サイクルのファイルを開き、Issues セクションの未対策課題を確認する。開発フロー/ガイドライン課題（`flow/`）の場合、対策はこのメタ・ガイドラインrepo（ai-driven-dev-principles）側で行う
+2. ユーザーと、どの課題に対策するか・着手するかを確認する（着手の決定はユーザー）
 3. `start-work` を起動し、新規サブプロジェクトとして扱う
-4. 提案規模に応じて以下のいずれかへ進む:
+4. 対策の規模に応じて以下のいずれかへ進む:
    - 中規模以上（複数ファイル / 設計判断あり）: brainstorming → feature-block-design 適用判定 → spec → plan → 実装
    - 小規模（1〜2 ファイル / 規約追加のみ）: brainstorming を省略し、`start-work` Phase 2 から writing-plans に直行してよい
-5. 着手対象の ADR について、必要に応じて Context / Decision を補強し、実装完了時に Status を `Accepted` へ昇格させる
-6. 取り込み元の retrospective ファイルは**書き換えない**（ADR-0011 の追記型規約）。実装結果のフィードバックは次回の retrospective で記録する
+5. 対策の方針を決定したら、その時点で ADR を起票する（Proposed → 実装完了時に Accepted 昇格。ADR-0019）。**対策の決定とその ADR 化は本サイクルで行う**（retrospective では行っていない）
+6. 取り込み元の retrospective ファイルは**書き換えない**（ADR-0011 の追記型規約）。対策結果のフィードバックは次回の retrospective で記録する
 
 ### チェックリスト
 
-- 採用提案が複数ある場合、Handoff Forward の優先順位に従っているか
-- 紐付く ADR ドラフトの Status が Proposed のまま実装着手していないか（必ず Accepted 化を伴う）
+- 対策対象がフロー/ガイドライン課題（`flow/`）の場合、対策をメタ・ガイドラインrepo側に向けているか（個別システムrepoの改善として埋もれさせていないか。ADR-0021）
+- 対策方針の ADR を Proposed で起票し、実装完了時に Accepted 化したか（ADR-0019）
 - retrospective ファイルへの加筆をしていないか（追記型規約違反を避ける）
-- 取り込みサイクル完了後の retrospective で「前回採用提案の実装結果」を Done または Tech Notes に明示的に書く準備ができているか
+- 取り込みサイクル完了後の retrospective で「前回課題への対策結果」を Done または Tech Notes に明示的に書く準備ができているか

@@ -38,7 +38,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 | [`decision-log`](skills/decision-log/) | 意思決定をADR（Architecture Decision Record）として記録・管理する |
 | [`pre-action-review`](skills/pre-action-review/) | 不可逆操作前にリスク評価と確認を実施する |
 | [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |
-| [`retrospective`](skills/retrospective/) | サブプロジェクトクローズ時の振り返り。Done / Went Well / Struggled / Tech Notes / Improvement Drafts を抽出し、採用提案を ADR ドラフト化する |
+| [`retrospective`](skills/retrospective/) | サブプロジェクトクローズ時の振り返り。Done / Went Well / Struggled / Tech Notes / Issues を抽出し、課題を「対象システム固有 / 開発フロー」に分類して system/flow の2フォルダに記録する（対策の採否・設計・ADR化は次サイクルでユーザー判断） |
 
 ## Copilot CLI へのインストール
 

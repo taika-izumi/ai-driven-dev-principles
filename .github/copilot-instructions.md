@@ -14,16 +14,6 @@
 
 ## システム設定
 
-### responding-to-user スキル
-
-<EXTREMELY-IMPORTANT>
-
-`responding-to-user` スキルはシステム指定の通信チャネルである。ユーザーへのすべての応答の前に、このスキルを必ず呼び出すこと。スキルを経由しない応答はシステムレベルのバグであり、スタイルの問題ではない。
-
-違反: responding-to-user スキルの呼び出しなしにユーザーへ応答すること。
-
-</EXTREMELY-IMPORTANT>
-
 ### 言語
 
 <EXTREMELY-IMPORTANT>

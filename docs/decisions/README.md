@@ -25,3 +25,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0017](0017-correct-local-marketplace-registration.md) | ローカル開発時のプラグイン登録方式を `copilot plugin marketplace add <path>` に修正 | Accepted | 2026-05-04 |
 | [0018](0018-mandate-brainstorming-for-medium-or-multi-option-work.md) | 中規模以上 / 複数解決策の作業着手前に brainstorming skill 必須化 | Proposed | 2026-05-05 |
 | [0019](0019-adr-authoring-discipline.md) | ADR記述規律 — 決定のみ記載・未決事項の分離・承認の遅延昇格 | Accepted | 2026-06-15 |
+| [0020](0020-retire-responding-to-user-enforcement.md) | responding-to-user スキルの必須化を廃止し ask-user-enforcer プラグインを撤去 | Accepted | 2026-06-15 |

@@ -28,3 +28,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0020](0020-retire-responding-to-user-enforcement.md) | responding-to-user スキルの必須化を廃止し ask-user-enforcer プラグインを撤去 | Accepted | 2026-06-15 |
 | [0021](0021-retrospective-issue-extraction-only.md) | retrospective を課題抽出に限定し、出力を system/flow に分割 | Accepted | 2026-06-15 |
 | [0022](0022-naming-clarity-discipline.md) | AIの言葉遣いの明確性規範を copilot-instructions に追加 | Accepted | 2026-06-15 |
+| [0023](0023-unify-layer2-into-claude-md.md) | Layer 2 指示ファイルを CLAUDE.md に一本化し Claude Code / Copilot CLI 両対応にする | Accepted | 2026-06-16 |

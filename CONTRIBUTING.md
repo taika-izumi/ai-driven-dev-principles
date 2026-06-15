@@ -12,7 +12,7 @@
 | レイヤー | ファイル | 役割 |
 |----------|----------|------|
 | Layer 1 | `docs/principles.md` | ツール非依存の普遍的原則 |
-| Layer 2 | `.github/copilot-instructions.md` | Copilot固有の行動指示 |
+| Layer 2 | `CLAUDE.md` | エージェント向け行動指示（GitHub Copilot CLI / Claude Code 共通） |
 | Layer 3 | `skills/` | 自動化されたワークフロー |
 
 核心的な設計原則:
@@ -46,20 +46,20 @@
 - ツール非依存の表現になっているか（Layer 1の要件）
 - リスクスケーリングの分類（常時適用 or リスク比例）を決めたか
 
-## シナリオ: copilot-instructions.md を更新するとき
+## シナリオ: CLAUDE.md を更新するとき
 
 ### レイヤー対応規則
 
-- Layer 2はLayer 1の原則を **Copilot固有の行動指示に変換したもの** である
-- 各原則 → `copilot-instructions.md` の対応セクションへ1:1でマッピングされている
+- Layer 2はLayer 1の原則を **エージェント向けの行動指示に変換したもの** である
+- 各原則 → `CLAUDE.md` の対応セクションへ1:1でマッピングされている
 - 新しい原則を追加した場合、対応するセクションの追加を検討する
 
 ### 判定基準
 
-以下に該当するものを `copilot-instructions.md` に記述する:
+以下に該当するものを `CLAUDE.md` に記述する:
 
 - セッション横断で **常に** 適用したい行動規範
-- Copilot特有の設定（言語、応答スタイル等）
+- エージェント共通の設定（言語、応答スタイル等）
 - Skill化するほど複雑ではないが、毎回伝えたい指示
 
 ### 注意事項
@@ -72,7 +72,7 @@
 
 ### Skill化の判定
 
-| 観点 | copilot-instructions.md に書く | Skill にする |
+| 観点 | CLAUDE.md に書く | Skill にする |
 |------|-------------------------------|-------------|
 | 複雑さ | 数行で表現できる | 手順・分岐・テンプレートがある |
 | 発動条件 | 常時適用 | 特定の状況でのみ必要 |
@@ -90,7 +90,7 @@
 
 ### チェックリスト
 
-- `copilot-instructions.md` の記述で十分ではないか（YAGNI確認）
+- `CLAUDE.md` の記述で十分ではないか（YAGNI確認）
 - Skill名が動作を端的に表しているか
 - YAML frontmatter（`name`, `description`）が正しいか
 - 対応する原則への参照があるか

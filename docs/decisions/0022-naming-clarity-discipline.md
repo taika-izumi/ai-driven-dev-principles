@@ -1,6 +1,6 @@
 # ADR-0022: AIの言葉遣いの明確性規範を copilot-instructions に追加
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-06-15
 
 ## Context

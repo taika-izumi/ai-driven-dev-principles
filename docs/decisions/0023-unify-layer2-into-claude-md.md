@@ -1,6 +1,6 @@
 # ADR-0023: Layer 2 指示ファイルを CLAUDE.md に一本化し Claude Code / Copilot CLI 両対応にする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-06-16
 
 ## Context

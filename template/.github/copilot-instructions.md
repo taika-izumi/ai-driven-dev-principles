@@ -83,7 +83,7 @@
 - 複雑なタスクは小さなステップに分割し、各ステップで正しさを確認すること
   （単純で低リスクなタスクは一括実行して構わない）
 - 変更後は既存の動作を壊していないか確認すること
-- サブプロジェクトを master へマージした直後に `retrospective` スキルを起動し、フロー・ガイドライン自体の振り返りを実施すること（`docs/retrospectives/YYYY-MM-DD-<topic>.md`）。採用された改善提案は ADR ドラフトに転写し、実装は次サイクルで `start-work` から開始する
+- サブプロジェクトを master へマージした直後に `retrospective` スキルを起動し、フロー・ガイドライン自体の振り返りを実施すること（`docs/retrospectives/system/YYYY-MM-DD-<topic>.md` と、開発フロー課題は `docs/retrospectives/flow/YYYY-MM-DD-<topic>.md`）。振り返りは課題の抽出と分類までにとどめ、対策の採否・設計・ADR化は行わない。ユーザーが対策を要すると判断した時点で次サイクルで着手する
 
 ### ドキュメント運用
 

@@ -1,6 +1,6 @@
 # ADR-0011: 振り返り出力の保管規約（時系列追記型）
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0021 で一部改定: 配置パスを `system/` `flow/` の2フォルダに分割）
 - **Date**: 2026-05-01
 
 ## Context

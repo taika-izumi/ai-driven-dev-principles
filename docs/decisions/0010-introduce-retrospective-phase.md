@@ -1,6 +1,6 @@
 # ADR-0010: 開発サイクル末尾の振り返りフェーズ導入
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0021 で一部改定: Phase 4「採用判断の即時 ADR 化」を撤去し、スコープを課題抽出に限定）
 - **Date**: 2026-05-01
 
 ## Context

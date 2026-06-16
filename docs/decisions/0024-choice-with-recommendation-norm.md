@@ -1,6 +1,6 @@
 # ADR-0024: ユーザーへの質問・意思決定要求時に選択肢と推奨を提示する規範を追加
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-06-16
 
 ## Context

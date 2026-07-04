@@ -30,7 +30,7 @@ docs/inbox/README.md
 
 ### scripts/sync-template.ps1
 
-- 空インデックス生成ロジックを一般化し、以下の3ファイルに適用する（説明文・見出し・表ヘッダーは保持し、インデックスのデータ行のみ除去する）:
+- 空インデックス生成ロジックを一般化し、以下の3ファイルに適用する（説明文・見出し・表ヘッダーは保持し、インデックスのデータ行と、表直後の repo 固有の注記引用ブロックを除去する）:
   - `docs/records/decisions/README.md`（従来の ADR インデックス空生成の移行）
   - `docs/records/retrospectives/README.md`（従来は verbatim コピーだったものを空生成に変更 — 既知課題「インデックス同期の非対称性」の解消）
   - `docs/working/issues/README.md`（新規）

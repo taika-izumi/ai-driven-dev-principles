@@ -1,9 +1,9 @@
 # Handoff: 開発プロジェクトのフォルダ構成定義の追加
 
 - **Branch**: feature/project-folder-structure
-- **Last Updated**: 2026-07-04 23:00 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装完了（Task 1〜13、最終レビュー APPROVED）→ 残: プラグイン更新（ユーザー操作）と master への merge
+- **Last Updated**: 2026-07-05 00:45 (Asia/Tokyo)
+- **Status**: ready-for-next-cycle
+- **Current Phase**: サイクル完了（merge: a9c2fd1、プラグイン更新反映済み、retrospective 実施済み）
 
 ## 作業の目的・背景
 
@@ -33,15 +33,11 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 完了処理
-  - 状態: Task 1〜13 実装完了（subagent-driven で実行、各タスク検証済み）。branch 全体の最終レビュー APPROVED（Minor 3件のみ、ブロッカーなし）。ADR-0027 Accepted 昇格済み（fdfb087）
-  - 残り: プラグイン更新（ユーザー操作: `/plugin marketplace update ai-driven-dev-principles`）→ master への merge → retrospective 提案
+- [ ] **現在の作業**: なし（サイクル完了）
 
 ## 未着手のタスク
 
-- [ ] プラグイン更新で新スキル（organize-inbox）と修正済みスキルを反映（完了基準8。ユーザー操作）
-- [ ] master への merge（--no-ff）と push
-- [ ] merge 後の retrospective（前2サイクル分も未実施のまま持ち越し中）
+なし（本サイクルのタスクはすべて完了。次サイクル候補は「次セッション開始時のアクション」参照）
 
 ## 既知のブロッカー・懸念
 
@@ -51,9 +47,10 @@
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ファイル、`docs/current/specs/2026-07-04-project-folder-structure/00-overview.md` の完了基準
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）。未 merge なら merge から再開
-3. 留意点: スキル編集はプラグイン更新（`/plugin marketplace update ai-driven-dev-principles`）まで利用環境に反映されない。ユーザー環境では AskUserQuestion と同一ターンのテキストが表示されないことがある（説明は独立したテキストターンで送ること）
+1. 最初に確認すべきファイル: `docs/working/handoff/master.md`（次サイクルの起点）、課題バックログ `docs/records/retrospectives/flow/2026-07-05-project-folder-structure.md`（フロー課題4件）・`system/` 同名（システム課題2件）
+2. 最初に実行すべきコマンド/スキル: `start-work`
+3. 抽出した課題はバックログとして記録済み（着手はユーザー判断。必ず次サイクルではない）。優先度の目安: flow 課題 #4「retrospective の課題バックログと issue 管理の関係が未定義」が最優先候補（課題管理の運用開始前に設計した方が二重管理を防げる）。次いで system 課題 #2「sync-template.ps1 の改行コード非決定性」（軽微・即修可能）
+4. 留意点: スキル編集はプラグイン更新（`/plugin marketplace update ai-driven-dev-principles`）まで利用環境に反映されない。ユーザー環境では AskUserQuestion と同一ターンのテキストが表示されないことがある（説明は独立したテキストターンで送ること）
 
 ## 重要な意思決定の履歴
 

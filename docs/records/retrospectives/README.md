@@ -23,6 +23,7 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 |--------|----------------|------|--------|------|
 | 2026-05-01 | C: 振り返りフェーズ導入 | 旧フラット配置 | feature/retrospective-phase (merge: 49906e8) | 初回ドッグフーディング。採用提案2件 → ADR-0013/0014 起票 |
 | 2026-05-05 | Copilot CLI プラグイン配布化 | 旧フラット配置 | feature/plugin-distribution (merge: a92dc81) | 採用提案1件 → ADR-0018 起票。ADR-0015→0017 連鎖が事実上の plan として機能 |
+| 2026-07-05 | 開発プロジェクトのフォルダ構成定義 | system/ + flow/ | feature/project-folder-structure (merge: a9c2fd1) | 5分類体系・inbox 導入サイクル。フロー課題4件・システム課題2件を抽出 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

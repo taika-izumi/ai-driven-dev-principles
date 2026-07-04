@@ -1,9 +1,9 @@
 # Handoff: 開発プロジェクトのフォルダ構成定義の追加
 
 - **Branch**: feature/project-folder-structure
-- **Last Updated**: 2026-07-04 15:00 (Asia/Tokyo)
+- **Last Updated**: 2026-07-04 23:00 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/writing-plans 完了（実装計画作成済み）→ 次: 実装（実行方式の選択待ち）
+- **Current Phase**: ガイドライン拡張/実装完了（Task 1〜13、最終レビュー APPROVED）→ 残: プラグイン更新（ユーザー操作）と master への merge
 
 ## 作業の目的・背景
 
@@ -33,31 +33,30 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（Task 1〜13）
-  - 状態: 計画作成済み。実行方式（subagent-driven / inline）の選択待ち
-  - 残り: Task 1 から順に実装。Task 11 で本計画・ハンドオフ自身も docs/working/ へ移動する点に注意
+- [ ] **現在の作業**: 完了処理
+  - 状態: Task 1〜13 実装完了（subagent-driven で実行、各タスク検証済み）。branch 全体の最終レビュー APPROVED（Minor 3件のみ、ブロッカーなし）。ADR-0027 Accepted 昇格済み（fdfb087）
+  - 残り: プラグイン更新（ユーザー操作: `/plugin marketplace update ai-driven-dev-principles`）→ master への merge → retrospective 提案
 
 ## 未着手のタスク
 
-- [ ] Task 1〜13 の実装（詳細は計画ファイル参照）
-- [ ] ADR-0027 の Accepted 昇格（Task 13、実装完了チェックポイント）
-- [ ] 実装: folder-structure.md 定義本体 / organize-inbox スキル / start-work 修正 / 既存スキルパス修正（session-handoff, decision-log, retrospective, feature-block-design）/ CLAUDE.md 更新 / template.manifest・sync-template.ps1 改修 / 本リポ docs 移行（git mv＋リンク修正）
-- [ ] template 同期（`scripts/sync-template.ps1`）
-- [ ] master への merge
+- [ ] プラグイン更新で新スキル（organize-inbox）と修正済みスキルを反映（完了基準8。ユーザー操作）
+- [ ] master への merge（--no-ff）と push
+- [ ] merge 後の retrospective（前2サイクル分も未実施のまま持ち越し中）
 
 ## 既知のブロッカー・懸念
 
-- テンプレート生成スクリプト（sync-template.ps1）の改修は影響が大きい箇所とユーザーが明示的に注意喚起。新パス構成対応＋manifest パス書き換えの両方が必要
-- superpowers スキル（brainstorming/writing-plans）のデフォルト出力パス（docs/plans 等）は外部プラグインのため変更不可。CLAUDE.md 側の指示で上書きする必要がある
+- 最終レビューの Minor 指摘: (a) `docs/conversation_log.md`（untracked のユーザー記録）が新レイアウト外に残置 — ユーザー判断待ち、(b) folder-structure.md の「inbox」「関連 ADR」セクションが番号なし（cosmetic、対応不要と判断）
+- superpowers スキル（brainstorming/writing-plans）のデフォルト出力パスは外部プラグインのため変更不可。CLAUDE.md 側の指示で上書き済み
 - master 側の持ち越し: retrospective 2サイクル分が未実施のまま（ユーザー判断待ち）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ファイル、ADR-0025、ADR-0026
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `feature-block-design` を再開
-3. 留意点: ユーザー環境では AskUserQuestion と同一ターンのテキストが表示されないことがある。説明は独立したテキストターンで送ること
+1. 最初に確認すべきファイル: 本ファイル、`docs/current/specs/2026-07-04-project-folder-structure/00-overview.md` の完了基準
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）。未 merge なら merge から再開
+3. 留意点: スキル編集はプラグイン更新（`/plugin marketplace update ai-driven-dev-principles`）まで利用環境に反映されない。ユーザー環境では AskUserQuestion と同一ターンのテキストが表示されないことがある（説明は独立したテキストターンで送ること）
 
 ## 重要な意思決定の履歴
 
 - ADR-0025: 情報の5分類体系を導入し、ドキュメント構成を全面再配置する（2026-07-04, Accepted）
 - ADR-0026: inbox フォルダと organize-inbox スキルによる情報分類の仕組みを導入する（2026-07-04, Accepted）
+- ADR-0027: テンプレート初期セットの基準を定義し、インデックス空生成を一般化する（2026-07-04, Accepted）

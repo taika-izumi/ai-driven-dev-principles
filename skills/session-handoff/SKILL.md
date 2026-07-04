@@ -33,8 +33,8 @@ docs/working/handoff/<branch-name>.md
 
 ## 関連ドキュメント
 
-- Spec: `docs/specs/...`
-- Plan: `docs/plans/...`
+- Spec: `docs/current/specs/...`
+- Plan: `docs/working/plans/...`
 - 関連ADR: ADR-NNNN, ADR-NNNN
 
 ## 完了済みタスク

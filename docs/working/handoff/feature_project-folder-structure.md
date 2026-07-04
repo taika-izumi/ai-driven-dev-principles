@@ -18,7 +18,7 @@
 
 ## 関連ドキュメント
 
-- 今サイクルの ADR: `docs/decisions/0025-five-class-information-taxonomy.md`（Accepted）、`docs/decisions/0026-inbox-and-organize-inbox-skill.md`（Accepted）
+- 今サイクルの ADR: `docs/records/decisions/0025-five-class-information-taxonomy.md`（Accepted）、`docs/records/decisions/0026-inbox-and-organize-inbox-skill.md`（Accepted）
 - 拡張ルール: `CONTRIBUTING.md`
 - 分割仕様書（これから作成）: `docs/current/specs/2026-07-04-project-folder-structure/`（新構成を先取り）
 
@@ -29,7 +29,7 @@
 - [x] ADR-0025 / ADR-0026 作成・Accepted 昇格（2026-07-04, commit 437e442）
 - [x] feature-block-design: 6ブロック構成をユーザー承認、分割仕様書 `docs/current/specs/2026-07-04-project-folder-structure/00〜06` 作成（2026-07-04, commit 582dbbd）
 - [x] 仕様書レビュー指摘3点の反映＋ADR-0027（テンプレート初期セット基準, Proposed）作成（2026-07-04, commit 703c0f8）
-- [x] writing-plans: 実装計画 `docs/plans/2026-07-04-project-folder-structure-plan.md` 作成（Task 1〜13。実行順序 01→03→02→04→06→05 を反映）
+- [x] writing-plans: 実装計画 `docs/working/plans/2026-07-04-project-folder-structure-plan.md` 作成（Task 1〜13。実行順序 01→03→02→04→06→05 を反映）
 
 ## 進行中のタスク
 

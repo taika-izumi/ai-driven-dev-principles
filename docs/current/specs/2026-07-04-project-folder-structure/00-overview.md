@@ -93,6 +93,7 @@ docs/
 - ADR-0026: inbox フォルダと organize-inbox スキルによる情報分類の仕組みを導入する（スキル名の選定、分割・追記統合を含む機能スコープ、start-work 検知を含む）
 - ADR-0024: 質問・意思決定要求時の選択肢＋推奨提示（organize-inbox の曖昧時確認フローが準拠する）
 - ADR-0019: ADR記述規律（未決事項の分離先が `open-questions.md` から課題管理へ変わる。規律自体は維持）
+- ADR-0027: テンプレート初期セットの基準（ユーザー直接操作フォルダとインデックス継続性フォルダをシードし、スキル自動生成フォルダはシードしない）とインデックス空生成の一般化
 - 機能ブロック分割は ADR-0025/0026 で承認済みの実装対象から導出したものであり、独立の ADR は起票しない
 
 ## 6. スコープ外（YAGNI）
@@ -110,5 +111,6 @@ docs/
 3. start-work が Phase 1 で inbox を検知し提案する（inbox が空なら何も起きない）
 4. 全スキル（session-handoff / decision-log / retrospective / feature-block-design / start-work）の参照パスが新構成のみを指す
 5. `docs/open-questions.md` が存在せず、既存項目が `docs/working/issues/` に課題ファイルとして存在する
-6. `scripts/sync-template.ps1` が新構成で冪等に動作する（2回実行して差分ゼロ）
+6. `scripts/sync-template.ps1` が新構成で冪等に動作し（2回実行して差分ゼロ）、3つのインデックス（decisions / retrospectives / issues）が空生成され、シード対象（issues インデックス・inbox README）が template に含まれる（ADR-0027）
 7. 本リポジトリの docs/ が新レイアウトに移行済みで、生きているドキュメント（README / CLAUDE.md / CONTRIBUTING.md / 本仕様書 / アクティブな handoff / 各インデックス)からのリンクが切れていない
+8. スキル変更（organize-inbox 新設・既存スキル修正）がプラグインの再インストール/更新で利用環境に反映され、新しいセッションで最新のスキル定義が読み込まれることを確認済みである

@@ -28,12 +28,12 @@
 
 > template 同期の非対称性 — `sync-template.ps1` は ADRインデックスを空生成するが、`docs/retrospectives/README.md` は repo固有の振り返り履歴行ごと verbatim コピーしてしまう（発生源: Theme B コードレビュー, 2026-06-15）
 
-これを課題ファイル `docs/working/issues/0001-template-sync-asymmetry.md`（Status: open, Opened: 2026-06-15）としてブロック01 のフォーマットで起票し、インデックス `docs/working/issues/README.md` を新規作成する。その後 `docs/open-questions.md` を削除する。
+これを課題ファイル `docs/working/issues/0001-template-sync-asymmetry.md`（Opened: 2026-06-15）としてブロック01 のフォーマットで起票し、インデックス `docs/working/issues/README.md` を新規作成する。この課題はブロック05 の空インデックス生成一般化（ADR-0027）で本サイクル内に解消されるため、**Status: closed** とし、「結論」に ADR-0027 への参照を記載する（起票と同時クローズ。追跡可能性のため課題ファイル自体は作成する）。その後 `docs/open-questions.md` を削除する。
 
 ### 補足
 
 - `docs/records/retrospectives/` 直下に旧形式のフラットな振り返りファイル（2026-05-01, 2026-05-05）が存在する。これらは ADR-0021 以前の形式の歴史的記録であり、移動はするが `system/` `flow/` への再分類はしない（記録の不変性）
-- `docs/inbox/` は空フォルダとして先行作成しない（オンデマンド規約に従い、最初の投入時に作られる。ただし利用者への案内は folder-structure.md に記載済み）
+- `docs/inbox/README.md` を新規作成する（inbox の使い方の説明: 分類に迷った情報はここに置く、organize-inbox スキルが処理する、の2点を簡潔に。template の verbatim コピー対象 — ブロック05）。これにより inbox フォルダはシード基準（ADR-0027）に従い実体を持つ
 
 ## 4. サブ機能 / 内部構成（リンク修正の方針）
 

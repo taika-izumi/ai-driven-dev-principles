@@ -30,3 +30,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0022](0022-naming-clarity-discipline.md) | AIの言葉遣いの明確性規範を copilot-instructions に追加 | Accepted | 2026-06-15 |
 | [0023](0023-unify-layer2-into-claude-md.md) | Layer 2 指示ファイルを CLAUDE.md に一本化し Claude Code / Copilot CLI 両対応にする | Accepted | 2026-06-16 |
 | [0024](0024-choice-with-recommendation-norm.md) | ユーザーへの質問・意思決定要求時に選択肢と推奨を提示する規範を追加 | Accepted | 2026-06-16 |
+| [0025](0025-five-class-information-taxonomy.md) | 情報の5分類体系を導入し、ドキュメント構成を全面再配置する | Proposed | 2026-07-04 |
+| [0026](0026-inbox-and-organize-inbox-skill.md) | inbox フォルダと organize-inbox スキルによる情報分類の仕組みを導入する | Proposed | 2026-07-04 |

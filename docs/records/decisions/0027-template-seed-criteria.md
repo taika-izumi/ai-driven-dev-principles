@@ -1,6 +1,6 @@
 # ADR-0027: テンプレート初期セットの基準を定義し、インデックス空生成を一般化する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-04
 
 ## Context

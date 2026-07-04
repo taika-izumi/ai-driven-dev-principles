@@ -32,4 +32,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0024](0024-choice-with-recommendation-norm.md) | ユーザーへの質問・意思決定要求時に選択肢と推奨を提示する規範を追加 | Accepted | 2026-06-16 |
 | [0025](0025-five-class-information-taxonomy.md) | 情報の5分類体系を導入し、ドキュメント構成を全面再配置する | Accepted | 2026-07-04 |
 | [0026](0026-inbox-and-organize-inbox-skill.md) | inbox フォルダと organize-inbox スキルによる情報分類の仕組みを導入する | Accepted | 2026-07-04 |
-| [0027](0027-template-seed-criteria.md) | テンプレート初期セットの基準を定義し、インデックス空生成を一般化する | Proposed | 2026-07-04 |
+| [0027](0027-template-seed-criteria.md) | テンプレート初期セットの基準を定義し、インデックス空生成を一般化する | Accepted | 2026-07-04 |

@@ -11,7 +11,7 @@
 
 | レイヤー | ファイル | 役割 |
 |----------|----------|------|
-| Layer 1 | `docs/principles.md` | ツール非依存の普遍的原則 |
+| Layer 1 | `docs/overview/principles.md` | ツール非依存の普遍的原則 |
 | Layer 2 | `CLAUDE.md` | エージェント向け行動指示（GitHub Copilot CLI / Claude Code 共通） |
 | Layer 3 | `skills/` | 自動化されたワークフロー |
 
@@ -36,7 +36,7 @@
 ### 手順
 
 1. ADRを作成して追加理由を記録する（`decision-log` スキルを使用）
-2. `docs/principles.md` に原則を追加する
+2. `docs/overview/principles.md` に原則を追加する
 3. 前文のリスクスケーリング注記を更新する必要があるか確認する
 4. 必要に応じてLayer 2・3への反映を検討する（即座の全層対応は不要）
 
@@ -114,40 +114,31 @@
 
 ### 記述規律（ADR-0019）
 
-- ADRには「下した決定」のみを記載する。仕様検討の途中で生じた**未解決の論点（未決事項）は ADR に書かない**。未決事項は次のシナリオに従って `docs/open-questions.md` に分離する。
+- ADRには「下した決定」のみを記載する。仕様検討の途中で生じた**未解決の論点（未決事項）は ADR に書かない**。未決事項は次のシナリオに従って課題（`docs/working/issues/`）に分離する。
 - ADRは**原則 Proposed で作成し、決定が確定したチェックポイントで Accepted に昇格**させる（brainstorming起点なら設計承認時、実装を伴うなら実装完了後）。作成直後の即 Accepted 化はしない。
 
-## シナリオ: 未決事項（open questions）を記録するとき
+## シナリオ: 未決事項・課題を記録するとき
 
 ### 背景
 
-仕様検討の議論中は「まだこれを決めないといけない」「ここに課題が潜んでいる」といった未解決の論点が増えていく。これらを ADR に書くと ADR が意思決定の記録から逸脱するため、`docs/open-questions.md` に分離して一元管理する（ADR-0019）。
+仕様検討の議論中は「まだこれを決めないといけない」「ここに課題が潜んでいる」といった未解決の論点が増えていく。これらを ADR に書くと ADR が意思決定の記録から逸脱するため、課題（issue）として `docs/working/issues/` に分離して管理する（ADR-0019 / ADR-0025）。
 
 ### 判定基準
 
 - 議論の中で、まだ意思決定に至っていない論点・要検討事項が生じたとき
-
-### フォーマット
-
-`docs/open-questions.md` は現在未解決の論点だけを映す**スナップショット型**の文書。各項目は1行:
-
-```
-- [ ] ★ <論点> — <なぜケアが必要か / 背景>（発生源: brainstorming / spec / 実装 等, YYYY-MM-DD）
-```
-
-`★` は優先対応項目のマーカー（任意）。
+- プロジェクトの課題（技術的負債、プロセス上の問題など）を記録したいとき
 
 ### 手順
 
-1. 未決事項を検出したら `docs/open-questions.md` に1行追加する。ファイルが無ければ上記フォーマットで新規作成する（オンデマンド作成）。
-2. その論点について意思決定を下したら ADR を作成する（`decision-log`）。
-3. ADR 化（解決）したら `docs/open-questions.md` から該当行を**削除**する。解決の跡は ADR に残るため、open-questions.md には Resolved 履歴を残さない。
+1. `docs/working/issues/NNNN-<slug>.md` を起票し（Status: open）、インデックス `docs/working/issues/README.md` に1行追加する。フォーマットは `docs/overview/folder-structure.md` の「課題（issue）管理」を参照
+2. その論点について意思決定を下したら ADR を作成する（`decision-log`）
+3. ADR 化したら課題を close する（Status を closed に変更し「結論」に ADR 番号を記載。ファイルは削除せず残す）
 
 ### チェックリスト
 
 - ADR本文に未決事項を書いていないか（決定のみになっているか）
-- 解決した論点の行を `docs/open-questions.md` から削除したか（スナップショット維持）
-- `docs/open-questions.md` を template に同期していないか（オンデマンド作成のため同期不要）
+- 解決した課題の Status とインデックスを更新したか
+- 課題を削除していないか（closed のまま残す）
 
 ## シナリオ: ワークフロー起点スキル（start-work）を変更するとき
 
@@ -183,7 +174,7 @@
 
 ### 背景
 
-`feature-block-design` は brainstorming と writing-plans の間に挟まる中間スキルで、システムを疎結合な機能ブロックに分割し、分割仕様書（`docs/specs/YYYY-MM-DD-<topic>/` 配下のディレクトリ分割形式）を作成・更新する役割を担う。
+`feature-block-design` は brainstorming と writing-plans の間に挟まる中間スキルで、システムを疎結合な機能ブロックに分割し、分割仕様書（`docs/current/specs/YYYY-MM-DD-<topic>/` 配下のディレクトリ分割形式）を作成・更新する役割を担う。
 
 ### 判定基準
 
@@ -213,7 +204,7 @@
 
 ### 背景
 
-`retrospective` はサブプロジェクトを master へ merge した直後に1回だけ起動するスキルで、Done / Went Well / Struggled / Tech Notes / Issues / Independent Review Notes / Handoff Forward の7セクションを対話的に埋める。**振り返りは課題の抽出と分類までにとどめ、対策の採否判断・設計・ADR 化は行わない**（次サイクルの責務。ADR-0021）。課題は「対象システム固有」「開発フロー/ガイドライン関連」に分類し、前者は `docs/retrospectives/system/`、後者は `docs/retrospectives/flow/` に per-cycle で記録する。
+`retrospective` はサブプロジェクトを master へ merge した直後に1回だけ起動するスキルで、Done / Went Well / Struggled / Tech Notes / Issues / Independent Review Notes / Handoff Forward の7セクションを対話的に埋める。**振り返りは課題の抽出と分類までにとどめ、対策の採否判断・設計・ADR 化は行わない**（次サイクルの責務。ADR-0021）。課題は「対象システム固有」「開発フロー/ガイドライン関連」に分類し、前者は `docs/records/retrospectives/system/`、後者は `docs/records/retrospectives/flow/` に per-cycle で記録する。
 
 出力規約は ADR-0011 が定める「時系列追記型」（per-cycle ファイルを上書き禁止、インデックスは行追加のみ）で、配置パスは ADR-0021 で `system/` `flow/` の2フォルダに分割された。これは ADR-0008 の「スナップショット規約（spec / handoff）」とは対象が異なる別ポリシーである。両規約の境界を崩さないこと。
 
@@ -233,7 +224,7 @@
 2. `skills/retrospective/SKILL.md` を更新する
 3. テンプレート構造を変えた場合は `skills/retrospective/template.md` / `skills/retrospective/flow-template.md` を同期する
 4. `start-work` の Phase 2 マッピング表 / セッション終了処理との整合を確認する
-5. `docs/retrospectives/README.md`（template対象）の運用規約との整合を確認する
+5. `docs/records/retrospectives/README.md`（template対象）の運用規約との整合を確認する
 6. テンプレート対象なので `scripts/sync-template.ps1` を実行する
 
 ### チェックリスト
@@ -249,19 +240,19 @@
 
 ### 背景
 
-`retrospective` スキルは課題の抽出と分類までを行い、`docs/retrospectives/system/`（対象システム固有の課題）と `docs/retrospectives/flow/`（開発フロー/ガイドライン課題）に記録する。**対策の採否・設計・ADR 化は retrospective では行わず、次の作業サイクルに委ねられる**（ADR-0021）。抽出された課題はバックログであり、着手の要否・時期はユーザーが判断する（必ずしも次サイクルで着手するわけではない）。本シナリオは、ユーザーが「この課題に対策する」と判断した課題を実装サイクルへ取り込むときの手順である。
+`retrospective` スキルは課題の抽出と分類までを行い、`docs/records/retrospectives/system/`（対象システム固有の課題）と `docs/records/retrospectives/flow/`（開発フロー/ガイドライン課題）に記録する。**対策の採否・設計・ADR 化は retrospective では行わず、次の作業サイクルに委ねられる**（ADR-0021）。抽出された課題はバックログであり、着手の要否・時期はユーザーが判断する（必ずしも次サイクルで着手するわけではない）。本シナリオは、ユーザーが「この課題に対策する」と判断した課題を実装サイクルへ取り込むときの手順である。
 
 ### 判定基準
 
 以下に該当する場合に本シナリオを使う:
 
-- `docs/retrospectives/system/` または `docs/retrospectives/flow/` の Issues に未対策の課題がある
+- `docs/records/retrospectives/system/` または `docs/records/retrospectives/flow/` の Issues に未対策の課題がある
 - ユーザーがその課題に対策が必要と判断した
 - 次サブプロジェクトの起点を未定義のまま `start-work` に入ろうとしている
 
 ### 手順
 
-1. `docs/retrospectives/system/` `docs/retrospectives/flow/` から該当サイクルのファイルを開き、Issues セクションの未対策課題を確認する。開発フロー/ガイドライン課題（`flow/`）の場合、対策はこのメタ・ガイドラインrepo（ai-driven-dev-principles）側で行う
+1. `docs/records/retrospectives/system/` `docs/records/retrospectives/flow/` から該当サイクルのファイルを開き、Issues セクションの未対策課題を確認する。開発フロー/ガイドライン課題（`flow/`）の場合、対策はこのメタ・ガイドラインrepo（ai-driven-dev-principles）側で行う
 2. ユーザーと、どの課題に対策するか・着手するかを確認する（着手の決定はユーザー）
 3. `start-work` を起動し、新規サブプロジェクトとして扱う
 4. 対策の規模に応じて以下のいずれかへ進む:

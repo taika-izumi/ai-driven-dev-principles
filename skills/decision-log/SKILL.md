@@ -47,12 +47,12 @@ description: "重要な意思決定をADR（Architecture Decision Record）と�
 
 ### 1. 次の連番を決定する
 
-`docs/decisions/README.md` のテーブルを確認し、最大番号+1を採番する。
+`docs/records/decisions/README.md` のテーブルを確認し、最大番号+1を採番する。
 テーブルが空なら `0001` から開始する。
 
 ### 2. ADRファイルを作成する
 
-ファイル名: `docs/decisions/NNNN-slug.md`（NNNNは4桁ゼロ埋め連番、slugは英語のケバブケース）
+ファイル名: `docs/records/decisions/NNNN-slug.md`（NNNNは4桁ゼロ埋め連番、slugは英語のケバブケース）
 
 以下のフォーマットで作成する:
 
@@ -79,11 +79,11 @@ description: "重要な意思決定をADR（Architecture Decision Record）と�
 （この判断の結果起きることを記述する。良い影響・悪い影響の両方を含める）
 ```
 
-> **記述規律（ADR-0019）**: ADRには「下した決定」のみを記載する。仕様検討の途中で生じた**未解決の論点（未決事項）は ADR に書かない**。未決事項は `docs/open-questions.md` に分離する（後述「未決事項（open questions）の扱い」）。
+> **記述規律（ADR-0019）**: ADRには「下した決定」のみを記載する。仕様検討の途中で生じた**未解決の論点（未決事項）は ADR に書かない**。未決事項は課題（`docs/working/issues/`）として分離する（後述「未決事項（open questions）の扱い」）。
 
 ### 3. インデックスを更新する
 
-`docs/decisions/README.md` のテーブルに新しいエントリを追加する:
+`docs/records/decisions/README.md` のテーブルに新しいエントリを追加する:
 
 ```
 | [NNNN](NNNN-slug.md) | タイトル | Proposed | YYYY-MM-DD |
@@ -94,35 +94,29 @@ description: "重要な意思決定をADR（Architecture Decision Record）と�
 ADRファイルとインデックスを一緒にコミットする:
 
 ```bash
-git add docs/decisions/NNNN-slug.md docs/decisions/README.md
+git add docs/records/decisions/NNNN-slug.md docs/records/decisions/README.md
 git commit -m "adr: NNNN - タイトル"
 ```
 
 ## 未決事項（open questions）の扱い
 
-ADRは「下した決定」だけを記録する。仕様検討の議論中に増えていく未解決の論点（「これからこれを決めないといけない」「ここに課題が潜んでいる」）は ADR ではなく `docs/open-questions.md` に分離して一元管理する。
+ADRは「下した決定」だけを記録する。仕様検討の議論中に増えていく未解決の論点（「これからこれを決めないといけない」「ここに課題が潜んでいる」）は ADR ではなく**課題（issue）**として `docs/working/issues/` で管理する。
 
-### フォーマット
+### 起票
 
-`docs/open-questions.md` は現在未解決の論点だけを映す**スナップショット型**の文書である。各項目は1行で記述する:
-
-```
-- [ ] ★ <論点> — <なぜケアが必要か / 背景>（発生源: brainstorming / spec / 実装 等, YYYY-MM-DD）
-```
-
-- `★` は優先対応項目のマーカー（任意。優先度が高いものだけ付ける）
-- `[ ]` は未解決を表す
+1. 未決事項を検出したら `docs/working/issues/NNNN-<slug>.md` を起票する（Status: open）。連番はインデックス `docs/working/issues/README.md` の最大番号+1。フォーマットは `docs/overview/folder-structure.md` の「課題（issue）管理」を参照
+2. インデックス `docs/working/issues/README.md` に1行追加する
 
 ### ライフサイクル
 
-1. 議論中に未決事項を検出したら `docs/open-questions.md` に1行追加する。ファイルが存在しなければこのフォーマットで新規作成する（オンデマンド作成）。
-2. その論点について意思決定を下したら、通常どおり ADR を作成する。
-3. ADR 化（＝解決）したら、`docs/open-questions.md` から**該当行を削除する**。解決の跡は ADR（Context / Decision）に残るため、open-questions.md 側に Resolved 履歴を残さない。
+1. その論点について意思決定を下したら、通常どおり ADR を作成する
+2. ADR 化したら課題を close する: 課題ファイルの Status を `closed` に変更し、Closed 日付を記入し、「結論」セクションに ADR 番号を記載する。インデックスの Status も更新する
+3. **クローズ済み課題は削除せずその場に残す**（追跡可能性の維持）
 
 ### 注意
 
-- `docs/open-questions.md` はリポジトリ固有の中身を持つ生きた文書なので、template には同期しない（新規プロジェクトでは初回検出時にオンデマンド作成される）。
-- スナップショット型のため「上書きで最新化」する。解決済み項目を残さないこと。
+- 課題ファイル・インデックスは template には同期されない（新規プロジェクトでは空のインデックスから始まる）
+- 検討が長期化・多観点化した課題はフォルダへ昇格できる（`docs/overview/folder-structure.md` 参照）
 
 ## ADR更新手順
 
@@ -131,7 +125,7 @@ ADRは「下した決定」だけを記録する。仕様検討の議論中に�
 ADRのステータスを変更する場合（Deprecated、Superseded、いったん Accepted にした決定の見直しなど）:
 
 1. 該当ADRファイルの `Status` を更新する（Deprecated, Superseded by ADR-XXXX 等）
-2. `docs/decisions/README.md` のテーブルのステータスも更新する
+2. `docs/records/decisions/README.md` のテーブルのステータスも更新する
 3. 変更理由をADRのConsequencesセクションに追記する
 4. コミットする
 
@@ -152,7 +146,7 @@ ADRは**原則 Proposed で作成する**。Accepted への昇格は、その決
 昇格手順:
 
 1. 該当ADRファイルの `Status` を `Accepted` に更新する
-2. `docs/decisions/README.md` のテーブルのステータスも更新する
+2. `docs/records/decisions/README.md` のテーブルのステータスも更新する
 3. コミットする
 
 `start-work` の Phase 2 Post でも、確定した据え置きADRの昇格漏れがないか確認される。

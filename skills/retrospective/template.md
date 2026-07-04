@@ -3,8 +3,8 @@
 - **Subject**: <サブプロジェクトの正式名>
 - **Branch**: feature/<name>（merge済み: <merge-commit-sha>）
 - **Period**: <開始日> 〜 <完了日>
-- **Plan**: docs/plans/<...>
-- **Spec**: docs/specs/<...>
+- **Plan**: docs/working/plans/<...>
+- **Spec**: docs/current/specs/<...>
 - **Related ADRs**: ADR-NNNN, ADR-NNNN
 - **Facilitator**: メインエージェント (<モデル名>)
 - **Independent Reviewer**: rubber-duck (<モデル名>)
@@ -41,7 +41,7 @@
 
 振り返りで見えた課題を抽出する。各課題について `事象 / 原因 / 影響` を記録し、`対象システム固有` か `開発フロー/ガイドライン関連` に分類する。**ここでは抽出と分類までにとどめ、対策の設計・採用/保留/却下・ADR 化は行わない**（次サイクルの責務。ADR-0021）。
 
-このファイル（`system/`）には **対象システム固有**の課題のみを記載する。**開発フロー/ガイドライン関連**の課題は `docs/retrospectives/flow/<同名>.md` に記載し、ここにはポインタを残す。
+このファイル（`system/`）には **対象システム固有**の課題のみを記載する。**開発フロー/ガイドライン関連**の課題は `docs/records/retrospectives/flow/<同名>.md` に記載し、ここにはポインタを残す。
 
 - **課題 #N**（分類: 対象システム固有）: <一文タイトル>
   - **事象**: <何が起きたか>

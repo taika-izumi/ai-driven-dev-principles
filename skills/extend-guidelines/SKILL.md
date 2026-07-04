@@ -41,7 +41,7 @@ CONTRIBUTING.md の該当シナリオセクションを読み、判定基準・�
 
 拡張作業の完了後、以下の条件に該当する場合はテンプレートフォルダの同期が必要であることをユーザーに案内する:
 
-- `docs/principles.md` を変更した
+- `docs/overview/principles.md` を変更した
 - `CLAUDE.md` を変更した
 - テンプレート対象のSkill（`template.manifest` に記載されているもの）を変更した
 - 新しいSkillを作成し、テンプレート対象と判断した

@@ -1,12 +1,16 @@
-# テンプレート対象ファイル
+# テンプレート対象ファイル（verbatim コピー対象のみ）
 # リポジトリ直下のパス → template/ 内に同じパスでコピーされる
 #
 # 空行・#始まりの行は無視される
-# ADRインデックス (docs/decisions/README.md) は同期スクリプトが空版を自動生成する
+# 以下のインデックス3件は manifest に載せず、同期スクリプトが空版を自動生成する（ADR-0027）:
+#   docs/records/decisions/README.md
+#   docs/records/retrospectives/README.md
+#   docs/working/issues/README.md
 #
 # ADR-0016 により、skills/ 関連エントリは template から除外している
 # （スキル本体は GitHub Copilot CLI / Claude Code プラグイン ai-driven-dev-principles から提供されるため）
 
 CLAUDE.md
-docs/principles.md
-docs/retrospectives/README.md
+docs/overview/principles.md
+docs/overview/folder-structure.md
+docs/inbox/README.md

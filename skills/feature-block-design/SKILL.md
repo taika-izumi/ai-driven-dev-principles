@@ -1,6 +1,6 @@
 ---
 name: feature-block-design
-description: "brainstorming で合意した全体方針を、疎結合な機能ブロックに分割し、各ブロックの詳細仕様をディレクトリ分割形式（docs/specs/YYYY-MM-DD-<topic>/）で作成または更新する。brainstorming と writing-plans の間で発動する。"
+description: "brainstorming で合意した全体方針を、疎結合な機能ブロックに分割し、各ブロックの詳細仕様をディレクトリ分割形式（docs/current/specs/YYYY-MM-DD-<topic>/）で作成または更新する。brainstorming と writing-plans の間で発動する。"
 ---
 
 # feature-block-design
@@ -39,7 +39,7 @@ brainstorming スキルが完了した直後で、writing-plans に進む前。
 ## 出力ディレクトリ構造
 
 ```
-docs/specs/YYYY-MM-DD-<topic>/
+docs/current/specs/YYYY-MM-DD-<topic>/
 ├── 00-overview.md       # 概要、機能一覧、ブロック関係、主要処理フロー、設計上の意思決定、スコープ外、完了基準
 ├── 01-<block-slug>.md   # ブロック1の詳細
 ├── 02-<block-slug>.md   # ブロック2の詳細
@@ -57,7 +57,7 @@ docs/specs/YYYY-MM-DD-<topic>/
 
 ### Phase 1: モード判定
 
-該当 topic の仕様書ディレクトリ `docs/specs/*-<topic>/` の有無で分岐:
+該当 topic の仕様書ディレクトリ `docs/current/specs/*-<topic>/` の有無で分岐:
 
 - **存在しない** → 新規モード
 - **存在する** → 修正モード（既存ディレクトリを入力に含める）

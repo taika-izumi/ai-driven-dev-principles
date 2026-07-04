@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: "セッション間で作業を継続するためのハンドオフファイル（docs/handoff/<branch>.md）を読む・作成する・更新する・確定する。マイルストーン到達時とセッション終了時に呼ばれる。"
+description: "セッション間で作業を継続するためのハンドオフファイル（docs/working/handoff/<branch>.md）を読む・作成する・更新する・確定する。マイルストーン到達時とセッション終了時に呼ばれる。"
 ---
 
 # session-handoff
@@ -10,7 +10,7 @@ description: "セッション間で作業を継続するためのハンドオフ
 ## ファイル配置
 
 ```
-docs/handoff/<branch-name>.md
+docs/working/handoff/<branch-name>.md
 ```
 
 - ブランチ名のスラッシュは `_` に置換する（例: `feature/auth-flow` → `feature_auth-flow.md`）
@@ -33,8 +33,8 @@ docs/handoff/<branch-name>.md
 
 ## 関連ドキュメント
 
-- Spec: `docs/specs/...`
-- Plan: `docs/plans/...`
+- Spec: `docs/current/specs/...`
+- Plan: `docs/working/plans/...`
 - 関連ADR: ADR-NNNN, ADR-NNNN
 
 ## 完了済みタスク
@@ -76,7 +76,7 @@ docs/handoff/<branch-name>.md
 
 手順:
 1. 現在のブランチ名を取得する: `git branch --show-current`
-2. ブランチ名のスラッシュを `_` に置換し、ファイルパス `docs/handoff/<branch>.md` を組み立てる
+2. ブランチ名のスラッシュを `_` に置換し、ファイルパス `docs/working/handoff/<branch>.md` を組み立てる
 3. ファイルが存在しなければ「ハンドオフなし」と呼び出し側に返す
 4. 存在すれば内容を読み込み、以下の要素を抽出して要約をユーザーに提示する:
    - 作業の目的
@@ -125,13 +125,13 @@ docs/handoff/<branch-name>.md
 4. ファイルを git に add してコミットする:
 
    ```powershell
-   git add docs/handoff/<branch>.md
+   git add docs/working/handoff/<branch>.md
    git commit -m "chore: update handoff for <branch>"
    ```
 
 ## 完了済みハンドオフの扱い
 
-PR マージなどで作業完了した handoff は `Status: completed` のまま `docs/handoff/` に残す。アーカイブ機構（`docs/handoff/archive/` への移動）は本スキルでは未実装。将来必要になれば追加する。
+PR マージなどで作業完了した handoff は `Status: completed` のまま `docs/working/handoff/` に残す。アーカイブ機構（`docs/working/handoff/archive/` への移動）は本スキルでは未実装。将来必要になれば追加する。
 
 ## 対応する原則
 

@@ -14,9 +14,11 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 
 | レイヤー | ファイル | 役割 |
 |----------|----------|------|
-| Layer 1 | [`docs/principles.md`](docs/principles.md) | ツール非依存のメタ・ガイドライン原則集 |
+| Layer 1 | [`docs/overview/principles.md`](docs/overview/principles.md) | ツール非依存のメタ・ガイドライン原則集 |
 | Layer 2 | [`CLAUDE.md`](CLAUDE.md) | エージェント向け行動指示（GitHub Copilot CLI / Claude Code 共通） |
 | Layer 3 | [`skills/`](skills/) | ワークフローを実装するスキル群 |
+
+ドキュメントの配置規範（情報の5分類体系）は [`docs/overview/folder-structure.md`](docs/overview/folder-structure.md) で定義される（ADR-0025）。
 
 ## 5つの原則
 
@@ -26,7 +28,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 4. **重要局面での人間の関与** — 重要な判断や不可逆操作の前に人間の確認を挟む
 5. **漸進的な検証** — 作業を小さく区切り、各ステップで正しさを確認する
 
-詳細は [`docs/principles.md`](docs/principles.md) を参照。
+詳細は [`docs/overview/principles.md`](docs/overview/principles.md) を参照。
 
 ## スキル
 
@@ -37,6 +39,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 | [`feature-block-design`](skills/feature-block-design/) | brainstorming と writing-plans の間で、システムを機能ブロックに分割し分割仕様書を作成・更新する |
 | [`decision-log`](skills/decision-log/) | 意思決定をADR（Architecture Decision Record）として記録・管理する |
 | [`pre-action-review`](skills/pre-action-review/) | 不可逆操作前にリスク評価と確認を実施する |
+| [`organize-inbox`](skills/organize-inbox/) | `docs/inbox/` の未分類情報を分類基準に照らして整理する（移動・分割・既存ドキュメントへの統合） |
 | [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |
 | [`retrospective`](skills/retrospective/) | サブプロジェクトクローズ時の振り返り。Done / Went Well / Struggled / Tech Notes / Issues を抽出し、課題を「対象システム固有 / 開発フロー」に分類して system/flow の2フォルダに記録する（対策の採否・設計・ADR化は次サイクルでユーザー判断） |
 

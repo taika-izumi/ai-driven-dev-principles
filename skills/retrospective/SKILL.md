@@ -31,12 +31,12 @@ retrospective は **「課題の抽出と分類」までに限定**する。改�
 
 1. 対象サブプロジェクト名・feature ブランチ名・対応 plan/spec パスをユーザーから受け取る。直近 merge コミットから推定する場合は必ずユーザー確認を取る
 2. 以下を読み込む:
-   - 対応 plan ファイル（`docs/plans/...`）
-   - 対応 spec ディレクトリ or ファイル（`docs/specs/...`）
+   - 対応 plan ファイル（`docs/working/plans/...`）
+   - 対応 spec ディレクトリ or ファイル（`docs/current/specs/...`）
    - 該当ブランチの merge コミット範囲の `git log --oneline`
-   - `docs/handoff/master.md` 現行版
+   - `docs/working/handoff/master.md` 現行版
    - 該当期間に追加・変更された ADR
-3. 既存 `docs/retrospectives/` を確認し、同一トピックの既存ファイルが無いことを確認する。あれば中止し、上書きの是非をユーザーに確認する（通常は別ファイル名にする）
+3. 既存 `docs/records/retrospectives/` を確認し、同一トピックの既存ファイルが無いことを確認する。あれば中止し、上書きの是非をユーザーに確認する（通常は別ファイル名にする）
 
 ### Phase 1: 5観点ヒアリング（メイン実行、1問ずつ）
 
@@ -60,10 +60,10 @@ retrospective は **「課題の抽出と分類」までに限定**する。改�
 
 課題の分類に応じて2フォルダに書き出す（ADR-0021）。ファイル名はどちらも `YYYY-MM-DD-<topic>.md`（実施日 + サブプロジェクト識別子、両フォルダで同名）。フォルダ・ファイルはオンデマンド作成。
 
-- **メイン記録**: `docs/retrospectives/system/YYYY-MM-DD-<topic>.md`
+- **メイン記録**: `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`
   - Done / Went Well / Struggled / Tech Notes / Issues（**対象システム固有**の課題）/ Independent Review Notes / Handoff Forward を記録する。テンプレートは `skills/retrospective/template.md` を参照
   - Issues セクションには、フロー課題を `flow/` 側へ書き出した旨のポインタ（「開発フロー課題 N 件は flow/<同名>.md 参照」）を残す
-- **フロー課題記録**: `docs/retrospectives/flow/YYYY-MM-DD-<topic>.md`
+- **フロー課題記録**: `docs/records/retrospectives/flow/YYYY-MM-DD-<topic>.md`
   - **開発フロー/ガイドライン関連**の課題のみを記録する。テンプレートは `skills/retrospective/flow-template.md` を参照
   - 抽出されたフロー課題が無ければ、この `flow/` ファイルは作成しない
   - `flow/` フォルダ全体が、配布先システム開発repoではガイドラインrepo（ai-driven-dev-principles）への申し送りバックログになる
@@ -94,9 +94,9 @@ retrospective は **「課題の抽出と分類」までに限定**する。改�
 
 ## 出力ファイル
 
-- メイン記録: `docs/retrospectives/system/YYYY-MM-DD-<topic>.md`
-- フロー課題記録: `docs/retrospectives/flow/YYYY-MM-DD-<topic>.md`（フロー課題がある場合のみ）
-- インデックス更新: `docs/retrospectives/README.md` に行追加（過去行の編集は禁止、ADR-0011）
+- メイン記録: `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`
+- フロー課題記録: `docs/records/retrospectives/flow/YYYY-MM-DD-<topic>.md`（フロー課題がある場合のみ）
+- インデックス更新: `docs/records/retrospectives/README.md` に行追加（過去行の編集は禁止、ADR-0011）
 - テンプレ参照: `skills/retrospective/template.md`（メイン）/ `skills/retrospective/flow-template.md`（フロー）
 
 ## サブエージェント呼び出し詳細

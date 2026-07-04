@@ -1,6 +1,6 @@
 # ADR-0025: 情報の5分類体系を導入し、ドキュメント構成を全面再配置する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-04
 
 ## Context

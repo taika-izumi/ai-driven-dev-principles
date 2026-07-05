@@ -1,9 +1,9 @@
-# Handoff: Issue-0004 対策（質問ツール表示特性の規範化）実装完了・マージ待ち
+# Handoff: Issue-0004 対策サイクル完了・次サイクル待機
 
 - **Branch**: master
 - **Last Updated**: 2026-07-05 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: Issue-0004 対策サイクル（feature/question-tool-display-norm）実装完了・ADR-0029 Accepted・Issue-0004 close 済み / master へのマージ待ち
+- **Status**: ready-for-next-cycle
+- **Current Phase**: Issue-0004 対策サイクル完了（merge: 18e0c85、retrospective 実施済み・Issue-0011 起票）/ 次サイクル未着手
 
 ## 作業の目的・背景
 
@@ -24,7 +24,7 @@
 
 ## 完了済みタスク
 
-- [x] **Issue-0004 対策サイクル**: 質問ツールの表示特性への対処規範（自己完結＋テキストフォールバック）を、事象確認済みモデル（Claude Fable 5）限定で CLAUDE.md「ユーザーへの質問と意思決定要求」に追加。撤去判断はユーザー一任。ADR-0029 Accepted、Issue-0004 close、template 同期済み（2026-07-05。skills/ 変更なしのためプラグイン更新は不要）
+- [x] **Issue-0004 対策サイクル**: 質問ツールの表示特性への対処規範（自己完結＋テキストフォールバック）を、事象確認済みモデル（Claude Fable 5）限定で CLAUDE.md「ユーザーへの質問と意思決定要求」に追加。撤去判断はユーザー一任。ADR-0029 Accepted、Issue-0004 close、template 同期済み、merge `18e0c85`、retrospective 実施済み（フロー課題1件を Issue-0011 として起票）（2026-07-05。skills/ 変更なしのためプラグイン更新は不要）
 - [x] **振り返り課題×issue管理統合サイクル**: merge `b418d5d`（2026-07-05）。ADR-0028 Accepted、Issue-0007 close。プラグイン更新済み。retrospective 実施済み（新起票フローの初回実運用として Issue-0009/0010 を起票）
 - [x] （前サイクル）フォルダ構成定義: ADR-0025〜0027 Accepted（merge: a9c2fd1）
 
@@ -34,7 +34,7 @@
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 
-バックログは `docs/working/issues/README.md` に一元化済み（open 7件）。
+バックログは `docs/working/issues/README.md` に一元化済み（open 8件）。
 
 **エージェント所見: 優先上位（2026-07-05 サイクル担当エージェントの推奨。採否はユーザー判断）**
 
@@ -43,6 +43,7 @@
 
 その他（上記より後で良いと判断）:
 
+- [ ] **Issue-0011**（flow）: 規範・ADR のエージェント実行可能性を確認する観点が未定式化 — 今サイクル（Issue-0004 対策）の retrospective で起票。対処はチェックリスト1〜2行の追加程度で軽量。Issue-0009+0010 と同じ記録プロセス規範なので同一サイクルでの一括対策も検討可
 - [ ] Issue-0005 / 0006（flow）: 誤操作の即確定 / 計画網羅漏れ — 実害が散発的（0006 は今サイクルでも再発を確認）
 - [ ] Issue-0003（system）: conversation_log.md の分類 / Issue-0008（system）: 旧型式 spec 8本の維持方針 — いずれもユーザーの方針決めが主で急がない
 - [ ] Theme C 問題A「プロジェクト固有用語集（ユビキタス言語）の仕組み」: 持ち越し（課題ではなく作業テーマのため issues 対象外。推奨フロー: `start-work` → `extend-guidelines` → brainstorming）
@@ -58,7 +59,7 @@
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read。Phase 1 で inbox 検知が走る）
 2. **最初に確認すべきファイル**: 本ファイル、`docs/working/issues/README.md`（課題バックログの一元管理先）
-3. **次に走らせる作業（候補）**: 上記バックログからユーザーが選択（エージェント所見の優先順: Issue-0009+0010 → 0002）
+3. **次に走らせる作業（候補）**: 上記バックログからユーザーが選択（エージェント所見の優先順: Issue-0009+0010（＋軽量な 0011 の同時対策も検討可） → 0002）。抽出した課題は issues に起票済み（Issue-0011。起票元: `docs/records/retrospectives/flow/2026-07-05-question-tool-display-norm.md`。着手はユーザー判断。必ず次サイクルではない）
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - **課題管理の新構造**: issues は `system/` `flow/` の2フォルダ＋ルート README（2セクション、通し採番）。振り返り課題は retrospective が全件起票する（ADR-0028）。議論由来の未決事項は decision-log の手順で起票

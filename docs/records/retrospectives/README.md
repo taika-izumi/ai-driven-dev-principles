@@ -26,6 +26,7 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 | 2026-05-05 | Copilot CLI プラグイン配布化 | 旧フラット配置 | feature/plugin-distribution (merge: a92dc81) | 採用提案1件 → ADR-0018 起票。ADR-0015→0017 連鎖が事実上の plan として機能 |
 | 2026-07-05 | 開発プロジェクトのフォルダ構成定義 | system/ + flow/ | feature/project-folder-structure (merge: a9c2fd1) | 5分類体系・inbox 導入サイクル。フロー課題4件・システム課題2件を抽出 |
 | 2026-07-05 | 振り返り課題×issue管理統合 | system/ + flow/ | feature/retrospective-issue-integration (merge: b418d5d) | ADR-0028 サイクル。フロー課題2件を抽出し Issue-0009/0010 起票（新起票フロー初回実運用） |
+| 2026-07-05 | 質問ツール表示特性への対処規範（Issue-0004 対策） | system/ + flow/ | feature/question-tool-display-norm (merge: 18e0c85) | ADR-0029 サイクル。フロー課題1件を抽出し Issue-0011 起票 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

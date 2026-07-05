@@ -31,6 +31,7 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 | 2026-07-05 | sync-template.ps1 の LF 固定書き出し（Issue-0002 対策） | system/ のみ | feature/sync-template-line-endings (merge: d9329d8) | ADR-0033 サイクル。システム課題1件を抽出し Issue-0014 起票。フロー課題なし |
 | 2026-07-05 | plan 検証整合規範の追加（Issue-0013 対策） | system/ + flow/ | feature/plan-verification-consistency-check (merge: afef02a) | ADR-0034 サイクル。フロー課題1件を抽出し Issue-0015 起票（rubber-duck 指摘で Tech Notes 止まりから起票へ）。Issue-0012 の再発を検討状況へ追記（ADR-0031） |
 | 2026-07-05 | 質問ツールのタイムアウト時の停止規範（Issue-0012 対策） | system/ のみ | feature/question-tool-timeout-autonomy (merge: a13e796) | ADR-0035 サイクル。新規課題なし。Issue-0005 の実例（再発）を検討状況へ追記（ADR-0031）。フロー課題の新規抽出なし |
+| 2026-07-05 | 選択UI誤操作対策（Issue-0005 対策） | system/ + flow/ | feature/selection-ui-text-choice (merge: 5012033) | ADR-0036 サイクル。環境設定＋環境ベース2分岐規範。フロー課題1件を抽出し Issue-0017 起票 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

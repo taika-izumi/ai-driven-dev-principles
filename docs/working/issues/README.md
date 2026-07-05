@@ -30,3 +30,4 @@
 | [0013](flow/0013-plan-verification-consistency-check.md) | plan のセルフレビューに「検証手順と編集内容の整合」を見る観点がない | closed | 2026-07-05 |
 | [0015](flow/0015-multiline-string-shell-syntax-mismatch.md) | マルチライン文字列をツールのシェル種別に合わせる規範・チェックがない | open | 2026-07-05 |
 | [0016](flow/0016-tool-result-independent-verification.md) | ツール適用結果を独立確認せず既遂とみなすと記録と実体が乖離する | open | 2026-07-05 |
+| [0017](flow/0017-environment-solution-survey-before-norms.md) | 対策検討の初手に「環境・ツール設定による構造的解決の調査」を促す観点がない | open | 2026-07-05 |

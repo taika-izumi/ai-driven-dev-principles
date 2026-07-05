@@ -11,7 +11,7 @@ AskUserQuestion 等の構造化質問ツールは無応答約60秒でタイム�
 
 ## 検討状況
 
-（未着手）
+- 2026-07-05: Issue-0013 対策サイクルで再発。AskUserQuestion が約60秒でタイムアウトし、エージェントが可逆作業（feature ブランチ上の編集・template 同期・検証）を best judgment で進め、不可逆な master merge の手前で停止・報告する判断を実際に行った。実害はなかったが、自走可否・待機の基準が未定義である状態は継続（起票元: retrospectives/system/2026-07-05-plan-verification-consistency-check.md）
 
 ## 結論
 

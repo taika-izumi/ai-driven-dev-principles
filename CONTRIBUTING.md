@@ -258,12 +258,13 @@
 1. `docs/working/issues/README.md` の open 課題（または `docs/records/retrospectives/system|flow/` の該当ファイル）から未対策の課題を確認する。開発フロー/ガイドライン課題（`flow/`）の場合、対策はこのメタ・ガイドラインrepo（ai-driven-dev-principles）側で行う
 2. ユーザーと、どの課題（Issue-NNNN）に対策するか・着手するかを確認する（着手の決定はユーザー）
 3. `start-work` を起動し、新規サブプロジェクトとして扱う
-4. 対策の規模に応じて以下のいずれかへ進む:
+4. 対策の方針を検討する前に、まず環境・ツール設定による構造的解決（設定変更・自動検査・仕組み化）が可能かを調査する（行動規範・運用ルールの追加より優先する。ADR-0036 の事例参照）
+5. 対策の規模に応じて以下のいずれかへ進む:
    - 中規模以上（複数ファイル / 設計判断あり）: brainstorming → feature-block-design 適用判定 → spec → plan → 実装
    - 小規模（1〜2 ファイル / 規約追加のみ）: brainstorming を省略し、`start-work` Phase 2 から writing-plans に直行してよい
-5. 対策の方針を決定したら、その時点で ADR を起票する（Proposed → 実装完了時に Accepted 昇格。ADR-0019）。**対策の決定とその ADR 化は本サイクルで行う**（retrospective では行っていない）
-6. 取り込み元の retrospective ファイルは**書き換えない**（ADR-0011 の追記型規約）。対策結果のフィードバックは次回の retrospective で記録する
-7. 対策サイクル完了時（ADR の Accepted 昇格時）に、対象 issue を close する（Status を closed に変更し「結論」に ADR 番号を記載。インデックスも更新）
+6. 対策の方針を決定したら、その時点で ADR を起票する（Proposed → 実装完了時に Accepted 昇格。ADR-0019）。**対策の決定とその ADR 化は本サイクルで行う**（retrospective では行っていない）
+7. 取り込み元の retrospective ファイルは**書き換えない**（ADR-0011 の追記型規約）。対策結果のフィードバックは次回の retrospective で記録する
+8. 対策サイクル完了時（ADR の Accepted 昇格時）に、対象 issue を close する（Status を closed に変更し「結論」に ADR 番号を記載。インデックスも更新）
 
 ### チェックリスト
 

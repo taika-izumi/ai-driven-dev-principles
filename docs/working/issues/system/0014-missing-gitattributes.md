@@ -1,7 +1,8 @@
 # Issue-0014: .gitattributes がなく改行正規化が各自の core.autocrlf 設定任せ
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-05
+- **Closed**: 2026-07-05
 - **起票元**: retrospectives/system/2026-07-05-sync-template-line-endings.md 課題#1
 - **関連**: ADR-0033、Issue-0002（closed）
 
@@ -15,8 +16,8 @@
 
 ## 検討状況
 
-（なし）
+- 2026-07-05: 対策サイクル着手。現状調査で index は既に全ファイル LF であり、renormalize 差分はゼロと確認。正規化ルール3案と template 配布可否をユーザーへ提示し、`* text=auto` のみ・template へは配布しない、で確定（ADR-0037）
 
 ## 結論
 
-（open）
+ADR-0037 として決定・実装（closed）。`.gitattributes`（`* text=auto`）を追加し `git add --renormalize .` を実行（差分ゼロ）。CRLF ファイルが index で LF 正規化されることを使い捨てファイルで実機検証済み。template への配布は ADR-0027 のシード基準に該当しないため行わない。

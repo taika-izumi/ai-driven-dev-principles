@@ -11,7 +11,7 @@
 | [0002](system/0002-sync-template-line-endings.md) | sync-template.ps1 の改行コード非決定性 | closed | 2026-07-05 |
 | [0003](system/0003-conversation-log-classification.md) | docs/conversation_log.md の分類・扱いが未定 | open | 2026-07-05 |
 | [0008](system/0008-legacy-single-file-spec-policy.md) | 旧型式の単一ファイル spec の維持・アーカイブ方針が未定義 | open | 2026-07-05 |
-| [0014](system/0014-missing-gitattributes.md) | .gitattributes がなく改行正規化が各自の core.autocrlf 設定任せ | open | 2026-07-05 |
+| [0014](system/0014-missing-gitattributes.md) | .gitattributes がなく改行正規化が各自の core.autocrlf 設定任せ | closed | 2026-07-05 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

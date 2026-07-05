@@ -153,8 +153,10 @@ foreach ($target in $emptyIndexTargets) {
     $lines = Get-Content $sourcePath
     $outputLines = New-EmptyIndexContent -Lines $lines
 
+    # 改行は LF 固定で書き出す（WriteAllLines は環境依存の改行になり、LF 正規化されたコミット内容と食い違う。ADR-0033）
     $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-    [System.IO.File]::WriteAllLines($destPath, $outputLines, $utf8NoBom)
+    $content = ($outputLines -join "`n") + "`n"
+    [System.IO.File]::WriteAllText($destPath, $content, $utf8NoBom)
     Write-Host "  ✓ $target (empty index generated)"
 }
 

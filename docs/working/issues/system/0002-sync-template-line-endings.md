@@ -11,7 +11,7 @@ sync-template.ps1 が WriteAllLines で CRLF 書き出しを行い、LF 正規�
 
 ## 検討状況
 
-（未着手）
+2026-07-05: 記録プロセス規範対策サイクル（feature/record-process-norms）の template 同期でも改行のみ差分が再発（template/docs/records/retrospectives/README.md と template/docs/working/issues/README.md）、git restore で回避
 
 ## 結論
 

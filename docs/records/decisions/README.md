@@ -39,3 +39,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0031](0031-issue-recurrence-recording.md) | 既存 open 課題の再発・進展は issue ファイルの「検討状況」へ一次記録する | Accepted | 2026-07-05 |
 | [0032](0032-agent-executability-check.md) | 規範・ADR の判定条件はエージェントが観測・実行可能な事実で書く | Accepted | 2026-07-05 |
 | [0033](0033-sync-template-lf-output.md) | sync-template.ps1 の生成ファイルは LF 改行で書き出す | Accepted | 2026-07-05 |
+| [0034](0034-plan-verification-edit-consistency-check.md) | 実装計画の検証ステップ期待値と編集内容の整合を確認する規範を追加 | Accepted | 2026-07-05 |

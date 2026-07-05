@@ -41,3 +41,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0033](0033-sync-template-lf-output.md) | sync-template.ps1 の生成ファイルは LF 改行で書き出す | Accepted | 2026-07-05 |
 | [0034](0034-plan-verification-edit-consistency-check.md) | 実装計画の検証ステップ期待値と編集内容の整合を確認する規範を追加 | Accepted | 2026-07-05 |
 | [0035](0035-question-tool-timeout-stop-norm.md) | 構造化質問ツールのタイムアウト時は一律で停止・待機する規範を追加 | Accepted | 2026-07-05 |
+| [0036](0036-selection-ui-env-setting-and-text-fallback.md) | 選択UI誤操作対策は環境側の誤操作防止設定とテキスト提示フォールバック規範の両輪とする | Proposed | 2026-07-05 |

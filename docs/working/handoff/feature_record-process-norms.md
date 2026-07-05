@@ -2,8 +2,8 @@
 
 - **Branch**: feature/record-process-norms
 - **Last Updated**: 2026-07-05 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張 / extend-guidelines → brainstorming（開始直後）
+- **Status**: completed
+- **Current Phase**: サイクル完了（merge: 71d383c、retrospective 実施済み、プラグイン更新済み）
 
 ## 作業の目的・背景
 
@@ -30,13 +30,11 @@ retrospective で抽出された「記録プロセス規範」に関するフロ
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: master への統合（ユーザー確認待ち）
-  - 状態: 実装・検証完了。ブランチ上に8コミット（65ad1ef〜7d66043）
-  - 残り: merge → プラグイン更新（ユーザー操作: `/plugin marketplace update ai-driven-dev-principles`。skills 3件変更のため必須）→ retrospective → handoff finalize
+なし（サイクル完了。merge 71d383c、プラグイン更新済み、retrospective は `docs/records/retrospectives/system|flow/2026-07-05-record-process-norms.md`。以降の状態は `master.md` ハンドオフが正）
 
 ## 未着手のタスク
 
-- [ ] merge → プラグイン更新 → retrospective → handoff finalize
+なし
 
 ## 既知のブロッカー・懸念
 

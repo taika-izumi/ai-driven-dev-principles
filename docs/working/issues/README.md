@@ -25,3 +25,5 @@
 | [0009](flow/0009-adr-draft-timing.md) | ADR ドラフトの起票タイミングが「即時」ルールと議論の収束度で緊張する | closed | 2026-07-05 |
 | [0010](flow/0010-issue-recurrence-recording.md) | 既存 open 課題が再発した場合の記録方法が未定義 | closed | 2026-07-05 |
 | [0011](flow/0011-norm-executability-check.md) | 規範・ADR のエージェント実行可能性を確認する観点が定式化されていない | closed | 2026-07-05 |
+| [0012](flow/0012-question-tool-timeout-autonomy.md) | 構造化質問ツールのタイムアウト時にエージェントがどこまで自走してよいかの基準がない | open | 2026-07-05 |
+| [0013](flow/0013-plan-verification-consistency-check.md) | plan のセルフレビューに「検証手順と編集内容の整合」を見る観点がない | open | 2026-07-05 |

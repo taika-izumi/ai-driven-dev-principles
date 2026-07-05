@@ -29,3 +29,4 @@
 | [0012](flow/0012-question-tool-timeout-autonomy.md) | 構造化質問ツールのタイムアウト時にエージェントがどこまで自走してよいかの基準がない | closed | 2026-07-05 |
 | [0013](flow/0013-plan-verification-consistency-check.md) | plan のセルフレビューに「検証手順と編集内容の整合」を見る観点がない | closed | 2026-07-05 |
 | [0015](flow/0015-multiline-string-shell-syntax-mismatch.md) | マルチライン文字列をツールのシェル種別に合わせる規範・チェックがない | open | 2026-07-05 |
+| [0016](flow/0016-tool-result-independent-verification.md) | ツール適用結果を独立確認せず既遂とみなすと記録と実体が乖離する | open | 2026-07-05 |

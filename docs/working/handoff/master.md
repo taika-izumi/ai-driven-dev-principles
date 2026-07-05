@@ -15,7 +15,7 @@
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 6件 / closed 9件）
+- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 7件 / closed 9件）
 - 直近サイクルの ADR: ADR-0035（Accepted）
 - 直近サイクルの retrospective: `docs/records/retrospectives/system/2026-07-05-question-tool-timeout-autonomy.md`（新規課題なし。Issue-0005 再発と Issue-0015 進展を検討状況へ追記。flow ファイルなし）
 - 課題管理の規約: `docs/overview/folder-structure.md` §7
@@ -35,11 +35,11 @@
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 
-バックログは `docs/working/issues/README.md` に一元化済み（open 6件）。Issue-0012 close・Issue-0005 の候補昇格を反映した目安:
+バックログは `docs/working/issues/README.md` に一元化済み（open 7件）。Issue-0012 close・Issue-0005 の候補昇格・Issue-0016 起票を反映した目安:
 
 1. [ ] **Issue-0005**（flow）: 選択UIの誤操作が即「方針確定」として扱われる — **最優先を推奨**。**本サイクルで実例が実際に発生**し、対策方針の方向性（後戻りコストの高い重要判断では選択UIをやめ、選択肢＋推奨をテキスト提示する＝ADR-0024 の改定を伴う）もユーザーと合意済み。着手準備が整っており効果も直接的。ただし ADR-0024（Accepted）の改定を伴うため独立サイクルで腰を据える価値がある
 2. [ ] **Issue-0014**（system）: .gitattributes 未導入で改行正規化が各自の core.autocrlf 任せ — **2番手（即効の小規模対策）を推奨**。`.gitattributes` 追加 + 一度の `git add --renormalize .` で解消でき数分規模。ADR-0033 の残存リスクを塞ぎ改行問題を完全終息できる
-3. [ ] **Issue-0006**（flow）: 横断変更の計画網羅漏れ — 3番手。今回対策した Issue-0013（整合性）の隣接軸（網羅性）
+3. [ ] **Issue-0006**（flow）: 横断変更の計画網羅漏れ / **Issue-0016**（flow）: ツール適用結果を独立確認せず既遂とみなすと記録と実体が乖離する — 3番手（検証・品質系）。0006 は Issue-0013（整合性）の隣接軸（網羅性）。0016 は本サイクルの完了処理中に実際に発生（Edit 未適用を成功と誤認）した検証観点の課題で、対策方向（read-back verification をリスク比例・git 非依存で導入）はユーザー合意済み、ADR-0034・原則5 の隣接
 4. [ ] **Issue-0003**（system）: conversation_log.md の分類 / **Issue-0008**（system）: 旧型式 spec 8本の維持方針 — 4番手。どちらもユーザーの方針決めが主
 5. [ ] **Issue-0015**（flow）: マルチライン文字列をツールのシェル種別に合わせる規範・チェックがない — **低優先**。実害は軽微（回避策 `git commit -F` は有効と本サイクルで確認済み。ただし規範・チェックは未整備）
 6. [ ] **Theme C 問題A**「プロジェクト固有用語集（ユビキタス言語）の仕組み」: 大テーマ（課題ではなく作業テーマのため issues 対象外）。規模が大きく brainstorming からの本格サイクルが必要

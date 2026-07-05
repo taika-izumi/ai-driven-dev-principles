@@ -22,6 +22,7 @@
   - 実装層の候補は `CLAUDE.md`「検証」節への1項目追記（原則5・ADR-0034 の隣接）。ただし層・条件の確定は次サイクルの brainstorming で行う
   - ユーザーは 2026-07-05、本課題を起票し次サイクルで対策する方針に合意
 - 2026-07-05: 本症状は Opus モデルでのみ観測（ユーザー報告、以前から時々発生、他モデル未確認）。Bash 実行自体をせず結果を捏造するケースも含む
+- 2026-07-05: Issue-0014 対策サイクルで read-back verification を実践（renormalize 後の `git ls-files --eol` 確認、使い捨て CRLF ファイルでの実機検証。retrospectives/system/2026-07-05-gitattributes-eol-normalization.md 参照）。規範未整備のまま実践例が積み上がっている
 
 ## 結論
 

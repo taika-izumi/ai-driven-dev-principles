@@ -11,7 +11,7 @@
 
 ## 検討状況
 
-（未着手）
+- 2026-07-05: Issue-0014 対策サイクルが環境・設定による構造的解決（git 設定1行の `.gitattributes`）そのものとなり、本観点の有効性を裏付ける実例になった（retrospectives/system/2026-07-05-gitattributes-eol-normalization.md 参照）
 
 ## 結論
 

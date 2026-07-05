@@ -35,3 +35,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0027](0027-template-seed-criteria.md) | テンプレート初期セットの基準を定義し、インデックス空生成を一般化する | Accepted | 2026-07-04 |
 | [0028](0028-retrospective-issue-ticketing-integration.md) | 振り返り課題を issue 管理へ全件起票し、issues を system/flow フォルダに分割する | Accepted | 2026-07-05 |
 | [0029](0029-question-tool-display-countermeasure.md) | 質問ツールの表示特性への対処規範をモデル条件付きで追加 | Accepted | 2026-07-05 |
+| [0030](0030-adr-draft-commit-deferral.md) | ADR ドラフトは即時作成・コミットは論点収束チェックポイントまで遅延可能とする | Proposed | 2026-07-05 |
+| [0031](0031-issue-recurrence-recording.md) | 既存 open 課題の再発・進展は issue ファイルの「検討状況」へ一次記録する | Proposed | 2026-07-05 |
+| [0032](0032-agent-executability-check.md) | 規範・ADR の判定条件はエージェントが観測・実行可能な事実で書く | Proposed | 2026-07-05 |

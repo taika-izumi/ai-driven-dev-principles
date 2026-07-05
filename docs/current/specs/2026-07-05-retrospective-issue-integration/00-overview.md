@@ -75,7 +75,7 @@ ADR 検討中の未決事項などは従来どおり `decision-log` スキルの
 
 ## 6. スコープ外（YAGNI）
 
-- 旧型式の単一ファイル spec（`2026-05-01-retrospective-design.md` 等）の書き換え・整理方針
+- 旧型式の単一ファイル spec（`2026-05-01-retrospective-design.md` 等）の書き換え・整理方針の設計（未定義であることの課題起票のみブロック04で行う）
 - handoff にのみあるバックログ（Theme C 用語集など「未着手の作業テーマ」）の issue 化 — 課題ではないため対象外
 - 2026-06-15 以前の旧方式振り返り（採用提案方式）からの遡及起票
 - 課題のアーカイブ機構（closed のまま残す現行方針を維持）
@@ -86,6 +86,6 @@ ADR 検討中の未決事項などは従来どおり `decision-log` スキルの
 1. `docs/overview/folder-structure.md` §7 が新構造（system/flow・起票元フィールド・2セクションインデックス・通し採番）を定義している
 2. `skills/retrospective/SKILL.md` と2テンプレートに起票手順が統合され、抽出限定スコープ（ADR-0021）の記述が維持されている
 3. `skills/decision-log/SKILL.md`・`CONTRIBUTING.md`・`docs/records/retrospectives/README.md`・`docs/current/specs/2026-07-04-project-folder-structure/01-folder-structure-definition.md` の課題管理参照が新構造と一致している
-4. 既存課題 Issue-0001 が `system/` に移動し、2026-07-05 振り返りの6課題が起票済み（0007 は本サイクル完了時に ADR-0028 で close）
+4. 既存課題 Issue-0001 が `system/` に移動し、2026-07-05 振り返りの6課題＋旧型式 spec 方針の課題1件が起票済み（0007 は本サイクル完了時に ADR-0028 で close）
 5. `scripts/sync-template.ps1` 実行後の `template/` が新構造を反映している（issues インデックスは2セクションの空テーブルで生成される）
 6. リポジトリ全体 grep で旧構造（`docs/working/issues/NNNN` 直下形式）への参照が残っていない

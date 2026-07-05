@@ -2,8 +2,8 @@
 
 - **Branch**: feature/retrospective-issue-integration
 - **Last Updated**: 2026-07-05 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 改修/実装完了（全6タスク完了、ADR-0028 Accepted、Issue-0007 closed）→ master への merge 判断待ち
+- **Status**: completed
+- **Current Phase**: 完了（merge: b418d5d、retrospective 実施済み。以後の状態は `master.md` を参照）
 
 ## 作業の目的・背景
 

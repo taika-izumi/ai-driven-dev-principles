@@ -26,9 +26,10 @@
    - 迷ったら `docs/inbox/` へ（organize-inbox スキルが処理する）
 6. **代表的なドキュメント種別の配置表** — 仕様書・課題・handoff・実装計画・ADR・議事録・retrospective・リリースノート・インシデント報告・リリース手順・runbook・既知エラー・調査メモ・FAQ・用語集・体制図などの配置先一覧
 7. **課題（issue）管理** — 詳細は下記「5. データモデル」の課題ファイル規約を記載:
-   - `docs/working/issues/NNNN-<slug>.md`（4桁ゼロ埋め連番）＋インデックス `README.md`
-   - Status: open → closed。対策方針決定時に ADR を作成して close する
-   - 検討の長期化・多観点化時は `issues/NNNN-<slug>/` フォルダへ昇格できる（課題ファイルをフォルダ内 `README.md` とし、分析ファイルを並置する）
+   - `docs/working/issues/system|flow/NNNN-<slug>.md`（system=対象システム固有、flow=開発フロー/ガイドライン関連。4桁ゼロ埋め通し連番）＋ルートのインデックス `README.md`（2セクション）
+   - 起票経路は「振り返り由来（retrospective が全件起票、要約＋起票元参照）」と「議論由来（未決事項の分離、本文直接記述）」の2つ（ADR-0028）
+   - Status: open → closed。対策方針決定時に ADR を作成して close する。配布先プロジェクトの flow 課題は「ガイドライン repo へ申し送り済み」で close
+   - 検討の長期化・多観点化時は各分類フォルダ内で `NNNN-<slug>/` フォルダへ昇格できる（課題ファイルをフォルダ内 `README.md` とし、分析ファイルを並置する）
    - クローズ済みはその場に残す（アーカイブは分類ではなく状態）
    - 不確定情報には「TBD」を積極的に使う（確定事実との混同を防ぐ）
 8. **運用例（代表シナリオ）** — 分類間を情報が流れる様子を示す具体例を1つ以上載せる。初版は「チーム開発での大規模リファクタリング」:
@@ -47,7 +48,7 @@
 
 ## 5. データモデル（課題ファイル）
 
-課題ファイル `docs/working/issues/NNNN-<slug>.md` のフォーマット:
+課題ファイル `docs/working/issues/system|flow/NNNN-<slug>.md` のフォーマット:
 
 ```markdown
 # Issue-NNNN: <タイトル>
@@ -55,6 +56,7 @@
 - **Status**: open | closed
 - **Opened**: YYYY-MM-DD
 - **Closed**: YYYY-MM-DD（closed 時のみ）
+- **起票元**: <起票のきっかけへの参照>（任意。振り返り由来なら「retrospectives/flow/YYYY-MM-DD-<topic>.md 課題#N」の形式）
 - **関連**: ADR-NNNN 等（あれば）
 
 ## 課題内容
@@ -70,7 +72,7 @@
 （closed 時: 下した決定への参照。決定内容自体は ADR に書く）
 ```
 
-インデックス `docs/working/issues/README.md` は1課題1行のテーブル（# / タイトル / Status / Opened）。
+課題ファイルは `docs/working/issues/system|flow/` に分類配置する。インデックス `docs/working/issues/README.md` はフォルダ対応の2セクション構成で、各セクションは1課題1行のテーブル（# / タイトル / Status / Opened）。採番は両セクション通しの連番。
 
 ## 6. このブロック固有の制約・前提
 
@@ -84,3 +86,4 @@
 - ADR-0025（5分類体系・全面再配置）
 - ADR-0026（inbox 仕組み）
 - ADR-0019（未決事項の分離。分離先が課題管理になる）
+- ADR-0028（振り返り課題の全件起票・issues の system/flow 分割）

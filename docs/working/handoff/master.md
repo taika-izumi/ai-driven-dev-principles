@@ -30,24 +30,23 @@
 
 ## 進行中のタスク
 
-なし（retrospective まで完了。残るは本セッションの handoff finalize とドキュメントコミットのみ）
+なし（Issue-0002 対策サイクルは retrospective・handoff finalize まで完了）
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 
 バックログは `docs/working/issues/README.md` に一元化済み（open 7件）。
 
-**エージェント所見: 優先上位（採否はユーザー判断）**
+**エージェント所見: 全件の優先順位付け（2026-07-05 Issue-0002 サイクル担当エージェント。採否・着手時期はユーザー判断）**
 
-1. [ ] **Issue-0012**（flow）: 質問ツールタイムアウト時の自走基準がない — 節目操作（merge 等）が不在時に確認なしで実行される構造的リスク
-2. [ ] **Issue-0014**（system）: .gitattributes 未導入で改行正規化が各自の core.autocrlf 任せ — `.gitattributes` 追加 + 一度の `git add --renormalize .` で小規模に解消可能。template 配布物に含めるかの観点も検討する（issue 参照）
+1. [ ] **Issue-0012**（flow）: 質問ツールタイムアウト時の自走基準がない — **最優先を推奨**。merge 等の不可逆な節目操作がユーザー不在時に確認なしで実行されうる構造的リスクで、実際に発生実績がある。全サイクルの安全性に関わるため、他の作業より先に規範を固める価値が高い
+2. [ ] **Issue-0014**（system）: .gitattributes 未導入で改行正規化が各自の core.autocrlf 任せ — **2番手（即効の小規模対策）を推奨**。`.gitattributes` 追加 + 一度の `git add --renormalize .` で解消でき、作業は数分規模。ADR-0033 の残存リスク（別環境貢献者の CRLF コミット）を塞ぎ、改行問題を完全終息できる。唯一の設計判断は「template 配布物に .gitattributes を含めるか」（issue 参照）。Issue-0012 と同日に連続実施も現実的
+3. [ ] **Issue-0013**（flow）: plan 検証手順と編集内容の整合観点 — 3番手。writing-plans 運用規範への1行追加程度で軽微だが、plan を使う次の中規模サイクルの前に済ませておくと効果が出る
+4. [ ] **Issue-0005 / 0006**（flow）: 選択UIの誤操作の即確定 / 横断変更の計画網羅漏れ — 4番手。実害が散発的で、0005 は Issue-0012 の対策（確認規範の整備）と論点が隣接するため、0012 の設計時に併せて扱えるか検討してからでよい
+5. [ ] **Issue-0003**（system）: conversation_log.md の分類 / **Issue-0008**（system）: 旧型式 spec 8本の維持方針 — 5番手。どちらも技術作業より「ユーザーの方針決め」が主で、エージェント側で先行準備できることが少ない。ユーザーが方針を決めた時に短時間で処理する類
+6. [ ] **Theme C 問題A**「プロジェクト固有用語集（ユビキタス言語）の仕組み」: 6番手（課題ではなく作業テーマのため issues 対象外）。価値は高いが規模が大きく brainstorming からの本格サイクルが必要。上記の小粒課題を掃除してから着手する方が集中できる。推奨フロー: `start-work` → `extend-guidelines` → brainstorming
+7. [ ] **ADR-0013 / 0014 / 0018 の Proposed 据え置き解消**: 最後尾。実害はないが、どこかのサイクルの Post チェックで昇格/棚卸しの判断だけ済ませると台帳が締まる
 
-その他（上記より後で良いと判断）:
-
-- [ ] Issue-0013（flow）: plan 検証手順と編集内容の整合観点 — 軽微
-- [ ] Issue-0005 / 0006（flow）: 誤操作の即確定 / 計画網羅漏れ — 実害が散発的
-- [ ] Issue-0003（system）: conversation_log.md の分類 / Issue-0008（system）: 旧型式 spec 8本の維持方針 — ユーザーの方針決めが主
-- [ ] Theme C 問題A「プロジェクト固有用語集（ユビキタス言語）の仕組み」: 持ち越し（課題ではなく作業テーマのため issues 対象外。推奨フロー: `start-work` → `extend-guidelines` → brainstorming）
-- [ ] （別件・低優先）ADR-0013 / ADR-0014 / ADR-0018: Proposed のまま
+順位付けの考え方: (1) フローの安全性に関わる構造的リスクを最優先、(2) 数分で終わる即効修正は早めに掃除、(3) ユーザーの方針決めが主の課題は方針が出るまで寝かせる、(4) 大テーマは小粒を片付けてから。
 
 ## 既知のブロッカー・懸念
 
@@ -59,7 +58,7 @@
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
 2. **最初に確認すべきファイル**: 本ファイル、`docs/working/issues/README.md`
-3. **次に走らせる作業（候補）**: バックログからユーザーが選択（エージェント所見の優先順: Issue-0012 → Issue-0014。着手はユーザー判断。必ず次サイクルではない）。抽出課題は issues に起票済み（Issue-0014、起票元: `docs/records/retrospectives/system/2026-07-05-sync-template-line-endings.md` 課題#1）
+3. **次に走らせる作業（候補）**: 「未着手のタスク」セクションの優先順位付け（1: Issue-0012 → 2: Issue-0014 → 3: Issue-0013 → …）を参考にユーザーが選択（着手はユーザー判断。必ず次サイクルではない）。抽出課題は issues に起票済み（Issue-0014、起票元: `docs/records/retrospectives/system/2026-07-05-sync-template-line-endings.md` 課題#1）
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` を変更したら `scripts/sync-template.ps1` を実行（ADR-0033 により改行のみ差分は解消済み。再発したら Issue-0002 を reopen せず新規事象として確認）

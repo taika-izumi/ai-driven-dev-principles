@@ -1,6 +1,6 @@
 # ADR-0029: 質問ツールの表示特性への対処規範をモデル条件付きで追加
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

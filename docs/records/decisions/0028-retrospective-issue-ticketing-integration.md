@@ -1,6 +1,6 @@
 # ADR-0028: 振り返り課題を issue 管理へ全件起票し、issues を system/flow フォルダに分割する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

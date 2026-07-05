@@ -1,7 +1,8 @@
 # Issue-0007: retrospective の課題バックログと issue 管理の関係が未定義
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-05
+- **Closed**: 2026-07-05
 - **起票元**: retrospectives/flow/2026-07-05-project-folder-structure.md 課題#4
 - **関連**: ADR-0028
 
@@ -15,4 +16,4 @@
 
 ## 結論
 
-（open。実装完了・検証後に ADR-0028 を結論として close する）
+ADR-0028（振り返り課題の全件起票・issues の system/flow フォルダ分割）として決定し、本サイクル（feature/retrospective-issue-integration）で実装した。

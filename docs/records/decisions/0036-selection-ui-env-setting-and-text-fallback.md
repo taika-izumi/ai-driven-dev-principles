@@ -1,6 +1,6 @@
 # ADR-0036: 選択UI誤操作対策は環境側の誤操作防止設定とテキスト提示フォールバック規範の両輪とする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

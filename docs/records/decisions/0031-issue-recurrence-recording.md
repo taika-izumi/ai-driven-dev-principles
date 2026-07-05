@@ -1,6 +1,6 @@
 # ADR-0031: 既存 open 課題の再発・進展は issue ファイルの「検討状況」へ一次記録する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

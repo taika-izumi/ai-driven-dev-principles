@@ -1,6 +1,6 @@
 # ADR-0030: ADR ドラフトは即時作成・コミットは論点収束チェックポイントまで遅延可能とする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

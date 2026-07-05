@@ -1,6 +1,6 @@
 # ADR-0032: 規範・ADR の判定条件はエージェントが観測・実行可能な事実で書く（実行可能性チェックの定式化）
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

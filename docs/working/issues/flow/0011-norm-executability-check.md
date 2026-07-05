@@ -1,7 +1,8 @@
 # Issue-0011: 規範・ADR のエージェント実行可能性を確認する観点が定式化されていない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-05
+- **Closed**: 2026-07-05
 - **起票元**: retrospectives/flow/2026-07-05-question-tool-display-norm.md 課題#1
 - **関連**: ADR-0029、decision-log スキル、CONTRIBUTING.md
 
@@ -11,8 +12,8 @@
 
 ## 検討状況
 
-（未着手）
+2026-07-05: 対策サイクル feature/record-process-norms で対策を設計・実装
 
 ## 結論
 
-（open）
+ADR-0032（規範・ADR の判定条件はエージェントが観測・実行可能な事実で書く）として規範化し、decision-log / CONTRIBUTING に反映済み。

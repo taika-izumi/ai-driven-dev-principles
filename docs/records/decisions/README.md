@@ -43,3 +43,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0035](0035-question-tool-timeout-stop-norm.md) | 構造化質問ツールのタイムアウト時は一律で停止・待機する規範を追加 | Accepted | 2026-07-05 |
 | [0036](0036-selection-ui-env-setting-and-text-fallback.md) | 選択UI誤操作対策は環境側の誤操作防止設定とテキスト提示フォールバック規範の両輪とする | Accepted | 2026-07-05 |
 | [0037](0037-gitattributes-eol-normalization.md) | .gitattributes で改行正規化を git 側に固定し、template へは配布しない | Accepted | 2026-07-05 |
+| [0038](0038-read-back-verification-norm.md) | ツール適用結果はリスク比例で実体の読み直しにより独立確認する規範を追加 | Proposed | 2026-07-05 |
+| [0039](0039-environment-solution-survey-first.md) | 課題対策手順に環境・ツール設定による構造的解決の先行調査ステップを追加する | Proposed | 2026-07-05 |

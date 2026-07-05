@@ -8,7 +8,7 @@
 | # | タイトル | Status | Opened |
 |---|---------|--------|--------|
 | [0001](system/0001-template-sync-asymmetry.md) | template 同期の非対称性 | closed | 2026-06-15 |
-| [0002](system/0002-sync-template-line-endings.md) | sync-template.ps1 の改行コード非決定性 | open | 2026-07-05 |
+| [0002](system/0002-sync-template-line-endings.md) | sync-template.ps1 の改行コード非決定性 | closed | 2026-07-05 |
 | [0003](system/0003-conversation-log-classification.md) | docs/conversation_log.md の分類・扱いが未定 | open | 2026-07-05 |
 | [0008](system/0008-legacy-single-file-spec-policy.md) | 旧型式の単一ファイル spec の維持・アーカイブ方針が未定義 | open | 2026-07-05 |
 

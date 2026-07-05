@@ -38,3 +38,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0030](0030-adr-draft-commit-deferral.md) | ADR ドラフトは即時作成・コミットは論点収束チェックポイントまで遅延可能とする | Accepted | 2026-07-05 |
 | [0031](0031-issue-recurrence-recording.md) | 既存 open 課題の再発・進展は issue ファイルの「検討状況」へ一次記録する | Accepted | 2026-07-05 |
 | [0032](0032-agent-executability-check.md) | 規範・ADR の判定条件はエージェントが観測・実行可能な事実で書く | Accepted | 2026-07-05 |
+| [0033](0033-sync-template-lf-output.md) | sync-template.ps1 の生成ファイルは LF 改行で書き出す | Accepted | 2026-07-05 |

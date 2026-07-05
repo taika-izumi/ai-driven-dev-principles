@@ -32,7 +32,7 @@
 
 | # | フォルダ | slug（案） | 内容 |
 |---|---------|-----------|------|
-| 0008 | system/ | legacy-single-file-spec-policy | 旧型式の単一ファイル spec（`2026-05-01-retrospective-design.md` 等4本）の維持・アーカイブ方針が未定義。同ファイルは ADR-0021/0025 の改定が未反映のまま stale（起票元: 本サイクル brainstorming 中の検出。課題内容は本文に直接記述する） |
+| 0008 | system/ | legacy-single-file-spec-policy | 旧型式の単一ファイル spec（`2026-05-01-retrospective-design.md` 等8本）の維持・アーカイブ方針が未定義。同ファイルは ADR-0021/0025 の改定が未反映のまま stale（起票元: 本サイクル brainstorming 中の検出。課題内容は本文に直接記述する） |
 
 - **0007 は本サイクルの対策対象そのもの**。open で起票し、実装完了・検証後（ADR-0028 の Accepted 昇格と同時）に「結論: ADR-0028」で close する
 - 既存の振り返りファイルは書き換えない（ADR-0011）。移行分の参照は issue 側の「起票元」からの片方向のみ

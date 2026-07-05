@@ -3,7 +3,7 @@
 - **Branch**: feature/retrospective-issue-integration
 - **Last Updated**: 2026-07-05 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 改修/feature-block-design 完了（spec 作成済み）→ ユーザーの spec レビュー待ち
+- **Current Phase**: 改修/writing-plans 完了（spec 承認済み・plan 作成済み）→ 実行方式の選択待ち
 
 ## 作業の目的・背景
 
@@ -26,14 +26,13 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: ユーザーの spec レビュー
-  - 状態: spec をコミットしレビュー依頼済み
-  - 残り: 承認後 writing-plans → 実装
+- [ ] **現在の作業**: 実装（plan: `docs/working/plans/2026-07-05-retrospective-issue-integration-plan.md`、全6タスク）
+  - 状態: spec 承認済み（0008 起票を追加反映）、plan 作成済み
+  - 残り: 実行方式（subagent-driven / inline）の選択 → Task 1〜6 の実行
 
 ## 未着手のタスク
 
-- [ ] writing-plans（実装計画。出力先 `docs/working/plans/`）
-- [ ] 実装（ブロック01→02/03/04、詳細は spec 参照）
+- [ ] plan Task 1〜6 の実行（ブロック01→04移行→02→03→同期→クローズ処理）
 - [ ] sync-template 実行・プラグイン更新案内
 - [ ] ADR-0028 Accepted 昇格・Issue-0007 close（実装完了時）
 

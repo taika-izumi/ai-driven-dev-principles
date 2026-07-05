@@ -13,7 +13,7 @@
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 5件 / closed 13件）
+- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 6件 / closed 13件）
 - 直近サイクルの ADR: ADR-0038, ADR-0039（Accepted）
 - 直近サイクルの retrospective: `docs/records/retrospectives/system/2026-07-06-process-check-norms.md`（retrospective 起点の新規課題なしのため flow/ ファイルなし。Issue-0018 はサイクル内起票）
 - 課題管理の規約: `docs/overview/folder-structure.md` §7
@@ -36,14 +36,15 @@
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 
-バックログは `docs/working/issues/README.md` に一元化済み（open 5件）。Issue-0016/0017 close・Issue-0018 起票を反映した目安:
+バックログは `docs/working/issues/README.md` に一元化済み（open 6件）。Issue-0016/0017 close・Issue-0018/0019 起票を反映した目安:
 
 1. [ ] **Issue-0018**（flow）: CLAUDE.md 常時指示の肥大化を監視・棚卸しする仕組みがない — 筆頭候補（ユーザーの規模拡大抑制方針の延長で関心が高い。事前判定・事後棚卸しの両面を扱う。検討状況参照）
 2. [ ] **Issue-0006**（flow）: 横断変更の計画網羅漏れ — 検証・プロセス品質系の残り1件
 3. [ ] **Issue-0003**（system）: conversation_log.md の分類 / **Issue-0008**（system）: 旧型式 spec 8本の維持方針 — どちらもユーザーの方針決めが主
 4. [ ] **Issue-0015**（flow）: マルチライン文字列をツールのシェル種別に合わせる規範・チェックがない — **低優先**。実害は軽微（回避策 `git commit -F` は有効と確認済み。ただし規範・チェックは未整備）
 5. [ ] **Theme C 問題A**「プロジェクト固有用語集（ユビキタス言語）の仕組み」: 大テーマ（課題ではなく作業テーマのため issues 対象外）。規模が大きく brainstorming からの本格サイクルが必要
-6. [ ] **ADR-0013 / 0014 / 0018 の Proposed 据え置き解消**: 最後尾。どこかのサイクルの Post チェックで昇格/棚卸しの判断だけ済ませると台帳が締まる（※ここでの「ADR-0018」は ADR 台帳の番号であり、課題 Issue-0018 とは別物）
+6. [ ] **Issue-0019**（flow）: コミット済み Proposed ADR を不採用で終える経路（Rejected）が未定義 — 下記の Proposed 棚卸しの前提になるため、棚卸しと同時に扱うと効率的
+7. [ ] **ADR-0013 / 0014 / 0018 の Proposed 据え置き解消**: 最後尾。どこかのサイクルの Post チェックで昇格/棚卸しの判断だけ済ませると台帳が締まる（不採用の着地には Issue-0019 の解決が必要。※ここでの「ADR-0018」は ADR 台帳の番号であり、課題 Issue-0018 とは別物）
 
 ## 既知のブロッカー・懸念
 

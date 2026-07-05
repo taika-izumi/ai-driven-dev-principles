@@ -1,6 +1,6 @@
 # ADR-0037: .gitattributes で改行正規化を git 側に固定し、template へは配布しない
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

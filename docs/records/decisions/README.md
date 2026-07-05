@@ -34,3 +34,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0026](0026-inbox-and-organize-inbox-skill.md) | inbox フォルダと organize-inbox スキルによる情報分類の仕組みを導入する | Accepted | 2026-07-04 |
 | [0027](0027-template-seed-criteria.md) | テンプレート初期セットの基準を定義し、インデックス空生成を一般化する | Accepted | 2026-07-04 |
 | [0028](0028-retrospective-issue-ticketing-integration.md) | 振り返り課題を issue 管理へ全件起票し、issues を system/flow フォルダに分割する | Accepted | 2026-07-05 |
+| [0029](0029-question-tool-display-countermeasure.md) | 質問ツールの表示特性への対処規範をモデル条件付きで追加 | Accepted | 2026-07-05 |

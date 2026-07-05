@@ -35,7 +35,7 @@
 
 - ADR 配置を `docs/records/decisions/` に変更
 - 「未決事項（open questions）の扱い」セクションを全面改訂:
-  - 分離先を `docs/working/issues/NNNN-<slug>.md`（課題ファイル。フォーマットはブロック01 の定義に従う）に変更
+  - 分離先を `docs/working/issues/system|flow/NNNN-<slug>.md`（課題ファイル。フォーマットはブロック01 の定義に従う。system/flow 分割は ADR-0028）に変更
   - ライフサイクル: 未決事項を検出したら課題ファイルを起票（Status: open）→ 意思決定したら ADR を作成し課題を close（該当課題の「結論」に ADR 番号を記載）
   - スナップショット型 open-questions.md の「解決したら行を削除」規約は廃止。課題は closed のままその場に残る（追跡可能性の向上）
   - 課題インデックス `docs/working/issues/README.md` の行追加・Status 更新を手順に含める

@@ -82,8 +82,8 @@ docs/
 
 ### フロー C: 課題（issue）のライフサイクル
 
-1. 課題・未決事項を検出したら `docs/working/issues/NNNN-<slug>.md` を起票する（Status: open）
-2. 検討が長期化・多観点化したら `issues/NNNN-<slug>/` フォルダへ昇格できる
+1. 課題・未決事項を検出したら `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open。分類は ADR-0028）
+2. 検討が長期化・多観点化したら各分類フォルダ内で `NNNN-<slug>/` フォルダへ昇格できる
 3. 対策方針が決定したら ADR を作成し、課題を Status: closed に変更する（進行中の作業 → 追跡型の記録への遷移）
 4. クローズ済み課題はその場に残す（アーカイブフォルダへは移動しない）
 

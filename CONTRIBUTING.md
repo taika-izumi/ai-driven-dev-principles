@@ -130,7 +130,7 @@
 
 ### 手順
 
-1. `docs/working/issues/NNNN-<slug>.md` を起票し（Status: open）、インデックス `docs/working/issues/README.md` に1行追加する。フォーマットは `docs/overview/folder-structure.md` の「課題（issue）管理」を参照
+1. `docs/working/issues/system|flow/NNNN-<slug>.md` を起票し（Status: open。対象システム固有なら `system/`、開発フロー/ガイドライン関連なら `flow/`）、インデックス `docs/working/issues/README.md` の対応セクションに1行追加する。採番は両セクション通しの連番。フォーマットは `docs/overview/folder-structure.md` の「課題（issue）管理」を参照
 2. その論点について意思決定を下したら ADR を作成する（`decision-log`）
 3. ADR 化したら課題を close する（Status を closed に変更し「結論」に ADR 番号を記載。ファイルは削除せず残す）
 
@@ -204,7 +204,7 @@
 
 ### 背景
 
-`retrospective` はサブプロジェクトを master へ merge した直後に1回だけ起動するスキルで、Done / Went Well / Struggled / Tech Notes / Issues / Independent Review Notes / Handoff Forward の7セクションを対話的に埋める。**振り返りは課題の抽出と分類までにとどめ、対策の採否判断・設計・ADR 化は行わない**（次サイクルの責務。ADR-0021）。課題は「対象システム固有」「開発フロー/ガイドライン関連」に分類し、前者は `docs/records/retrospectives/system/`、後者は `docs/records/retrospectives/flow/` に per-cycle で記録する。
+`retrospective` はサブプロジェクトを master へ merge した直後に1回だけ起動するスキルで、Done / Went Well / Struggled / Tech Notes / Issues / Independent Review Notes / Handoff Forward の7セクションを対話的に埋める。**振り返りは課題の抽出と分類までにとどめ、対策の採否判断・設計・ADR 化は行わない**（次サイクルの責務。ADR-0021）。課題は「対象システム固有」「開発フロー/ガイドライン関連」に分類し、前者は `docs/records/retrospectives/system/`、後者は `docs/records/retrospectives/flow/` に per-cycle で記録する。抽出した課題は分類を問わず全件 `docs/working/issues/system|flow/` へ起票される（ADR-0028。起票は記録行為であり、抽出限定スコープは変わらない）。
 
 出力規約は ADR-0011 が定める「時系列追記型」（per-cycle ファイルを上書き禁止、インデックスは行追加のみ）で、配置パスは ADR-0021 で `system/` `flow/` の2フォルダに分割された。これは ADR-0008 の「スナップショット規約（spec / handoff）」とは対象が異なる別ポリシーである。両規約の境界を崩さないこと。
 
@@ -234,13 +234,14 @@
 - rubber-duck 呼び出しは1サイクルにつき1回に留まっているか
 - 課題抽出限定スコープが崩れていないか（振り返り内で対策の採否・設計・ADR化をしていないか。対策決定は次サイクル、着手はユーザー判断。ADR-0021）
 - Tech Notes のスコープ（汎用技術知見のみ。システム仕様・ドメイン知識は除外。ADR-0012 / ADR-0021）が守られているか
+- 課題の全件起票（要約＋起票元参照・振り返りファイルへの Issue 番号記載）が手順内で維持されているか（ADR-0028）
 
 
 ## シナリオ: 振り返りで抽出された課題に対策するとき
 
 ### 背景
 
-`retrospective` スキルは課題の抽出と分類までを行い、`docs/records/retrospectives/system/`（対象システム固有の課題）と `docs/records/retrospectives/flow/`（開発フロー/ガイドライン課題）に記録する。**対策の採否・設計・ADR 化は retrospective では行わず、次の作業サイクルに委ねられる**（ADR-0021）。抽出された課題はバックログであり、着手の要否・時期はユーザーが判断する（必ずしも次サイクルで着手するわけではない）。本シナリオは、ユーザーが「この課題に対策する」と判断した課題を実装サイクルへ取り込むときの手順である。
+`retrospective` スキルは課題の抽出と分類までを行い、`docs/records/retrospectives/system/`（対象システム固有の課題）と `docs/records/retrospectives/flow/`（開発フロー/ガイドライン課題）に記録し、全件を `docs/working/issues/system|flow/` へ issue として起票する（ADR-0028。詳細は振り返りファイルが正、issue はライフサイクル管理を担う）。**対策の採否・設計・ADR 化は retrospective では行わず、次の作業サイクルに委ねられる**（ADR-0021）。抽出された課題はバックログであり、着手の要否・時期はユーザーが判断する（必ずしも次サイクルで着手するわけではない）。本シナリオは、ユーザーが「この課題に対策する」と判断した課題を実装サイクルへ取り込むときの手順である。
 
 ### 判定基準
 
@@ -252,18 +253,20 @@
 
 ### 手順
 
-1. `docs/records/retrospectives/system/` `docs/records/retrospectives/flow/` から該当サイクルのファイルを開き、Issues セクションの未対策課題を確認する。開発フロー/ガイドライン課題（`flow/`）の場合、対策はこのメタ・ガイドラインrepo（ai-driven-dev-principles）側で行う
-2. ユーザーと、どの課題に対策するか・着手するかを確認する（着手の決定はユーザー）
+1. `docs/working/issues/README.md` の open 課題（または `docs/records/retrospectives/system|flow/` の該当ファイル）から未対策の課題を確認する。開発フロー/ガイドライン課題（`flow/`）の場合、対策はこのメタ・ガイドラインrepo（ai-driven-dev-principles）側で行う
+2. ユーザーと、どの課題（Issue-NNNN）に対策するか・着手するかを確認する（着手の決定はユーザー）
 3. `start-work` を起動し、新規サブプロジェクトとして扱う
 4. 対策の規模に応じて以下のいずれかへ進む:
    - 中規模以上（複数ファイル / 設計判断あり）: brainstorming → feature-block-design 適用判定 → spec → plan → 実装
    - 小規模（1〜2 ファイル / 規約追加のみ）: brainstorming を省略し、`start-work` Phase 2 から writing-plans に直行してよい
 5. 対策の方針を決定したら、その時点で ADR を起票する（Proposed → 実装完了時に Accepted 昇格。ADR-0019）。**対策の決定とその ADR 化は本サイクルで行う**（retrospective では行っていない）
 6. 取り込み元の retrospective ファイルは**書き換えない**（ADR-0011 の追記型規約）。対策結果のフィードバックは次回の retrospective で記録する
+7. 対策サイクル完了時（ADR の Accepted 昇格時）に、対象 issue を close する（Status を closed に変更し「結論」に ADR 番号を記載。インデックスも更新）
 
 ### チェックリスト
 
 - 対策対象がフロー/ガイドライン課題（`flow/`）の場合、対策をメタ・ガイドラインrepo側に向けているか（個別システムrepoの改善として埋もれさせていないか。ADR-0021）
+- 対策した課題（Issue-NNNN）を close し、インデックスを更新したか
 - 対策方針の ADR を Proposed で起票し、実装完了時に Accepted 化したか（ADR-0019）
 - retrospective ファイルへの加筆をしていないか（追記型規約違反を避ける）
 - 取り込みサイクル完了後の retrospective で「前回課題への対策結果」を Done または Tech Notes に明示的に書く準備ができているか

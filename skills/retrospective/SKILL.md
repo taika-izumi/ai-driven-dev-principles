@@ -1,6 +1,6 @@
 ---
 name: retrospective
-description: "サブプロジェクト1サイクル完了直後（feature ブランチを master へマージ後、handoff finalize 前）に実施する振り返りスキル。Done / Went Well / Struggled / Tech Notes / Issues の5観点をユーザーから1問ずつヒアリングし、rubber-duck サブエージェントで独立視点レビューを1回かける。課題は「対象システム固有」「開発フロー/ガイドライン関連」に分類して記録するのみ（採否判断・対策設計・ADR化は行わず次サイクルへ委ねる。ADR-0021）。"
+description: "サブプロジェクト1サイクル完了直後（feature ブランチを master へマージ後、handoff finalize 前）に実施する振り返りスキル。Done / Went Well / Struggled / Tech Notes / Issues の5観点をユーザーから1問ずつヒアリングし、rubber-duck サブエージェントで独立視点レビューを1回かける。課題は「対象システム固有」「開発フロー/ガイドライン関連」に分類して記録するのみ（採否判断・対策設計・ADR化は行わず次サイクルへ委ねる。ADR-0021）。抽出した課題は分類を問わず全件 docs/working/issues/system|flow/ へその場で起票する（ADR-0028）。"
 ---
 
 # retrospective
@@ -18,6 +18,8 @@ description: "サブプロジェクト1サイクル完了直後（feature ブラ
 retrospective は **「課題の抽出と分類」までに限定**する。改善提案の具体設計・採否判断（採用/保留/却下）・即時 ADR ドラフト化は**行わない**。それらは次の作業サイクルの責務であり、振り返りでは扱わない。
 
 抽出した課題は**バックログとして記録するのみ**。対策の要否・着手時期はユーザーの判断に委ねる（必ず次サイクルで着手するわけではない）。ユーザーが対策を要すると判断した時点で、その課題を起点に通常フロー（`start-work` →（規模に応じ brainstorming）→ 対策決定で ADR 起票）を開始する。
+
+抽出した課題の issue 起票（Phase 2）は**記録行為であり、対策の設計・採否判断ではない**。起票によって課題に open/closed のライフサイクル管理が付くだけで、本スキルのスコープは「抽出と分類まで」のまま変わらない（ADR-0028）。
 
 ## 重要な前提
 
@@ -68,6 +70,15 @@ retrospective は **「課題の抽出と分類」までに限定**する。改�
   - 抽出されたフロー課題が無ければ、この `flow/` ファイルは作成しない
   - `flow/` フォルダ全体が、配布先システム開発repoではガイドラインrepo（ai-driven-dev-principles）への申し送りバックログになる
 
+書き出しと同時に、抽出した課題を**分類を問わず全件** `docs/working/issues/` へ起票する（ADR-0028）:
+
+1. 課題ごとに、インデックス `docs/working/issues/README.md` 全体（両セクション）の最大番号+1 で採番する
+2. 分類に応じて `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open）。課題内容は**要約のみ**とし、「起票元」フィールドに `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載する（事象/原因/影響の詳細は振り返りファイルが正）
+3. インデックスの対応セクションに1行追加する
+4. 振り返りファイル側の各課題項目に「**起票**: Issue-NNNN」行を含めて書き出す（初回書き込みで記載するため、上書き禁止規約 ADR-0011 と衝突しない）
+
+Phase 3（rubber-duck レビュー）で課題の分類が変わった場合は、issue ファイルの移動とインデックスの行移動で追随する。
+
 書き出し後、ユーザーへ提示し軽く確認する。
 
 ### Phase 3: 独立視点レビュー（サブエージェント `rubber-duck` 1回）
@@ -88,7 +99,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。改�
 
 `session-handoff update` 操作を呼ぶ。
 
-- 「次セッション開始時のアクション」に「抽出した課題はバックログとして記録済み（着手はユーザー判断。必ず次サイクルではない）」旨を記す。対策が必要と判断された課題があれば、その起点（`system/` または `flow/` のファイルパス）を明記する
+- 「次セッション開始時のアクション」に「抽出した課題は issues に起票済み（Issue-NNNN〜。着手はユーザー判断。必ず次サイクルではない）」旨を記す。対策が必要と判断された課題があれば、その issue 番号と起票元（振り返りファイルパス）を明記する
 - handoff Status を `completed` → `ready-for-next-cycle` へ遷移
 - 抽出課題が複数ある場合は、ユーザーが対策着手を判断する際の参考として、影響の大きい順など優先順位の目安を併記してよい（ただし着手の決定はユーザーに委ねる）
 
@@ -96,6 +107,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。改�
 
 - メイン記録: `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`
 - フロー課題記録: `docs/records/retrospectives/flow/YYYY-MM-DD-<topic>.md`（フロー課題がある場合のみ）
+- 課題起票: `docs/working/issues/system|flow/NNNN-<slug>.md`（抽出課題の件数分）+ `docs/working/issues/README.md` への行追加
 - インデックス更新: `docs/records/retrospectives/README.md` に行追加（過去行の編集は禁止、ADR-0011）
 - テンプレ参照: `skills/retrospective/template.md`（メイン）/ `skills/retrospective/flow-template.md`（フロー）
 
@@ -119,6 +131,7 @@ Phase 3 の `rubber-duck` 呼び出し時は、以下を必ずプロンプトに
 
 ## 関連
 
+- ADR-0028: 振り返り課題の全件起票と issues の system/flow フォルダ分割
 - ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
 - ADR-0010: 振り返りフェーズ導入（ADR-0021 で Phase 4 を撤去）
 - ADR-0011: 振り返り出力の保管規約（ADR-0021 で配置パスを2フォルダ化）

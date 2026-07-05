@@ -1,7 +1,8 @@
 # Issue-0013: plan のセルフレビューに「検証手順と編集内容の整合」を見る観点がない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-05
+- **Closed**: 2026-07-05
 - **起票元**: retrospectives/flow/2026-07-05-record-process-norms.md 課題#2
 - **関連**: superpowers:writing-plans、Issue-0006
 
@@ -11,8 +12,8 @@ plan の検証ステップの期待値（grep 件数等）と各タスクの編�
 
 ## 検討状況
 
-（未着手）
+対策サイクルで対応。writing-plans は superpowers 側スキルで変更できないため、本メタ・ガイドライン repo の運用規範として `CLAUDE.md`「検証」節に「実装計画作成時に各検証ステップの期待値と各タスクの編集内容を突合する」観点を1項目追加した（ADR-0034）。スコープは本課題（整合性）のみに限定し、隣接する Issue-0006（網羅性）は別扱いとした。
 
 ## 結論
 
-（open）
+closed（ADR-0034 で `CLAUDE.md`「検証」節に規範を追加。2026-07-05）

@@ -76,6 +76,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。改�
 2. 分類に応じて `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open）。課題内容は**要約のみ**とし、「起票元」フィールドに `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載する（事象/原因/影響の詳細は振り返りファイルが正）
 3. インデックスの対応セクションに1行追加する
 4. 振り返りファイル側の各課題項目に「**起票**: Issue-NNNN」行を含めて書き出す（初回書き込みで記載するため、上書き禁止規約 ADR-0011 と衝突しない）
+5. **既存 open 課題の再発・進展は新規起票しない**（ADR-0031）。該当 issue の「検討状況」への1行追記（`YYYY-MM-DD: 事象の要約`）が済んでいるか確認し、未追記ならこの時点で追記する。振り返りファイルで言及する場合は Issue-NNNN への参照を付ける
 
 Phase 3（rubber-duck レビュー）で課題の分類が変わった場合は、issue ファイルの移動とインデックスの行移動で追随する。
 
@@ -131,6 +132,7 @@ Phase 3 の `rubber-duck` 呼び出し時は、以下を必ずプロンプトに
 
 ## 関連
 
+- ADR-0031: 既存 open 課題の再発・進展は issue の「検討状況」へ一次記録（再発は新規起票しない）
 - ADR-0028: 振り返り課題の全件起票と issues の system/flow フォルダ分割
 - ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
 - ADR-0010: 振り返りフェーズ導入（ADR-0021 で Phase 4 を撤去）

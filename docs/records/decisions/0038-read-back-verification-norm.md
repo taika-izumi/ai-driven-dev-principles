@@ -1,6 +1,6 @@
 # ADR-0038: ツール適用結果はリスク比例で実体の読み直しにより独立確認する規範を追加
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

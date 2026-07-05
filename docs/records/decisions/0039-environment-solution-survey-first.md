@@ -1,6 +1,6 @@
 # ADR-0039: 課題対策手順に環境・ツール設定による構造的解決の先行調査ステップを追加する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-05
 
 ## Context

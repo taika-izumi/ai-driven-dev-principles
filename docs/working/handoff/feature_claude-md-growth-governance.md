@@ -3,7 +3,7 @@
 - **Branch**: feature/claude-md-growth-governance
 - **Last Updated**: 2026-07-06 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 課題対策サイクル/設計承認済み（ADR-0040 Proposed 起票・コミット済み）・実装計画前
+- **Current Phase**: 課題対策サイクル/実装完了（ADR-0040 Accepted・Issue-0018 close 済み）・master マージ前
 
 ## 作業の目的・背景
 
@@ -20,21 +20,19 @@ Issue-0018「CLAUDE.md 常時指示の肥大化を監視・棚卸しする仕組
 
 - [x] feature ブランチ作成、Issue-0018・CONTRIBUTING.md 手順・起票元 retrospective の読み込み（2026-07-06）
 - [x] 構造的解決の先行調査（CONTRIBUTING.md 手順4）: CLAUDE.md 実測 114行/11,180バイト/箇条書き38件（template と同一、実測 約3.8kトークン）。既存の自動機構は `scripts/sync-template.ps1` のみ（git hooks 未導入・hooksPath 未設定・共有 .claude/settings.json なし）。監視（サイズ・箇条数の計測と閾値警告)は sync-template.ps1 組み込みまたは独立スクリプトで自動化可能。棚卸し・事前判定は判断業務のため手順/スキル側の領分（2026-07-06）
+- [x] brainstorming: 3案比較から案1（独立計測スクリプト＋sync-template 連動）採用、閾値は保守的な 12,000 バイト / 45 件（研究データ IFScale・Context Rot を参照しつつ安全マージン付きトリップワイヤーと位置づけ）、設計3セクション承認。ADR-0040 起票（8a0f0a7）（2026-07-06）
+- [x] 実装計画作成（`docs/working/plans/2026-07-06-claude-md-growth-governance.md`、816f16a。ADR-0034 突合で期待値3件を修正）（2026-07-06）
+- [x] 実装（全5タスク）: `scripts/check-claude-md-size.ps1` 新設（警告分岐の実機検証込み。7cc817f）、sync-template.ps1 連動（template 差分なし確認。dcdd04f）、CONTRIBUTING.md 事前判定小節（6399fbb）、同棚卸しシナリオ（eeeb35b）、全体 read-back 検証・ADR-0040 Accepted 昇格・Issue-0018 close（5003cb2）（2026-07-06）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の作成（設計記録の形式確認 → writing-plans）
-  - 状態: brainstorming 完了・設計3セクション承認済み・ADR-0040 起票コミット済み（8a0f0a7）
-  - 残り: 実装 → template 同期 → 検証 → Accepted 昇格・Issue close
+- [ ] **現在の作業**: master へのマージと retrospective
+  - 状態: 全5タスクの実装・検証・コミット完了（7cc817f, dcdd04f, 6399fbb, eeeb35b, 5003cb2）。ADR-0040 Accepted 昇格・Issue-0018 close 済み
+  - 残り: master へ `--no-ff` マージ（`git merge --no-ff -F <file>`）→ retrospective スキル起動 → handoff finalize
 
 ## 未着手のタスク
 
-- [ ] 実装: `scripts/check-claude-md-size.ps1` 新設（閾値 12,000 バイト / 45 件、警告のみ・exit 0）
-- [ ] 実装: `sync-template.ps1` 末尾から計測スクリプトを呼び出し
-- [ ] 実装: CONTRIBUTING.md「CLAUDE.md を更新するとき」へ事前判定手順の小節追加
-- [ ] 実装: CONTRIBUTING.md 新シナリオ「CLAUDE.md を棚卸しするとき」追加（4分類判定: 構造的置換/失効/退避/現役）
-- [ ] template 同期と read-back 検証（CONTRIBUTING.md・scripts は非配布のため CLAUDE.md 変更なし＝template 差分なしの想定を確認）
-- [ ] Accepted 昇格・Issue-0018 close（下り配布 (d) の対象外決定も検討状況へ記載）・master マージ・retrospective
+なし（実装は完了。残りはマージとセッション終了処理のみ）
 
 ## 既知のブロッカー・懸念
 
@@ -49,4 +47,4 @@ Issue-0018「CLAUDE.md 常時指示の肥大化を監視・棚卸しする仕組
 
 ## 重要な意思決定の履歴
 
-- ADR-0040: CLAUDE.md 肥大化ガバナンスを計測スクリプト連動と CONTRIBUTING.md 手順で導入する（2026-07-06, Proposed。実装完了時に Accepted 昇格予定）
+- ADR-0040: CLAUDE.md 肥大化ガバナンスを計測スクリプト連動と CONTRIBUTING.md 手順で導入する（2026-07-06, Accepted）

@@ -46,4 +46,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0038](0038-read-back-verification-norm.md) | ツール適用結果はリスク比例で実体の読み直しにより独立確認する規範を追加 | Accepted | 2026-07-05 |
 | [0039](0039-environment-solution-survey-first.md) | 課題対策手順に環境・ツール設定による構造的解決の先行調査ステップを追加する | Accepted | 2026-07-05 |
 | [0040](0040-claude-md-growth-governance.md) | CLAUDE.md 肥大化ガバナンスを計測スクリプト連動と CONTRIBUTING.md 手順で導入する | Accepted | 2026-07-06 |
-| [0041](0041-adr-rejected-status-and-ledger-audit.md) | ADR ステータス体系を完成させ（Rejected 新設）、置換対象の特定手順と台帳監査を定義する | Proposed | 2026-07-07 |
+| [0041](0041-adr-rejected-status-and-ledger-audit.md) | コミット済み Proposed ADR の不採用経路（Rejected）を定義しステータス体系を完成させる | Proposed | 2026-07-07 |
+| [0042](0042-superseded-identification-and-ledger-audit.md) | Superseded の置換対象は変更箇所起点で特定し、網羅は台帳監査を保険とする | Proposed | 2026-07-07 |

@@ -162,3 +162,6 @@ foreach ($target in $emptyIndexTargets) {
 
 $totalFiles = $files.Count + $emptyIndexTargets.Count
 Write-Host "[sync-template] Done. $totalFiles files synced to template/"
+
+# CLAUDE.md 規模計測（ADR-0040。警告のみで同期はブロックしない）
+& (Join-Path $PSScriptRoot "check-claude-md-size.ps1")

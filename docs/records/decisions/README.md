@@ -45,3 +45,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0037](0037-gitattributes-eol-normalization.md) | .gitattributes で改行正規化を git 側に固定し、template へは配布しない | Accepted | 2026-07-05 |
 | [0038](0038-read-back-verification-norm.md) | ツール適用結果はリスク比例で実体の読み直しにより独立確認する規範を追加 | Accepted | 2026-07-05 |
 | [0039](0039-environment-solution-survey-first.md) | 課題対策手順に環境・ツール設定による構造的解決の先行調査ステップを追加する | Accepted | 2026-07-05 |
+| [0040](0040-claude-md-growth-governance.md) | CLAUDE.md 肥大化ガバナンスを計測スクリプト連動と CONTRIBUTING.md 手順で導入する | Accepted | 2026-07-06 |

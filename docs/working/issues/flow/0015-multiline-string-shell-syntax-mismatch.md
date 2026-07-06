@@ -12,6 +12,7 @@
 ## 検討状況
 
 - 2026-07-05: Issue-0012 対策サイクル（ADR-0035）で、コミット・マージメッセージを `git commit -F <file>` / `git merge --no-ff -F <file>` のファイル経由で渡す回避策を意図的に適用し、here-string 誤用による文字列破損（前回のような `@` 混入）は発生しなかった。回避策の有効性は確認できたが、これを促す規範・チェックは依然として未整備で、適用はエージェントの都度判断に依存している（起票元: retrospectives/system/2026-07-05-question-tool-timeout-autonomy.md。rubber-duck 指摘#1 を受けた対称性の追記）
+- 2026-07-06: シェル種別の不一致はマルチライン文字列に限らず、終了コード参照（PowerShell `$LASTEXITCODE` vs Bash `$?`）のような単行構文でも発生した（Issue-0018 対策サイクルの plan 初稿の期待値誤り。セルフレビュー＝ADR-0034 突合で実行前に捕捉、実害なし）。本課題の射程を「マルチライン文字列」から「シェル種別依存の構文全般」へ広げる材料になる（起票元: retrospectives/system/2026-07-06-claude-md-growth-governance.md）
 
 ## 結論
 

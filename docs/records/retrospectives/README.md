@@ -34,6 +34,7 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 | 2026-07-05 | 選択UI誤操作対策（Issue-0005 対策） | system/ + flow/ | feature/selection-ui-text-choice (merge: 5012033) | ADR-0036 サイクル。環境設定＋環境ベース2分岐規範。フロー課題1件を抽出し Issue-0017 起票 |
 | 2026-07-05 | .gitattributes による改行正規化（Issue-0014 対策） | system/ のみ | feature/gitattributes-eol-normalization (merge: cc67f73) | ADR-0037 サイクル。新規課題なし。Issue-0016/0017 の進展を検討状況へ追記（ADR-0031）。ADR-0036 規範の初運用と環境変数の実機検証を完了 |
 | 2026-07-06 | 進め方チェック観点の規範化（Issue-0016/0017 対策） | system/ のみ | feature/process-check-norms (merge: d6b50c8) | ADR-0038/0039 サイクル。retrospective 起点の新規課題なし（設計議論で Issue-0018 をサイクル内起票）。CLAUDE.md 規模拡大の抑制方針を初適用 |
+| 2026-07-06 | CLAUDE.md 肥大化ガバナンス（Issue-0018 対策） | system/ + flow/ | feature/claude-md-growth-governance (merge: e3e6768) | ADR-0040 サイクル。フロー課題1件を抽出し Issue-0020 起票。Issue-0015 の進展を検討状況へ追記（ADR-0031）。環境解決の先行調査ステップ（ADR-0039）初発動 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

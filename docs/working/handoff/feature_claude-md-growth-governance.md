@@ -2,8 +2,8 @@
 
 - **Branch**: feature/claude-md-growth-governance
 - **Last Updated**: 2026-07-06 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 課題対策サイクル/実装完了（ADR-0040 Accepted・Issue-0018 close 済み）・master マージ前
+- **Status**: completed
+- **Current Phase**: 課題対策サイクル完了（merge: e3e6768、retrospective 実施済み）
 
 ## 作業の目的・背景
 
@@ -23,16 +23,16 @@ Issue-0018「CLAUDE.md 常時指示の肥大化を監視・棚卸しする仕組
 - [x] brainstorming: 3案比較から案1（独立計測スクリプト＋sync-template 連動）採用、閾値は保守的な 12,000 バイト / 45 件（研究データ IFScale・Context Rot を参照しつつ安全マージン付きトリップワイヤーと位置づけ）、設計3セクション承認。ADR-0040 起票（8a0f0a7）（2026-07-06）
 - [x] 実装計画作成（`docs/working/plans/2026-07-06-claude-md-growth-governance.md`、816f16a。ADR-0034 突合で期待値3件を修正）（2026-07-06）
 - [x] 実装（全5タスク）: `scripts/check-claude-md-size.ps1` 新設（警告分岐の実機検証込み。7cc817f）、sync-template.ps1 連動（template 差分なし確認。dcdd04f）、CONTRIBUTING.md 事前判定小節（6399fbb）、同棚卸しシナリオ（eeeb35b）、全体 read-back 検証・ADR-0040 Accepted 昇格・Issue-0018 close（5003cb2）（2026-07-06）
+- [x] master へ `--no-ff` merge（e3e6768）、feature ブランチ削除、merge 後の動作検証（sync-template＋計測の実行確認）（2026-07-06）
+- [x] retrospective 実施: system/flow 両記録作成、フロー課題1件 → Issue-0020 起票、Issue-0015 へ進展追記、rubber-duck 指摘3件すべて採用・反映（2026-07-06）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: master へのマージと retrospective
-  - 状態: 全5タスクの実装・検証・コミット完了（7cc817f, dcdd04f, 6399fbb, eeeb35b, 5003cb2）。ADR-0040 Accepted 昇格・Issue-0018 close 済み
-  - 残り: master へ `--no-ff` マージ（`git merge --no-ff -F <file>`）→ retrospective スキル起動 → handoff finalize
+なし（サイクル完了）
 
 ## 未着手のタスク
 
-なし（実装は完了。残りはマージとセッション終了処理のみ）
+なし（後続は master ハンドオフ `master.md` を参照）
 
 ## 既知のブロッカー・懸念
 

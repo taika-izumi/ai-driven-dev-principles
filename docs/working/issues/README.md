@@ -33,3 +33,4 @@
 | [0017](flow/0017-environment-solution-survey-before-norms.md) | 対策検討の初手に「環境・ツール設定による構造的解決の調査」を促す観点がない | closed | 2026-07-05 |
 | [0018](flow/0018-claude-md-norm-growth-monitoring.md) | CLAUDE.md 常時指示の肥大化を監視・棚卸しする仕組みがない | closed | 2026-07-05 |
 | [0019](flow/0019-adr-rejected-status-path.md) | コミット済み Proposed ADR を不採用で終える経路（Rejected）が未定義 | open | 2026-07-06 |
+| [0020](flow/0020-staged-content-check-before-commit.md) | コミット直前の確認観点に「ステージング内容の確認」が含まれていない | open | 2026-07-06 |

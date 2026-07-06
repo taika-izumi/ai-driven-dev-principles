@@ -1,6 +1,6 @@
 # ADR-0040: CLAUDE.md 肥大化ガバナンスを計測スクリプト連動と CONTRIBUTING.md 手順で導入する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-06
 
 ## Context

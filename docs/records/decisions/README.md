@@ -48,3 +48,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0040](0040-claude-md-growth-governance.md) | CLAUDE.md 肥大化ガバナンスを計測スクリプト連動と CONTRIBUTING.md 手順で導入する | Accepted | 2026-07-06 |
 | [0041](0041-adr-rejected-status-and-ledger-audit.md) | コミット済み Proposed ADR の不採用経路（Rejected）を定義しステータス体系を完成させる | Accepted | 2026-07-07 |
 | [0042](0042-superseded-identification-and-ledger-audit.md) | Superseded の置換対象は変更箇所起点で特定し、網羅は台帳監査を保険とする | Accepted | 2026-07-07 |
+| [0043](0043-loop-engineering-poc-first-direction.md) | ループエンジニアリング環境は実証先行で構築し、現行体系は対話モード専用として無変更維持する | Accepted | 2026-07-08 |

@@ -1,6 +1,6 @@
 # ADR-0013: knowledge-distillation スキルを新設してドメイン知識抽出を担当させる
 
-- **Status**: Proposed
+- **Status**: Rejected
 - **Date**: 2026-05-01
 
 ## Context
@@ -31,3 +31,4 @@ retrospective スキルが Tech Notes セクションに古びない技術知見
 - ＋ 「やらない決定」(ADR-0012) を「次サイクルでやる決定」へ正規に昇格させる流れが ADR チェーンとして追跡可能
 - − 新スキル分のメンテナンスコストが増える
 - − `docs/knowledge/` の保管規約を別途決める必要がある（新規 ADR が派生する可能性）
+- **不採用（2026-07-07、初回台帳監査にて）**: 本 ADR を生んだ「retrospective 中の採否判断・即時 ADR 化」プロセスが ADR-0021 で廃止され、情報分類体系も ADR-0025 で刷新されたため、本設計（`docs/knowledge/` 等）をそのまま実装する前提が失われた。テーマ（知見の横断再利用）自体は Issue-0021 として課題に再起票し、着手時は現行フロー（brainstorming 起点）で設計し直す

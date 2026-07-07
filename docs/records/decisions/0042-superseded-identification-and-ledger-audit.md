@@ -1,6 +1,6 @@
 # ADR-0042: Superseded の置換対象は変更箇所起点で特定し、網羅は台帳監査を保険とする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-07
 
 ## Context

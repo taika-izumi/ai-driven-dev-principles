@@ -1,6 +1,6 @@
 # ADR-0041: コミット済み Proposed ADR の不採用経路（Rejected）を定義しステータス体系を完成させる
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-07
 
 ## Context

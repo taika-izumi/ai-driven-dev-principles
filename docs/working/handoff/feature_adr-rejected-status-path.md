@@ -2,8 +2,8 @@
 
 - **Branch**: feature/adr-rejected-status-path
 - **Last Updated**: 2026-07-07 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 課題対策サイクル / 実装完了（plan 全6タスク完了、ADR-0041/0042 Accepted、Issue-0019 closed）→ master へのマージ待ち
+- **Status**: completed
+- **Current Phase**: 完了（merge: a9c7a5a、retrospective 実施済み: `docs/records/retrospectives/system|flow/2026-07-07-adr-rejected-status-path.md`）
 
 ## 作業の目的・背景
 
@@ -41,9 +41,7 @@ Issue-0019 への対策サイクル。`decision-log` スキルには Accepted �
 
 ## 未着手のタスク
 
-- [ ] master へのマージ（finishing-a-development-branch）
-- [ ] retrospective（merge 直後）、handoff finalize
-- [ ] プラグイン更新（`/plugin marketplace update ai-driven-dev-principles`。ユーザー操作。skills/ 変更の反映に必要）
+なし（master へのマージ・retrospective・課題起票まで完了。プラグイン更新（`/plugin marketplace update ai-driven-dev-principles`。ユーザー操作）のみ次セッション開始前に推奨 — 以後の追跡は `docs/working/handoff/master.md` へ引き継ぎ）
 
 ## 既知のブロッカー・懸念
 

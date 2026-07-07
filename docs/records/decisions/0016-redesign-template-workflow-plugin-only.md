@@ -1,6 +1,6 @@
 # ADR-0016: template ワークフローの再設計（skills/ を除外し、プラグイン一本化）
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0023 / 0027 で一部改定: Layer 2 は CLAUDE.md、manifest の内容は ADR-0027 のシード基準で再定義）
 - **Date**: 2026-05-04
 
 ## Context

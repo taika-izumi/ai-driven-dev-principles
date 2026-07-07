@@ -18,12 +18,12 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0010](0010-introduce-retrospective-phase.md) | 開発サイクル末尾の振り返りフェーズ導入 | Accepted | 2026-05-01 |
 | [0011](0011-retrospective-storage-policy.md) | 振り返り出力の保管規約（時系列追記型） | Accepted | 2026-05-01 |
 | [0012](0012-domain-knowledge-out-of-scope-for-c.md) | ドメイン知識抽出は次サイクル課題 | Accepted | 2026-05-01 |
-| [0013](0013-introduce-knowledge-distillation-skill.md) | knowledge-distillation スキル新設 | Proposed | 2026-05-01 |
-| [0014](0014-parent-dir-check-before-file-create.md) | 新規ファイル作成時の親ディレクトリ先行確認 | Proposed | 2026-05-01 |
+| [0013](0013-introduce-knowledge-distillation-skill.md) | knowledge-distillation スキル新設 | Rejected | 2026-05-01 |
+| [0014](0014-parent-dir-check-before-file-create.md) | 新規ファイル作成時の親ディレクトリ先行確認 | Rejected | 2026-05-01 |
 | [0015](0015-distribute-skills-as-copilot-cli-plugin.md) | スキル群を Copilot CLI プラグインとして配布（公式プラグイン化 + dev-link ハイブリッド） | Accepted | 2026-05-04 |
 | [0016](0016-redesign-template-workflow-plugin-only.md) | template ワークフローの再設計（skills/ を除外し、プラグイン一本化） | Accepted | 2026-05-04 |
 | [0017](0017-correct-local-marketplace-registration.md) | ローカル開発時のプラグイン登録方式を `copilot plugin marketplace add <path>` に修正 | Accepted | 2026-05-04 |
-| [0018](0018-mandate-brainstorming-for-medium-or-multi-option-work.md) | 中規模以上 / 複数解決策の作業着手前に brainstorming skill 必須化 | Proposed | 2026-05-05 |
+| [0018](0018-mandate-brainstorming-for-medium-or-multi-option-work.md) | 中規模以上 / 複数解決策の作業着手前に brainstorming skill 必須化 | Rejected | 2026-05-05 |
 | [0019](0019-adr-authoring-discipline.md) | ADR記述規律 — 決定のみ記載・未決事項の分離・承認の遅延昇格 | Accepted | 2026-06-15 |
 | [0020](0020-retire-responding-to-user-enforcement.md) | responding-to-user スキルの必須化を廃止し ask-user-enforcer プラグインを撤去 | Accepted | 2026-06-15 |
 | [0021](0021-retrospective-issue-extraction-only.md) | retrospective を課題抽出に限定し、出力を system/flow に分割 | Accepted | 2026-06-15 |
@@ -46,3 +46,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0038](0038-read-back-verification-norm.md) | ツール適用結果はリスク比例で実体の読み直しにより独立確認する規範を追加 | Accepted | 2026-07-05 |
 | [0039](0039-environment-solution-survey-first.md) | 課題対策手順に環境・ツール設定による構造的解決の先行調査ステップを追加する | Accepted | 2026-07-05 |
 | [0040](0040-claude-md-growth-governance.md) | CLAUDE.md 肥大化ガバナンスを計測スクリプト連動と CONTRIBUTING.md 手順で導入する | Accepted | 2026-07-06 |
+| [0041](0041-adr-rejected-status-and-ledger-audit.md) | コミット済み Proposed ADR の不採用経路（Rejected）を定義しステータス体系を完成させる | Accepted | 2026-07-07 |
+| [0042](0042-superseded-identification-and-ledger-audit.md) | Superseded の置換対象は変更箇所起点で特定し、網羅は台帳監査を保険とする | Accepted | 2026-07-07 |

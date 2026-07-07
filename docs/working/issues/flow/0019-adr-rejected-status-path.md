@@ -1,7 +1,8 @@
 # Issue-0019: コミット済み Proposed ADR を不採用で終える経路（Rejected）が未定義
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-06
+- **Closed**: 2026-07-07
 - **起票元**: 2026-07-06 セッション終了時のユーザー質問（ADR 破棄運用の確認）
 - **関連**: `skills/decision-log/SKILL.md`、ADR-0019（記述規律）、原則1（追跡可能性）、handoff 未着手タスク「ADR-0013/0014/0018 の Proposed 据え置き解消」
 
@@ -17,8 +18,8 @@
 
 ## 検討状況
 
-（未着手）
+- 2026-07-07: 対策サイクル（feature/adr-rejected-status-path）で対応。Rejected 経路と終端ステータスの意味境界を `decision-log` に定義、`start-work` の Post チェックを不採用方向へ対称化、Superseded の置換対象特定手順（変更箇所起点の2経路）と台帳監査を定義。初回台帳監査（全40件: 実質置換・廃止0件、部分修正注記7件）と据え置き Proposed 3件の処遇確定（0013/0014/0018 いずれも Rejected、0013 のテーマは Issue-0021 へ再起票）まで実施
 
 ## 結論
 
-（open）
+ADR-0041（Rejected 経路の定義）/ ADR-0042（Superseded の変更箇所起点特定と台帳監査）として規範化し、初回適用まで完了（closed）

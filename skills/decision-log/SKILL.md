@@ -45,10 +45,17 @@ description: "重要な意思決定をADR（Architecture Decision Record）と�
 
 「意思決定を検出しました（トリガー: <該当した強/弱トリガー>）。ADRドラフトを作成します。」
 
-### 1. 次の連番を決定する
+### 1. 次の連番を決定し、置換対象の既存 ADR を特定する
 
 `docs/records/decisions/README.md` のテーブルを確認し、最大番号+1を採番する。
 テーブルが空なら `0001` から開始する。
+
+あわせて、この決定が既存の決定を変更・置換していないかを確認する（ADR-0042。既存 ADR の全件調査は不要）:
+
+- 一次経路: 変更対象ファイルが引用している ADR 番号を確認する
+- 二次経路: 開いているインデックスのタイトルを同一トピックで走査する
+
+置換対象が見つかったら、新 ADR の作成と同時に旧 ADR を `Superseded by ADR-XXXX` へ更新する（「ステータス変更」の手順に従う）。ここでの特定は網羅保証を追わない（取りこぼしは台帳監査で回収する。`CONTRIBUTING.md`「ADRを記録するとき」の台帳監査を参照）。
 
 ### 2. ADRファイルを作成する
 
@@ -130,13 +137,24 @@ ADRは「下した決定」だけを記録する。仕様検討の議論中に�
 
 ## ADR更新手順
 
+### 終端ステータスの意味境界（ADR-0041）
+
+| ステータス | 意味 | 遷移元 |
+|-----------|------|--------|
+| Accepted | 承認され現役 | Proposed |
+| Rejected | 承認前に不採用が確定 | Proposed |
+| Deprecated | 承認後に廃止（置換先なし） | Accepted |
+| Superseded by ADR-XXXX | 承認後に新 ADR で置換 | Accepted |
+
+いずれの遷移でもファイルは削除しない（削除してよいのは未コミットのドラフトのみ。「ユーザーへの確認」参照）。
+
 ### ステータス変更
 
-ADRのステータスを変更する場合（Deprecated、Superseded、いったん Accepted にした決定の見直しなど）:
+ADRのステータスを変更する場合（Rejected、Deprecated、Superseded、いったん Accepted にした決定の見直しなど）:
 
-1. 該当ADRファイルの `Status` を更新する（Deprecated, Superseded by ADR-XXXX 等）
+1. 該当ADRファイルの `Status` を更新する（Rejected, Deprecated, Superseded by ADR-XXXX 等）
 2. `docs/records/decisions/README.md` のテーブルのステータスも更新する
-3. 変更理由をADRのConsequencesセクションに追記する
+3. 変更理由（Rejected の場合は不採用の理由）をADRのConsequencesセクションに追記する
 4. コミットする
 
 ただし、Proposed → Accepted への初回昇格は次の「承認の昇格」に従い、Consequences への追記は不要とする。
@@ -169,11 +187,12 @@ ADR作成後（Proposed）、ユーザーに以下を提示する:
 - 確定 → この決定で確定済みなら Status を Accepted に昇格します
 - 保留 → まだ議論中なら Proposed のまま据え置きます（後日チェックポイントで昇格）
 - 修正依頼 → 該当箇所を修正します
-- 却下 → ファイルとインデックスエントリを削除します」
+- 却下 → 未コミットのドラフトならファイルとインデックスエントリを削除します。コミット済みなら Status を Rejected に変更して残します」
 
 探索・議論の最中（brainstorming 中など）は「保留」を既定とする。
 
 ユーザー応答に応じて確定処理を実施する:
 - 確定: 「承認の昇格」の手順で Status を Accepted へ → インデックスも更新 → コミット
 - 保留: Proposed のまま。確定チェックポイントで改めて昇格させる（未コミットのドラフトは収束チェックポイントでコミットする。それまで書き直し自由。ADR-0030）
-- 却下: ADRファイル削除 → インデックスエントリ削除 → コミット（理由を commit message に残す）
+- 却下（未コミットのドラフト）: ADRファイル削除 → インデックスエントリ削除 → コミット（理由を commit message に残す）
+- 却下（コミット済み）: 「ステータス変更」の手順で Status を `Rejected` へ → 不採用の理由を Consequences に追記 → インデックスも更新 → コミット。ファイルは削除しない（ADR-0041）

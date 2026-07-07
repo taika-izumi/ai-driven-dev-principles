@@ -1,6 +1,6 @@
 # ADR-0018: 中規模以上の作業着手前に brainstorming skill 必須化
 
-- **Status**: Proposed
+- **Status**: Rejected
 - **Date**: 2026-05-05
 
 ## Context
@@ -78,6 +78,10 @@ Phase 2 のマッピング表に新規行を追加:
 - 本 ADR は **Proposed**。次サイクルで `start-work` から実装を開始する
 - 実装後、数サイクル運用して効果（手戻り削減・brainstorming 起動頻度）を観察し、必要なら閾値や条件を調整する
 - 真因 A（ドメイン知識ギャップ補完）と真因 C（セッション跨ぎ検証チェック）は本 ADR では対応しない。それぞれ retrospective の提案 #3・#2 として保留中で、別 ADR で扱う
+
+### 不採用の記録（2026-07-07、初回台帳監査にて）
+
+Rejected とする。理由: 決定内容の実質が別経路で実現済み — `start-work` の Phase 2 マッピング表には「新規開発・機能追加・改修 → brainstorming」行が存在し、`CONTRIBUTING.md` の課題対策手順は中規模以上に brainstorming を明記し、superpowers 側の規範（using-superpowers / brainstorming の description）も創造的作業への brainstorming を必須化している。残る差分（複数解決策時の常時指示化）を `CLAUDE.md` へ追加するのは、スキル層でカバー済みの規範を最も高価な置き場に重複配置することになり ADR-0040 の配置優先順位に反する
 
 ## Related
 

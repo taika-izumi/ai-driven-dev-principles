@@ -1,6 +1,6 @@
 # ADR-0005: セッション継続のためのハンドオフファイル方式の採用
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0025 で一部改定: 配置パスは docs/working/handoff/）
 - **Date**: 2026-04-27
 
 ## Context

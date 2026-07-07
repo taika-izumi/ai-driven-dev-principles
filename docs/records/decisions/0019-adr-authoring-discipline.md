@@ -1,6 +1,6 @@
 # ADR-0019: ADR記述規律 — 決定のみ記載・未決事項の分離・承認の遅延昇格
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0025 で一部改定: 未決事項の置き場は docs/open-questions.md から docs/working/issues/ の課題管理へ統合）
 - **Date**: 2026-06-15
 
 ## Context

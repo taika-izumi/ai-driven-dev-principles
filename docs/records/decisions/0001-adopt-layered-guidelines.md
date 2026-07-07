@@ -1,6 +1,6 @@
 # ADR-0001: レイヤード方式のガイドライン構成を採用
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0023 で一部改定: Layer 2 の実体ファイルは copilot-instructions.md から CLAUDE.md へ）
 - **Date**: 2026-04-12
 
 ## Context

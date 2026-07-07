@@ -1,6 +1,6 @@
 # ADR-0003: テンプレートフォルダとマニフェスト同期方式の採用
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0016 / 0027 / 0033 で一部改定: skills/ の template 除外、シード基準と空インデックス生成、LF 書き出し）
 - **Date**: 2026-04-13
 
 ## Context

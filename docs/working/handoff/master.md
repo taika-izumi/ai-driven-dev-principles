@@ -1,9 +1,9 @@
 # Handoff: ループエンジニアリング方向性決定（ADR-0043）・次サイクル待機
 
 - **Branch**: master
-- **Last Updated**: 2026-07-08 (Asia/Tokyo)
-- **Status**: ready-for-next-cycle
-- **Current Phase**: ループエンジニアリング方向性決定サイクル完了（ADR-0043）/ PoC はトレード戦略プロジェクト（別リポジトリ）側で実施予定 / 本リポジトリの次サイクル未着手
+- **Last Updated**: 2026-07-16 (Asia/Tokyo)
+- **Status**: in_progress（3スキルパイプラインの brainstorming 途中で中断）
+- **Current Phase**: brainstorming（作業記録→候補抽出→スキル化 の3スキル設計）/ 集約アーキテクチャの論点で中断・PC 再起動待ち
 
 ## 作業の目的・背景
 
@@ -37,7 +37,13 @@
 
 ## 進行中のタスク
 
-なし（ループエンジニアリング方向性決定サイクルは ADR-0043・handoff 更新まで完了）
+- [ ] **新サブプロジェクト（brainstorming 途中）: 作業記録→候補抽出→スキル化 の3スキルパイプライン設計**（2026-07-16 着手）
+  - 状態: `extend-guidelines` → `brainstorming` に入り、設計論点を1問ずつ詰めている途中。PC 再起動のため中断
+  - 詳細と再開ポイントは **`docs/working/handoff/skill-pipeline-brainstorming-state.md`（自己完結の継続メモ）** に全記録済み。再開時はまずこれを読むこと
+  - 確定済み: スキル1は新規作成 / 記録は handoff 節目でコンパクトな構造化追記・重い分析はスキル2へ遅延 / スキル3は writing-skills を既定エンジンにした薄いラッパー（Skill Creator の description最適化・eval を部品借用）
+  - 未決（再開ポイント）: 複数プロジェクト横断のログ集約アーキテクチャ。以降、エントリ・スキーマ / 保存先 / スキル2出力・基準 / スキル3の形 / feature-block-design 適用要否 → spec
+  - 対話モード拡張なので ADR-0043 と矛盾しない（ループ対応の改修・2プロファイル設計はしない、が境界）
+  - feature ブランチ未作成（実装着手時に切る）。ADR は設計収束まで未起票（ADR-0030）
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 
@@ -63,7 +69,8 @@
 
 1. **セッション開始前（推奨）**: プラグイン更新 `/plugin marketplace update ai-driven-dev-principles`（skills/ 改定の反映）
 2. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-3. **最初に確認すべきファイル**: 本ファイル、`docs/working/issues/README.md`
+3. **最優先で再開する作業**: 3スキルパイプラインの brainstorming。**`docs/working/handoff/skill-pipeline-brainstorming-state.md` を読み、その「■ 再開ポイント」の質問からユーザーとの対話を再開する**（前提の再確認 → 集約アーキテクチャの選択）
+4. **最初に確認すべきファイル**: 本ファイル、`docs/working/handoff/skill-pipeline-brainstorming-state.md`、`docs/working/issues/README.md`
 4. **最初に実行すべき確認**: 構造化質問ツールを使う前に環境変数 `CLAUDE_CODE_DISABLE_MOUSE_CLICKS` の値が `1` であることを確認（ADR-0036）
 5. **次に走らせる作業（候補）**: 「未着手のタスク」の目安を参考にユーザーが選択（着手はユーザー判断。必ず次サイクルではない）
 6. **トレード戦略プロジェクト（別リポジトリ）を開始する場合の引継ぎ事項（ADR-0043 の PoC）**:

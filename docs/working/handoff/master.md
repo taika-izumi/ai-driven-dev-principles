@@ -1,9 +1,9 @@
-# Handoff: ループエンジニアリング方向性決定（ADR-0043）・次サイクル待機
+# Handoff: 3スキルパイプライン設計（作業記録→候補抽出→スキル化）・feature-block-design 待機
 
-- **Branch**: master
-- **Last Updated**: 2026-07-16 (Asia/Tokyo)
-- **Status**: paused（3スキルパイプラインの brainstorming 継続中。ツール不調により安全に中断）
-- **Current Phase**: brainstorming（作業記録→候補抽出→スキル化 の3スキル設計）/ D5〜D14 確定・**ライフサイクル対策のみ未確定**で中断（AskUserQuestion の JSON 破損2回を受けた checkpoint）
+- **Branch**: feature/worklog-skill-pipeline（master から分岐。作業中）
+- **Last Updated**: 2026-07-17 (Asia/Tokyo)
+- **Status**: in_progress（spec 作成済み・ADR 0044〜0046 は Proposed。次は writing-plans → 実装）
+- **Current Phase**: feature-block-design 完了（4ブロック分割・spec 作成済み）→ writing-plans 待機
 
 ## 作業の目的・背景
 
@@ -16,6 +16,8 @@
 ## 関連ドキュメント
 
 - 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 7件 / closed 15件）
+- 進行中サブプロジェクトの spec: `docs/current/specs/2026-07-17-worklog-skill-pipeline/`（00-overview ＋ 01〜04）
+- 進行中サブプロジェクトの ADR: ADR-0044/0045/0046（Proposed）
 - 直近サイクルの ADR: ADR-0043（ループエンジニアリング方向性）
 - 前サイクルの ADR: ADR-0041 / ADR-0042（Accepted）
 - 前サイクルの retrospective: `docs/records/retrospectives/system/2026-07-07-adr-rejected-status-path.md` ＋ `flow/` 同名ファイル（フロー課題1件 → Issue-0022）
@@ -37,13 +39,14 @@
 
 ## 進行中のタスク
 
-- [ ] **新サブプロジェクト（brainstorming 継続中）: 作業記録→候補抽出→スキル化 の3スキルパイプライン設計**（2026-07-16 着手・大幅進展）
-  - 状態: `extend-guidelines` → `brainstorming`。本セッションで **D5〜D14 を確定**（集約アーキテクチャ・エントリスキーマ・overlap 対応・保存レイアウト・スキル2フロー基本形）。**残る唯一の未確定＝ログのライフサイクル対策**（id 追加・processed.jsonl 台帳。AI 提案どまりで内容面のユーザー賛否は未取得）
-  - 中断理由: AskUserQuestion のツールコール JSON 破損が2回発生。ユーザー指示で記録して安全に中断（rubber-duck で記録の忠実性を確認済み）
-  - 詳細と再開ポイントは **`docs/working/handoff/skill-pipeline-brainstorming-state.md`（自己完結の継続メモ）** に全記録済み。エントリスキーマ詳細は `docs/working/skill1-entry-schema-strawman.md`。再開時はまずこの2つを読むこと
-  - 確定の骨子: スキル1新規作成・記録は節目でコンパクト追記／出口像＝スコープ3分岐（汎用→プラグイン配信・固有→プロジェクトローカルスキル・固有ルール→CLAUDE.md）／保存＝`<ホーム>/.ai-dev-worklog/` にプロジェクト分割・scope はタグ・JSONL／識別子＝フォルダ名＋`projects.json`（upsert 自己修復）／エントリ核心＝delta（friction/corrections）／overlap 対応＝Issue 起票先行で統合バックログ dedup・skill3 は既存 extend-guidelines フローへの橋渡し・逸脱注記データのみで出力3は v2
+- [ ] **新サブプロジェクト: 作業記録→候補抽出→スキル化 の3スキルパイプライン設計**（2026-07-16。brainstorming 収束・ADR ドラフト済み）
+  - 状態: **brainstorming 完了（D1〜D17 全論点収束・設計承認済み）**。ライフサイクル対策を D15、スキル3実行環境ガードを D16、Skill Creator 借用の実現方式（設計時抽出・実行時依存なし）を D17 として本セッションで確定
+  - **ADR 0044〜0046 をドラフト作成済み（すべて Proposed・未コミット）**: 0044＝集約アーキ / 0045＝スキル1ログのスキーマ・ライフサイクル / 0046＝スキル3エンジン・借用・環境ガード。実装完了後に Accepted 昇格予定（実装を伴う決定のため。ADR-0019）。コミットは feature ブランチ作成後に spec 等とまとめて実施（ADR-0030）
+  - 詳細は **`docs/working/handoff/skill-pipeline-brainstorming-state.md`（D1〜D17 の自己完結メモ）**。エントリスキーマ詳細は `docs/working/skill1-entry-schema-strawman.md`
+  - 確定の骨子: スキル1新規作成・記録は節目でコンパクト追記／出口像＝スコープ3分岐（汎用→プラグイン配信・固有→プロジェクトローカルスキル・固有ルール→CLAUDE.md）／保存＝`<ホーム>/.ai-dev-worklog/` にプロジェクト分割・scope はタグ・JSONL／識別子＝フォルダ名＋`projects.json`（upsert 自己修復）／エントリ核心＝delta（friction/corrections）／ライフサイクル＝id・`processed.jsonl` 台帳（skillified/rejected/merged/deferred・新根拠で再浮上）／overlap 対応＝Issue 起票先行で統合バックログ dedup・skill3 は既存 extend-guidelines フローへの橋渡し・逸脱注記データのみで出力3は v2
   - 対話モード拡張なので ADR-0043 と矛盾しない（ループ対応の改修・2プロファイル設計はしない、が境界）
-  - feature ブランチ未作成（実装着手時に切る）。ADR は設計収束まで未起票（ADR-0030。候補は継続メモ第6章）
+  - feature ブランチ `feature/worklog-skill-pipeline` 作成済み。`feature-block-design` で4ブロック分割（01 worklog-store / 02 skill1-record / 03 skill2-extract / 04 skill3-skillify）・**spec 作成済み**（`docs/current/specs/2026-07-17-worklog-skill-pipeline/`）
+  - **次アクション: `writing-plans` で実装計画を作成（`docs/working/plans/`）→ 実装**。実装完了後に ADR 0044〜0046 を Accepted 昇格
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 
@@ -69,7 +72,7 @@
 
 1. **セッション開始前（推奨）**: プラグイン更新 `/plugin marketplace update ai-driven-dev-principles`（skills/ 改定の反映）
 2. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-3. **最優先で再開する作業**: 3スキルパイプラインの brainstorming。**`docs/working/handoff/skill-pipeline-brainstorming-state.md` を読み、その末尾「■ 再開ポイント（未確定論点）」からユーザーとの対話を再開する**（＝ログのライフサイクル対策：id 追加・processed.jsonl 台帳の提案(1)〜(6)をフラットに再提示し、内容面の賛否を問う）
+3. **最優先で再開する作業**: 3スキルパイプラインの**次フェーズ**。brainstorming は D1〜D17 で収束済み・ADR 0044〜0046 ドラフト済み。**feature ブランチを切り → `feature-block-design` の適用要否を判定 → spec 作成**へ進む。設計内容は `docs/working/handoff/skill-pipeline-brainstorming-state.md`（D1〜D17）と `docs/working/skill1-entry-schema-strawman.md` を参照
 4. **最初に確認すべきファイル**: 本ファイル、`docs/working/handoff/skill-pipeline-brainstorming-state.md`、`docs/working/issues/README.md`
 4. **最初に実行すべき確認**: 構造化質問ツールを使う前に環境変数 `CLAUDE_CODE_DISABLE_MOUSE_CLICKS` の値が `1` であることを確認（ADR-0036）
 5. **次に走らせる作業（候補）**: 「未着手のタスク」の目安を参考にユーザーが選択（着手はユーザー判断。必ず次サイクルではない）
@@ -91,6 +94,7 @@
 
 ## 重要な意思決定の履歴
 
+- ADR-0044/0045/0046: 3スキルパイプライン（集約アーキ / スキル1ログのスキーマ・ライフサイクル / スキル3エンジン・借用・環境ガード）（2026-07-16, **Proposed 未コミット**。実装完了後に Accepted 昇格予定）
 - ADR-0043: ループエンジニアリング環境は実証先行で構築し、現行体系は対話モード専用として無変更維持する（2026-07-08, Accepted）
 - ADR-0042: Superseded の置換対象は変更箇所起点で特定し、網羅は台帳監査を保険とする（2026-07-07, Accepted）
 - ADR-0041: コミット済み Proposed ADR の不採用経路（Rejected）を定義しステータス体系を完成させる（2026-07-07, Accepted）

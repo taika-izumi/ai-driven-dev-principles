@@ -1,8 +1,7 @@
 # スキル1 エントリ・スキーマ（改訂版・精査中）
 
-- **位置づけ**: brainstorming の設計素材。第三者レビュー反映済み・**スキーマ確定**（2026-07-16）
-- **⚠ 保留中の追補**: ログ・ライフサイクル対策として **`id` フィールドの必須追加**が提案されたが**ユーザー承認前に中断**。詳細は state メモの「■ 再開ポイント（未確定論点）」参照。承認されればここに `id`（`<project>-<date>-<NN>`）を追記する
-- **関連**: `docs/working/handoff/skill-pipeline-brainstorming-state.md`（決定 D1〜D14 ＋ 未確定論点）
+- **位置づけ**: brainstorming の設計素材。第三者レビュー反映済み・**スキーマ確定**（2026-07-16。D15 で `id` 追加まで確定）
+- **関連**: `docs/working/handoff/skill-pipeline-brainstorming-state.md`（決定 D1〜D15。全論点収束）
 
 ## 核心の設計原理（レビューで確立）
 
@@ -26,6 +25,7 @@
 
 | フィールド | 型 | 役割 |
 |---|---|---|
+| `id` | string | エントリ識別子。`<project>-<date>-<NN>`（NN＝そのプロジェクトのその日の連番。skill1 が既存 log 末尾を見て採番）。`processed.jsonl` 台帳との突合キー（D15） |
 | `date` | string | 記録日。スキル2の時系列・頻度分析 |
 | `project` | string | 出所プロジェクト名。**連結後も各行で出所が分かる**（フォルダ分割は物理配置、これは行内属性） |
 | `scope` | enum | `project-specific` / `general-candidate`（D6。振り分け D5 の起点。record 時は暫定、スキル2が最終確定） |
@@ -75,4 +75,4 @@
 - **純粋判断型の割り切り**: friction も corrections も無く hint だけのエントリは**弾く**で確定（最も弱い候補・ノイズ防止）
 - **overlap 対応（retrospective との重複）**: skill2 の本 repo 向け汎用候補も **Issue 草案として起票 → `docs/working/issues/` バックログで重複排除**（唯一の合流点）。skill3 汎用パスは既存「Issue → extend-guidelines → スキル作成」への橋渡し（薄い）。逸脱注記は**データのみ捕捉**し、skill2 出力3（ルール改訂候補）は **v2 へ延期**（コア目的＝スキル化とは別関心のためv1スコープを絞る。他プロジェクトの逸脱は手動 Issue 移行の経路があるが面倒で未使用＝将来 v2 が自動化し得る）
 
-→ 論点3以降（保存レイアウト）は state メモ D13/D14 で解決済み。**残る唯一の未確定＝ログ・ライフサイクル対策**（id 追加・processed.jsonl。state メモ「■ 再開ポイント（未確定論点）」参照）
+→ 論点3以降（保存レイアウト）は state メモ D13/D14 で解決済み。**ログ・ライフサイクル対策も D15 で確定**（`id` 追加・`processed.jsonl` 台帳・`deferred` 再浮上）。全論点収束＝設計承認待ち。

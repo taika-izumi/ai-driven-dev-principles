@@ -49,7 +49,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0041](0041-adr-rejected-status-and-ledger-audit.md) | コミット済み Proposed ADR の不採用経路（Rejected）を定義しステータス体系を完成させる | Accepted | 2026-07-07 |
 | [0042](0042-superseded-identification-and-ledger-audit.md) | Superseded の置換対象は変更箇所起点で特定し、網羅は台帳監査を保険とする | Accepted | 2026-07-07 |
 | [0043](0043-loop-engineering-poc-first-direction.md) | ループエンジニアリング環境は実証先行で構築し、現行体系は対話モード専用として無変更維持する | Accepted | 2026-07-08 |
-| [0044](0044-worklog-skill-pipeline-central-aggregation.md) | 作業記録→候補抽出→スキル化の3スキルパイプラインを中央集約アーキテクチャで新設する | Proposed | 2026-07-16 |
-| [0045](0045-worklog-entry-schema-and-lifecycle.md) | スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクルで設計する | Proposed | 2026-07-16 |
-| [0046](0046-skill3-engine-borrowing-and-env-guard.md) | スキル3は writing-skills を既定エンジンとし、Skill Creator 技術は設計時抽出で借用、実行環境ガードを設ける | Proposed | 2026-07-16 |
-| [0047](0047-worklog-record-wired-into-start-work-post.md) | worklog-record（スキル1）は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる | Proposed | 2026-07-17 |
+| [0044](0044-worklog-skill-pipeline-central-aggregation.md) | 作業記録→候補抽出→スキル化の3スキルパイプラインを中央集約アーキテクチャで新設する | Accepted | 2026-07-16 |
+| [0045](0045-worklog-entry-schema-and-lifecycle.md) | スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクルで設計する | Accepted | 2026-07-17 |
+| [0046](0046-skill3-engine-borrowing-and-env-guard.md) | スキル3は writing-skills を既定エンジンとし、Skill Creator 技術は設計時抽出で借用、実行環境ガードを設ける | Accepted | 2026-07-16 |
+| [0047](0047-worklog-record-wired-into-start-work-post.md) | worklog-record（スキル1）は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる | Accepted | 2026-07-17 |

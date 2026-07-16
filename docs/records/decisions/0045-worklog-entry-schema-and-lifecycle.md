@@ -1,6 +1,6 @@
 # ADR-0045: スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクルで設計する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-17
 
 ## Context

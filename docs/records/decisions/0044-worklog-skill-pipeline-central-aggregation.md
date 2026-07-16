@@ -1,6 +1,6 @@
 # ADR-0044: 作業記録→候補抽出→スキル化の3スキルパイプラインを中央集約アーキテクチャで新設する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-16
 
 ## Context

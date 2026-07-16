@@ -99,11 +99,11 @@
 
 ## 完了基準
 
-- [ ] `skills/` 配下にスキル1（記録）・スキル2（候補抽出）・スキル3（スキル化）の3スキルが存在し、プラグインから提供される
-- [ ] 中央ストア（`<home>/.ai-dev-worklog/`）のレイアウトとエントリ/台帳スキーマが 01 の仕様どおり skill doc に明記されている
-- [ ] スキル1が記録ゲート判定と delta 必須検証（friction/corrections の少なくとも一方が空なら弾く）を行う
-- [ ] スキル1が `projects.json` の upsert 自己修復と id 採番（`<project>-<date>-<NN>`）を行う
-- [ ] スキル2が `processed.jsonl` による処理済み除外・deferred の条件付き再浮上・既存スキル重複排除を行い、採否結果を Issue 草案と台帳へ反映する
-- [ ] スキル3が実行環境ガード・スコープ3分岐・writing-skills 委譲を行い、結果を台帳へ追記する
-- [ ] `start-work` の Post ラッパーに worklog-record 実行判定が組み込まれている（ADR-0047）
-- [ ] ADR 0044/0045/0046/0047 が Accepted へ昇格している
+- [x] `skills/` 配下にスキル1（記録）・スキル2（候補抽出）・スキル3（スキル化）の3スキルが存在し、プラグインから提供される
+- [x] 中央ストア（`<home>/.ai-dev-worklog/`）のレイアウトとエントリ/台帳スキーマが 01 の仕様どおり skill doc に明記されている
+- [x] スキル1が記録ゲート判定と delta 必須検証（friction/corrections の少なくとも一方が空なら弾く）を行う
+- [x] スキル1が `projects.json` の upsert 自己修復と id 採番（`<project>-<date>-<NN>`）を行う
+- [x] スキル2が `processed.jsonl` による処理済み除外・deferred の条件付き再浮上・既存スキル重複排除を行い、採否結果を Issue 草案と台帳へ反映する
+- [x] スキル3が実行環境ガード・スコープ3分岐・writing-skills 委譲を行い、結果を台帳へ追記する
+- [x] `start-work` の Post ラッパーに worklog-record 実行判定が組み込まれている（ADR-0047）
+- [x] ADR 0044/0045/0046/0047 が Accepted へ昇格している

@@ -1,6 +1,6 @@
 # ADR-0046: スキル3は writing-skills を既定エンジンとし、Skill Creator 技術は設計時抽出で借用、実行環境ガードを設ける
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-16
 
 ## Context

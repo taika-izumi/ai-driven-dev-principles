@@ -52,3 +52,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0044](0044-worklog-skill-pipeline-central-aggregation.md) | 作業記録→候補抽出→スキル化の3スキルパイプラインを中央集約アーキテクチャで新設する | Proposed | 2026-07-16 |
 | [0045](0045-worklog-entry-schema-and-lifecycle.md) | スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクルで設計する | Proposed | 2026-07-16 |
 | [0046](0046-skill3-engine-borrowing-and-env-guard.md) | スキル3は writing-skills を既定エンジンとし、Skill Creator 技術は設計時抽出で借用、実行環境ガードを設ける | Proposed | 2026-07-16 |
+| [0047](0047-worklog-record-wired-into-start-work-post.md) | worklog-record（スキル1）は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる | Proposed | 2026-07-17 |

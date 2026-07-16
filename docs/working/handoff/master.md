@@ -2,8 +2,8 @@
 
 - **Branch**: feature/worklog-skill-pipeline（master から分岐。作業中）
 - **Last Updated**: 2026-07-17 (Asia/Tokyo)
-- **Status**: in_progress（spec 作成済み・ADR 0044〜0046 は Proposed。次は writing-plans → 実装）
-- **Current Phase**: feature-block-design 完了（4ブロック分割・spec 作成済み）→ writing-plans 待機
+- **Status**: in_progress（spec ＋ 実装計画 作成済み・ADR 0044〜0047 は Proposed。次は実装＝Task1〜7 の実行）
+- **Current Phase**: writing-plans 完了（`docs/working/plans/2026-07-17-worklog-skill-pipeline.md`、Task1〜7）→ 実装（executing）待機
 
 ## 作業の目的・背景
 
@@ -17,7 +17,8 @@
 
 - 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 7件 / closed 15件）
 - 進行中サブプロジェクトの spec: `docs/current/specs/2026-07-17-worklog-skill-pipeline/`（00-overview ＋ 01〜04）
-- 進行中サブプロジェクトの ADR: ADR-0044/0045/0046（Proposed）
+- 進行中サブプロジェクトの plan: `docs/working/plans/2026-07-17-worklog-skill-pipeline.md`（Task1〜7）
+- 進行中サブプロジェクトの ADR: ADR-0044/0045/0046/0047（Proposed）
 - 直近サイクルの ADR: ADR-0043（ループエンジニアリング方向性）
 - 前サイクルの ADR: ADR-0041 / ADR-0042（Accepted）
 - 前サイクルの retrospective: `docs/records/retrospectives/system/2026-07-07-adr-rejected-status-path.md` ＋ `flow/` 同名ファイル（フロー課題1件 → Issue-0022）
@@ -46,7 +47,9 @@
   - 確定の骨子: スキル1新規作成・記録は節目でコンパクト追記／出口像＝スコープ3分岐（汎用→プラグイン配信・固有→プロジェクトローカルスキル・固有ルール→CLAUDE.md）／保存＝`<ホーム>/.ai-dev-worklog/` にプロジェクト分割・scope はタグ・JSONL／識別子＝フォルダ名＋`projects.json`（upsert 自己修復）／エントリ核心＝delta（friction/corrections）／ライフサイクル＝id・`processed.jsonl` 台帳（skillified/rejected/merged/deferred・新根拠で再浮上）／overlap 対応＝Issue 起票先行で統合バックログ dedup・skill3 は既存 extend-guidelines フローへの橋渡し・逸脱注記データのみで出力3は v2
   - 対話モード拡張なので ADR-0043 と矛盾しない（ループ対応の改修・2プロファイル設計はしない、が境界）
   - feature ブランチ `feature/worklog-skill-pipeline` 作成済み。`feature-block-design` で4ブロック分割（01 worklog-store / 02 skill1-record / 03 skill2-extract / 04 skill3-skillify）・**spec 作成済み**（`docs/current/specs/2026-07-17-worklog-skill-pipeline/`）
-  - **次アクション: `writing-plans` で実装計画を作成（`docs/working/plans/`）→ 実装**。実装完了後に ADR 0044〜0046 を Accepted 昇格
+  - **実装計画作成済み**: `docs/working/plans/2026-07-17-worklog-skill-pipeline.md`（Task1: store-format / Task2: worklog-record / Task3: start-work 配線 / Task4: worklog-extract / Task5: 借用技術ref / Task6: worklog-skillify / Task7: 統合検証・プラグイン更新・ADR 昇格）
+  - 追加決定: **ADR-0047**（worklog-record を start-work Post に配線・全プロジェクト伝播）。スキル名確定＝worklog-record / worklog-extract / worklog-skillify
+  - **次アクション: 実装（subagent-driven-development または executing-plans）で Task1〜7 を実行**。skills/ 編集のためプラグイン更新が Task7 に含まれる。実装完了後に ADR 0044〜0047 を Accepted 昇格
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 

@@ -2,7 +2,7 @@
 
 ## 対象ファイル
 
-- 実行コードは持たない。**データ契約（フォーマット規約）**であり、実体は各スキル doc（02/03/04）が参照・遵守するフォーマット定義として `skills/` 内に記述される（例: スキル1 doc 内の「ストア仕様」節、または共有 reference ファイル `skills/<skill1>/references/store-format.md`。配置は実装時に確定）
+- 実行コードは持たない。**データ契約（フォーマット規約）**であり、実体は各スキル doc（02/03/04）が参照・遵守するフォーマット定義として `skills/` 内に記述される。正典は共有 reference ファイル `skills/worklog-record/references/store-format.md` に置き、skill2/skill3 doc はこれを参照する
 - 実行時に生成・更新される物理ファイル群（リポジトリ外・ユーザーのホーム配下）:
   - `<home>/.ai-dev-worklog/projects.json`
   - `<home>/.ai-dev-worklog/<folderName>/log.jsonl`

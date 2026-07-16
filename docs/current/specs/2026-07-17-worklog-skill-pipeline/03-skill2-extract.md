@@ -2,7 +2,7 @@
 
 ## 対象ファイル
 
-- `skills/<skill2-name>/SKILL.md`（スキル本体。名称は実装時に確定。候補: `worklog-extract`）
+- `skills/worklog-extract/SKILL.md`（スキル本体）
 
 ## 責務
 

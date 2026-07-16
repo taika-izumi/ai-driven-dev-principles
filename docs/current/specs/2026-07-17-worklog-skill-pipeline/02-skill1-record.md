@@ -2,8 +2,9 @@
 
 ## 対象ファイル
 
-- `skills/<skill1-name>/SKILL.md`（スキル本体。名称は実装時に確定。候補: `worklog-record`）
-- 必要に応じ `skills/<skill1-name>/references/store-format.md`（01 のストア契約を参照 or 内包）
+- `skills/worklog-record/SKILL.md`（スキル本体）
+- `skills/worklog-record/references/store-format.md`（01 のストア契約の正典。skill2/skill3 もこれを参照）
+- `skills/start-work/SKILL.md`（Post ラッパーに worklog-record 実行判定を追加。ADR-0047）
 
 ## 責務
 
@@ -11,7 +12,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 
 ## インターフェース
 
-- **トリガー**: 作業の節目（handoff マイルストーンと同じ節目＝スキル完了 / plan の1タスク完了 / 重要な分岐通過）。タスクごとの継続的インラインログはしない
+- **トリガー**: 作業の節目（handoff マイルストーンと同じ節目＝スキル完了 / plan の1タスク完了 / 重要な分岐通過）。**発火は `start-work` の Post ラッパーに組み込む**（session-handoff update と同じ契機・全プロジェクトへ伝播。ADR-0047）。タスクごとの継続的インラインログはしない
 - **入力**: 直前の作業の文脈（メインエージェントが保持）
 - **出力**: `<folderName>/log.jsonl` に1行追記（記録ゲート不通過なら追記なし）
 - **01 への依存操作**: 識別子解決（upsert）／ id 採番／エントリ追記
@@ -39,3 +40,4 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 
 - ADR-0044（記録ゲート・スキル1/2 責務境界・scope 暫定タグ）
 - ADR-0045（エントリスキーマ・delta 核心・id 採番）
+- ADR-0047（start-work Post への配線・全プロジェクト伝播）

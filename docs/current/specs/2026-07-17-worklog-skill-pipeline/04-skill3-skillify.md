@@ -2,8 +2,8 @@
 
 ## 対象ファイル
 
-- `skills/<skill3-name>/SKILL.md`（スキル本体。名称は実装時に確定。候補: `worklog-skillify`）
-- `skills/<skill3-name>/references/`（Skill Creator から設計時抽出した技術＝description 自動最適化・定量 eval ループの手法を自前で蒸留内包）
+- `skills/worklog-skillify/SKILL.md`（スキル本体）
+- `skills/worklog-skillify/references/`（Skill Creator から設計時抽出した技術＝description 自動最適化・定量 eval ループの手法を自前で蒸留内包）
 
 ## 責務
 

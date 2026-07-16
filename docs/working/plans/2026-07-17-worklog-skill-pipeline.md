@@ -93,6 +93,8 @@ delta ペア（`friction` または `corrections` の少なくとも一方が必
 3. 同一 `project` かつ同一 `date` のエントリ数を数え、その数+1 を2桁ゼロ埋めして NN とする
 4. `id = "<project>-<date>-<NN>"`
 
+> 注: ADR-0045 / spec 01 の記述「末尾を見て採番」の**改善版**。末尾1行だけでなく同一 date 全件をカウントすることで、順序が乱れた場合でも正しい NN が決まる。両表現は同等の意図で本アルゴリズムを正典とする。
+
 ## 台帳レコード（processed.jsonl、1行1レコード、追記専用）
 
 ```jsonl
@@ -103,12 +105,14 @@ delta ペア（`friction` または `corrections` の少なくとも一方が必
 | フィールド | 型 | 説明 |
 |---|---|---|
 | `id` | string | 対象エントリまたはクラスタ代表の id |
-| `outcome` | enum | `skillified` / `rejected` / `merged` / `deferred`（**採否結果**。エントリ側 outcome とは別物） |
+| `outcome` | enum | `adopted` / `skillified` / `rejected` / `merged` / `deferred`（**採否結果**。エントリ側 outcome とは別物。状態遷移: `adopted` → `skillified` または `merged`） |
 | `evidence_count` | number | `deferred` のときのみ。保留時点のクラスタ根拠数 |
 | `ref` | string | 任意。skillified/merged 時の作成先 |
 | `date` | string | 台帳追記日 |
 
-すべて追記専用で in-place 書き換えを避ける（projects.json のみ全体読み書きの upsert）。git 管理は v1 ではオプション。
+すべて追記専用で in-place 書き換えを避ける（projects.json のみ全体読み書きの upsert）。状態遷移は同一 id の後続レコード追記で表現し、読み側は最新レコードの outcome を採用する。git 管理は v1 ではオプション。
+
+**`adopted` の意義**: skill2 が採用した候補は skill3 完了までの窓（別セッション持ち越し・環境ガード発火・中断）で台帳未登録になる穴がある。skill2 採用時に即 `adopted` を追記し、次回 skill2 で処理済み扱いとして除外することで穴を厳密層で捕捉する。
 ````
 
 - [ ] **Step 3: 受入チェックで達成を確認**
@@ -156,7 +160,7 @@ description: "作業の節目（スキル完了・plan タスク完了・重要�
 3. `## 手順` — 以下の順:
    1. 記録ゲート判定（delta の有無）。不成立なら「記録なし」で終了
    2. delta 抽出（friction＝躓き・手戻り・非自明な試行錯誤 / corrections＝人間が注入した指示・修正を発言に近い形で1〜2行）
-   3. 識別子解決: `references/store-format.md` の upsert 規則で projects.json を更新
+   3. 識別子解決: `references/store-format.md` の upsert 規則で projects.json を更新（初回は `<home>/.ai-dev-worklog/` ディレクトリと `projects.json`・`<folderName>/log.jsonl` を新規作成。`lastSeen` は今日の日付で毎回上書き）
    4. id 採番: `references/store-format.md` の採番アルゴリズム
    5. scope 暫定タグ付け（project-specific / general-candidate）
    6. 必須フィールドを埋め、delta 必須を検証してから `<folderName>/log.jsonl` へ1行 append
@@ -167,8 +171,8 @@ description: "作業の節目（スキル完了・plan タスク完了・重要�
 
 - [ ] **Step 3: 受入チェックで達成を確認**
 
-Run: `grep -l "^name: worklog-record" skills/worklog-record/SKILL.md && grep -c "記録ゲート\|delta\|id 採番\|store-format" skills/worklog-record/SKILL.md`
-Expected: ファイルパスが出力され、カウントが `4` 以上
+Run: `grep -l "^name: worklog-record" skills/worklog-record/SKILL.md && grep -c "記録ゲート\|delta\|id 採番\|store-format\|初回\|lastSeen" skills/worklog-record/SKILL.md`
+Expected: ファイルパスが出力され、カウントが `6` 以上
 
 - [ ] **Step 4: Commit**
 
@@ -250,9 +254,9 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
    3. クラスタ評価: 横断再発回数・出所プロジェクト数・friction/corrections 重みを集計
    4. scope 再判定: ≥2プロジェクト再発→general-candidate 格上げ、単一・ドメイン依存→project-specific
    5. 既存スキル重複排除: superpowers ＋ ai-driven-dev-principles ＋ プロジェクトローカルの description と突合
-   6. deferred 再浮上判定: 現クラスタ根拠数 > 台帳 evidence_count のときのみ再提示
+   6. deferred 再浮上判定: 台帳の代表 id を含む現在のクラスタを当該 deferred クラスタとして再同定し、現クラスタ根拠数 > 台帳 evidence_count のときのみ再提示
    7. 候補提示: ランク付き候補リスト（再発数・scope・重複有無・根拠エントリ参照）。頻度はソフト判断材料（ハード閾値なし）
-   8. 人間採否 → rejected/deferred は即 processed.jsonl へ追記（deferred は evidence_count に現根拠数）／採用は Issue 草案化して worklog-skillify へ受け渡し
+   8. 人間採否 → rejected/deferred は即 processed.jsonl へ追記（deferred は evidence_count に現根拠数）／採用は Issue 草案化（general→本 repo `docs/working/issues/`、project-specific→当該プロジェクト）＋`adopted` を即 processed.jsonl へ追記→ worklog-skillify へ受け渡す。retrospective 由来の Issue バックログとの重複排除（唯一の合流点）を行う
 4. `## 出力` — ランク付き候補リスト、Issue 草案（`docs/working/issues/`）、台帳追記（rejected/deferred）
 5. `## 再提案防止（二層）` — ①台帳（厳密）②既存スキル重複排除（あいまい）
 6. `## スコープ外` — 出力3（既存ルール改訂候補発見）は v1 では作らない（逸脱注記データは貯めるが提示しない）
@@ -260,8 +264,8 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 
 - [ ] **Step 3: 受入チェックで達成を確認**
 
-Run: `grep -l "^name: worklog-extract" skills/worklog-extract/SKILL.md && grep -c "クラスタ\|処理済み\|deferred\|Issue 草案\|重複排除" skills/worklog-extract/SKILL.md`
-Expected: ファイルパスが出力され、カウントが `5` 以上
+Run: `grep -l "^name: worklog-extract" skills/worklog-extract/SKILL.md && grep -c "クラスタ\|処理済み\|deferred\|Issue 草案\|重複排除\|adopted" skills/worklog-extract/SKILL.md`
+Expected: ファイルパスが出力され、カウントが `6` 以上
 
 - [ ] **Step 4: Commit**
 
@@ -368,13 +372,13 @@ description: "worklog-extract で採用された候補から、writing-skills �
    2. スコープで振り分け先決定
    3. writing-skills へ委譲。`references/skill-authoring-techniques.md` の description 最適化・eval ループを併用（Skill Creator は実行時ロードしない）
    4. 汎用パスは既存「Issue → extend-guidelines → スキル作成」フローへ橋渡し
-   5. 作成/拡張完了後、`processed.jsonl` へ結果を追記（skillified＝新規 / merged＝既存へ統合）
+   5. 作成/拡張完了後、`processed.jsonl` へ確定結果を追記（skillified＝新規 / merged＝既存へ統合）し、対応する `adopted` エントリの状態を確定させる（追記専用 JSONL のため後続レコードで遷移を表現）
 5. `## 対応する原則` — 原則2（薄いオーケストレーション層）・原則4（環境ガードの人間確認）
 
 - [ ] **Step 3: 達成を確認**
 
-Run: `grep -l "^name: worklog-skillify" skills/worklog-skillify/SKILL.md && grep -c "実行環境ガード\|スコープ\|writing-skills\|processed.jsonl\|skill-authoring-techniques" skills/worklog-skillify/SKILL.md`
-Expected: ファイルパスが出力され、カウントが `5` 以上
+Run: `grep -l "^name: worklog-skillify" skills/worklog-skillify/SKILL.md && grep -c "実行環境ガード\|スコープ\|writing-skills\|processed.jsonl\|skill-authoring-techniques\|adopted" skills/worklog-skillify/SKILL.md`
+Expected: ファイルパスが出力され、カウントが `6` 以上
 
 - [ ] **Step 4: Commit**
 
@@ -411,7 +415,7 @@ Expected: `name: worklog-record` / `name: worklog-extract` / `name: worklog-skil
 - [ ] **Step 4: スモークテスト（end-to-end 1件）**
 
 worklog-record を手動起動し、記録ゲートを満たすダミー作業（例: 本タスクで踏んだ非自明手順）で1エントリを記録させる。
-Run: `cat "$HOME/.ai-dev-worklog/"*/log.jsonl | tail -1`
+Run: `cat "$HOME/.ai-dev-worklog/"*/log.jsonl | tail -1`（Bash ツール（Git Bash）で実行。PowerShell の場合は `Get-Content -Tail 1 "$env:USERPROFILE\.ai-dev-worklog\*\log.jsonl"` に置換）
 Expected: 必須フィールド（id/date/project/scope/title/context/procedure）と delta（friction または corrections）を持つ JSONL が1行出力される。id が `<project>-<date>-<NN>` 形式であること。
 続けて worklog-extract を起動し、その1件を含む候補リストが提示されること（採否は保留でよい）を確認する。
 
@@ -441,5 +445,5 @@ git commit -F <msgfile>
 
 - **spec 網羅**: 01→Task1、02→Task2＋Task3（start-work 配線）、03→Task4、04→Task5＋Task6。00 完了基準→Task7。ADR-0047→Task3。網羅を確認
 - **プレースホルダ**: 各 SKILL.md は frontmatter を確定文で、本文は必須セクションと具体アルゴリズム（id 採番・ゲート・環境ガード・upsert）を明示。詳細プロセスは spec ブロックを正典参照（別ファイル重複を避ける本 repo 規約に沿う）
-- **型/名称整合**: スキル名（worklog-record/extract/skillify）、ストアのフィールド名（id/scope/friction/corrections、台帳 outcome=skillified/rejected/merged/deferred、evidence_count）は全タスクで一致。store-format.md を single source とし skill2/skill3 が参照
+- **型/名称整合**: スキル名（worklog-record/extract/skillify）、ストアのフィールド名（id/scope/friction/corrections、台帳 outcome=adopted/skillified/rejected/merged/deferred、evidence_count）は全タスクで一致。store-format.md を single source とし skill2/skill3 が参照（ADR-0045 追補で `adopted` 追加）
 - **検証整合**: 各受入チェックの grep キーワードは、そのタスクが実際に書く内容（記録ゲート・delta・クラスタ・環境ガード等）と一致（ADR-0034）

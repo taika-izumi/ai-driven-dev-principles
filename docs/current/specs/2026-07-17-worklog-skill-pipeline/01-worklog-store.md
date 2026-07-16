@@ -23,7 +23,7 @@ markdown スキルであるため「インターフェース」は関数では�
 | エントリ追記 | 02 | 検証済みエントリ1件を `<folderName>/log.jsonl` に1行追記 |
 | 全エントリ読み取り | 03 | 全 `<folderName>/log.jsonl` を連結して1パス走査 |
 | 台帳読み取り | 03 | `processed.jsonl` を読み、処理済み id 集合と deferred レコードを得る |
-| 台帳追記 | 03（rejected/deferred）, 04（skillified/merged） | 採否結果を `processed.jsonl` に1行追記 |
+| 台帳追記 | 03（adopted/rejected/deferred）, 04（skillified/merged） | 採否結果を `processed.jsonl` に1行追記。追記専用のため状態遷移は同一 id の後続レコード追記で表現 |
 
 ## データモデル
 
@@ -72,7 +72,7 @@ delta ペア（**`friction` または `corrections` の少なくとも一方が�
 | フィールド | 型 | 役割 |
 |---|---|---|
 | `id` | string | 対象エントリまたはクラスタ代表の id |
-| `outcome` | enum | `skillified` / `rejected` / `merged` / `deferred`（**採否結果**。エントリ側 `outcome` とは別物） |
+| `outcome` | enum | `adopted` / `skillified` / `rejected` / `merged` / `deferred`（**採否結果**。エントリ側 `outcome` とは別物。状態遷移: `adopted` → `skillified` または `merged`） |
 | `evidence_count` | number | `deferred` のときのみ。保留時点のクラスタ根拠数（再浮上判定の基準） |
 | `ref` | string | 任意。skillified/merged 時の作成先（`skills/...` 等） |
 | `date` | string | 台帳追記日 |
@@ -83,7 +83,8 @@ delta ペア（**`friction` または `corrections` の少なくとも一方が�
 - **識別子解決の規則**（プロジェクト移動・同名衝突への自己修復）:
   - **upsert**: 記録のたびフォルダ名をキーに実パスを最新へ更新（フォルダ名が同じならプロジェクトを移動しても次回自動修正）
   - **衝突判定**: フォルダ名がリストにあり実パスが違う場合、旧パスがまだ存在→別プロジェクト同名（サフィックス付き別フォルダ＋リスト追加）、旧パスが消失→同一プロジェクト移動（パス更新）
-- すべて**追記専用**で in-place 書き換えを避ける（`projects.json` のみ全体読み書きの upsert）
+- すべて**追記専用**で in-place 書き換えを避ける（`projects.json` のみ全体読み書きの upsert）。状態遷移は同一 id の後続レコード追記で表現し、読み側は最新レコードの `outcome` を採用する
+- **`adopted` の意義**: skill2 が採用した候補は skill3 完了までの窓（別セッション持ち越し・環境ガード発火・中断）で台帳未登録になる穴がある。skill2 採用時に即 `adopted` を追記し、次回 skill2 で処理済み扱いとして除外することでこの窓を厳密層で捕捉する（ADR-0045 追補）
 - 中央ストアは `docs/overview/folder-structure.md` の5分類の**管轄外**（リポジトリ外・中央集約のため）。この理由をスキル doc に明記して records 誤解を予防する
 - git 管理は v1 ではオプション
 

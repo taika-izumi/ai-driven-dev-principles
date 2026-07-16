@@ -28,7 +28,7 @@
    - **固有ルールでスキル化不要** → そのプロジェクトの CLAUDE.md
 3. **ガード発火**: 「汎用パス かつ 本 repo でない」場合のみ警告＋ユーザー確認（①この場のプロジェクトローカルスキルとして作成 ②配信元 repo へ移動して実行 ③中止）。固有パスはガード不要でそのまま
 4. **委譲実行**: writing-skills へ委譲してスキルを作成/拡張。Skill Creator 設計時借用の references（description 最適化・eval ループ）を併用。**実行時に Skill Creator はロードしない**（エンジンは writing-skills のみ）
-5. **台帳追記**: 作成/拡張完了後、`processed.jsonl` へ結果（skillified＝新規作成 / merged＝既存スキルへ統合）を追記
+5. **台帳追記**: 作成/拡張完了後、`processed.jsonl` へ確定結果（skillified＝新規作成 / merged＝既存スキルへ統合）を追記し、対応する `adopted` エントリの状態を確定させる（追記専用 JSONL のため後続レコードで遷移を表現。読み側は最新レコードの outcome を採用）
 
 ## データモデル
 

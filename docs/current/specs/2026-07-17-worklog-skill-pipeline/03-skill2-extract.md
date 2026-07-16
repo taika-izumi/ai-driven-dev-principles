@@ -26,9 +26,9 @@
 3. **クラスタ評価**: 横断再発回数・出所プロジェクト数・friction/corrections の重みを集計
 4. **scope 再判定**: ≥2プロジェクト再発→`general-candidate` へ格上げ、単一・ドメイン依存→`project-specific`（record 時タグを横断視点で最終確定）
 5. **既存スキル重複排除**: superpowers＋ai-driven-dev-principles＋プロジェクトローカルの description と突合し、既存済みを除外（あいまい層）
-6. **deferred 再浮上判定**: deferred クラスタは、現在のクラスタ根拠数が台帳の `evidence_count` を上回った（新しい該当エントリが増えた）場合のみ再提示。増えていなければ除外
+6. **deferred 再浮上判定**: deferred クラスタは、台帳の代表 id を含む現在のクラスタを当該 deferred クラスタとして再同定し、現在のクラスタ根拠数が台帳の `evidence_count` を上回った（新しい該当エントリが増えた）場合のみ再提示。増えていなければ除外
 7. **候補提示**: ランク付き候補リスト（再発数・scope・重複有無・根拠エントリ参照つき）を人間に提示。頻度はハード閾値を置かずソフトな判断材料
-8. **採否反映**: 人間が採否 → rejected/deferred は即 `processed.jsonl` へ追記（deferred は `evidence_count` に現クラスタ根拠数を記録）／採用は Issue 草案化してスキル3へ
+8. **採否反映**: 人間が採否 → rejected/deferred は即 `processed.jsonl` へ追記（deferred は `evidence_count` に現クラスタ根拠数を記録）／採用は Issue 草案化（general→本 repo backlog `docs/working/issues/`、project-specific→当該プロジェクト）＋`adopted` を即 `processed.jsonl` へ追記し、スキル3へ受け渡す。Issue バックログとの重複排除（retrospective 課題との唯一の合流点）を行う
 
 ## データモデル
 
@@ -37,7 +37,7 @@
 ## このブロック固有の制約・前提
 
 - 再提案防止は二層: ①台帳（厳密＝処理済みは丸ごと除外）②既存スキル重複排除（あいまい＝未処理でも既存 description 一致で除外）
-- skillified/merged の台帳追記はスキル3側が行う（本ブロックは rejected/deferred のみ）
+- 台帳追記の分担: `adopted`/`rejected`/`deferred` はスキル2側（本ブロック）、`skillified`/`merged` はスキル3側
 - retrospective との overlap は Issue バックログ1箇所での重複排除で解消（唯一の合流点）
 - 出力3（既存ルール・スキルの改訂候補発見）は v1 スコープ外（逸脱注記データは貯めるが提示しない）
 

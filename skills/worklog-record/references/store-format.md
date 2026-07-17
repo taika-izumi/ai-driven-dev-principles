@@ -31,41 +31,60 @@
 
 ## エントリ（log.jsonl、1行1エントリ、追記専用）
 
-必須（いずれか空なら記録を弾く）: `id` / `date` / `project` / `scope` / `title` / `context` / `procedure`
+必須（いずれか空なら記録を弾く）: `v` / `id` / `date` / `project` / `model` / `scope` / `title` / `context` / `procedure`
 delta ペア（`friction` または `corrections` の少なくとも一方が必須）: `friction` / `corrections`
 任意: `skillification_hint` / `outcome`（success/partial/failed＝作業結果）/ `tools` / `applied_rules`（逸脱注記可）/ `refs`
 
 | フィールド | 型 | 説明 |
 |---|---|---|
+| `v` | number | スキーマ版数。現行は `2`（ADR-0049） |
 | `id` | string | `<project>-<date>-<NN>`。台帳との突合キー |
 | `date` | string | YYYY-MM-DD |
 | `project` | string | 出所プロジェクト名（連結後も行内で出所が分かる） |
+| `model` | string | 記録時の AI モデル ID（例 `"claude-fable-5"`）。モデル固有か全モデル共通かの判別材料（ADR-0048） |
 | `scope` | enum | `project-specific` / `general-candidate`（record 時は暫定） |
 | `title` | string | 動詞句15文字程度 |
 | `context` | string | 何をしていてなぜ発生したか |
 | `procedure` | string[] | 実際に踏んだ手順 |
-| `friction` | string | 躓き型 delta |
+| `friction` | string[] | 躓き型 delta。複数の躓きは要素を分ける（ADR-0051） |
 | `corrections` | string[] | 注入型 delta（人間の指示・修正を発言に近い形で） |
 
-### id 採番アルゴリズム
+### スキーマ版数と互換読み（ADR-0049 / ADR-0051）
+
+- 書き込み側は常に現行版数 `"v":2` を必ず書く（台帳レコードも同様）
+- 読み側規約: **`v` フィールドなしの行 = v1（初版スキーマ）と解釈する**。v1 行は `model` なしを許容し、`friction`（string）は 1 要素配列として読み替える
+- 既存の v1 行は書き換えない（追記専用）
+- 注: サイクル名「worklog v1.1」はパイプライン全体の改訂名であり、スキーマ版数 `v`（現行 2）とは別物
+
+### 記録単位（ADR-0053）
+
+1 エントリ = **同一 `context`（作業テーマ）を共有する delta の束**。
+
+- 同一作業内の複数の躓きは `friction` の要素として列挙する
+- 節目に独立した作業テーマの delta が複数あれば、テーマごとに複数エントリを記録してよい
+- 「どれを捨てるか」の優先順位判断はしない（ノイズ抑制は記録ゲート＝delta の存在が担う）
+
+### id 採番アルゴリズム（ADR-0050 で強化）
 
 1. `date` = 今日（YYYY-MM-DD）、`project` = フォルダ名
-2. `<folderName>/log.jsonl` を読む（無ければ NN=01）
+2. **追記の直前に** `<folderName>/log.jsonl` を読む（無ければ NN=01）
 3. 同一 `project` かつ同一 `date` のエントリ数を数え、その数+1 を2桁ゼロ埋めして NN とする
-4. `id = "<project>-<date>-<NN>"`
+4. `id = "<project>-<date>-<NN>"` で 1 行追記する
+5. **追記後に log.jsonl を読み直し、自行の id が他エントリと重複していないか検証する**（ADR-0038 の読み直し規範と整合）。重複を検出した場合、**自分が書いた行のみ id を再採番して書き直す**（追記専用原則の唯一の例外。台帳突合レコードが発生する前・自分が書いた直後の行の修復に限るため安全）
 
-> 注: ADR-0045 / spec 01 の記述「末尾を見て採番」の**改善版**。末尾1行だけでなく同一 date 全件をカウントすることで、順序が乱れた場合でも正しい NN が決まる。両表現は同等の意図で本アルゴリズムを正典とする。
+> 注: ADR-0045 / spec 01 の旧記述「末尾を見て採番」の改善版（ADR-0050）。並行セッションの採番競合（Issue-0027）に対し、直前再カウントで競合窓を縮め、読み直し検証で検出・回復する。加えて末尾1行だけでなく同一 date 全件をカウントすることで、順序が乱れた場合でも正しい NN が決まる。
 
 ## 台帳レコード（processed.jsonl、1行1レコード、追記専用）
 
 ```jsonl
-{"id":"MakeAiInstructions-2026-07-16-01","outcome":"adopted","date":"2026-07-16"}
-{"id":"MakeAiInstructions-2026-07-16-01","outcome":"skillified","ref":"skills/xxx","date":"2026-07-20"}
-{"id":"LoopForAlpha-2026-07-18-03","outcome":"deferred","evidence_count":2,"date":"2026-07-20"}
+{"v":2,"id":"MakeAiInstructions-2026-07-16-01","outcome":"adopted","date":"2026-07-16"}
+{"v":2,"id":"MakeAiInstructions-2026-07-16-01","outcome":"skillified","ref":"skills/xxx","date":"2026-07-20"}
+{"v":2,"id":"LoopForAlpha-2026-07-18-03","outcome":"deferred","evidence_count":2,"date":"2026-07-20"}
 ```
 
 | フィールド | 型 | 説明 |
 |---|---|---|
+| `v` | number | スキーマ版数。現行は `2`。`v` なしの行は v1 と解釈する（ADR-0049） |
 | `id` | string | 対象エントリまたはクラスタ代表の id |
 | `outcome` | enum | `adopted` / `skillified` / `rejected` / `merged` / `deferred`（**採否結果**。エントリ側 outcome とは別物。状態遷移: `adopted` → `skillified` または `merged`） |
 | `evidence_count` | number | `deferred` のときのみ。保留時点のクラスタ根拠数 |

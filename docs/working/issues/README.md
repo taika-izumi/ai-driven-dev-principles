@@ -12,6 +12,11 @@
 | [0003](system/0003-conversation-log-classification.md) | docs/conversation_log.md の分類・扱いが未定 | open | 2026-07-05 |
 | [0008](system/0008-legacy-single-file-spec-policy.md) | 旧型式の単一ファイル spec の維持・アーカイブ方針が未定義 | open | 2026-07-05 |
 | [0014](system/0014-missing-gitattributes.md) | .gitattributes がなく改行正規化が各自の core.autocrlf 設定任せ | closed | 2026-07-05 |
+| [0025](system/0025-worklog-entry-model-field.md) | worklog エントリに delta 発生元モデルの記録フィールドがない | open | 2026-07-17 |
+| [0026](system/0026-worklog-schema-version-field.md) | worklog エントリ・台帳にスキーマバージョンフィールドがない | open | 2026-07-17 |
+| [0027](system/0027-worklog-id-collision-concurrent-sessions.md) | 並行セッションで worklog の id 採番が衝突しうる | open | 2026-07-17 |
+| [0028](system/0028-worklog-multi-user-org-deployment.md) | worklog のマルチユーザー・組織展開対応が未設計 | open | 2026-07-17 |
+| [0029](system/0029-worklog-entry-schema-refinements.md) | worklog エントリスキーマの細部改善（corrections 誤答側・型非対称・損失規模） | open | 2026-07-17 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

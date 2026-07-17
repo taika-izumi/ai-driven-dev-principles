@@ -1,0 +1,22 @@
+# Issue-0025: worklog エントリに delta 発生元モデルの記録フィールドがない
+
+- **Status**: open
+- **Opened**: 2026-07-17
+- **起票元**: 2026-07-17 セッションでのエントリフォーマットレビュー（設計意図ドキュメント `docs/inbox/2026-07-17-worklog-entry-format-rationale.md` 作成後の対話レビュー指摘 #1）
+- **関連**: `skills/worklog-record/references/store-format.md`（エントリスキーマ）、ADR-0045、spec `docs/current/specs/2026-07-17-worklog-skill-pipeline/01-worklog-store.md`
+
+## 課題内容
+
+delta の定義は「AI が**デフォルトで**やることと実際に必要だったことの差分」だが、その「デフォルト」はモデルに依存する（例: Sonnet が躓く作業を Opus は躓かない、あるいはその逆）。現行スキーマにはエントリを記録した AI モデルを残すフィールドがなく、抽出時（worklog-extract）に「この friction は弱いモデル固有か、全モデル共通か」を判定できない。
+
+影響: (a) 特定モデルでしか起きない躓きを全モデル共通と誤認して不要なスキルを作る、(b) モデルが変わって再発しなくなった friction を「解消済み」と誤判定する、のいずれも起こりうる。コスト最適化のためにモデルを使い分ける運用（設計判断は高性能モデル・機械的実行は安価モデル）へ進むほどこの差は拡大する。
+
+対処候補: 任意フィールド `model`（string、例 `"claude-opus-4-7"`）の追加。変更コストは store-format.md・spec 01・ADR-0045 への 1 行級の追記で極小。
+
+## 検討状況
+
+（未着手）
+
+## 結論
+
+（open）

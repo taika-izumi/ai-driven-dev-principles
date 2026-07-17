@@ -1,9 +1,9 @@
 # Handoff: 3スキルパイプライン（作業記録→候補抽出→スキル化）・実装完了・master マージ待機
 
-- **Branch**: feature/worklog-skill-pipeline（master から分岐。実装完了・未マージ）
+- **Branch**: master（feature/worklog-skill-pipeline を merge `7ed7b32` として取り込み・feature ブランチ削除済み）
 - **Last Updated**: 2026-07-17 (Asia/Tokyo)
-- **Status**: in_progress（実装計画 Task1〜7 完了・スモークテスト合格・ADR 0044〜0047 Accepted 昇格済み・feature ブランチは master へ未マージ）
-- **Current Phase**: 実装完了・完了基準8/8 達成 → 次は master merge（finishing-a-development-branch）→ retrospective
+- **Status**: completed（実装完了・master merge 完了・retrospective 実施済み。次サイクル待ち）
+- **Current Phase**: 全フェーズ完了。retrospective で抽出したフロー課題 Issue-0023/0024 は次サイクル判断待ち（着手はユーザー判断）
 
 ## 作業の目的・背景
 
@@ -29,6 +29,7 @@
 
 ## 完了済みタスク
 
+- [x] **3スキルパイプライン（作業記録→候補抽出→スキル化）サイクル**: worklog-record / worklog-extract / worklog-skillify の3スキル・共有ストア契約・借用技術リファレンスを新規追加。ADR-0044/0045/0046/0047（Accepted 昇格済み・ADR-0045 は本サイクル内で `adopted` 状態を追補）。start-work Post ラッパー配線。中央ストア初回動作・end-to-end スモークテスト合格。merge `7ed7b32`。retrospective 実施済み（`docs/records/retrospectives/system|flow/2026-07-17-worklog-skill-pipeline.md`。Issue-0023/0024 起票）（2026-07-17）
 - [x] **ループエンジニアリング方向性決定サイクル**: 現行ガイドライン全体の自律ループ適性分析（対話プロトコルとしての性格の同定、資産の4分類棚卸し、欠落6要素の特定）→ extend-guidelines / brainstorming で方向性議論 → 案A「実証先行・現行無変更・2プロファイル第一仮説」を採用（ADR-0043）。実装なし・記録のみのサイクル（2026-07-08）
 - [x] **Issue-0019 対策サイクル**: ADR ステータス体系の完成（Rejected 新設・意味境界表・却下分岐分割）、Superseded の変更箇所起点特定と台帳監査の定義（ADR-0041/0042）。初回台帳監査40件（置換・廃止0件、部分修正注記7件）、Proposed 3件を Rejected 化（Rejected 経路の初適用。0013 のテーマは Issue-0021 へ再起票）。brainstorming 中のユーザーレビューで ADR を1決定=1ADR に分割（Issue-0022 の起票元）。merge `a9c7a5a`、Issue-0019 close、retrospective 実施済み（フロー課題1件 → Issue-0022。rubber-duck 指摘4件: 採用3・部分採用1）（2026-07-07）
 - [x] **Issue-0018 対策サイクル**: CLAUDE.md 肥大化ガバナンス導入（ADR-0040）。監視スクリプト `check-claude-md-size.ps1`（sync-template 連動・警告分岐の実機検証済み）、CONTRIBUTING.md へ事前判定手順＋棚卸しシナリオ追加。merge `e3e6768`、Issue-0018 close、retrospective 実施済み（2026-07-06）
@@ -40,13 +41,7 @@
 
 ## 進行中のタスク
 
-- [ ] **新サブプロジェクト完了へ向けた最終フェーズ**: master merge と retrospective のみ残
-  - **実装完了**: `skills/worklog-record/` / `worklog-extract/` / `worklog-skillify/` の 3 スキル本体（各 SKILL.md）と references 2 本（`worklog-record/references/store-format.md`、`worklog-skillify/references/skill-authoring-techniques.md`）を新規作成、`skills/start-work/SKILL.md` の Post ラッパーへの配線も追加。全 7 Task 完了・全コミット済み
-  - **Accepted 昇格済み**: ADR-0044/0045/0046/0047（実装完了チェックポイントで昇格。ADR-0019）
-  - **レビュー指摘対処完了（本セッション先頭で実施済み）**: 重大1件（ADR-0045 に `adopted` 状態を追補・skill2 採用〜skill3 完了前の窓を厳密層で捕捉。案(a) 採用）＋軽微5件（deferred クラスタ再同定・Issue ルーティング／dedup 合流点・id 採番の改善版注記・初回ファイル生成 lastSeen 明示・スモークテストのシェル前提注記）を spec/計画/skill doc に反映
-  - **スモークテスト合格**: 本セッションで worklog-record → worklog-extract を Skill 経由で end-to-end 実行。`$HOME/.ai-dev-worklog/MakeAiInstructions/log.jsonl` に 1 件記録（id `MakeAiInstructions-2026-07-17-01`）→ worklog-extract で候補リスト提示 → 採否「保留」で終了（`processed.jsonl` は未作成）
-  - **完了基準（spec 00-overview.md）**: 8/8 達成
-  - **次アクション**: (1) `finishing-a-development-branch` で master へマージ (2) master マージ後に `retrospective` スキルで本サイクル振り返り (3) retrospective 後に `session-handoff` finalize でセッション終了
+（本サブプロジェクトの進行中タスクなし。session-handoff finalize でセッション終了処理へ）
 
 ## 未着手のタスク（バックログ。着手はユーザー判断）
 
@@ -75,14 +70,15 @@
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-2. **最優先で再開する作業**: 本サブプロジェクト完了。手順:
-   - (a) `superpowers:finishing-a-development-branch` スキルで master へマージ（feature ブランチは `feature/worklog-skill-pipeline`。ブランチ削除も選択肢）
-   - (b) master マージ後、`ai-driven-dev-principles:retrospective` スキルで本サイクル振り返り（対象: 実装フェーズ全体。Done / Went Well / Struggled / Tech Notes / Issues の5観点）
-   - (c) retrospective 後、`session-handoff` finalize でセッション終了処理
-   - **注**: 実装は完了しコミット済み、ADR 0044/0045/0046/0047 は Accepted 昇格済み。追加の実装作業は不要
-3. **最初に確認すべきファイル**: 本ファイル、`docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md`（完了基準 8/8 チェック済み）、`docs/working/plans/2026-07-17-worklog-skill-pipeline.md`（全 Task 完了）、`docs/working/issues/README.md`
-4. **最初に実行すべき確認**: 構造化質問ツールを使う前に環境変数 `CLAUDE_CODE_DISABLE_MOUSE_CLICKS` の値が `1` であることを確認（ADR-0036）
-5. **バックログ（別テーマ）**: 「未着手のタスク」を参考にユーザーが選択（着手はユーザー判断）
+2. **本サブプロジェクトは完了**: 実装・master merge・retrospective まで実施済み。追加作業は不要。次サイクルへ
+3. **retrospective で抽出した新規課題（着手はユーザー判断・必ず次サイクルではない）**:
+   - **Issue-0023**（flow）: worklog-record の記録件数規範と複数 delta 候補時の優先順位付けが未明示（起票元: `docs/records/retrospectives/flow/2026-07-17-worklog-skill-pipeline.md` 課題#1）
+   - **Issue-0024**（flow）: プラグイン更新後の新規スキル availability 確認手順が start-work Phase -1 に未組み込み（起票元: `docs/records/retrospectives/flow/2026-07-17-worklog-skill-pipeline.md` 課題#2）
+   - 優先度の目安: 影響が広いのは Issue-0024（毎サイクルの往復オーバーヘッド）。Issue-0023 は worklog パイプラインの実運用開始後の実感で判断
+4. **retrospective の Handoff Forward（継続観察）**: `docs/records/retrospectives/system/2026-07-17-worklog-skill-pipeline.md` §7 参照。特に「worklog パイプラインの実運用での各 outcome 実追記の end-to-end 検証」「brainstorming 段階の状態遷移ケース網羅チェック」「meta-repo における system/flow 分類軸の妥当性」
+5. **バックログ（既存の未着手 open 課題）**: 「未着手のタスク」を参考にユーザーが選択（着手はユーザー判断）
+6. **最初に確認すべきファイル**: 本ファイル、`docs/records/retrospectives/system/2026-07-17-worklog-skill-pipeline.md`、`docs/records/retrospectives/flow/2026-07-17-worklog-skill-pipeline.md`、`docs/working/issues/README.md`
+7. **最初に実行すべき確認**: 構造化質問ツールを使う前に環境変数 `CLAUDE_CODE_DISABLE_MOUSE_CLICKS` の値が `1` であることを確認（ADR-0036）
 7. **トレード戦略プロジェクト（別リポジトリ）を開始する場合の引継ぎ事項（ADR-0043 の PoC）**:
    - プロジェクト名は **LoopForAlpha**（2026-07-08 決定）。詳細な引継ぎ書を `D:\Dev\001_Trade\LoopForAlpha\HANDOVER.md` に作成済み（背景・目的・段階的ゴール・立ち上げ手順・PoC 検証項目を自己完結で記載）。以下の要約より引継ぎ書を正とする
    - プロジェクト概要: 株などのトレード戦略を検討しバックテストする完全新規プロジェクト。現行の対話型ガイドライン（template + プラグイン）を導入した上で、自律ループ環境を実証先行で構築する

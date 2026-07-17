@@ -36,6 +36,7 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 | 2026-07-06 | 進め方チェック観点の規範化（Issue-0016/0017 対策） | system/ のみ | feature/process-check-norms (merge: d6b50c8) | ADR-0038/0039 サイクル。retrospective 起点の新規課題なし（設計議論で Issue-0018 をサイクル内起票）。CLAUDE.md 規模拡大の抑制方針を初適用 |
 | 2026-07-06 | CLAUDE.md 肥大化ガバナンス（Issue-0018 対策） | system/ + flow/ | feature/claude-md-growth-governance (merge: e3e6768) | ADR-0040 サイクル。フロー課題1件を抽出し Issue-0020 起票。Issue-0015 の進展を検討状況へ追記（ADR-0031）。環境解決の先行調査ステップ（ADR-0039）初発動 |
 | 2026-07-07 | ADR ステータス体系の完成と台帳監査（Issue-0019 対策） | system/ + flow/ | feature/adr-rejected-status-path (merge: a9c7a5a) | ADR-0041/0042 サイクル。初回台帳監査（40件: 置換・廃止0件、部分修正注記7件）、Proposed 3件を Rejected 化（0013 のテーマは Issue-0021 へ再起票）。フロー課題1件を抽出し Issue-0022 起票 |
+| 2026-07-17 | 3スキルパイプライン（作業記録→候補抽出→スキル化） | system/ + flow/ | feature/worklog-skill-pipeline (merge: 7ed7b32) | ADR-0044/0045/0046/0047 サイクル。ADR-0045 に adopted 状態を追補（ラバーダック指摘対処）してから Accepted 昇格。スモークテストで中央ストア初回動作確認。フロー課題2件を抽出し Issue-0023/0024 起票 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

@@ -1,6 +1,6 @@
 # ADR-0052: worklog の定性材料（AI の誤答側・損失規模）はフィールド追加でなく運用ガイドで扱う
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-17
 
 ## Context

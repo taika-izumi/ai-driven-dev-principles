@@ -1,6 +1,6 @@
 # ADR-0050: worklog の id 採番衝突は追記直前の再カウントと追記後の読み直し検証で対処する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-17
 
 ## Context

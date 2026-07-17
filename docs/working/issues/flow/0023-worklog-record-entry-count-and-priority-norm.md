@@ -1,7 +1,8 @@
 # Issue-0023: worklog-record の記録件数規範と複数 delta 候補時の優先順位付けが未明示
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-17
+- **Closed**: 2026-07-17
 - **起票元**: `docs/records/retrospectives/flow/2026-07-17-worklog-skill-pipeline.md` 課題#1
 - **関連**: `skills/worklog-record/SKILL.md`、`docs/current/specs/2026-07-17-worklog-skill-pipeline/02-skill1-record.md`、ADR-0044、ADR-0045
 
@@ -15,8 +16,8 @@
 
 ## 検討状況
 
-（未着手）
+- 2026-07-17（worklog v1.1 改訂サイクル）: 「厳格 1 件＋優先順位規範」「原則 1 件・例外複数可」と比較し、優先順位判断そのものを不要にする記録単位の定義（1 エントリ = 同一 context の delta 束、テーマ単位で複数記録可）を採用。friction の string[] 化（ADR-0051）が同一作業内の複数躓きの列挙を可能にしたことと整合
 
 ## 結論
 
-（open）
+ADR-0053 で決定（worklog-record SKILL.md / store-format.md / spec 02 へ反映済み）。closed

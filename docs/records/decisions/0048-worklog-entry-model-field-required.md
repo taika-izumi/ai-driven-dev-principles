@@ -1,6 +1,6 @@
 # ADR-0048: worklog エントリに記録時モデル ID の必須フィールド model を追加する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-17
 
 ## Context

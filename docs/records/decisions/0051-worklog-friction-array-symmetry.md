@@ -1,6 +1,6 @@
 # ADR-0051: worklog の friction を string[] 化して delta ペアの型を対称にする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-17
 
 ## Context

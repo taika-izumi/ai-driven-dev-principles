@@ -1,6 +1,6 @@
 # ADR-0049: worklog の log.jsonl / processed.jsonl 両方にスキーマバージョン v を必須導入する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-17
 
 ## Context

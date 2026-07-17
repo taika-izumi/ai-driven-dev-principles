@@ -1,7 +1,8 @@
 # Issue-0029: worklog エントリスキーマの細部改善（corrections の誤答側・friction 型非対称・損失規模）
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-17
+- **Closed**: 2026-07-17
 - **起票元**: 2026-07-17 セッションでのエントリフォーマットレビュー（設計意図ドキュメント `docs/inbox/2026-07-17-worklog-entry-format-rationale.md` 作成後の対話レビュー指摘 #5〜#7。同一のスキーマ改訂パスで一括判断できる細部のため 1 件に束ねて起票）
 - **関連**: `skills/worklog-record/references/store-format.md`、ADR-0045、`docs/working/skill1-entry-schema-strawman.md`
 
@@ -15,8 +16,10 @@
 
 ## 検討状況
 
-（未着手）
+- 2026-07-17（worklog v1.1 改訂サイクル）: 3 点を個別判断。
+  - 指摘 2（型非対称）: v2 スキーマ改訂の機会に **friction を string[] 化**（変更コスト最小のタイミング）
+  - 指摘 1（誤答側）・指摘 3（損失規模）: フィールド追加案と比較し、**運用ガイド明文化**を採用（読み手が LLM のため定性材料は本文から読み取れる / 任意フィールドは歯抜けデータになる / 境界判断の負荷増を避ける / v 導入により後からの昇格が安い）。実運用で本文読み取りでは不足と判明した時点でフィールド昇格を再検討
 
 ## 結論
 
-（open）
+指摘 2 は ADR-0051、指摘 1・3 は ADR-0052 で決定（store-format.md / worklog-record SKILL.md / spec 01・02 へ反映済み）。closed

@@ -1,6 +1,6 @@
 # ADR-0053: worklog の記録単位は「同一 context の delta 束」とし、節目のテーマ単位で複数記録を許す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-17
 
 ## Context

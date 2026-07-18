@@ -1,7 +1,8 @@
 # Issue-0025: worklog エントリに delta 発生元モデルの記録フィールドがない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-17
+- **Closed**: 2026-07-17
 - **起票元**: 2026-07-17 セッションでのエントリフォーマットレビュー（設計意図ドキュメント `docs/inbox/2026-07-17-worklog-entry-format-rationale.md` 作成後の対話レビュー指摘 #1）
 - **関連**: `skills/worklog-record/references/store-format.md`（エントリスキーマ）、ADR-0045、spec `docs/current/specs/2026-07-17-worklog-skill-pipeline/01-worklog-store.md`
 
@@ -15,8 +16,8 @@ delta の定義は「AI が**デフォルトで**やることと実際に必要�
 
 ## 検討状況
 
-（未着手）
+- 2026-07-17（worklog v1.1 改訂サイクル）: 対処候補の「任意フィールド」から**必須フィールド**へ強化して採用。記録者（AI 自身）は自分のモデル ID を常に知っており記録コストが実質ゼロのため、任意にして歯抜けデータになる方が分析価値を損なうと判断
 
 ## 結論
 
-（open）
+ADR-0048 で決定（v2 スキーマの必須フィールド `model` として反映済み）。closed

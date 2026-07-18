@@ -1,7 +1,8 @@
 # Issue-0026: worklog エントリ・台帳にスキーマバージョンフィールドがない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-17
+- **Closed**: 2026-07-17
 - **起票元**: 2026-07-17 セッションでのエントリフォーマットレビュー（設計意図ドキュメント `docs/inbox/2026-07-17-worklog-entry-format-rationale.md` 作成後の対話レビュー指摘 #3）
 - **関連**: `skills/worklog-record/references/store-format.md`、ADR-0045、spec `docs/current/specs/2026-07-17-worklog-skill-pipeline/01-worklog-store.md`
 
@@ -15,8 +16,8 @@
 
 ## 検討状況
 
-（未着手）
+- 2026-07-17（worklog v1.1 改訂サイクル）: log.jsonl と processed.jsonl の**両方**に必須導入（片方のみの案を退ける。台帳も同じ長寿命・共有の構造的リスクを持つため）。今回のスキーマ改訂自体が v2 となり、読み側規約「`v` なし = v1」を正典に明文化。既存 v1 データは書き換えない
 
 ## 結論
 
-（open）
+ADR-0049 で決定（v2 スキーマとして store-format.md / spec 01 へ反映済み）。closed

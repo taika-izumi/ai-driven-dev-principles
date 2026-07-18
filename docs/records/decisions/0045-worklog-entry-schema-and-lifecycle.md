@@ -1,6 +1,6 @@
 # ADR-0045: スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクルで設計する
 
-- **Status**: Accepted
+- **Status**: Accepted（ADR-0048/0049/0050/0051 で一部改定: エントリへ model・スキーマ版数 v を必須追加、friction を string[] 化、id 採番へ追記直前再カウント＋読み直し検証を追加）
 - **Date**: 2026-07-17
 
 ## Context

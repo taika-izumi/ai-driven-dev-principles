@@ -23,8 +23,8 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 ## 手順
 
 1. **台帳前処理**: `processed.jsonl` を読み、処理済み id（`adopted` / `skillified` / `rejected` / `merged`）を分析対象から除外する。`deferred` は `evidence_count` とともに保持（分析コストは未処理エントリ数でスケール）
-2. **サブエージェント走査**: 全 `log.jsonl` を1パスで読み、類似エントリをクラスタリングする（メインコンテキストに載せない。原則3の関心分離）
-3. **クラスタ評価**: 横断再発回数・出所プロジェクト数・`friction` / `corrections` の重みを集計
+2. **サブエージェント走査**: 全 `log.jsonl` を1パスで読み、類似エントリをクラスタリングする（メインコンテキストに載せない。原則3の関心分離）。読み込み時はスキーマ版数の互換規約に従う: **`v` なし行 = v1 と解釈し、v1 の `friction`（string）は 1 要素配列として読み替える**（ADR-0049/0051）
+3. **クラスタ評価**: 横断再発回数・出所プロジェクト数・`friction` / `corrections` の重みを集計する。`model` フィールドにより「特定モデル固有の躓きか、全モデル共通か」を判断材料に加える（ADR-0048。v1 行は model 不明として扱う）
 4. **scope 再判定**: ≥2プロジェクトで再発するクラスタは `general-candidate` へ格上げ、単一プロジェクト・ドメイン依存は `project-specific` に確定（record 時の暫定タグを最終確定）
 5. **既存スキル重複排除**: superpowers ＋ ai-driven-dev-principles ＋ プロジェクトローカル（`.claude/skills/`）の description と突合し、既存済みは除外（あいまい層）
 6. **deferred 再浮上判定**: 台帳の代表 id を含む現在のクラスタを当該 deferred クラスタとして再同定し、現クラスタ根拠数 > 台帳 `evidence_count` のときのみ再提示。増えていなければ除外
@@ -60,3 +60,4 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 
 - ADR-0044（overlap 対応・Issue 起票先行・scope 3分岐）
 - ADR-0045（台帳による処理済み除外・deferred 再浮上・adopted 状態・スキル2フロー）
+- ADR-0048/0049/0051（読み側互換: model 材料・v 版数判別・friction 読み替え）

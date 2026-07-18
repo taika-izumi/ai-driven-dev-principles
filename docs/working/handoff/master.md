@@ -49,8 +49,10 @@
 
 バックログは `docs/working/issues/README.md` に一元化。目安:
 
-1. [ ] **Issue-0030**（system・新規）: 中央ストアの文字コード・改行コード規約と追記手段が未定義。worklog 実運用の堅牢化。1〜数行級の追記で対処可能。**Issue-0024（flow）と合わせて worklog 実運用堅牢化サイクルとして一括対処が効率的**
-2. [ ] **Issue-0024**（flow・再発）: プラグイン更新後の新規/改定スキル availability 確認手順が start-work Phase -1 に未組み込み。毎サイクルの往復オーバーヘッド
+1. [ ] **worklog 実運用堅牢化サイクル（推奨・次サイクル候補）**: 以下 3 件を一括対処が効率的（いずれも小規模・同じ worklog 領域）
+   - **Issue-0030**（system・新規）: 中央ストアの文字コード・改行コード規約と追記手段が未定義（UTF-8/BOM なし/LF 固定の明記）
+   - **Issue-0031**（system・新規）: worklog の `model` フィールドが「記録時」定義で、モデルまたぎセッションで delta を誤帰属。ADR-0048 文言を「delta 発生元モデル」へ修正。**ユーザーは「主作業＝高性能モデル / 事後処理＝安価モデル」の使い分けを恒常運用する意向を明言（2026-07-18）→ モデルまたぎは常態化する前提**
+   - **Issue-0024**（flow・再発）: プラグイン更新後の新規/改定スキル availability 確認手順が start-work Phase -1 に未組み込み
 3. [ ] **Issue-0003 / Issue-0008**（system）: conversation_log.md の分類 / 旧型式 spec 8本の維持方針 — どちらもユーザーの方針決めが主
 4. [ ] **Issue-0021**（flow）: Tech Notes の横断再利用の仕組み — 中規模テーマ（brainstorming から設計し直す）
 5. [ ] **Issue-0006 / 0015 / 0020 / 0022**（flow）: 検証・プロセス品質系の低優先課題群
@@ -61,7 +63,8 @@
 ## 既知のブロッカー・懸念
 
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動で別の場所へ移動予定（2026-07-17 明言）**。organize-inbox の提案は不要。次セッションの start-work Phase 1 でも検知されるが、提案せず残置してよい（うち `2026-07-17-worklog-entry-format-rationale.md` は worklog 設計意図ドキュメント）
-- **中央ストアの現状**: `$HOME/.ai-dev-worklog/MakeAiInstructions/log.jsonl` に 2 件（`-01`=v1 旧スキーマ / `-02`=v2 スモークテスト）。`processed.jsonl` は未作成（採否「保留」のため）。**v1 行は書き換えない**運用を維持
+- **中央ストアの現状**: `$HOME/.ai-dev-worklog/MakeAiInstructions/log.jsonl` に 5 件（`2026-07-17-01`=v1 旧スキーマ / `-02`=v2 スモークテスト / `2026-07-18-01〜03`=本セッションの実 delta 記録）。`processed.jsonl` は未作成（採否「保留」のため）。**v1 行は書き換えない**運用を維持。2026-07-18-01〜03 は worklog v1.1 サイクル自体の delta（store 追記の utf8NoBOM / 推奨の判断根拠 front-load / retrospective 簡易モード）を記録済み
+- **モデルまたぎ運用**: ユーザーは主作業を高コストモデル・事後処理を安価モデルで行う使い分けを恒常運用する意向（2026-07-18 明言）。worklog の `model` 帰属は当面「delta 発生元モデル」で埋める（ADR-0048 文言修正待ち＝Issue-0031）
 - **スキーマ v2 反映済み**: 2026-07-18 に本セッションでプラグイン更新（`√ Updated 1 marketplace`）。以後も skills/ 改定時は `/plugin marketplace update ai-driven-dev-principles` が必要（AI 側から実行不可＝Issue-0024）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は 2026-07-17 確認済み。構造化質問ツール使用前に毎回確認すること（ADR-0036）
 - ADR-0023 の留意点（継続）: GitHub.com の Copilot コーディングエージェント（CLI 以外）がルート `CLAUDE.md` を読まない可能性

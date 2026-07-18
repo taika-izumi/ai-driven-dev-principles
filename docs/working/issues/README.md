@@ -18,6 +18,7 @@
 | [0028](system/0028-worklog-multi-user-org-deployment.md) | worklog のマルチユーザー・組織展開対応が未設計 | open | 2026-07-17 |
 | [0029](system/0029-worklog-entry-schema-refinements.md) | worklog エントリスキーマの細部改善（corrections 誤答側・型非対称・損失規模） | closed | 2026-07-17 |
 | [0030](system/0030-worklog-store-encoding-eol-contract.md) | 中央ストアの文字コード・改行コード規約と追記手段が未定義 | open | 2026-07-18 |
+| [0031](system/0031-worklog-model-field-delta-origin-vs-record-time.md) | worklog の model フィールドが「記録時」定義でモデルまたぎセッションで delta を誤帰属 | open | 2026-07-18 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

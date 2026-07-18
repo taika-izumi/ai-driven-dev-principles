@@ -25,7 +25,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 4. **識別子解決**: 現在のプロジェクトのルートフォルダ名で `projects.json` を upsert（01 の規則）
 5. **id 採番**: 追記直前に `<folderName>/log.jsonl` を再読みしてその日の連番 NN を決定し `<project>-<date>-<NN>`。追記後に読み直して自行の id 重複を検証し、重複時は自行のみ再採番（ADR-0050）
 6. **scope 暫定タグ付け**: `project-specific` / `general-candidate` を記録時点の判断で付ける（スキル2が最終確定）
-7. **エントリ構築と検証**: 01 の必須フィールド（`v`＝現行 `2`・`model`＝記録時の AI モデル ID を含む）を埋め、delta 必須（friction または corrections）を検証してから追記
+7. **エントリ構築と検証**: 01 の必須フィールド（`v`＝現行 `2`・`model`＝delta 発生元の AI モデル ID を含む）を埋め、delta 必須（friction または corrections）を検証してから追記
 
 ## データモデル
 

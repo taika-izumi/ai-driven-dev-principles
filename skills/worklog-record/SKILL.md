@@ -48,7 +48,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
    - `id = "<project>-<date>-<NN>"`
 5. **scope 暫定タグ付け**: `project-specific` / `general-candidate` を記録時点の判断で付ける（`worklog-extract` が横断視点で最終確定）
 6. **エントリ構築と検証**:
-   - 必須フィールド（`v`＝現行 `2` / `id` / `date` / `project` / `model`＝記録時の AI モデル ID / `scope` / `title` / `context` / `procedure`）を埋める
+   - 必須フィールド（`v`＝現行 `2` / `id` / `date` / `project` / `model`＝delta 発生元の AI モデル ID / `scope` / `title` / `context` / `procedure`）を埋める
    - delta 必須（`friction` または `corrections` の少なくとも一方）を検証
    - 任意フィールド（`skillification_hint` / `outcome` / `tools` / `applied_rules` / `refs`）は関連あれば付ける
    - `<folderName>/log.jsonl` へ1行 append

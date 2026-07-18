@@ -17,7 +17,7 @@
 
 ## 検討状況
 
-（未着手）
+- 2026-07-18（worklog v1.1 改訂サイクルで再発。ADR-0031）: skills/ 改定（store-format.md / worklog-record / worklog-extract の v2 化）後、反映のためユーザーに `/plugin marketplace update ai-driven-dev-principles` を実行してもらう往復が再び必要になった。AI 側からプラグイン更新の実行・反映確認ができないのは環境上の制約であり、本 Issue の対処（start-work Phase -1 に「新規/改定スキルの availability は AI 側 system-reminder で判定する」規範を組み込む）の必要性を裏づける再発事例。未着手のまま優先度を維持
 
 ## 結論
 

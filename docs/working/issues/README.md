@@ -17,8 +17,8 @@
 | [0027](system/0027-worklog-id-collision-concurrent-sessions.md) | 並行セッションで worklog の id 採番が衝突しうる | closed | 2026-07-17 |
 | [0028](system/0028-worklog-multi-user-org-deployment.md) | worklog のマルチユーザー・組織展開対応が未設計 | open | 2026-07-17 |
 | [0029](system/0029-worklog-entry-schema-refinements.md) | worklog エントリスキーマの細部改善（corrections 誤答側・型非対称・損失規模） | closed | 2026-07-17 |
-| [0030](system/0030-worklog-store-encoding-eol-contract.md) | 中央ストアの文字コード・改行コード規約と追記手段が未定義 | open | 2026-07-18 |
-| [0031](system/0031-worklog-model-field-delta-origin-vs-record-time.md) | worklog の model フィールドが「記録時」定義でモデルまたぎセッションで delta を誤帰属 | open | 2026-07-18 |
+| [0030](system/0030-worklog-store-encoding-eol-contract.md) | 中央ストアの文字コード・改行コード規約と追記手段が未定義 | closed | 2026-07-18 |
+| [0031](system/0031-worklog-model-field-delta-origin-vs-record-time.md) | worklog の model フィールドが「記録時」定義でモデルまたぎセッションで delta を誤帰属 | closed | 2026-07-18 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 
@@ -44,4 +44,4 @@
 | [0021](flow/0021-tech-notes-cross-cycle-reuse.md) | Tech Notes の横断再利用（知見の蒸留・集約）の仕組みがない | open | 2026-07-07 |
 | [0022](flow/0022-adr-granularity-check.md) | ADR 起票時に粒度（1決定=1ADR）を確認する観点がない | open | 2026-07-07 |
 | [0023](flow/0023-worklog-record-entry-count-and-priority-norm.md) | worklog-record の記録件数規範と複数 delta 候補時の優先順位付けが未明示 | closed | 2026-07-17 |
-| [0024](flow/0024-plugin-skill-availability-check-in-start-work.md) | プラグイン更新後の新規スキル availability 確認手順が start-work Phase -1 に未組み込み | open | 2026-07-17 |
+| [0024](flow/0024-plugin-skill-availability-check-in-start-work.md) | プラグイン更新後の新規スキル availability 確認手順が start-work Phase -1 に未組み込み | closed | 2026-07-17 |

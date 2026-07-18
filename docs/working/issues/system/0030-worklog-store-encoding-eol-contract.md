@@ -1,7 +1,8 @@
 # Issue-0030: 中央ストア（log.jsonl / processed.jsonl）の文字コード・改行コード規約と追記手段が未定義
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-18
+- **Closed**: 2026-07-18
 - **起票元**: worklog v1.1 改訂サイクル（2026-07-17）のスモークテストで発生した delta（friction）
 - **関連**: `skills/worklog-record/references/store-format.md`（ストア契約）、`skills/worklog-record/SKILL.md`（追記手順）、ADR-0037（改行正規化は git 側固定＝リポジトリ内のみ）、ADR-0045/0048〜0053（スキーマ）
 
@@ -31,4 +32,4 @@
 
 ## 結論
 
-（open）
+ADR-0054 で対処。ストアファイルを UTF-8/BOM なし/LF 固定の契約とし、書き側手段（PowerShell utf8NoBOM / POSIX >>）を注記、読み側 worklog-extract に走査直前の loud validation を追加した（silent tolerance は不採用）。

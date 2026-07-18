@@ -1,7 +1,8 @@
 # Issue-0024: プラグイン更新後の新規スキル availability 確認手順が start-work Phase -1 に未組み込み
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-17
+- **Closed**: 2026-07-18
 - **起票元**: `docs/records/retrospectives/flow/2026-07-17-worklog-skill-pipeline.md` 課題#2
 - **関連**: `skills/start-work/SKILL.md`（Phase -1 依存検出）、ADR-0047
 
@@ -21,4 +22,4 @@
 
 ## 結論
 
-（open）
+ADR-0055 で対処。start-work Phase -1 に「新規/改定スキルの availability は AI 側 system-reminder / Skill ツール呼び出し可否で判定（UI 非依存）、未反映ならユーザーへプラグイン更新を依頼」する step を追加した。

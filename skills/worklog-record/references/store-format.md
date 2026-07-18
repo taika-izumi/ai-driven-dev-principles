@@ -11,6 +11,15 @@
 
 このストアはリポジトリ外・中央集約であり、`docs/overview/folder-structure.md` の5分類の**管轄外**である（records と混同しないこと）。
 
+## エンコーディング・改行コード（全ストアファイル共通契約）
+
+すべてのストアファイル（`log.jsonl` / `processed.jsonl` / `projects.json`）は **UTF-8（BOM なし）・改行 LF 固定**とする（ADR-0054）。
+
+- このストアはリポジトリ外にあり、`.gitattributes` による改行正規化（ADR-0037）の管轄外。契約は各スキルの読み書き手順で守る
+- 全プラットフォーム・全ツール共有のため、別 OS・別ツールの既定追記（BOM 付き・CRLF・UTF-16 等）が混ざると連結1パス走査が壊れる
+- **書き側手段**: PowerShell は `Add-Content -Encoding utf8NoBOM`（改行は LF を明示）、POSIX シェルは `>>` リダイレクト。`projects.json` の全体書き換え（upsert）も同エンコーディングで保存する
+- **読み側検証**: `worklog-extract` は走査直前に BOM・CRLF・非 UTF-8 を検出し、あれば報告して停止する（silent tolerance はしない。既存行の正規化は内容不変のバイト正規化に限り、ユーザーの明示 opt-in でのみ実行）
+
 ## projects.json
 
 ```json

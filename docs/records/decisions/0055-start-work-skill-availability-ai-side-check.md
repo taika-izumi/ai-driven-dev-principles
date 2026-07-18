@@ -1,6 +1,6 @@
 # ADR-0055: start-work Phase -1 にスキル availability の AI 側判定規範を追加する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-18
 
 ## Context

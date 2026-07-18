@@ -1,6 +1,6 @@
 # ADR-0054: 中央ストアのエンコーディング・EOL 契約と追記手段・読み側検証を定める
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-18
 
 ## Context

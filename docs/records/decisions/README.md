@@ -59,5 +59,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0051](0051-worklog-friction-array-symmetry.md) | worklog の friction を string[] 化して delta ペアの型を対称にする | Accepted | 2026-07-17 |
 | [0052](0052-worklog-qualitative-material-guides-over-fields.md) | worklog の定性材料（AI の誤答側・損失規模）はフィールド追加でなく運用ガイドで扱う | Accepted | 2026-07-17 |
 | [0053](0053-worklog-entry-unit-theme-based.md) | worklog の記録単位は「同一 context の delta 束」とし、節目のテーマ単位で複数記録を許す | Accepted | 2026-07-17 |
-| [0054](0054-worklog-store-encoding-eol-contract.md) | 中央ストアのエンコーディング・EOL 契約と追記手段・読み側検証を定める | Proposed | 2026-07-18 |
-| [0055](0055-start-work-skill-availability-ai-side-check.md) | start-work Phase -1 にスキル availability の AI 側判定規範を追加する | Proposed | 2026-07-18 |
+| [0054](0054-worklog-store-encoding-eol-contract.md) | 中央ストアのエンコーディング・EOL 契約と追記手段・読み側検証を定める | Accepted | 2026-07-18 |
+| [0055](0055-start-work-skill-availability-ai-side-check.md) | start-work Phase -1 にスキル availability の AI 側判定規範を追加する | Accepted | 2026-07-18 |

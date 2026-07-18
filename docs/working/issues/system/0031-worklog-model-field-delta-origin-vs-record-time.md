@@ -1,7 +1,8 @@
 # Issue-0031: worklog の model フィールドが「記録時のモデル」定義で、セッションがモデルをまたぐと delta を誤帰属する
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-18
+- **Closed**: 2026-07-18
 - **起票元**: worklog v1.1 完了後の worklog-record 実行（2026-07-18）で実際に顕在化した delta
 - **関連**: ADR-0048（model 必須フィールド。文言「記録時の AI モデル ID」）、Issue-0025（model フィールドの動機）、`skills/worklog-record/references/store-format.md`、`skills/worklog-record/SKILL.md`
 
@@ -25,4 +26,4 @@ ADR-0048 は `model` を「**記録時**の AI モデル ID」と定義してい
 
 ## 結論
 
-（open）
+ADR-0048 を in-place 改定して対処。model 定義を「記録時の AI モデル ID」→「delta 発生元の AI モデル ID（記録時と異なる場合は発生元を優先）」へ訂正し、store-format.md / worklog-record SKILL.md / spec 01・02 の文言も揃えた。複数モデルまたぎの 1 エントリは ADR-0053 の記録単位でテーマ分割する。

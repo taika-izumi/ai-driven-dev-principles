@@ -53,9 +53,11 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0045](0045-worklog-entry-schema-and-lifecycle.md) | スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクルで設計する | Accepted | 2026-07-17 |
 | [0046](0046-skill3-engine-borrowing-and-env-guard.md) | スキル3は writing-skills を既定エンジンとし、Skill Creator 技術は設計時抽出で借用、実行環境ガードを設ける | Accepted | 2026-07-16 |
 | [0047](0047-worklog-record-wired-into-start-work-post.md) | worklog-record（スキル1）は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる | Accepted | 2026-07-17 |
-| [0048](0048-worklog-entry-model-field-required.md) | worklog エントリに記録時モデル ID の必須フィールド model を追加する | Accepted | 2026-07-17 |
+| [0048](0048-worklog-entry-model-field-required.md) | worklog エントリに delta 発生元モデル ID の必須フィールド model を追加する | Accepted | 2026-07-17 |
 | [0049](0049-worklog-schema-version-field.md) | worklog の log.jsonl / processed.jsonl 両方にスキーマバージョン v を必須導入する | Accepted | 2026-07-17 |
 | [0050](0050-worklog-id-collision-recount-and-readback.md) | worklog の id 採番衝突は追記直前の再カウントと追記後の読み直し検証で対処する | Accepted | 2026-07-17 |
 | [0051](0051-worklog-friction-array-symmetry.md) | worklog の friction を string[] 化して delta ペアの型を対称にする | Accepted | 2026-07-17 |
 | [0052](0052-worklog-qualitative-material-guides-over-fields.md) | worklog の定性材料（AI の誤答側・損失規模）はフィールド追加でなく運用ガイドで扱う | Accepted | 2026-07-17 |
 | [0053](0053-worklog-entry-unit-theme-based.md) | worklog の記録単位は「同一 context の delta 束」とし、節目のテーマ単位で複数記録を許す | Accepted | 2026-07-17 |
+| [0054](0054-worklog-store-encoding-eol-contract.md) | 中央ストアのエンコーディング・EOL 契約と追記手段・読み側検証を定める | Accepted | 2026-07-18 |
+| [0055](0055-start-work-skill-availability-ai-side-check.md) | start-work Phase -1 にスキル availability の AI 側判定規範を追加する | Accepted | 2026-07-18 |

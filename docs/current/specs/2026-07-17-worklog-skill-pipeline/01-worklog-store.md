@@ -49,7 +49,7 @@ markdown スキルであるため「インターフェース」は関数では�
 | `id` | string | `<project>-<date>-<NN>`。台帳との突合キー |
 | `date` | string | 記録日（YYYY-MM-DD） |
 | `project` | string | 出所プロジェクト名（連結後も行内で出所が分かる） |
-| `model` | string | 記録時の AI モデル ID（例 `"claude-fable-5"`）。モデル固有か全モデル共通かの判別材料（ADR-0048） |
+| `model` | string | delta 発生元の AI モデル ID（例 `"claude-fable-5"`。記録時と異なる場合は発生元を優先）。モデル固有か全モデル共通かの判別材料（ADR-0048） |
 | `scope` | enum | `project-specific` / `general-candidate`（record 時は暫定、スキル2が最終確定） |
 | `title` | string | 動詞句15文字程度（一覧・重複目視用） |
 | `context` | string | 何をしていて、なぜこの作業が発生したか |

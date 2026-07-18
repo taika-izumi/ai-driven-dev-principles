@@ -34,6 +34,7 @@ AIエージェントを活用した作業のフローを定義し、フロー通
 2. 主要スキル（brainstorming, writing-plans, executing-plans, subagent-driven-development, systematic-debugging, requesting-code-review, receiving-code-review, verification-before-completion）の利用可否を内部マッピング表に記録する
 3. 不足があればユーザーに報告する:
    「superpowers の <スキル名> が見つかりません。該当フェーズではインライン簡易フローへフォールバックします。」
+4. 本セッションで新規追加/改定した `ai-driven-dev-principles` スキルの availability は、AI 側の system-reminder（available-skills 一覧）または Skill ツール呼び出し可否で判定する（UI の `/skills` 表示には依存しない）。反映が確認できない場合はユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼する（AI からは実行不可。ADR-0055）
 
 ### Phase 0: セッション継続チェック
 

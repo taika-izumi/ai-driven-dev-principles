@@ -50,5 +50,5 @@
 | [0033](flow/0033-subagent-dispatch-prompt-boilerplate.md) | サブエージェント委譲の起動プロンプトに入れるべき定型項目が未定義 | open | 2026-07-31 |
 | [0034](flow/0034-independent-review-with-proof-for-non-code-artifacts.md) | 計画・仕様など非コード成果物の確定前に「実証を課した独立レビュー」を挟む工程がない | open | 2026-07-31 |
 | [0035](flow/0035-retrospective-lightweight-mode.md) | retrospective の簡易モードが正式な選択肢として未定義 | closed | 2026-07-31 |
-| [0037](flow/0037-worklog-record-post-wrapper-not-firing.md) | start-work Post ラッパーの worklog-record 発火が実運用で起きない | open | 2026-07-31 |
+| [0037](flow/0037-worklog-record-post-wrapper-not-firing.md) | start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的） | open | 2026-07-31 |
 | [0038](flow/0038-retrospective-phase3-findings-no-path-to-record.md) | retrospective の Phase 3 で得た知見を記録へ反映する経路がない | open | 2026-07-31 |

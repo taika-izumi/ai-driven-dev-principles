@@ -1,293 +1,153 @@
-# 設計仕様: 開発サイクル末尾の振り返りフェーズ導入（サブプロジェクトC）
+# 設計仕様: retrospective スキル（サイクル末尾の課題抽出記録）
 
-- **Status**: Draft（brainstorming 完了、plan 未着手）
-- **Author**: メインエージェント（Claude Opus 4.7）+ ユーザー
-- **Date**: 2026-05-01
-- **Related Handoff**: `docs/handoff/master.md`
-- **Predecessors**: ADR-0004, ADR-0005, ADR-0006, ADR-0007, ADR-0008, ADR-0009
-- **Planned ADRs**: ADR-0010, ADR-0011, ADR-0012
+- **Status**: Current（2026-07-31 に ADR-0056 の役割再定義を反映して全面書き換え。初版は 2026-05-01 のサブプロジェクトC設計）
+- **Author**: メインエージェント + ユーザー
+- **Related ADRs**: ADR-0010, ADR-0011, ADR-0012, ADR-0021, ADR-0028, ADR-0031, ADR-0056
+- **Related Issues**: Issue-0035（起票元）, Issue-0021（解消方向）
 
 ## 1. 概要・目的・スコープ
 
-### 1.1 目的
+### 1.1 役割
 
-AI駆動開発のサブプロジェクト1サイクル完了直後に「振り返り」を実施し、以下を構造化テキストとして抽出する仕組みを設ける。
+`retrospective` スキルは、サブプロジェクト 1 サイクル完了直後（feature ブランチを master へマージ後、handoff finalize 前）に、**サイクル末尾の課題抽出記録（issue 詳細の正本）**を作成するスキルである。
 
-1. ガイドライン・フローへの改善提案ドラフト
-2. 古びない技術ノウハウ（再利用可能な技術知見）
-3. 次サイクルへの申し送り
+残す情報は次の 2 つに限定する（ADR-0056）:
 
-### 1.2 背景
+1. **課題の詳細記録**（事象 / 原因 / 影響、および system / flow 分類）— issue が「要約＋ライフサイクル管理」、retrospective ファイルが「詳細の正」という分担（ADR-0028）
+2. **最小のサイクル文脈**（対象サブプロジェクト・期間・merge コミット・関連 plan / ADR へのポインタ）— 課題詳細を将来単独で読んで理解するためのヘッダ
 
-本リポジトリではサブプロジェクトA（記録の強化）/ B（機能ブロック駆動の設計）と段階的に開発フローを成熟させてきたが、各サイクル終了時に得られた知見・反省・改善余地が体系的に記録されておらず、次サイクルでの活用が偶発的になっている。サイクル末尾に振り返りを必ず行うことで、メタ・ガイドラインの自己改善ループを定着させる。
+旧 5 観点（Done / Went Well / Struggled / Tech Notes / Issues）のうち Went Well / Tech Notes は観点として廃止した。スキル化に有用な知見（躓き・人間の指示＝ delta）は worklog パイプライン（worklog-record → worklog-extract → worklog-skillify）が捕捉・再利用する（ADR-0056）。
 
-### 1.3 スコープイン
+### 1.2 スコープ（ADR-0021 を維持）
 
-- 新スキル `retrospective` の追加（手順 + 出力テンプレ）
-- 振り返り出力の保管場所 `docs/retrospectives/YYYY-MM-DD-<topic>.md` 規約化
-- start-work Phase 2 ナビゲーション表への統合（「サブプロジェクトクローズ直後」行）
-- 振り返り中の採用判断を ADR-0006（即時 ADR 検出ルール）の対象として明文化
-- 関連ドキュメント（principles / copilot-instructions / README / CONTRIBUTING / template / handoff）の整合更新
-- サブプロジェクトC自身に対する初回振り返りの実施（ドッグフーディング）
+- retrospective は「課題の抽出と分類」までに限定する。対策の設計・採否判断・ADR 化は行わない（次サイクルでユーザーが判断）
+- 抽出した課題はバックログとして記録・起票するのみ。着手の要否・時期はユーザー判断
+- 実行は手動トリガーのみ（自動起動なし）
+- 形式は単一。開始時の形式選択（完全版 / 簡易版）は設けない（ADR-0056）
+- rubber-duck 独立レビューは既定では実施せず、ユーザーが求めた場合のみのオプション工程（ADR-0056）
 
-### 1.4 スコープアウト
+## 2. worklog パイプラインとの棲み分け
 
-- 振り返りで採用された提案の実際の ADR起票・スキル化（次セッションで `start-work` から再開）
-- メトリクス計測（タスク数・手戻り回数など）
-- 自動トリガー（merge 検知などの自動化は導入しない）
-- **ドメイン知識の抽出・整理スキル**: 本仕様の検討中に重要性が議論されたが、原則2（関心の分離）を保つため本サブプロジェクトCのスコープ外とする。初回 retrospective の Improvement Drafts で正式に提案議題化し、サブプロジェクトDで扱う想定。この扱い自体は ADR-0012 として起票する。
+`docs/working/issues/README.md` を唯一のバックログとして、2 つの経路が合流する。
 
-### 1.5 位置づけ
+| | retrospective 由来の issue | worklog-extract 由来の issue |
+|---|---|---|
+| 記録するもの | そのサイクルで観測された未解決の問題（バグ、設計負債、未定義の規約、プロセスの欠落） | 横断走査で再発が裏付けられた「AI デフォルト挙動との差分」のスキル化・ルール化候補 |
+| 証拠 | そのサイクルの成果物（plan / git log / 対話での気づき） | 中央ストアの根拠エントリ id・再発数・プロジェクト数・モデル分布 |
+| 範囲と時間軸 | 単一プロジェクト・サイクル末尾に毎回 | 全プロジェクト横断・オンデマンド実行時 |
+| 出口 | 対策の要否・時期はユーザー判断 | 採用判断済みで worklog-skillify へ直結 |
 
-feature ブランチを master にマージ完了し、handoff を completed 状態へ遷移させる前の最後のチェックポイント。**実行は手動**（ユーザー明示指示、または start-work が「最近 merge があり対応 retrospective が無い」ことを検知して推奨提示）。自動トリガーは偽陽性リスクを避けるため導入しない。
+### 2.1 フロー課題の振り分け規則（ADR-0056 決定 6）
 
-## 2. アーキテクチャ
+フロー課題候補ごとに「作業時点の delta（躓き・人間の指示）として worklog に記録済み／記録可能か」を判定する:
 
-### 2.1 新規ファイル
+- **delta 型 かつ 急がない** → issue は起票しない。worklog 記録の有無を確認し、未記録なら Phase 3 の worklog 総ざらいで記録する。仕組み化の要否は worklog-extract の再発裏付けに委ねる
+- **delta 型 だが ユーザーが早期対処を要すると判断** → 即起票する（後日 worklog-extract が同クラスタを検出したら既存 issue へ統合される）
+- **構造観察型（delta として表現できない。例: 「記録に読み手がいない」等、体系の俯瞰で初めて見える欠落）** → issue 経路で扱う。ただし発見の主経路はサイクル中の随時起票（decision-log の未決事項起票・作業中の気づきの即時起票）であり、retrospective は「起票漏れの最終チェックポイント」にとどまる
 
-```
-skills/
-  retrospective/
-    SKILL.md          # 本体（手順・テンプレ参照・サブエージェント呼び出し方）
-    template.md       # 振り返り出力ファイルのテンプレート
-docs/
-  retrospectives/
-    .gitkeep          # ディレクトリ初期化
-    README.md         # 振り返り一覧インデックス（手動更新、行追加のみ）
-docs/decisions/
-    0010-introduce-retrospective-phase.md
-    0011-retrospective-storage-policy.md
-    0012-domain-knowledge-out-of-scope-for-c.md
-docs/specs/
-    2026-05-01-retrospective-design.md   # 本ファイル
-```
+対象システム固有の課題は無条件で retrospective が起票する（worklog-extract はスキル化候補のみを扱い、対象システムのバグ・設計負債は扱わない）。
 
-### 2.2 既存ファイル変更
+### 2.2 重複防止（両方向）
 
-- `skills/start-work/SKILL.md`: Phase 2 マッピング表に1行追加 + セッション終了処理直前のチェックリスト更新
-- `skills/decision-log/SKILL.md`: 検出トリガー一覧に「振り返り中の採用判断」追記
-- `docs/principles.md`: 原則5（漸進的検証）末尾に「サイクル単位の振り返りで検証結果を反映する」一文追加
-- `.github/copilot-instructions.md`: 「振り返り運用」項追加
-- `template.manifest`: 新規ファイルを追加して `pwsh scripts/sync-template.ps1` 実行
-- `README.md`: スキル一覧表に retrospective 追加 + docs ディレクトリ説明に retrospectives/ 追加
-- `CONTRIBUTING.md`: 「振り返り提案を後から取り込みたい時」のシナリオ追記
-- `docs/handoff/master.md`: サブプロジェクトC完了の状態へ書き換え
+- retrospective → 起票前に既存 open 課題（worklog-extract 由来を含む）と突合し、既存があれば「検討状況」へ追記する（ADR-0031）
+- worklog-extract → Issue 草案化時に retrospective 由来のバックログと重複排除する（worklog-extract 手順 8。唯一の合流点）
 
-### 2.3 他スキルとの関係
+## 3. スキル手順
 
-| 相手スキル | 関係 |
-|---|---|
-| start-work | ナビゲーターとして retrospective を提示 |
-| decision-log (ADR-0006) | 振り返り中の「採用」判断は即時 ADR 化対象 |
-| session-handoff | finalize の直前に retrospective が走ることを推奨。handoff の「次セッション開始時のアクション」へ採用提案実装タスクを書き込む |
-| feature-block-design | retrospective は単一責務スキルなので適用不要 |
+### Phase 0: 前提収集（メイン実行）
 
-### 2.4 サブエージェントの役割
+1. 対象サブプロジェクト名・feature ブランチ名・対応 plan/spec パスをユーザーから受け取る（merge コミットから推定する場合は必ずユーザー確認）
+2. 対応 plan / spec / merge コミット範囲の git log / handoff 現行版 / 期間中に追加・変更された ADR を読み込む
+3. `docs/records/retrospectives/` に同一トピックの既存ファイルが無いことを確認する
 
-- **メイン**: ファシリテーター。git log / handoff / spec / ADR diff を集めてユーザーと対話、テンプレ埋め
-- **サブ（rubber-duck 1回呼び出し）**: ドラフト全体に対する独立視点レビュー（盲点・偏り・採用基準の妥当性）
+### Phase 1: 課題案の一括提示（メイン実行）
 
-## 3. 振り返り実施フロー（retrospective スキル本体の手順）
+1. AI が Phase 0 の材料から課題候補を一括提示する。各候補に以下を添える:
+   - 事象 / 原因 / 影響
+   - system / flow 分類
+   - flow 候補には delta 型 / 構造観察型の判定と worklog 記録状況、および起票要否の提案（振り分け規則 §2.1）
+   - 既存 open 課題の再発・進展は新規候補とせず「検討状況」追記対象として提示（ADR-0031）
+2. ユーザーが修正・追加・削除と起票判断を行う
+3. 末尾に確認 1 問: 「このサイクル中に言語化されたが未起票の気づき（会話中の指摘・見送った論点など）はないか」（体系全体を走査する構造チェック工程は設けない）
 
-### 3.1 Phase 0: 前提収集（メイン）
+### Phase 2: 記録保存と起票（メイン実行）
 
-1. 対象サブプロジェクト名・feature ブランチ名・対応 plan/spec パスをユーザーから受け取る（または直近 merge コミットから推定して確認）
-2. 以下を読み込む:
-   - 対応 plan ファイル（`docs/plans/...`）
-   - 対応 spec ディレクトリ or ファイル（`docs/specs/...`）
-   - 該当ブランチの merge コミット範囲の `git log --oneline`
-   - `docs/handoff/master.md` 現行版
-   - 該当期間に追加・変更された ADR
-3. 既存 `docs/retrospectives/` を確認し、同一トピックの既存ファイルが無いことを確認（あれば中止し、上書きの是非をユーザーに確認）
+1. `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`（メイン記録）と、フロー課題があれば `flow/YYYY-MM-DD-<topic>.md` を書き出す（ADR-0021。テンプレートは §4）
+2. 起票対象の課題を全件 `docs/working/issues/system|flow/NNNN-<slug>.md` へ起票し、インデックスへ行追加する（ADR-0028。採番は両セクション通し連番）
+3. ADR-0031 の追記（再発・進展）を実施する
+4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**
+5. ユーザーへ提示し確認を得る
 
-### 3.2 Phase 1: 5観点ヒアリング（メイン、1問ずつ）
+### Phase 3: 仕上げ（メイン実行）
 
-ユーザーから順に聞く（1メッセージ1質問）:
+1. **（オプション）rubber-duck 独立レビュー**: ユーザーが求めた場合のみ 1 回実施する。観点は「課題の抽出漏れがないか・system / flow 分類が妥当か」に絞る。結果は記録ファイルの「Independent Review Notes」節（実施時のみ追加）に記録する
+2. **worklog 総ざらい確認**: サイクル全体を俯瞰し、未記録の delta（躓き・人間の指示）に気づいたら `worklog-record` を呼んで記録する（§2.1 で「worklog 送り」と判定した課題候補の記録漏れもここで拾う）
+3. `session-handoff update` を呼ぶ。「次セッション開始時のアクション」に起票済み issue 番号を記載し、Status を `ready-for-next-cycle` へ遷移する
 
-1. **Done**: 計画通り完了したこと（plan のタスク達成度）
-2. **Went Well**: うまくいったプラクティス
-3. **Struggled**: 苦労した点・手戻り・誤解
-4. **Learned (Tech Notes)**: 古びない技術知見（PowerShell の罠、ツール挙動など）
-5. **Improvement Drafts**: ガイドライン・フロー・スキルへの改善提案（採用 / 保留 / 却下 の判断とともに）
-
-各回答はメインがその場でテンプレに埋めながら、ユーザーが言及していない観点があれば「他に〇〇のような出来事はありませんでしたか？」と問いかける（例: spec 変更履歴から「途中で plan を3回修正してますがその経緯は？」など過去ログから具体ネタを引く）。
-
-### 3.3 Phase 2: ドラフト保存（メイン）
-
-- `docs/retrospectives/YYYY-MM-DD-<topic>.md` に書き出し（テンプレ準拠）
-- ユーザーへ提示し、軽く確認
-
-### 3.4 Phase 3: 独立視点レビュー（サブエージェント `rubber-duck` 1回）
-
-プロンプトで渡すもの: ドラフト全文 + plan + 対応 ADR一覧。観点:
-
-- 抽出漏れ（git log にあるが言及されていない事象）
-- 改善提案の採用判断の妥当性（過剰採用 / 過小採用）
-- ノウハウ項目の「古びなさ」検証（現バージョン依存ではないか）
-
-レビュー結果はメインが受け取り、ユーザーと相談の上、ドラフトに反映。
-
-### 3.5 Phase 4: 採用判断の即時 ADR 化（メイン）
-
-- 「Improvement Drafts」のうち**採用**（実施に進む）と判定したものは、ADR-0006 ルールに従い即時 ADR ドラフト作成（status: Proposed のまま、実装は別セッション）
-- 「保留」「却下」はドラフト内に理由とともに記録するのみ
-
-### 3.6 Phase 5: ハンドオフ更新（メイン、`session-handoff update`）
-
-- 「次セッション開始時のアクション」に「採用提案 X / Y を ADR-NNNN / スキル ZZZ として実装」を追記
-- handoff Status を completed → ready-for-next-cycle へ
-
-### 3.7 コミット方針
-
-スキル内ではコミットしない。スキルの責務は出力ファイル生成まで。コミットはユーザー or 通常フローに委ねる。
+コミットはスキル内では行わない（ユーザーまたは通常フローに委ねる）。
 
 ## 4. 出力ファイル仕様
 
-### 4.1 ファイル命名
-
-`docs/retrospectives/YYYY-MM-DD-<topic>.md`（YYYY-MM-DD は振り返り実施日）
-
-### 4.2 テンプレート構造
+### 4.1 メイン記録（`system/YYYY-MM-DD-<topic>.md`）
 
 ```markdown
 # Retrospective: <サブプロジェクト名>
 
-- **Subject**: <サブプロジェクトの正式名>
-- **Branch**: feature/<name> （merge済み: <merge-commit-sha>）
+- **Subject**: <正式名>
+- **Branch**: feature/<name>（merge済み: <sha>）
 - **Period**: <開始日> 〜 <完了日>
-- **Plan**: docs/plans/<...>
-- **Spec**: docs/specs/<.../>
-- **Related ADRs**: ADR-NNNN, ADR-NNNN
+- **Plan**: docs/working/plans/<...>
+- **Spec**: docs/current/specs/<...>
+- **Related ADRs**: ADR-NNNN, ...
 - **Facilitator**: メインエージェント (<モデル名>)
-- **Independent Reviewer**: rubber-duck (<モデル名>)
 
-## 1. Done（達成サマリ）
-- <plan の主要マイルストーンを箇条書き、対応コミットへのリンク>
+## 1. 達成サマリ
 
-## 2. Went Well（うまくいったこと）
-- <観点：プロセス／ツール／設計判断／コミュニケーション>
+<3〜5 行の箇条書き。課題詳細を将来単独で読むための最小文脈>
 
-## 3. Struggled（苦労したこと・手戻り）
-- **事象**: <何が起きたか>
-  - **原因**: <分析>
-  - **影響**: <時間損失・スコープ影響など>
+## 2. 課題（対象システム固有）
 
-## 4. Tech Notes（古びない技術知見）
-- **タイトル**: <短い見出し>
-  - **コンテキスト**: <発生条件>
-  - **知見**: <次に同じ状況に遭ったらこうする>
-  - **回避策・代替**: <推奨手順>
+- **課題 #N**: <一文タイトル>
+  - **事象**: / **原因**: / **影響**:
+  - **起票**: Issue-NNNN
 
-## 5. Improvement Drafts（ガイドライン・フロー改善提案）
-- **提案 #N**: <一文タイトル>
-  - **背景**: <なぜ必要か、対応する 5 原則 / スキル / ADR>
-  - **提案内容**: <具体的な変更案>
-  - **判断**: 採用 / 保留 / 却下
-  - **理由**: <採否の根拠>
-  - **採用の場合**: 起票 ADR-NNNN（Proposed）/ 影響範囲: <files>
+> 開発フロー課題 N 件は flow/<同名>.md 参照。／ worklog 送りとした delta 型候補 N 件（起票なし）
 
-## 6. Independent Review Notes（rubber-duck 指摘）
-- <受領した指摘とメインの応答（採用/反論）>
+## 3. 既存課題の再発・進展
 
-## 7. Handoff Forward（次サイクルへの申し送り）
-- **着手予定**: <採用提案の実装タスク>
-- **継続観察**: <まだ判断を要する事象>
+- Issue-NNNN: <検討状況へ追記した内容の要約>（ADR-0031）
+
+## 4. (任意) Independent Review Notes
+
+<rubber-duck 実施時のみ。指摘 / メインの応答 / 反映先>
 ```
 
-### 4.3 保管規約
+### 4.2 フロー課題記録（`flow/YYYY-MM-DD-<topic>.md`）
 
-- ADR-0008（スナップショット規約）の **対象外**: retrospective は時系列の記録ファイル。一度書いたら原則上書きしない（typo 修正を除く）
-- `docs/retrospectives/README.md` は ADR README と同様にインデックステーブルを手動で更新（行追加のみ、過去行の編集は禁止）
+現行構成を維持（課題詳細 + 起票 Issue 番号 + 「なぜフロー課題か」）。ヘッダに振り分け判定（delta 型・早期対処 / 構造観察型）を 1 行追記する。フロー課題の起票が 0 件ならファイルを作成しない。
 
-この方針自体を ADR-0011 として独立起票する。
+### 4.3 保管規約（ADR-0011 を維持）
 
-## 5. 既存ガイドラインへの反映 / 起票予定 ADR
+- 一度書いたら原則上書き禁止（typo 修正のみ例外）
+- `docs/records/retrospectives/README.md` は行追加のみ・過去行の編集禁止
+- 過去の retrospective ファイル（7 セクション形式・非定型の簡易形式）は改変しない。新形式は ADR-0056 以降に作成するファイルから適用する
 
-### 5.1 起票予定 ADR（plan 第1〜第3タスクで起票）
+## 5. 既存ドキュメントへの波及
 
-#### ADR-0010: 開発サイクル末尾の振り返りフェーズ導入
-
-- 主決定: `retrospective` スキルを新設し、サブプロジェクトクローズ時の標準ステップとする
-- 検討した代替案:
-  - start-work 内蔵化（自動トリガー）: 偽陽性/陰性リスク、原則2違反
-  - finishing-a-development-branch 拡張: 上流スキルへの依存増加でリポジトリ独立性低下
-- 採用理由: ADR-0007 と同じ「独立スキル + start-work ナビゲーション」パターンで一貫性確保
-
-#### ADR-0011: 振り返り出力の保管規約（時系列追記型）
-
-- 主決定: `docs/retrospectives/YYYY-MM-DD-<topic>.md` 単一ファイル / サブプロジェクト。一度書いたら原則上書き禁止（typo 修正を除く）
-- ADR-0008 のスナップショット規約とは別ポリシー
-- 採用理由: retrospective は履歴ログとしての価値があり、過去事例の改変を許容すると学習素材にならない
-
-#### ADR-0012: ドメイン知識抽出は次サイクル課題（スコープ判断 ADR）
-
-- 主決定: 本サブプロジェクトCでは扱わず、初回 retrospective の Improvement Drafts で正式提案する
-- 検討した代替案:
-  - α: retrospective テンプレに Domain Knowledge セクションを1個追加 → 暫定が永続化するアンチパターンリスク
-  - β: knowledge-distillation スキルを同時設計 → スコープ膨張、原則2違反
-  - γ: 現スコープ維持、初回 retrospective で議題化 → ドッグフーディングになり採用
-- 採用理由: 原則2（関心の分離）/ 振り返りスキルの実効性証明素材化
-
-### 5.2 既存ファイル更新一覧
-
-| ファイル | 更新内容 |
+| 対象 | 内容 |
 |---|---|
-| `docs/principles.md` | 原則5（漸進的検証）末尾に「サイクル単位の振り返りで検証結果を反映する」一文追加 |
-| `.github/copilot-instructions.md` | 「振り返り運用」項を「ドキュメント運用」セクション内 or 独立セクションとして追加 |
-| `skills/start-work/SKILL.md` | Phase 2 マッピング表に「サブプロジェクトクローズ直後 \| retrospective」行追加 + セッション終了処理直前に「対象サブプロジェクトの retrospective 完了確認」追加 |
-| `skills/decision-log/SKILL.md` | 検出トリガー一覧に「振り返り中の採用判断」追記 |
-| `template.manifest` + `template/` | 新規ファイル群を追加し sync-template.ps1 で同期（差分ゼロ確認） |
-| `README.md` | スキル一覧表に retrospective 追加 / docs ディレクトリ説明に retrospectives/ 追加 |
-| `CONTRIBUTING.md` | 「振り返り提案を後から取り込みたい時」シナリオ追記 |
-| `docs/handoff/master.md` | サブプロジェクトC完了として書き換え + 次セッションのアクションに「初回 retrospective の採用提案を ADR/スキル化」 |
+| `skills/retrospective/SKILL.md` | 本仕様の手順（§3）・棲み分け（§2）で全面改訂。frontmatter description も新役割へ更新 |
+| `skills/retrospective/template.md` | §4.1 の構成へ書き換え |
+| `skills/retrospective/flow-template.md` | ヘッダ微調整（§4.2） |
+| `docs/records/retrospectives/README.md` | 運用規約の説明を新形式へ更新（一覧テーブルの過去行は不変）+ 欠落 2 行（2026-07-18 の 2 件）の追加 |
+| `skills/start-work/SKILL.md` / `CLAUDE.md` | 起動タイミング・スコープ記述は不変のため原則変更不要。実装時に 5観点への言及がないことを grep で確認し、あれば修正（CLAUDE.md 変更時は `scripts/sync-template.ps1` 実行） |
+| `docs/working/issues/` | Issue-0035 close（結論に ADR-0056）。Issue-0021 検討状況へ解消方向を追記（close 判断はユーザー） |
+| プラグイン反映 | skills/ 改定後、ユーザーへ `/plugin marketplace update ai-driven-dev-principles` を依頼（ADR-0055） |
 
-## 6. 実装スコープ・最終チェック
+## 6. 対応する原則
 
-### 6.1 高位タスク列（plan で詳細化する）
-
-1. ADR-0010 / 0011 / 0012 を Proposed で起票
-2. `skills/retrospective/SKILL.md` 新規作成
-3. `skills/retrospective/template.md` 新規作成
-4. `docs/retrospectives/` ディレクトリ + `README.md`（インデックス）+ `.gitkeep` 作成
-5. `docs/principles.md` 原則5 末尾に1文追加
-6. `.github/copilot-instructions.md` 「振り返り運用」項追加
-7. `skills/start-work/SKILL.md` Phase 2 表 + セッション終了処理 更新
-8. `skills/decision-log/SKILL.md` 検出トリガーに「振り返り中の採用判断」追記
-9. `template.manifest` 追記 + `pwsh scripts/sync-template.ps1` 実行（差分ゼロ確認）
-10. `README.md` 更新（スキル表 + docs ディレクトリ案内）
-11. `CONTRIBUTING.md` シナリオ追加
-12. ADR-0010 / 0011 / 0012 を Accepted 化
-13. `docs/handoff/master.md` 書き換え（サブプロジェクトC完了 + Dの種としてドメイン知識抽出を明記）
-14. master へ `--no-ff` merge + push
-15. **初回 retrospective を本サブプロジェクトC自身に対して実行**（ドッグフーディング、最終検証）
-
-### 6.2 feature-block-design 適用要否判定
-
-- 単一スキル + 周辺整備のみ。機能ブロック分離の必要性は低い → **適用しない**
-- spec ファイル自体は単一 md（本ファイル）で記述
-
-### 6.3 進行モード（実装フェーズ）
-
-サブプロジェクトBと同じく **メインセッション直接実行**（タスクが定型的・小粒）。subagent-driven-development は使用しない。
-
-### 6.4 完了基準（Done Definition）
-
-- 全15タスク完了
-- `git status` クリーン（untracked の作業外2項目 `docs/conversation_log.md`, `docs/images/` を除く）
-- master 上で `pwsh scripts/sync-template.ps1` を実行しても差分ゼロ
-- 初回 retrospective ファイル `docs/retrospectives/2026-05-01-retrospective-phase.md`（仮名）が存在し、Improvement Drafts に「ドメイン知識抽出スキル」案が記録されている
-
-### 6.5 Out of Scope（再掲）
-
-- ドメイン知識抽出スキルの設計・実装（サブプロジェクトDで扱う）
-- 振り返り採用提案の自動 ADR/スキル化
-- 自動トリガー（merge検知など）
-- メトリクス計測
-
-## 7. 対応する原則
-
-- **原則1（追跡可能性）**: 振り返り出力ファイルにより各サイクルの判断・反省・採用提案が永続化
-- **原則2（関心の分離）**: retrospective を独立スキルとして責務分離 / ドメイン知識抽出をスコープ外とすることで本仕様の単一責務性を保つ
-- **原則3（コンテキスト管理）**: 振り返り出力が次サイクル開始時のコンテキスト源になる
-- **原則4（人間の関与）**: 5観点ヒアリングが対話形式 / 採用判断はユーザー承認必須 / 自動トリガー禁止
-- **原則5（漸進的検証）**: サイクル単位の振り返りでメタ・ガイドライン自体の検証ループを回す（本仕様で原則5の文言も拡張）
+- **原則1（追跡可能性）**: 課題の事象・原因・影響がサイクル単位で永続化され、issue の正本として参照される
+- **原則2（関心の分離）**: 課題抽出（retrospective）と知見の再利用（worklog パイプライン）を消費経路で分離。対策の決定・実装は次サイクル
+- **原則3（コンテキスト管理）**: 最小サイクル文脈により課題詳細が単独で理解可能。重複記録の排除でトークン消費を抑制
+- **原則4（人間の関与）**: 起票判断・振り分けの早期対処判断・rubber-duck 実施判断はユーザー
+- **原則5（漸進的検証）**: サイクル単位の課題抽出でメタ・ガイドライン自体の検証ループを回す

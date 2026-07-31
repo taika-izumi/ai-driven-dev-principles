@@ -1,6 +1,6 @@
 # ADR-0056: retrospective を課題抽出記録に純化し、Went Well / Tech Notes 観点を worklog パイプラインへ委譲する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-07-31
 
 ## Context

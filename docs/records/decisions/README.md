@@ -61,3 +61,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0053](0053-worklog-entry-unit-theme-based.md) | worklog の記録単位は「同一 context の delta 束」とし、節目のテーマ単位で複数記録を許す | Accepted | 2026-07-17 |
 | [0054](0054-worklog-store-encoding-eol-contract.md) | 中央ストアのエンコーディング・EOL 契約と追記手段・読み側検証を定める | Accepted | 2026-07-18 |
 | [0055](0055-start-work-skill-availability-ai-side-check.md) | start-work Phase -1 にスキル availability の AI 側判定規範を追加する | Accepted | 2026-07-18 |
+| [0056](0056-retrospective-issue-extraction-core-worklog-delegation.md) | retrospective を課題抽出記録に純化し、Went Well / Tech Notes 観点を worklog パイプラインへ委譲する | Accepted | 2026-07-31 |

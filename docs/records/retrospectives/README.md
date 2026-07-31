@@ -1,8 +1,8 @@
 # Retrospectives
 
-サブプロジェクトクローズ時に `retrospective` スキルで作成された振り返り記録の一覧。
+サブプロジェクトクローズ時に `retrospective` スキルで作成された課題抽出記録の一覧。
 
-## 運用規約（ADR-0011 / ADR-0021）
+## 運用規約（ADR-0011 / ADR-0021 / ADR-0056）
 
 - **配置**: 課題の分類に応じて2フォルダに分割する（ADR-0021）
   - `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md` — メイン振り返り記録（対象システム固有の課題を含む）
@@ -14,6 +14,8 @@
 - **インデックス（本ファイル）**: **行追加のみ**、過去行の編集は禁止
 - **課題の起票**: 抽出した課題は retrospective 実行時に全件 `docs/working/issues/system|flow/` へ起票される（ADR-0028）。振り返りファイルの課題詳細が正であり、issue は open/closed のライフサイクル管理を担う
 - `flow/` フォルダ全体が、配布先システム開発repoではガイドラインrepo（ai-driven-dev-principles）への申し送りバックログになる
+- **形式（ADR-0056、2026-07-31 以降）**: 記録は「最小サイクル文脈（達成サマリ）＋課題詳細（事象/原因/影響）＋既存課題の再発・進展」で構成する。旧5観点の Went Well / Tech Notes は観点として廃止（知見は worklog パイプラインが捕捉）。rubber-duck レビューはユーザー要求時のみ（実施時に「Independent Review Notes」節を追加）。フロー課題は delta 型 / 構造観察型の振り分け規則に従う（詳細は `skills/retrospective/SKILL.md`）
+- それ以前の記録（7セクション形式・非定型の簡易形式）は当時の形式のまま改変しない
 - 訂正が必要な場合は次回 retrospective 内で「前回振り返りの訂正」として記述する
 
 ADR-0008 のスナップショット規約（spec / handoff 用）は適用しない。retrospective は時系列の学習素材として永続保管する。
@@ -37,6 +39,8 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 | 2026-07-06 | CLAUDE.md 肥大化ガバナンス（Issue-0018 対策） | system/ + flow/ | feature/claude-md-growth-governance (merge: e3e6768) | ADR-0040 サイクル。フロー課題1件を抽出し Issue-0020 起票。Issue-0015 の進展を検討状況へ追記（ADR-0031）。環境解決の先行調査ステップ（ADR-0039）初発動 |
 | 2026-07-07 | ADR ステータス体系の完成と台帳監査（Issue-0019 対策） | system/ + flow/ | feature/adr-rejected-status-path (merge: a9c7a5a) | ADR-0041/0042 サイクル。初回台帳監査（40件: 置換・廃止0件、部分修正注記7件）、Proposed 3件を Rejected 化（0013 のテーマは Issue-0021 へ再起票）。フロー課題1件を抽出し Issue-0022 起票 |
 | 2026-07-17 | 3スキルパイプライン（作業記録→候補抽出→スキル化） | system/ + flow/ | feature/worklog-skill-pipeline (merge: 7ed7b32) | ADR-0044/0045/0046/0047 サイクル。ADR-0045 に adopted 状態を追補（ラバーダック指摘対処）してから Accepted 昇格。スモークテストで中央ストア初回動作確認。フロー課題2件を抽出し Issue-0023/0024 起票 |
+| 2026-07-18 | worklog パイプライン スキーマ v2 改訂 | system/ のみ | feature/worklog-v1.1 (merge: ba7e81d) | ADR-0048〜0053 サイクル。簡易形式で実施（当時未定型）。Issue-0030/0031 起票。※本行は 2026-07-31 に追記（作成時の記載漏れ） |
+| 2026-07-18 | worklog 実運用堅牢化 | system/ のみ | feature/worklog-operational-hardening (merge: 50bef04) | ADR-0054/0055 サイクル。簡易形式で実施（当時未定型）。Issue-0032 起票、課題 A/C は不起票。※本行は 2026-07-31 に追記（作成時の記載漏れ） |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 
@@ -45,5 +49,6 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 - スキル: `skills/retrospective/SKILL.md`
 - テンプレート: `skills/retrospective/template.md`（メイン）/ `skills/retrospective/flow-template.md`（フロー）
 - ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
+- ADR-0056: 課題抽出記録への純化・worklog 委譲・振り分け規則（2026-07-31 以降の形式）
 - ADR-0010: 振り返りフェーズ導入
 - ADR-0011: 振り返り出力の保管規約

@@ -15,7 +15,7 @@ retrospective が蓄積する Tech Notes（古びない技術知見）は各サ�
 
 ## 検討状況
 
-（未着手）
+- 2026-07-31: ADR-0056 により retrospective の Tech Notes 観点自体を廃止し、スキル化に有用な知見は worklog パイプライン（record → extract → skillify）が捕捉・再利用する構造へ委譲。「Tech Notes の横断再利用の仕組み」は worklog-extract がその役割を担うため、本課題は解消方向。close の判断はユーザーに委ねる
 
 ## 結論
 

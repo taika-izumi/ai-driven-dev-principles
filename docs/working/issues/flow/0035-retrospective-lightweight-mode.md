@@ -1,7 +1,8 @@
 # Issue-0035: retrospective の簡易モードが正式な選択肢として未定義
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-31
+- **Closed**: 2026-07-31
 - **起票元**: `worklog-extract` 走査（2026-07-31、初回実行）候補14。2 プロジェクト（LoopForAlpha / MakeAiInstructions）で同型が再発
 - **関連**: `ai-driven-dev-principles:retrospective`（Phase 1 のヒアリング手順）、ADR-0021（retrospective は課題抽出・分類までにとどめる）、ADR-0028（抽出課題は全件その場で起票）、CLAUDE.md「検証」節（マージ直後の retrospective 起動）
 
@@ -26,7 +27,8 @@
 - 2026-07-31: `worklog-extract` 初回走査で採用（`processed.jsonl` へ `adopted` 追記済み）。`worklog-skillify` へ受け渡し予定。既存 `retrospective` スキルの拡張として扱う見込み
 - 根拠エントリ由来の対策案: Phase 1 に「簡易モード」を正式な選択肢として追加し、開始時にどちらの形式にするか確認する。過去記録で簡易実施が多数派である実績から、簡易をデフォルト候補として提示してよい
 - 検討時の論点: 簡易モードで rubber-duck の独立視点レビューを省略してよいか（ADR-0021 が定める「課題抽出の質」との兼ね合い）。省略可否は次サイクルで判断する
+- 2026-07-31: 対策サイクル（feature/retrospective-mode-review）で brainstorming を実施。「簡易モードの追加」ではなく retrospective の役割自体を再定義する方針を採用（ADR-0056）
 
 ## 結論
 
-（open）
+ADR-0056 で対処。「簡易モード」を選択肢として追加するのではなく、retrospective 自体を「課題抽出記録」へ純化し単一形式とした（Went Well / Tech Notes 観点は廃止し worklog パイプラインへ委譲。rubber-duck はユーザー要求時のみのオプション）。実運用多数派だった簡易実施が定型化された標準形式となった。

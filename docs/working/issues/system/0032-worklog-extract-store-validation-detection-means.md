@@ -23,7 +23,7 @@ ADR-0032 の観測可能性（検出はストアファイルのバイトを読�
 
 ## 検討状況
 
-（未着手）
+- 2026-07-31: 再発（2例目。ADR-0031）。retrospective 再定義サイクルの worklog 追記後の健全性検証で、`od -c MakeAiInstructions/log.jsonl | grep -c '\r'` が **147 件という誤検出**を返した（実際は CR 0 件）。Python でバイトを直接カウント（`open(p,'rb').read().count(b'\r')`）したところ CR 0 / BOM なし / UTF-8 妥当と確定。前サイクル（2026-07-18）の `grep -P` ロケールエラーによる誤「clean」報告に続き、**grep 系の検出は環境依存で誤判定する**という同型の事象。対処候補の「例コマンド」は grep ベースを避け、バイトを直接数える手段（Python / PowerShell の `[System.IO.File]::ReadAllBytes`）を第一候補として例示すべき
 
 ## 結論
 

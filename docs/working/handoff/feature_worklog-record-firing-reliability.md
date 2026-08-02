@@ -1,9 +1,9 @@
 # Handoff: Post ラッパー消化漏れの検出不能性（Issue-0037）への対処
 
 - **Branch**: feature/worklog-record-firing-reliability
-- **Last Updated**: 2026-08-02 23:46 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装完了（ADR-0057/0058 Accepted・Issue-0037 close）→ master への merge 待ち
+- **Last Updated**: 2026-08-03 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: サイクル完了（merge `9464574`・retrospective 実施済み・Issue-0039 起票）
 
 ## 作業の目的・背景
 
@@ -33,13 +33,11 @@ Issue-0037（start-work Post ラッパーの worklog-record 発火）への対�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: master への merge
-  - 状態: 実装・検証・ADR 昇格・issue close まで完了
-  - 残り: finishing-a-development-branch で merge → retrospective（突合手順の初回適用）
+（なし。サイクル完了）
 
 ## 未着手のタスク
 
-- [ ] master へ merge → retrospective（新形式＋突合手順のドッグフーディング2周目）
+（なし。master merge `9464574`、retrospective は `docs/records/retrospectives/system|flow/2026-08-03-post-wrapper-consumption-visibility.md`）
 
 ## 既知のブロッカー・懸念
 
@@ -55,6 +53,8 @@ Issue-0037（start-work Post ラッパーの worklog-record 発火）への対�
 - 2026-08-01 課題定義の書き換え完了: ADR=なし（実データによる事実訂正のため。ADR-0031 に従い issue 側へ一次記録） / worklog=`MakeAiInstructions-2026-08-01-01`
 - 2026-08-01 対策方針の決定（設計承認）: ADR=0057・0058 起票（Proposed） / worklog=棄却（方針決定自体に delta なし。調査時の delta は 2026-08-01-01 で記録済み）
 - 2026-08-02 実装完了（スキル4件改定・検証パス）: ADR=0057・0058 を Accepted へ昇格（新規候補なし。計画どおりの実装のため） / worklog=棄却（計画の実文どおりに完遂し friction・corrections ともなし）
+- 2026-08-02 writing-plans 完了（実装計画 `d14877b`）: ADR=なし（設計確定後の文書化のため） / worklog=棄却（friction・corrections なし）※retrospective Phase 3 の突合で未消化を検出し遡って補記（突合手順の初回検出実績）
+- 2026-08-03 merge・retrospective 完了（`9464574`）: ADR=なし（retrospective は ADR を起票しない。ADR-0021） / worklog=`MakeAiInstructions-2026-08-03-01`（モデル切替後の条件付き規範再評価漏れ。Phase 3 総ざらいで検出）
 
 ## 次セッション開始時のアクション
 

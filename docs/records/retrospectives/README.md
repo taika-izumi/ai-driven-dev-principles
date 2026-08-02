@@ -42,6 +42,7 @@ ADR-0008 のスナップショット規約（spec / handoff 用）は適用し�
 | 2026-07-18 | worklog パイプライン スキーマ v2 改訂 | system/ のみ | feature/worklog-v1.1 (merge: ba7e81d) | ADR-0048〜0053 サイクル。簡易形式で実施（当時未定型）。Issue-0030/0031 起票。※本行は 2026-07-31 に追記（作成時の記載漏れ） |
 | 2026-07-18 | worklog 実運用堅牢化 | system/ のみ | feature/worklog-operational-hardening (merge: 50bef04) | ADR-0054/0055 サイクル。簡易形式で実施（当時未定型）。Issue-0032 起票、課題 A/C は不起票。※本行は 2026-07-31 に追記（作成時の記載漏れ） |
 | 2026-07-31 | retrospective の役割再定義 | system/ + flow/ | feature/retrospective-mode-review (merge: 066b4e0) | ADR-0056 サイクル。**新形式（課題抽出記録）の初回適用＝改訂スキル自身のドッグフーディング**。フロー課題2件を起票（Issue-0037 / Issue-0038。後者は新形式の欠陥をドッグフーディングで検出）、delta 型1件は worklog 送り、Issue-0008/0032/0034 へ再発・進展を追記、Issue-0035 close |
+| 2026-08-03 | Post ラッパー消化の可視化（Issue-0037 対処） | system/ + flow/ | feature/worklog-record-firing-reliability (merge: 9464574) | ADR-0057/0058 サイクル。着手時の実データ調査で起票時前提を反証し課題を再定義（Issue-0037 を書き換えて close）。フロー課題1件を起票（Issue-0039: メモリ依存の不可視性）、delta 型1件は worklog 済み、Issue-0008/0022/0038 へ再発・進展を追記。消化記録のドッグフーディングを同サイクルで開始 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

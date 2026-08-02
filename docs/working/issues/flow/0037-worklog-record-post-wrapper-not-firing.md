@@ -1,22 +1,46 @@
-# Issue-0037: start-work Post ラッパーの worklog-record 発火が実運用で起きない
+# Issue-0037: start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的）
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-31
-- **起票元**: `retrospectives/flow/2026-07-31-retrospective-mode-review.md` 課題#1
-- **関連**: ADR-0047（worklog-record を start-work Post ラッパーへ配線し全プロジェクトへ伝播）、ADR-0044（記録ゲート）、`skills/start-work/SKILL.md`（Phase 2 横断的ラッパー Post）、`skills/session-handoff/SKILL.md`（update 操作。同一契機で同様に漏れる）、Issue-0036（worklog-extract の単発エントリ扱い。材料が痩せる影響先）
+- **Closed**: 2026-08-02
+- **起票元**: `retrospectives/flow/2026-07-31-retrospective-mode-review.md` 課題#1（**当該ファイルに記載の事象・原因は 2026-08-01 の実データ調査で反証された。本 issue を正とする**。振り返りファイルは記録のため上書きしない。ADR-0011）
+- **関連**: ADR-0047（worklog-record を start-work Post ラッパーへ配線し全プロジェクトへ伝播）、ADR-0044（記録ゲート）、`skills/start-work/SKILL.md`（Phase 2 横断的ラッパー Post）、`skills/session-handoff/SKILL.md`（update 操作。同一ラッパー内の隣接項目）、`skills/retrospective/SKILL.md`（Phase 3 worklog 総ざらい。事後の救済経路）、Issue-0036（worklog-extract の単発エントリ扱い）
 
 ## 課題内容
 
-ADR-0047 は worklog-record を `start-work` の Post ラッパーから、`session-handoff` update と同じマイルストーン契機（スキル完了 / plan の1タスク完了 / 重要な分岐通過）で発火させると定めている。しかし retrospective 再定義サイクル（2026-07-31）では該当契機が最低3回（brainstorming 完了・writing-plans 完了・executing-plans 完了）あったにもかかわらず、発火は 0 回だった。session-handoff update も同じ契機で未実施だった。
+ADR-0047 は worklog-record を `start-work` の Post ラッパーから、`session-handoff` update と同じマイルストーン契機（スキル完了 / plan の1タスク完了 / 重要な分岐通過）で発火させると定めている。
 
-原因は、Post ラッパーの規定が `start-work` の SKILL.md にしか存在せず、他スキル（brainstorming 等）へ delegate している間、メインエージェントが「start-work の Phase 2 Post に戻る」契機を持たないこと。delegate 先のスキルは自身の終了条件（次スキルへの遷移など）で完結するため、呼び出し元の横断的ラッパーが素通りされる。
+この配線は**実運用で成立している**（2026-08-01 の実データ調査で確認。詳細は検討状況）。問題は、**Post ラッパーの消化が確率的で、消化しなかったことを誰も検出できない**ことにある。
 
-影響として、サイクル中に発生した delta が記録されず worklog-extract の材料が痩せる。本リポジトリ由来の中央ストアエントリは 6 件にとどまっており、パイプラインの入口が実質機能していない。
+`session-handoff` update は実行するとファイルが残るため、漏れれば履歴上に空白として現れる。一方 `worklog-record` は**発火しなかった場合と、発火して記録ゲート（ADR-0044）が弾いた場合とが外形的に区別できない**。中央ストアに行が増えないという結果が両者で同一になるため、漏れが検出されない。
+
+観測された失敗モードは3種類ある（いずれも中央ストアのエントリまたは git 履歴に証拠がある）。
+
+- **失敗モード1: 部分消化** — Post ラッパーには入ったが、`session-handoff` update を実施した時点で「区切りの記録は完了した」と判断し、残る `worklog-record` を消し込まない。証拠: 中央ストア `LoopForAlpha-2026-07-22-08`（`friction`: 「ハンドオフ更新をもって『区切りの記録は完了した』と判断し、Post ラッパーの残り項目を検査しなかった」）
+- **失敗モード2: 完全未入場** — マイルストーンで Post ラッパー自体に入らず、`session-handoff` update と `worklog-record` が揃って漏れる。証拠: 本リポジトリの 2026-07-31 サイクル（全11コミット・plan の Task1〜6 完了に対し handoff コミット1件・worklog 発火0回。3件は retrospective Phase 3 の総ざらいで事後補完）
+- **失敗モード3: 発火契機の定義漏れ** — コンテキスト逼迫によるセッション切り替え直前が発火契機として定義されておらず、節目でなくても記録すべき局面が拾われない。証拠: 中央ストア `LoopForAlpha-2026-07-19-07`（`friction`: 「記録契機が『作業の節目』に限定されており、コンテキスト逼迫によるセッション切り替えが独立した発火契機として定義されていない」）
+
+失敗モード1と3は、いずれも**利用者が口頭で指摘したことで初めて復旧している**（`corrections` に「今回の作業記録は不要でしょうか」「今作業記録を残しておくこと」が記録されている）。現状の記録信頼性は、人間が漏れに気づくことに依存している。
+
+影響は、サイクル中の delta が記録されず `worklog-extract` の母数が痩せること。ただし本リポジトリの中央ストア 9 件に対し LoopForAlpha は 88 件であり、**パイプライン全体が機能していないわけではない**。漏れの分だけ母数が目減りする、というのが正しい影響評価である。
 
 ## 検討状況
 
-- 2026-07-31: retrospective で検出・起票。対策の方向として (a) 各スキルの完了時に呼び出し元へ戻る契機を明示する (b) worklog-record / session-handoff の発火をスキル側の終了ステップに埋め込む (c) 環境側の仕組み（フック等）で発火させる、の案がある。採否・設計は次サイクル（ADR-0021）
+- 2026-07-31: retrospective で検出・起票。当初の分析は「Post ラッパーの規定が `start-work` の SKILL.md にしか存在せず、他スキルへ delegate している間に呼び出し元へ戻る契機を持たない」という**構造的到達不能**であり、事象は「発火が実運用で起きない」とされていた
+- 2026-08-01: 対策検討の前段として中央ストアと git 履歴を実測し、**上記の原因分析と事象認識をいずれも反証**した。以下は測定結果:
+  - 中央ストアの内訳は LoopForAlpha 88 件 / MakeAiInstructions 9 件。LoopForAlpha 側は `CLAUDE.md` に worklog に関する記述がなく `.claude/settings.json` も permissions のみで、**フック等の追加配線なし**にプラグイン標準の Post ラッパーだけで記録が蓄積している
+  - LoopForAlpha の 2026-07-17〜07-30 における日別件数は、handoff コミット合計 89 件に対し worklog エントリ 88 件。日ごとの完全一致ではないが（記録ゲートが弾く分・1マイルストーンで複数エントリ記録する分があるため当然）、**同一オーダーで連動**しており、Post ラッパーに並ぶ2項目が揃って動作していることを示す
+  - LoopForAlpha の handoff コミットメッセージは `Task 5.11・5.12 完了時点` `フェーズ4 完了` `クラスタ A 完了` `Task 3.3・3.4 完了` 等であり、セッション末尾ではなく**サイクル中のマイルストーンで更新されている**。delegate 先から呼び出し元の Post ラッパーへ戻る契機は、14 日間で約 89 回成立していた
+  - 本リポジトリでも handoff コミットは 07-05 に 18 件、07-17 に 8 件、07-18 に 3 件と成立実績があり、07-31 サイクルの 1 件は**外れ値**である。起票時の「実運用で起きない」という一般化は、単一サイクルの観測に基づく誤りだった
+- 2026-08-01: 上記を踏まえ、課題の焦点を「配線の構造的到達不能」から「**消化漏れの検出不能性**」へ改めた（本ファイルの課題内容を書き換え。起票元の振り返りファイルは ADR-0011 により上書きしない）
+- 2026-08-01: 失敗モード2 が発生した 2026-07-31 サイクルは、handoff の記録によればリモート操作セッションだった（`/plugin` コマンドが使用不可だった旨が記録されている）。利用者の介在密度が下がる条件と失敗モード2 の重なりは**仮説どまり**（1サンプル）。TBD
 
 ## 結論
 
-（open）
+ADR-0057（Post ラッパーの消化結果を handoff の「Post ラッパー消化記録」へ残し、完全未入場は retrospective Phase 3 の git log 突合で事後回収する）および ADR-0058（セッション切り替え直前を worklog-record の発火契機に追加する）で決定。スキル4件（session-handoff / start-work / retrospective / worklog-record）へ実装済み。
+
+- 失敗モード1（部分消化）→ handoff の記入が worklog の判定結果を要求する形で構造的に解消
+- 失敗モード2（完全未入場）→ 即時検出は原理的に不可能と整理し、事後突合で回収
+- 失敗モード3（発火契機の定義漏れ）→ 契機の追加で解消
+
+発火の強制（フック等の環境側機構）はスコープ外とした（利用者判断。必要性を認めた時点で別途起票）。closed

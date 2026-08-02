@@ -1,6 +1,6 @@
 # ADR-0057: Post ラッパーの消化結果を handoff に残し、未入場は事後突合で回収する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-01
 
 ## Context

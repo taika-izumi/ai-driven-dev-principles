@@ -62,5 +62,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0054](0054-worklog-store-encoding-eol-contract.md) | 中央ストアのエンコーディング・EOL 契約と追記手段・読み側検証を定める | Accepted | 2026-07-18 |
 | [0055](0055-start-work-skill-availability-ai-side-check.md) | start-work Phase -1 にスキル availability の AI 側判定規範を追加する | Accepted | 2026-07-18 |
 | [0056](0056-retrospective-issue-extraction-core-worklog-delegation.md) | retrospective を課題抽出記録に純化し、Went Well / Tech Notes 観点を worklog パイプラインへ委譲する | Accepted | 2026-07-31 |
-| [0057](0057-post-wrapper-consumption-visibility-and-reconciliation.md) | Post ラッパーの消化結果を handoff に残し、未入場は事後突合で回収する | Proposed | 2026-08-01 |
-| [0058](0058-worklog-record-session-switch-trigger.md) | worklog-record の発火契機にセッション切り替え直前を追加する | Proposed | 2026-08-01 |
+| [0057](0057-post-wrapper-consumption-visibility-and-reconciliation.md) | Post ラッパーの消化結果を handoff に残し、未入場は事後突合で回収する | Accepted | 2026-08-01 |
+| [0058](0058-worklog-record-session-switch-trigger.md) | worklog-record の発火契機にセッション切り替え直前を追加する | Accepted | 2026-08-01 |

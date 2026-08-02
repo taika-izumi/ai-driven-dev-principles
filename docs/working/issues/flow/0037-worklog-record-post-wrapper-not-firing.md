@@ -1,7 +1,8 @@
 # Issue-0037: start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的）
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-07-31
+- **Closed**: 2026-08-02
 - **起票元**: `retrospectives/flow/2026-07-31-retrospective-mode-review.md` 課題#1（**当該ファイルに記載の事象・原因は 2026-08-01 の実データ調査で反証された。本 issue を正とする**。振り返りファイルは記録のため上書きしない。ADR-0011）
 - **関連**: ADR-0047（worklog-record を start-work Post ラッパーへ配線し全プロジェクトへ伝播）、ADR-0044（記録ゲート）、`skills/start-work/SKILL.md`（Phase 2 横断的ラッパー Post）、`skills/session-handoff/SKILL.md`（update 操作。同一ラッパー内の隣接項目）、`skills/retrospective/SKILL.md`（Phase 3 worklog 総ざらい。事後の救済経路）、Issue-0036（worklog-extract の単発エントリ扱い）
 
@@ -36,4 +37,10 @@ ADR-0047 は worklog-record を `start-work` の Post ラッパーから、`sess
 
 ## 結論
 
-（open）
+ADR-0057（Post ラッパーの消化結果を handoff の「Post ラッパー消化記録」へ残し、完全未入場は retrospective Phase 3 の git log 突合で事後回収する）および ADR-0058（セッション切り替え直前を worklog-record の発火契機に追加する）で決定。スキル4件（session-handoff / start-work / retrospective / worklog-record）へ実装済み。
+
+- 失敗モード1（部分消化）→ handoff の記入が worklog の判定結果を要求する形で構造的に解消
+- 失敗モード2（完全未入場）→ 即時検出は原理的に不可能と整理し、事後突合で回収
+- 失敗モード3（発火契機の定義漏れ）→ 契機の追加で解消
+
+発火の強制（フック等の環境側機構）はスコープ外とした（利用者判断。必要性を認めた時点で別途起票）。closed

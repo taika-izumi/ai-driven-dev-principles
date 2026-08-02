@@ -1,6 +1,6 @@
 # ADR-0058: worklog-record の発火契機にセッション切り替え直前を追加する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-01
 
 ## Context

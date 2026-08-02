@@ -1,9 +1,9 @@
 # Handoff: Post ラッパー消化漏れの検出不能性（Issue-0037）への対処
 
 - **Branch**: feature/worklog-record-firing-reliability
-- **Last Updated**: 2026-08-01 06:44 (Asia/Tokyo)
+- **Last Updated**: 2026-08-02 23:46 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 調査完了・課題定義の書き換え完了 → 対策の brainstorming 待ち
+- **Current Phase**: 実装完了（ADR-0057/0058 Accepted・Issue-0037 close）→ master への merge 待ち
 
 ## 作業の目的・背景
 
@@ -27,18 +27,19 @@ Issue-0037（start-work Post ラッパーの worklog-record 発火）への対�
 
 - [x] 実データ調査（中央ストアの件数内訳・日別分布、LoopForAlpha と本 repo の handoff コミット日別、handoff コミットメッセージの契機分析、LoopForAlpha 側の追加配線の有無確認）（2026-08-01）
 - [x] Issue-0037 の全面書き換え（タイトル・課題内容・検討状況）とインデックス行の更新（2026-08-01）
+- [x] 対策方針の決定: 案C（handoff 相乗り＋事後突合）採用。ADR-0057/0058 起票、既存仕様書3件を書き換え（2026-08-01〜02、コミット `1192239` `0b9bd12`）
+- [x] 実装: スキル4件の SKILL.md 改定（session-handoff `6c8b3c1` / start-work `e6df0ff` / retrospective `993d96a` / worklog-record `38f8f55`）。全 grep 検証パス・手順連番の実体確認済み（2026-08-02）
+- [x] ADR-0057/0058 を Accepted へ昇格・Issue-0037 を close（2026-08-02）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 対策の検討
-  - 状態: 課題定義の書き換えまで完了。対策は未着手
-  - 残り: `superpowers:brainstorming` で対策方針を決める。入力は失敗モード3種
+- [ ] **現在の作業**: master への merge
+  - 状態: 実装・検証・ADR 昇格・issue close まで完了
+  - 残り: finishing-a-development-branch で merge → retrospective（突合手順の初回適用）
 
 ## 未着手のタスク
 
-- [ ] 対策方針の決定（ADR 起票）
-- [ ] 実装（`skills/` 配下の改定が見込まれる → プラグイン更新が必要）
-- [ ] master へ merge → retrospective
+- [ ] master へ merge → retrospective（新形式＋突合手順のドッグフーディング2周目）
 
 ## 既知のブロッカー・懸念
 
@@ -53,6 +54,7 @@ Issue-0037（start-work Post ラッパーの worklog-record 発火）への対�
 
 - 2026-08-01 課題定義の書き換え完了: ADR=なし（実データによる事実訂正のため。ADR-0031 に従い issue 側へ一次記録） / worklog=`MakeAiInstructions-2026-08-01-01`
 - 2026-08-01 対策方針の決定（設計承認）: ADR=0057・0058 起票（Proposed） / worklog=棄却（方針決定自体に delta なし。調査時の delta は 2026-08-01-01 で記録済み）
+- 2026-08-02 実装完了（スキル4件改定・検証パス）: ADR=0057・0058 を Accepted へ昇格（新規候補なし。計画どおりの実装のため） / worklog=棄却（計画の実文どおりに完遂し friction・corrections ともなし）
 
 ## 次セッション開始時のアクション
 
@@ -65,4 +67,6 @@ Issue-0037（start-work Post ラッパーの worklog-record 発火）への対�
 
 ## 重要な意思決定の履歴
 
-（本ブランチではまだ ADR なし。課題定義の書き換えは事実訂正として issue の「検討状況」に一次記録した。ADR-0031 / folder-structure 7.3）
+- ADR-0057: Post ラッパーの消化結果を handoff に残し、未入場は事後突合で回収する（2026-08-01, **Accepted**）
+- ADR-0058: worklog-record の発火契機にセッション切り替え直前を追加する（2026-08-01, **Accepted**）
+- 課題定義の書き換え（Issue-0037）は事実訂正として issue の「検討状況」に一次記録した（ADR-0031 / folder-structure 7.3）

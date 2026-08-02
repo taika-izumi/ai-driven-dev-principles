@@ -47,6 +47,13 @@ Issue-0037（start-work Post ラッパーの worklog-record 発火）への対�
 - 07-31 サイクルが失敗モード2 になった環境要因（リモート操作）は1サンプルの仮説どまり
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は本セッションで確認済み（ADR-0036）
 
+## Post ラッパー消化記録
+
+マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。
+
+- 2026-08-01 課題定義の書き換え完了: ADR=なし（実データによる事実訂正のため。ADR-0031 に従い issue 側へ一次記録） / worklog=`MakeAiInstructions-2026-08-01-01`
+- 2026-08-01 対策方針の決定（設計承認）: ADR=0057・0058 起票（Proposed） / worklog=棄却（方針決定自体に delta なし。調査時の delta は 2026-08-01-01 で記録済み）
+
 ## 次セッション開始時のアクション
 
 1. 最初に確認すべきファイル: 本ファイル、`docs/working/issues/flow/0037-worklog-record-post-wrapper-not-firing.md`

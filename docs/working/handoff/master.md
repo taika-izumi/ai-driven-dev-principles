@@ -58,8 +58,9 @@
 
 ## 既知のブロッカー・懸念
 
-- **プラグイン未更新（要対応・2サイクル分蓄積）**: 未反映の skills/ 改定が **前サイクル（retrospective 3ファイル）＋本サイクル（session-handoff / start-work / retrospective / worklog-record の4ファイル）** に及ぶ。ローカル操作セッションで `/plugin marketplace update ai-driven-dev-principles` の実行が必要（AI 実行不可。ADR-0055）。未更新の間、ロードされるスキル本文は旧版のため、**コミット済み SKILL.md を直接読んで新手順を適用する**（2026-07-31・2026-08-03 の両セッションで実績あり）
-- **モデル条件付き規範の再評価（新規・worklog 記録済み）**: セッション途中の `/model` 切替後、モデル条件付き規範（Fable 5 の AskUserQuestion 同一ターンテキスト非表示への対処）の再評価漏れが発生（`MakeAiInstructions-2026-08-03-01`）。Fable 5 では説明テキストを質問と別ターンに分離すること
+- **プラグイン更新: 解消済み（2026-08-03）**。蓄積していた2サイクル分（前サイクルの retrospective 3ファイル＋本サイクルの session-handoff / start-work / retrospective / worklog-record）はユーザーが `/plugin marketplace update ai-driven-dev-principles` を実行して反映済み。available-skills の worklog-record 説明が改定後の文言であることで AI 側から確認済み（ADR-0055 の判定規範）
+- **モデル条件付き規範の再評価（新規・worklog 記録済み）**: セッション途中の `/model` 切替後、モデル条件付き規範（Fable 5 の AskUserQuestion 同一ターンテキスト非表示への対処）の再評価漏れが発生（`MakeAiInstructions-2026-08-03-01`）。Fable 5 では説明テキストを質問と別ターンに分離すること。**本セッション終了時点のモデルは Opus 5**（2026-08-03 に切り戻し）
+- **推奨提示の適用範囲（worklog 記録済み）**: 「判断に迷った点」の共有も意思決定要求であり、推奨と理由を添える対象（`MakeAiInstructions-2026-08-03-02`）
 - **中央ストアの現状**: 本repo 11件（`2026-07-17-01`〜`2026-08-03-01`）＋ LoopForAlpha 88件。全行 CR 0・BOM なし・UTF-8/LF をバイト直接カウントで検証済み（grep 系は不可。Issue-0032）
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定（2026-07-17 明言）**。organize-inbox 提案は不要
 - **モデルまたぎ運用**: worklog の `model` は「delta 発生元」で埋める（ADR-0048）。本サイクルは Opus 5 → Fable 5 と切替
@@ -68,14 +69,14 @@
 
 ## Post ラッパー消化記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。master 上の新規マイルストーン発生時に記入（直近サイクル分は `feature_worklog-record-firing-reliability.md` 参照）。
+マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。直近サイクル中の分は `feature_worklog-record-firing-reliability.md` 参照。
 
-（次サイクル開始後に記入）
+- 2026-08-03 セッション終了（切り替え直前。ADR-0058 の契機で初回発火）: ADR=なし（終了処理に意思決定なし） / worklog=`MakeAiInstructions-2026-08-03-02`
 
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read。改定後の read は消化記録の空白検査を含む）
-2. **プラグイン更新**: ローカル操作セッションであれば、新しい作業の前に `/plugin marketplace update ai-driven-dev-principles` をユーザーへ依頼（2サイクル分未反映。ADR-0055）
+2. **プラグイン更新は不要**（2026-08-03 に実行済み・反映確認済み）。次に skills/ を改定したときに再度依頼する（ADR-0055）
 3. **直近サイクルは完了**: 追加作業不要
 4. **次サイクルの候補（着手はユーザー判断）**: Issue-0038（更新経路。射程拡張済み）/ Issue-0022（ADR 粒度。ユーザー再提起あり）/ Issue-0039（メモリ依存。TBD）/ Issue-0032（小規模）/ worklog-extract 再走査。Issue-0021 の close 可否も要判断
 5. **最初に確認すべきファイル**: 本ファイル、`docs/records/retrospectives/system/2026-08-03-post-wrapper-consumption-visibility.md`、`docs/working/issues/README.md`

@@ -53,3 +53,4 @@
 | [0037](flow/0037-worklog-record-post-wrapper-not-firing.md) | start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的） | closed | 2026-07-31 |
 | [0038](flow/0038-retrospective-phase3-findings-no-path-to-record.md) | retrospective の Phase 3 で得た知見を記録へ反映する経路がない | open | 2026-07-31 |
 | [0039](flow/0039-guideline-reliance-on-invisible-tool-memory.md) | ガイドライン遵守が Claude Code プロジェクトメモリという不可視機構に依存しうる | open | 2026-08-03 |
+| [0040](flow/0040-contributing-template-sync-instruction-stale.md) | CONTRIBUTING.md のテンプレート同期指示が現行構成と矛盾している | open | 2026-08-04 |

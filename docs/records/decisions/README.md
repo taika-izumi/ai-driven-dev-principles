@@ -64,3 +64,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0056](0056-retrospective-issue-extraction-core-worklog-delegation.md) | retrospective を課題抽出記録に純化し、Went Well / Tech Notes 観点を worklog パイプラインへ委譲する | Accepted | 2026-07-31 |
 | [0057](0057-post-wrapper-consumption-visibility-and-reconciliation.md) | Post ラッパーの消化結果を handoff に残し、未入場は事後突合で回収する | Accepted | 2026-08-01 |
 | [0058](0058-worklog-record-session-switch-trigger.md) | worklog-record の発火契機にセッション切り替え直前を追加する | Accepted | 2026-08-01 |
+| [0059](0059-adr-granularity-by-question-not-length.md) | ADR の粒度は「後から探しに来るときの問い」で決め、文章量は基準にしない | Proposed | 2026-08-03 |
+| [0060](0060-adr-granularity-check-on-append.md) | ADR 粒度の点検を決定追記の手順に組み込み、昇格前の一括点検を受け皿とする | Proposed | 2026-08-03 |

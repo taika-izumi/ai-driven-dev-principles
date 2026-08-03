@@ -1,6 +1,6 @@
 # ADR-0059: ADR の粒度は「後から探しに来るときの問い」で決め、文章量は基準にしない
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-03
 
 ## Context

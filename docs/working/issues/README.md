@@ -44,7 +44,7 @@
 | [0019](flow/0019-adr-rejected-status-path.md) | コミット済み Proposed ADR を不採用で終える経路（Rejected）が未定義 | closed | 2026-07-06 |
 | [0020](flow/0020-staged-content-check-before-commit.md) | コミット直前の確認観点に「ステージング内容の確認」が含まれていない | open | 2026-07-06 |
 | [0021](flow/0021-tech-notes-cross-cycle-reuse.md) | Tech Notes の横断再利用（知見の蒸留・集約）の仕組みがない | open | 2026-07-07 |
-| [0022](flow/0022-adr-granularity-check.md) | ADR 起票時に粒度（1決定=1ADR）を確認する観点がない | open | 2026-07-07 |
+| [0022](flow/0022-adr-granularity-check.md) | ADR 起票時に粒度（1決定=1ADR）を確認する観点がない | closed | 2026-07-07 |
 | [0023](flow/0023-worklog-record-entry-count-and-priority-norm.md) | worklog-record の記録件数規範と複数 delta 候補時の優先順位付けが未明示 | closed | 2026-07-17 |
 | [0024](flow/0024-plugin-skill-availability-check-in-start-work.md) | プラグイン更新後の新規スキル availability 確認手順が start-work Phase -1 に未組み込み | closed | 2026-07-17 |
 | [0033](flow/0033-subagent-dispatch-prompt-boilerplate.md) | サブエージェント委譲の起動プロンプトに入れるべき定型項目が未定義 | open | 2026-07-31 |

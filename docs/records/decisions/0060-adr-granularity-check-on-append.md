@@ -1,6 +1,6 @@
 # ADR-0060: ADR 粒度の点検を決定追記の手順に組み込み、昇格前の一括点検を受け皿とする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-03
 
 ## Context

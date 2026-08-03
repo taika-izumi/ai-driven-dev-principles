@@ -187,9 +187,10 @@ ADRは**原則 Proposed で作成する**。Accepted への昇格は、その決
 
 昇格手順:
 
-1. 該当ADRファイルの `Status` を `Accepted` に更新する
-2. `docs/records/decisions/README.md` のテーブルのステータスも更新する
-3. コミットする
+1. **粒度を点検する（ADR-0059 / ADR-0060）**: 昇格対象 ADR のタイトルが本文の全決定に答えているかを突合する。答えていない決定があれば分割を提案し、分割してから昇格する
+2. 該当ADRファイルの `Status` を `Accepted` に更新する
+3. `docs/records/decisions/README.md` のテーブルのステータスも更新する
+4. コミットする
 
 `start-work` の Phase 2 Post でも、確定した据え置きADRの昇格漏れがないか確認される。
 

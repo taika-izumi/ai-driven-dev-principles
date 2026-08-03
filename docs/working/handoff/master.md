@@ -69,7 +69,8 @@
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。直近サイクル中の分は `feature_adr-granularity-and-size.md` 参照（突合済み・未消化なし）。
 
-- 2026-08-04 master merge + retrospective 完了: ADR=なし（振り返りは課題抽出のみで意思決定を行わない。ADR-0021） / worklog=（セッション終了処理で判定）
+- 2026-08-04 master merge + retrospective 完了: ADR=なし（振り返りは課題抽出のみで意思決定を行わない。ADR-0021） / worklog=`MakeAiInstructions-2026-08-04-02`
+- 2026-08-04 セッション終了（切り替え直前。ADR-0058）: ADR=なし（終了処理に意思決定なし） / worklog=同上（`MakeAiInstructions-2026-08-04-02`。終了処理と同一 context のため1件に集約）
 
 ## 次セッション開始時のアクション
 
@@ -83,6 +84,7 @@
    - **ADR を起票・追記・昇格するときは新規範が適用される**（ADR-0059/0060）。追記時はタイトル突合、昇格時は第1ステップで粒度点検
    - Post ラッパーは1項目ずつ消し込み、結果を消化記録へ書く（ADR-0057）。セッション終了時は finalize 前に worklog-record（ADR-0058）
    - **ガイドラインは配布物**。設計判断の根拠データは本 repo だけでなく配布先（LoopForAlpha）でも取ること（本サイクルの delta。`MakeAiInstructions-2026-08-04-01`）
+   - 既存ファイルへ追記するときはパスを記憶から組み立てず Glob で解決する。自分が書いた markdown を grep で検査するときは強調・リンク記法を含まない識別子をパターンにする（`MakeAiInstructions-2026-08-04-02`）
    - `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` を変更したら `scripts/sync-template.ps1` を実行（skills 改定では不要。Issue-0040）
    - コミット・マージのマルチライン文字列は `git commit -F <絶対パスの一時ファイル>`（Issue-0015）
    - 中央ストアへの追記は UTF-8/BOM なし/LF。健全性はバイト直接カウント（Issue-0032）

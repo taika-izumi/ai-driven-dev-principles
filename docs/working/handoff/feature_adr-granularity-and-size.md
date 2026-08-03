@@ -1,9 +1,9 @@
 # Handoff: ADR 粒度・文章量の規範整備（Issue-0022 対処）
 
 - **Branch**: feature/adr-granularity-and-size
-- **Last Updated**: 2026-08-04 00:15 (Asia/Tokyo)
+- **Last Updated**: 2026-08-04 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張 / brainstorming 完了 → writing-plans へ
+- **Current Phase**: 実装完了・検証済み。残りは master への merge と retrospective
 
 ## 作業の目的・背景
 
@@ -27,20 +27,22 @@ brainstorming で以下を実測し、設計を確定した:
 
 - [x] Issue-0022 の実データ調査（本 repo 58本・LoopForAlpha 99本の ADR 実測、分割コミット `6ea5d48` の実コスト測定）（2026-08-03）
 - [x] brainstorming（判定軸 / 点検契機 / 文章量の3論点を決着、設計をセクション単位で承認）（2026-08-04）
-- [x] ADR-0059 / ADR-0060 起票・コミット `9ec6682`（Proposed。Accepted 昇格は実装完了後）
+- [x] ADR-0059 / ADR-0060 起票・コミット `9ec6682`（実装完了後に Accepted へ昇格済み）
+- [x] 実装計画の作成・コミット `3125995`（Task1〜7、grep 期待値つき）
+- [x] 実装（Task1〜6）: `decision-log` 3箇所 `aa5b686` / `94ff0a9` / `4bfca43`、`start-work` `f5bdb8e`、仕様書 `2f0520c`、ADR 昇格＋Issue-0022 close `f76b13b`
+- [x] 受入チェック（5項目すべて期待値どおり）と仕様書・実装の read-back 突合
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の作成（writing-plans）
-  - 状態: 設計承認済み。変更対象は `skills/decision-log/SKILL.md`（起票時の粒度規範 / 追記時の手順新設 / 承認の昇格に突合ステップ追加）、`skills/start-work/SKILL.md`（Post ラッパー項目1から「承認の昇格」への参照を追加）、仕様書 §7・§5.3 の書き換え、Issue-0022 の close
-  - 残り: plan 作成 → 実装 → 検証 → Accepted 昇格 → master merge → retrospective
+- [ ] **現在の作業**: 完了処理（Task 7）
+  - 状態: 受入チェック完了、handoff 更新中
+  - 残り: master への merge 方針決定（`finishing-a-development-branch`）→ merge → `retrospective` → プラグイン更新をユーザーへ依頼
 
 ## 未着手のタスク
 
-- [ ] 実装（スキル2件・仕様書1件の書き換え）
-- [ ] 検証（grep 期待値による受入チェック、read-back）
-- [ ] ADR-0059/0060 の Accepted 昇格、Issue-0022 の close
-- [ ] master へ merge → retrospective
+- [ ] master へ merge
+- [ ] merge 直後に retrospective
+- [ ] プラグイン更新の依頼（`/plugin marketplace update ai-driven-dev-principles`）
 
 ## 既知のブロッカー・懸念
 
@@ -54,6 +56,8 @@ brainstorming で以下を実測し、設計を確定した:
 ## Post ラッパー消化記録
 
 - 2026-08-04 brainstorming 完了（設計承認）: ADR=0059/0060（コミット `9ec6682`。Accepted 昇格は実装完了後） / worklog=`MakeAiInstructions-2026-08-04-01`
+- 2026-08-04 writing-plans 完了: ADR=なし（設計済み方針の計画化のみで新規の意思決定なし） / worklog=棄却（delta なし。計画作成は既存スキル手順どおりで friction・corrections とも発生せず）
+- 2026-08-04 実装完了（plan Task1〜6）: ADR=0059/0060 を Accepted へ昇格（`f76b13b`。昇格前の粒度点検を実施し両件とも分割不要と判定） / worklog=棄却（delta なし。計画の各ステップが期待値どおり通り、手戻り・指示注入なし）
 
 ## 次セッション開始時のアクション
 

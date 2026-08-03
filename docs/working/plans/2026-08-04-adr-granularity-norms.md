@@ -31,12 +31,12 @@
 **Files:**
 - Modify: `skills/decision-log/SKILL.md`（「### 2. ADRファイルを作成する」内、実行可能性チェックの blockquote 直後）
 
-- [ ] **Step 1: 挿入位置を確認する**
+- [x] **Step 1: 挿入位置を確認する**
 
 Run: `grep -n "実行可能性チェック（ADR-0032）" skills/decision-log/SKILL.md`
 Expected: 1件ヒット（現状 91 行目付近）。この blockquote 段落の直後に挿入する。
 
-- [ ] **Step 2: blockquote を追加する**
+- [x] **Step 2: blockquote を追加する**
 
 `> **実行可能性チェック（ADR-0032）**: ...` で始まる段落の直後（次の `### 3. インデックスを更新する` の前）に、空行を1行はさんで以下を挿入する:
 
@@ -44,7 +44,7 @@ Expected: 1件ヒット（現状 91 行目付近）。この blockquote 段落�
 > **粒度（ADR-0059）**: 1つの ADR は「後から探しに来るときの問い」1つに答えるものとする。起票する決定が2つ以上の問いに割れるなら ADR を分ける。タイトルはその問いへの答えとして読めるように書き、タイトルが答えていない決定を本文に含めない。**文章量（文字数・行数）は粒度の基準にしない**（長いことは分割の理由にならず、分割しても総文章量はむしろ増える）。
 ```
 
-- [ ] **Step 3: 受入チェック**
+- [x] **Step 3: 受入チェック**
 
 Run: `grep -c "粒度（ADR-0059）" skills/decision-log/SKILL.md`
 Expected: `1`
@@ -55,7 +55,7 @@ Expected: `1`
 Run: `grep -n "実行可能性チェック（ADR-0032）\|粒度（ADR-0059）\|### 3. インデックスを更新する" skills/decision-log/SKILL.md`
 Expected: 3件が「実行可能性チェック → 粒度 → ### 3.」の行番号順に並ぶ
 
-- [ ] **Step 4: コミット**
+- [x] **Step 4: コミット**
 
 ```bash
 git add skills/decision-log/SKILL.md
@@ -69,12 +69,12 @@ git commit -m "skill: decision-log の起票手順に粒度の判定規範を追
 **Files:**
 - Modify: `skills/decision-log/SKILL.md`（「### 4. コミットのタイミング（ADR-0030）」の節末、`## 未決事項（open questions）の扱い` の直前）
 
-- [ ] **Step 1: 挿入位置を確認する**
+- [x] **Step 1: 挿入位置を確認する**
 
 Run: `grep -n "^## 未決事項（open questions）の扱い" skills/decision-log/SKILL.md`
 Expected: 1件ヒット（現状 118 行目付近）。この見出しの直前に挿入する。
 
-- [ ] **Step 2: 新しい節を挿入する**
+- [x] **Step 2: 新しい節を挿入する**
 
 `## 未決事項（open questions）の扱い` の直前に、以下をそのまま挿入する:
 
@@ -92,7 +92,7 @@ Expected: 1件ヒット（現状 118 行目付近）。この見出しの直前�
 タイトルを書き換えれば追記した決定も同じ問いに収まる場合は、タイトルの更新で足りる（分割は不要）。
 ```
 
-- [ ] **Step 3: 受入チェック**
+- [x] **Step 3: 受入チェック**
 
 Run: `grep -c "^## Proposed の ADR へ決定を追記するとき（ADR-0060）" skills/decision-log/SKILL.md`
 Expected: `1`
@@ -103,7 +103,7 @@ Expected: `1`
 Run: `grep -n "^## " skills/decision-log/SKILL.md`
 Expected: `## Proposed の ADR へ決定を追記するとき（ADR-0060）` が `## ADR作成手順` の後、`## 未決事項（open questions）の扱い` の前に現れる
 
-- [ ] **Step 4: コミット**
+- [x] **Step 4: コミット**
 
 ```bash
 git add skills/decision-log/SKILL.md
@@ -117,12 +117,12 @@ git commit -m "skill: decision-log に Proposed ADR への追記手順（タイ�
 **Files:**
 - Modify: `skills/decision-log/SKILL.md`（「### 承認の昇格（Proposed → Accepted、ADR-0019）」内の「昇格手順:」リスト）
 
-- [ ] **Step 1: 現在の手順を確認する**
+- [x] **Step 1: 現在の手順を確認する**
 
 Run: `grep -n -A 5 "^昇格手順:" skills/decision-log/SKILL.md`
 Expected: 3ステップ（Status 更新 / インデックス更新 / コミット）が表示される
 
-- [ ] **Step 2: 手順を4ステップへ置き換える**
+- [x] **Step 2: 手順を4ステップへ置き換える**
 
 以下の既存ブロックを
 
@@ -145,7 +145,7 @@ Expected: 3ステップ（Status 更新 / インデックス更新 / コミッ�
 4. コミットする
 ```
 
-- [ ] **Step 3: 受入チェック**
+- [x] **Step 3: 受入チェック**
 
 Run: `grep -c "粒度を点検する（ADR-0059 / ADR-0060）" skills/decision-log/SKILL.md`
 Expected: `1`
@@ -153,7 +153,7 @@ Expected: `1`
 Run: `grep -n -A 6 "^昇格手順:" skills/decision-log/SKILL.md`
 Expected: 番号付きリストが 1〜4 の4ステップになっており、1 が粒度点検、4 がコミット
 
-- [ ] **Step 4: コミット**
+- [x] **Step 4: コミット**
 
 ```bash
 git add skills/decision-log/SKILL.md
@@ -167,12 +167,12 @@ git commit -m "skill: decision-log の承認の昇格に粒度点検ステップ
 **Files:**
 - Modify: `skills/start-work/SKILL.md`（「Post（実行後）」の項目1「ADR候補検出」内）
 
-- [ ] **Step 1: 対象文を確認する**
+- [x] **Step 1: 対象文を確認する**
 
 Run: `grep -n "承認の昇格」「ステータス変更」に従う" skills/start-work/SKILL.md`
 Expected: 1件ヒット
 
-- [ ] **Step 2: 参照を1文追加する**
+- [x] **Step 2: 参照を1文追加する**
 
 以下の既存文の末尾（`。あわせて、未コミットの ADR ドラフト...` の直前）に1文を挿入する。
 
@@ -188,7 +188,7 @@ Expected: 1件ヒット
    また、設計承認・実装完了などのチェックポイントを通過した場合、Proposed のまま据え置かれているADRのうち決定が確定したものを Accepted へ昇格させ、議論の結果不採用が確定したものを Rejected へ更新する（`decision-log` の「承認の昇格」「ステータス変更」に従う。ADR-0041）。昇格の手順には粒度の点検が含まれる（`decision-log` の「承認の昇格」第1ステップ。ADR-0059 / ADR-0060。点検の規範は `decision-log` 側にあり、ここには重複して書かない）。あわせて、未コミットの ADR ドラフトのうち関連論点が収束したものをコミットする（ADR-0030）。
 ```
 
-- [ ] **Step 3: 受入チェック**
+- [x] **Step 3: 受入チェック**
 
 Run: `grep -c "「承認の昇格」第1ステップ" skills/start-work/SKILL.md`
 Expected: `1`
@@ -196,7 +196,7 @@ Expected: `1`
 Run: `grep -c "後から探しに来るときの問い" skills/start-work/SKILL.md`
 Expected: `0`（規範本体を start-work 側へ複写していないことの確認）
 
-- [ ] **Step 4: コミット**
+- [x] **Step 4: コミット**
 
 ```bash
 git add skills/start-work/SKILL.md
@@ -212,7 +212,7 @@ git commit -m "skill: start-work の Post ラッパーから decision-log の粒
 
 この仕様書には現行スキル本文より古い記述（§7.2 のドラフト承認フロー等）が残っているが、**変更箇所のみを訂正**し、全面訂正は Issue-0008 の方針決定に委ねる（前サイクルの前例）。
 
-- [ ] **Step 1: §5.3.1 に1段落追記する**
+- [x] **Step 1: §5.3.1 に1段落追記する**
 
 `### 5.3.1 Post ラッパーの消し込み規律（ADR-0057）` 節の最終段落（`Post ラッパーに完全に入らなかった場合は...` で始まる段落）の直後に、以下を挿入する:
 
@@ -220,7 +220,7 @@ git commit -m "skill: start-work の Post ラッパーから decision-log の粒
 Post ラッパー項目1で据え置き ADR を Accepted へ昇格させるときは、`decision-log` の「承認の昇格」手順に含まれる粒度点検が先に走る（ADR-0059 / ADR-0060）。点検の規範は `decision-log` 側に一本化されており、Post ラッパー側および セッション終了処理には重複して記述しない。
 ```
 
-- [ ] **Step 2: §7 に 7.4 を新設する**
+- [x] **Step 2: §7 に 7.4 を新設する**
 
 `### 7.3 description フィールドの強化` のコードブロック終端（ファイル 318 行目付近の ` ``` `）の直後、`## 8. .github/copilot-instructions.md の更新` の直前に、以下を挿入する:
 
@@ -242,7 +242,7 @@ ADR の粒度は「後から探しに来るときの問い」1つを単位とす
 規範の置き場所は `decision-log` に一本化し、昇格を促す側（`start-work` の Post ラッパー項目1、セッション終了処理）は手順を参照するに留める。
 ```
 
-- [ ] **Step 3: 受入チェック**
+- [x] **Step 3: 受入チェック**
 
 Run: `grep -c "### 7.4 粒度の判定と追記時の点検" docs/current/specs/2026-04-25-record-strengthening-design.md`
 Expected: `1`
@@ -253,11 +253,11 @@ Expected: 行番号順に 7.3 → 7.4 → 8.
 Run: `grep -c "承認の昇格」手順に含まれる粒度点検" docs/current/specs/2026-04-25-record-strengthening-design.md`
 Expected: `1`
 
-- [ ] **Step 4: 読み直しによる整合確認（ADR-0038）**
+- [x] **Step 4: 読み直しによる整合確認（ADR-0038）**
 
 `skills/decision-log/SKILL.md` の粒度関連3箇所と §7.4 の表を読み比べ、契機・配置先・内容が一致することを確認する。不一致があれば仕様書側を実装に合わせる。
 
-- [ ] **Step 5: コミット**
+- [x] **Step 5: コミット**
 
 ```bash
 git add docs/current/specs/2026-04-25-record-strengthening-design.md
@@ -275,19 +275,19 @@ git commit -m "spec: 記録強化仕様へ ADR 粒度点検の3契機を反映�
 - Modify: `docs/working/issues/flow/0022-adr-granularity-check.md`
 - Modify: `docs/working/issues/README.md`
 
-- [ ] **Step 1: 昇格前の粒度点検を実施する（新規範のドッグフーディング）**
+- [x] **Step 1: 昇格前の粒度点検を実施する（新規範のドッグフーディング）**
 
 ADR-0059 / ADR-0060 それぞれについて、タイトルが本文の全決定に答えているかを突合する。結果をユーザーへ報告する（分割不要と判断した場合もその旨を述べる）。
 
-- [ ] **Step 2: 両 ADR の Status を Accepted にする**
+- [x] **Step 2: 両 ADR の Status を Accepted にする**
 
 各ファイルの `- **Status**: Proposed` を `- **Status**: Accepted` に置き換える。
 
-- [ ] **Step 3: ADR 索引を更新する**
+- [x] **Step 3: ADR 索引を更新する**
 
 `docs/records/decisions/README.md` の 0059 / 0060 の行の `Proposed` を `Accepted` に置き換える。
 
-- [ ] **Step 4: Issue-0022 を close する**
+- [x] **Step 4: Issue-0022 を close する**
 
 `docs/working/issues/flow/0022-adr-granularity-check.md` を次のように更新する:
 
@@ -303,11 +303,11 @@ ADR-0059（粒度の基準）と ADR-0060（点検の契機）で決着した。
 - 点検は起票時・追記時・昇格前の3箇所。規範は `decision-log` に一本化し、`start-work` は参照のみ
 ```
 
-- [ ] **Step 5: Issue 索引を更新する**
+- [x] **Step 5: Issue 索引を更新する**
 
 `docs/working/issues/README.md` の 0022 の行の `open` を `closed` に置き換える。
 
-- [ ] **Step 6: 受入チェック**
+- [x] **Step 6: 受入チェック**
 
 Run: `grep -c "^- \*\*Status\*\*: Accepted" docs/records/decisions/0059-adr-granularity-by-question-not-length.md docs/records/decisions/0060-adr-granularity-check-on-append.md`
 Expected: 両ファイルとも `1`
@@ -321,7 +321,7 @@ Expected: `closed` と `2026-08-04` が表示される
 Run: `grep -n "0022" docs/working/issues/README.md`
 Expected: 行の Status が `closed`
 
-- [ ] **Step 7: コミット**
+- [x] **Step 7: コミット**
 
 ```bash
 git add docs/records/decisions docs/working/issues
@@ -332,7 +332,7 @@ git commit -m "adr+issues: 0059/0060 を Accepted へ昇格し、Issue-0022 を 
 
 ### Task 7: 完了処理
 
-- [ ] **Step 1: 全体の受入チェックを一括実行する**
+- [x] **Step 1: 全体の受入チェックを一括実行する**
 
 Run:
 ```bash
@@ -344,18 +344,18 @@ grep -c "### 7.4 粒度の判定と追記時の点検" docs/current/specs/2026-0
 ```
 Expected: すべて `1`
 
-- [ ] **Step 2: handoff を更新する**
+- [x] **Step 2: handoff を更新する**
 
 `session-handoff` の update 操作を呼び、完了済みタスクと Post ラッパー消化記録を更新する。
 
-- [ ] **Step 3: master へのマージ方針を決める**
+- [x] **Step 3: master へのマージ方針を決める**
 
 `superpowers:finishing-a-development-branch` スキルを呼び、マージ方式をユーザーと決める。
 
-- [ ] **Step 4: マージ後に retrospective を実施する**
+- [x] **Step 4: マージ後に retrospective を実施する**
 
 master への merge 直後に `retrospective` スキルを起動する（CLAUDE.md の検証節）。
 
-- [ ] **Step 5: プラグイン更新をユーザーへ依頼する**
+- [x] **Step 5: プラグイン更新をユーザーへ依頼する**
 
 `skills/decision-log/SKILL.md` と `skills/start-work/SKILL.md` を変更したため、`/plugin marketplace update ai-driven-dev-principles` の実行をユーザーへ依頼する（AI からは実行不可。ADR-0055）。反映は available-skills 一覧の記述で確認する。

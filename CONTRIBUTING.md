@@ -213,7 +213,7 @@ ADR インデックス全体のステータス正確性を確認する保険的�
 1. ADRを作成して変更理由を記録する（重要な変更の場合）
 2. `skills/start-work/SKILL.md` を更新する
 3. 横断関心を追加する場合、対応する補助スキル（例: `decision-log`, `session-handoff`, `pre-action-review`）の整合を確認する
-4. テンプレート対象なので `scripts/sync-template.ps1` を実行する
+4. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
 
 ### チェックリスト
 
@@ -243,7 +243,7 @@ ADR インデックス全体のステータス正確性を確認する保険的�
 1. ADRを作成して変更理由を記録する（重要な変更の場合）
 2. `skills/feature-block-design/SKILL.md` を更新する
 3. brainstorming / writing-plans / start-work との責務重複を確認する
-4. テンプレート対象なので `scripts/sync-template.ps1` を実行する
+4. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
 
 ### チェックリスト
 
@@ -278,7 +278,7 @@ ADR インデックス全体のステータス正確性を確認する保険的�
 3. テンプレート構造を変えた場合は `skills/retrospective/template.md` / `skills/retrospective/flow-template.md` を同期する
 4. `start-work` の Phase 2 マッピング表 / セッション終了処理との整合を確認する
 5. `docs/records/retrospectives/README.md`（template対象）の運用規約との整合を確認する
-6. テンプレート対象なので `scripts/sync-template.ps1` を実行する
+6. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
 
 ### チェックリスト
 

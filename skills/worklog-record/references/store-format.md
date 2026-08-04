@@ -17,7 +17,11 @@
 
 - このストアはリポジトリ外にあり、`.gitattributes` による改行正規化（ADR-0037）の管轄外。契約は各スキルの読み書き手順で守る
 - 全プラットフォーム・全ツール共有のため、別 OS・別ツールの既定追記（BOM 付き・CRLF・UTF-16 等）が混ざると連結1パス走査が壊れる
-- **書き側手段**: PowerShell は `Add-Content -Encoding utf8NoBOM`（改行は LF を明示）、POSIX シェルは `>>` リダイレクト。`projects.json` の全体書き換え（upsert）も同エンコーディングで保存する
+- **書き側手段**: 行終端を明示できる API を使う。**`Add-Content` は使わないこと** — `-Encoding` はエンコーディングだけを制御し行終端子は制御しないため、Windows では CRLF を書き契約に違反する（実測。同じ罠は `scripts/sync-template.ps1` が ADR-0033 で解決済み）
+  - Python（推奨。バイト単位で確実）: `open(path, "a", encoding="utf-8", newline="\n")`
+  - PowerShell: `[System.IO.File]::AppendAllText($path, $line + "`n", [System.Text.UTF8Encoding]::new($false))`
+  - POSIX シェル: `>>` リダイレクト
+  - `projects.json` の全体書き換え（upsert）も同じ規律で保存する（Python なら `open(path, "w", encoding="utf-8", newline="\n")`）
 - **読み側検証**: `worklog-extract` は走査直前に BOM・CRLF・非 UTF-8 を検出し、あれば報告して停止する（silent tolerance はしない。既存行の正規化は内容不変のバイト正規化に限り、ユーザーの明示 opt-in でのみ実行）
 
 ## projects.json

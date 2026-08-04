@@ -3,7 +3,7 @@
 - **Branch**: feature/flow-issue-intake-and-worklog-pipeline（master から分岐。分岐元 `c5e18ab`）
 - **Last Updated**: 2026-08-05 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: Task 0 着手前（スコープ確定済み・plan 未作成）
+- **Current Phase**: 計画の Task 1〜5 完了（= ADR-0062 の Task 0・Task 1）。次は Task 6（`worklog-extract` 再走査）
 
 ## 作業の目的・背景
 
@@ -30,20 +30,25 @@
 
 - [x] **配布先 flow 課題 21 件の精読と主題別クラスタ化**（2026-08-05）。クラスタ A（記述不整合4件）/ B（検証の検出力4件）/ C（振り返り・ハンドオフの粒度6件）/ D（前提の実測4件）/ E（運用の細部3件）
 - [x] **取り込み経路とサイクルスコープの決定**（2026-08-05）。ADR-0061 / ADR-0062 を Accepted、Issue-0041 起票。コミット `3dc12d8`
+- [x] **実装計画の作成**（2026-08-05）。`docs/working/plans/2026-08-05-flow-issue-intake-and-worklog-pipeline.md`。コミット `e322429`
+- [x] **Task 1: `CONTRIBUTING.md` の同期指示を是正**（Issue-0040 close）。3 シナリオを条件付き記述へ。他シナリオの追従漏れ点検は 0 件。コミット `359835d`
+- [x] **Task 2: 課題管理規範の整備**（ADR-0063 / Issue-0041 close）。起票経路 2→4、close トリガー、`<repo>#Issue-NNNN` 形式。`sync-template.ps1` 実行済み。コミット `7110e36`
+- [x] **Task 3: ストアの書き側手段の是正**（LoopForAlpha#Issue-0050）。`Add-Content` 禁止と代替 3 手段の明示。コミット `00f2289`
+- [x] **Task 4: 健全性検査スクリプトの新設**（Issue-0032）。`skills/worklog-extract/scripts/check-store-health.py`。正負の対照を同梱。コミット `452f2da`
+- [x] **Task 5: 既存 CRLF の正規化と ADR-0064**（Issue-0032 close）。CR 5→0、内容不変を検証。コミット `a4f6250`
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: Task 0（申し送り経路の規範化）
-  - 状態: 未着手。前提となる Issue-0040 も未着手
-  - 残り: Issue-0040 を片付ける → Issue-0041 の (a)(b)(c) を `docs/overview/folder-structure.md` 7.2〜7.4 へ規範化 → `sync-template.ps1` 実行 → ADR 作成
+- [ ] **現在の作業**: 計画 Task 6（`worklog-extract` 再走査）
+  - 状態: 未着手。前提（ストア健全性 `exit=0`）は満たしている
+  - 残り: スキル起動 → 候補提示 → ユーザー採否 → 台帳反映
 
-## 未着手のタスク（ADR-0062 で確定した順序）
+## 未着手のタスク（計画 `docs/working/plans/2026-08-05-flow-issue-intake-and-worklog-pipeline.md`）
 
-- [ ] **Task 0**: 申し送り経路・クロス repo 参照形式・close トリガーの規範化（Issue-0040 / Issue-0041）
-- [ ] **Task 1**: 中央ストアの書き側契約の是正と読み側健全性検査の具体化・発火実測（LoopForAlpha-0050 / Issue-0032）
-- [ ] **Task 2**: `worklog-extract` 再走査（未処理 23 件 + `deferred` 14 件の再浮上判定）
-- [ ] **Task 3**: `worklog-skillify` で Issue-0033 / 0034 を成果物化
-- [ ] **Task 4**: LoopForAlpha 側 flow 課題の close 判定と一括処理（ADR-0061 の適用）
+- [ ] **Task 6**: `worklog-extract` 再走査（未処理分 + `deferred` 14 件の再浮上判定）
+- [ ] **Task 7**: `worklog-skillify` で Issue-0033 / 0034 を成果物化。配布先の証拠を既存課題へ追記
+- [ ] **Task 8**: LoopForAlpha 側 flow 課題の close 判定と一括処理（ADR-0061 / ADR-0063 の初回適用）
+- [ ] 完了後: ADR-0063 / 0064 を Accepted へ昇格 → `finishing-a-development-branch` → master マージ → `retrospective`
 
 ## 既知のブロッカー・懸念
 
@@ -59,6 +64,7 @@
 ## Post ラッパー消化記録
 
 - 2026-08-05 サイクルスコープ確定（ADR-0061/0062 Accepted・ブランチ作成）: ADR=0061, 0062 / worklog=`MakeAiInstructions-2026-08-05-01`
+- 2026-08-05 計画 Task 1〜5 完了（= ADR-0062 の Task 0・Task 1）: ADR=0063, 0064（いずれも Proposed。実装完了済みだが Task 6〜8 の結果で記述が動きうるため昇格は完了後） / worklog=`MakeAiInstructions-2026-08-05-02`
 
 ## 次セッション開始時のアクション
 

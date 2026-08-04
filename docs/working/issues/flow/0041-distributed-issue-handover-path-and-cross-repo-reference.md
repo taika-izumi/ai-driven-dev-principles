@@ -1,7 +1,8 @@
 # Issue-0041: 配布先からの申し送り経路と、クロスリポジトリの Issue 参照形式が未定義
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-05
+- **Closed**: 2026-08-05
 - **起票元**: 議論由来。LoopForAlpha の flow 課題 21 件の取り込み方針を検討する過程（ADR-0061 / ADR-0062）で検出
 - **関連**: ADR-0061（配布先 flow 課題の取り込み経路）、`docs/overview/folder-structure.md` 7.2〜7.4、ADR-0056（delta 型と構造観察型の振り分け）、Issue-0040（`CONTRIBUTING.md` のテンプレート同期指示が現行構成と矛盾。本課題の修正先が同期対象のため前提になる）
 
@@ -35,4 +36,4 @@ LoopForAlpha-0069 と LoopForAlpha-0054 は、一般形が本リポジトリ Iss
 
 ## 結論
 
-（open）
+ADR-0063（配布先からの申し送りを起票経路として定義し、受け皿の実在確認を close トリガーとする）。(a) 起票経路を 4 つへ拡張し新規起票と追記の使い分けを規定、(b) `<repo>#Issue-NNNN` 形式を規定、(c) close トリガーを受け皿の実在確認とし worklog 経路にも適用、の 3 点で対処した。

@@ -68,3 +68,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0060](0060-adr-granularity-check-on-append.md) | ADR 粒度の点検を決定追記の手順に組み込み、昇格前の一括点検を受け皿とする | Accepted | 2026-08-03 |
 | [0061](0061-distributed-flow-issue-intake-routing.md) | 配布先の flow 課題は delta 型を worklog 経路へ委ね、構造観察型のみ手で取り込む | Accepted | 2026-08-05 |
 | [0062](0062-cycle-scope-worklog-pipeline-throughput-first.md) | 今サイクルは worklog パイプラインの疎通を優先し、構造観察型の取り込みは次サイクルへ送る | Accepted | 2026-08-05 |
+| [0063](0063-distributed-issue-handover-path.md) | 配布先からの申し送りを起票経路として定義し、受け皿の実在確認を close トリガーとする | Proposed | 2026-08-05 |

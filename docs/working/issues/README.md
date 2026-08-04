@@ -55,3 +55,5 @@
 | [0039](flow/0039-guideline-reliance-on-invisible-tool-memory.md) | ガイドライン遵守が Claude Code プロジェクトメモリという不可視機構に依存しうる | open | 2026-08-03 |
 | [0040](flow/0040-contributing-template-sync-instruction-stale.md) | CONTRIBUTING.md のテンプレート同期指示が現行構成と矛盾している | closed | 2026-08-04 |
 | [0041](flow/0041-distributed-issue-handover-path-and-cross-repo-reference.md) | 配布先からの申し送り経路と、クロスリポジトリの Issue 参照形式が未定義 | closed | 2026-08-05 |
+| [0042](flow/0042-detector-detection-power-not-proven.md) | 検査・検出器の「検出力」を実証してから「守られている」と言う規律がない | open | 2026-08-05 |
+| [0043](flow/0043-decision-request-premises-not-front-loaded.md) | 意思決定要求の前提・用語・推奨理由・出典・被害規模を先に置く規範が、存在するのに効いていない | open | 2026-08-05 |

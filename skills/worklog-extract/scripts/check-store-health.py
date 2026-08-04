@@ -14,14 +14,45 @@ import tempfile
 TARGET_SUFFIXES = (".jsonl", ".json")
 
 
+BOM = b"\xef\xbb\xbf"
+
+
+def find_bom_offsets(raw):
+    """BOM の混入位置を返す（ファイル先頭、および各行の先頭）。
+
+    ストアは追記専用のため、BOM はファイル頭だけでなく「追記チャンクの先頭」= 行頭にも
+    混入しうる（Issue-0032）。頭だけを見る実装ではそれを取り逃がす。
+    一方、JSON 文字列値の内部に現れる U+FEFF は行頭に来ないため、行頭に限定することで
+    誤検出を避けつつ実際の混入経路を捕捉できる。
+    """
+    offsets = []
+    if raw.startswith(BOM):
+        offsets.append(0)
+    pos = 0
+    while True:
+        nl = raw.find(b"\n", pos)
+        if nl == -1:
+            break
+        start = nl + 1
+        if raw.startswith(BOM, start):
+            offsets.append(start)
+        pos = start
+    return offsets
+
+
 def check_file(path):
     """1 ファイルを検査し、違反メッセージのリストを返す（空なら健全）。"""
     violations = []
     with open(path, "rb") as f:
         raw = f.read()
 
-    if raw[:3] == b"\xef\xbb\xbf":
-        violations.append("BOM が付いている")
+    bom_offsets = find_bom_offsets(raw)
+    if bom_offsets:
+        head = "先頭" if bom_offsets[0] == 0 else "中途"
+        violations.append(
+            f"BOM が {len(bom_offsets)} 箇所ある（最初は{head}・バイト位置 {bom_offsets[0]}。"
+            f"全位置: {bom_offsets}）"
+        )
 
     cr = raw.count(b"\r")
     if cr:
@@ -85,10 +116,12 @@ def run_check(root):
 
 
 def self_test():
-    """検出器の検出力を確かめる。正の対照 4 件と負の対照 1 件。"""
+    """検出器の検出力を確かめる（正の対照 = 既知の欠陥で発火するか、負の対照 = 誤検出しないか）。"""
     cases = [
         ("CRLF", b'{"a":1}\r\n{"a":2}\n', "CR を"),
-        ("BOM", b'\xef\xbb\xbf{"a":1}\n', "BOM"),
+        ("先頭 BOM", b'\xef\xbb\xbf{"a":1}\n', "BOM が"),
+        # 追記チャンクの先頭に混入した BOM。頭だけを見る実装では取り逃がす（Issue-0032）
+        ("中途 BOM", b'{"a":1}\n\xef\xbb\xbf{"a":2}\n', "BOM が"),
         ("非 UTF-8", b'{"a":"\xff\xfe"}\n', "UTF-8 として復号できない"),
         ("壊れた JSON", b'{"a":1}\n{"a":\n', "JSON としてパースできない"),
     ]
@@ -107,21 +140,46 @@ def self_test():
                 failures.append(f"正の対照 [{label}] が発火しなかった")
 
         # 負の対照: 正常な入力を誤検出しないか
-        p = os.path.join(d, "negative_clean.jsonl")
-        with open(p, "w", encoding="utf-8", newline="\n") as f:
-            f.write(json.dumps({"v": 2, "id": "X-2026-01-01-01"}, ensure_ascii=False) + "\n")
-            f.write(json.dumps({"v": 2, "id": "X-2026-01-01-02", "t": "日本語"}, ensure_ascii=False) + "\n")
-        got = check_file(p)
-        print(f"  負の対照 [clean]: {'誤検出なし' if not got else '誤検出'} -> {got}")
-        if got:
-            failures.append(f"負の対照が誤検出した: {got}")
+        negatives = [
+            (
+                "clean",
+                [
+                    {"v": 2, "id": "X-2026-01-01-01"},
+                    {"v": 2, "id": "X-2026-01-01-02", "t": "日本語"},
+                ],
+            ),
+            # JSON 文字列値の内部に現れる U+FEFF は行頭に来ないため BOM ではない。
+            # 「全バイト走査で BOM を探す」実装だとここを誤検出する（粒度の対照）
+            (
+                "値の内部に U+FEFF",
+                [{"v": 2, "id": "X-2026-01-01-03", "t": "前" + chr(0xFEFF) + "後"}],
+            ),
+        ]
+        for label, rows in negatives:
+            p = os.path.join(d, f"negative_{label}.jsonl")
+            with open(p, "w", encoding="utf-8", newline="\n") as f:
+                for row in rows:
+                    f.write(json.dumps(row, ensure_ascii=False) + "\n")
+            # 空振り防止ガード（LoopForAlpha#Issue-0034）: 不可視文字を仕込む対照は、
+            # 入力側からその文字が失われても素通りして PASS する。仕込んだバイト列が
+            # 実在することを先に確かめる。アサーション側だけでは入力側の欠落を検出できない
+            if label == "値の内部に U+FEFF":
+                written = open(p, "rb").read()
+                if BOM not in written:
+                    failures.append("負の対照 [値の内部に U+FEFF] の入力に U+FEFF が入っていない（対照が空振り）")
+                    print("  負の対照 [値の内部に U+FEFF]: 入力不備（U+FEFF 不在）")
+                    continue
+            got = check_file(p)
+            print(f"  負の対照 [{label}]: {'誤検出なし' if not got else '誤検出'} -> {got}")
+            if got:
+                failures.append(f"負の対照 [{label}] が誤検出した: {got}")
 
     if failures:
         print("[self-test] FAIL")
         for f_ in failures:
             print(f"  - {f_}")
         return 1
-    print("[self-test] PASS（正の対照 4 件が発火、負の対照 1 件は誤検出なし）")
+    print(f"[self-test] PASS（正の対照 {len(cases)} 件が発火、負の対照 {len(negatives)} 件は誤検出なし）")
     return 0
 
 

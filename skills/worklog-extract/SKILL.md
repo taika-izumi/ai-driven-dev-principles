@@ -25,7 +25,7 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 1. **台帳前処理**: `processed.jsonl` を読み、処理済み id（`adopted` / `skillified` / `rejected` / `merged`）を分析対象から除外する。`deferred` は `evidence_count` とともに保持（分析コストは未処理エントリ数でスケール）
 2. **ストア健全性検証 → サブエージェント走査**: 走査に先立ち、`scripts/check-store-health.py` を実行してストアのバイト健全性（UTF-8・BOM なし・LF 固定・全行 JSON パース可能）を検証する。実行は `python <skill-dir>/scripts/check-store-health.py` で、終了コード 0 が健全、1 が違反あり。grep 系では CR を検出できないためスクリプトを使うこと。BOM・CRLF・非 UTF-8 を検出したら**報告して停止**し、既存行の正規化（BOM 除去・CRLF→LF、内容は不変）は**ユーザーの明示 opt-in でのみ**実行する（ADR-0054。silent tolerance はしない）。健全性を確認後、全 `log.jsonl` を1パスで読み、類似エントリをクラスタリングする（メインコンテキストに載せない。原則3の関心分離）。読み込み時はスキーマ版数の互換規約に従う: **`v` なし行 = v1 と解釈し、v1 の `friction`（string）は 1 要素配列として読み替える**（ADR-0049/0051）
 
-   検査スクリプト自体を変更したときは `--self-test` を実行し、正の対照 4 件が発火し負の対照が誤検出しないことを確認してから使うこと（検査が緑であることの意味を保つため。LoopForAlpha#Issue-0084）
+   検査スクリプト自体を変更したときは `--self-test` を実行し、正の対照がすべて発火し負の対照が誤検出しないことを確認してから使うこと（検査が緑であることの意味を保つため。LoopForAlpha#Issue-0084）
 3. **クラスタ評価**: 横断再発回数・出所プロジェクト数・`friction` / `corrections` の重みを集計する。`model` フィールドにより「特定モデル固有の躓きか、全モデル共通か」を判断材料に加える（ADR-0048。v1 行は model 不明として扱う）
 4. **scope 再判定**: ≥2プロジェクトで再発するクラスタは `general-candidate` へ格上げ、単一プロジェクト・ドメイン依存は `project-specific` に確定（record 時の暫定タグを最終確定）
 5. **既存スキル重複排除**: superpowers ＋ ai-driven-dev-principles ＋ プロジェクトローカル（`.claude/skills/`）の description と突合し、既存済みは除外（あいまい層）

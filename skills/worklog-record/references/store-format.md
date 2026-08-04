@@ -22,7 +22,7 @@
   - PowerShell: `[System.IO.File]::AppendAllText($path, $line + "`n", [System.Text.UTF8Encoding]::new($false))`
   - POSIX シェル: `>>` リダイレクト
   - `projects.json` の全体書き換え（upsert）も同じ規律で保存する（Python なら `open(path, "w", encoding="utf-8", newline="\n")`）
-- **読み側検証**: `worklog-extract` は走査直前に BOM・CRLF・非 UTF-8 を検出し、あれば報告して停止する（silent tolerance はしない。既存行の正規化は内容不変のバイト正規化に限り、ユーザーの明示 opt-in でのみ実行）
+- **読み側検証**: `worklog-extract` は走査直前に `skills/worklog-extract/scripts/check-store-health.py` を実行し、BOM・CR・非 UTF-8・JSON パース不能行を検出する。1 件でもあれば報告して停止する（silent tolerance はしない）。既存行の正規化は内容不変のバイト正規化に限り、ユーザーの明示 opt-in でのみ実行する。検査スクリプトは正負の対照を `--self-test` として同梱しており、スクリプトを変更したら対照を走らせてから使う（LoopForAlpha#Issue-0084）
 
 ## projects.json
 

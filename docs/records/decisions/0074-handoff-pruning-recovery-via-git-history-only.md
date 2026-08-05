@@ -1,6 +1,6 @@
 # ADR-0074: ハンドオフ剪定で落とした情報の受け皿は git 履歴のみとし、明示アーカイブを設けない
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-06
 
 ## Context

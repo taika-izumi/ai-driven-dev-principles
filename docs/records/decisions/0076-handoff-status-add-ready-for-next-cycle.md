@@ -1,6 +1,6 @@
 # ADR-0076: handoff の Status に `ready-for-next-cycle` を正式追加する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-06
 
 ## Context

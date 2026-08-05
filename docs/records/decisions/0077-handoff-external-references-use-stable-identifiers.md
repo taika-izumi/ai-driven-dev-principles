@@ -1,6 +1,6 @@
 # ADR-0077: handoff の外部参照は安定識別子で書く
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-06
 
 ## Context

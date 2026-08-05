@@ -1,7 +1,8 @@
 # Issue-0051: `retrospective` が要求するハンドオフ Status 値を `session-handoff` が定義していない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-05
+- **Closed**: 2026-08-06
 - **起票元**: `LoopForAlpha#Issue-0087`（構造観察型の取り込み。ADR-0061 / ADR-0062）
 - **関連**: `retrospective` スキル（Phase 3）、`session-handoff` スキル（フォーマット定義）、Issue-0049（対処案 (c) が同時に扱える）
 
@@ -26,4 +27,4 @@
 
 ## 結論
 
-（open）
+ADR-0076（`ready-for-next-cycle` の正式追加）で対処。`retrospective` Phase 3 は cycle-reset 呼び出しに変更し、誤記述（`completed` からの遷移）も解消（2026-08-06）。

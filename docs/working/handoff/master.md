@@ -52,6 +52,9 @@
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。直近サイクル中の分は `feature_handoff-pruning-and-status.md` 参照（retrospective Phase 3 で突合済み・未消化なし）。
 
+- 2026-08-06 master merge（`1eba4c3`）+ retrospective 完了（`d72a97a`）: ADR=なし（振り返りは課題抽出のみ。ADR-0021） / worklog=`MakeAiInstructions-2026-08-06-03`（総ざらいで delta 型候補を記録。未消化なし）
+- 2026-08-06 セッション終了（切り替え直前。ADR-0058）: ADR=なし（終了処理に意思決定なし） / worklog=棄却（`-03` 以降に新規 delta なし）
+
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）

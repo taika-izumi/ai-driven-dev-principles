@@ -2,8 +2,8 @@
 
 - **Branch**: feature/handoff-pruning-and-status
 - **Last Updated**: 2026-08-06 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装・検証完了。master マージと retrospective（cycle-reset 初回実運用）待ち
+- **Status**: completed
+- **Current Phase**: 完了（master merge `1eba4c3`・retrospective 実施済み・feature ブランチ削除済み）
 
 ## 作業の目的・背景
 
@@ -31,9 +31,7 @@ Issue-0053（セッション再起動での振り返り素材消失）はスコ�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 開発ブランチの完了処理
-  - 状態: 実装・検証・ADR 昇格・issue close まで完了
-  - 残り: master へ `--no-ff` マージ → retrospective（cycle-reset 初回実運用。master.md の Status 不整合注記の除去を確認）→ finalize
+（なし。master merge `1eba4c3` → retrospective（cycle-reset 初回実運用で master.md の Status 不整合注記を除去）まで完了）
 
 ## 未着手のタスク
 

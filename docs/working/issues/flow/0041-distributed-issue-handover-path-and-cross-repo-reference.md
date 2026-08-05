@@ -3,12 +3,12 @@
 - **Status**: closed
 - **Opened**: 2026-08-05
 - **Closed**: 2026-08-05
-- **起票元**: 議論由来。LoopForAlpha の flow 課題 21 件の取り込み方針を検討する過程（ADR-0061 / ADR-0062）で検出
+- **起票元**: 議論由来。LoopForAlpha の flow 課題 20 件の取り込み方針を検討する過程（ADR-0061 / ADR-0062）で検出
 - **関連**: ADR-0061（配布先 flow 課題の取り込み経路）、`docs/overview/folder-structure.md` 7.2〜7.4、ADR-0056（delta 型と構造観察型の振り分け）、Issue-0040（`CONTRIBUTING.md` のテンプレート同期指示が現行構成と矛盾。本課題の修正先が同期対象のため前提になる）
 
 ## 課題内容
 
-`docs/overview/folder-structure.md` 7.3 は「配布先プロジェクトの `flow/` 課題は、ガイドライン repo へ申し送り済み（または対応済み）で close する」と定めている。この規範は本リポジトリと配布先（LoopForAlpha）の両方に同一文で存在するが、**一度も適用されていない**。LoopForAlpha の flow 課題は 21 件すべてが open で、最古は 2026-07-11 である。規律違反ではなく、以下 3 点の未定義が原因である。
+`docs/overview/folder-structure.md` 7.3 は「配布先プロジェクトの `flow/` 課題は、ガイドライン repo へ申し送り済み（または対応済み）で close する」と定めている。この規範は本リポジトリと配布先（LoopForAlpha）の両方に同一文で存在するが、**一度も適用されていない**。LoopForAlpha の flow 課題は 20 件すべてが open で、最古は 2026-07-11 である。規律違反ではなく、以下 3 点の未定義が原因である。
 
 ### (a) 起票経路に「配布先からの申し送り」が無い
 

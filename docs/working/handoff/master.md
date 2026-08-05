@@ -31,6 +31,7 @@
 
 バックログは `docs/working/issues/README.md` に一元化。次サイクルの候補として目安を示す:
 
+0. [ ] **改名サイクル（決定済み・準備完了）**: 体系呼称を「AI駆動開発ガイドライン」へ改名（ADR-0078・Proposed）。ブランチ `feature/rename-to-ai-driven-dev-guideline` に ADR と handoff をコミット済み（`8967b55`）。着手時はこのブランチへ checkout し、handoff `feature_rename-to-ai-driven-dev-guideline.md` の指示に従う（writing-plans 直行）
 1. [ ] **Issue-0045**（flow）: 既存 open 課題の対策方針の実行可能性点検。open 21 件（system 4 + flow 17）。0046×0050（規模とカデンス）のグルーピング示唆あり（0049/0051/0053 のうち 2 件は今回 close 済みでペア構成は変化）
 2. [ ] **Issue-0044**（flow）: 残る未実測は「plugin update **なし**での同セッション反映可否」のみ。次のスキル改定サイクルで update を挟まず起動して切り分ける
 3. [ ] **Issue-0042/0043**（flow）: 検出器の検出力 / 意思決定要求の front-load
@@ -43,7 +44,7 @@
 - **新設スキル 2 件（subagent-dispatch / pre-finalization-review）は実運用ゼロのまま**: 直近サイクルで pre-finalization-review の提示は初めて発生したが実施は見送り（ユーザー判断）。サブエージェント委譲も未発生。次に発生するサイクルが初回実測（ADR-0070 の効き目測定は worklog の同型 delta 再発の有無で行う）
 - **`Add-Content` は使わないこと**。中央ストアへの追記は Python `open(path, "a", encoding="utf-8", newline="\n")`（ADR-0064）
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
-- **中央ストアの現状**: 本repo 24 件（〜`MakeAiInstructions-2026-08-06-03`）＋ LoopForAlpha 106 件。台帳 33 行。`projects.json` lastSeen 更新済み（2026-08-06）
+- **中央ストアの現状**: 本repo 25 件（〜`MakeAiInstructions-2026-08-06-04`）＋ LoopForAlpha 106 件。台帳 33 行。`projects.json` lastSeen 更新済み（2026-08-06）
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（構造化質問ツール使用前に毎回確認。ADR-0036）
 - ADR-0023 の留意点（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
@@ -54,12 +55,13 @@
 
 - 2026-08-06 master merge（`1eba4c3`）+ retrospective 完了（`d72a97a`）: ADR=なし（振り返りは課題抽出のみ。ADR-0021） / worklog=`MakeAiInstructions-2026-08-06-03`（総ざらいで delta 型候補を記録。未消化なし）
 - 2026-08-06 セッション終了（切り替え直前。ADR-0058）: ADR=なし（終了処理に意思決定なし） / worklog=棄却（`-03` 以降に新規 delta なし）
+- 2026-08-06 改名の名称決定（次サイクル準備。着手は延期）: ADR=0078（Proposed・`feature/rename-to-ai-driven-dev-guideline` の `8967b55` にコミット） / worklog=`MakeAiInstructions-2026-08-06-04`
 
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
 2. **直近サイクルは完了**: 追加作業不要。抽出した新規課題は 0 件（worklog 送り 2 件のみ: `MakeAiInstructions-2026-08-06-02` / `-03`）。Issue-0049/0051 は close 済み
-3. **次サイクルの候補（着手はユーザー判断）**: 上記「未着手のタスク」1〜2 が有力（Issue-0045 の棚卸し、または Issue-0044 の残る切り分け）
+3. **次サイクルの候補（着手はユーザー判断）**: **改名サイクルが決定済み・準備完了**（上記「未着手のタスク」項目 0。ブランチ checkout から開始）。それ以外では Issue-0045 の棚卸し、Issue-0044 の残る切り分けが有力
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - サブエージェント委譲時は `subagent-dispatch` を呼ぶ / plan・spec 確定時は `pre-finalization-review` を毎回提示する（いずれも初回実運用待ち）

@@ -1,7 +1,8 @@
 # Issue-0040: CONTRIBUTING.md のテンプレート同期指示が現行構成と矛盾している
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-04
+- **Closed**: 2026-08-05
 - **起票元**: `docs/records/retrospectives/flow/2026-08-04-adr-granularity-norms.md` 課題#1
 - **関連**: `CONTRIBUTING.md`（start-work / feature-block-design / retrospective の各変更シナリオ）、`template.manifest`、ADR-0016（skills を template から除外）、ADR-0015（プラグイン配布）
 
@@ -13,8 +14,8 @@
 
 ## 検討状況
 
-（なし）
+- 2026-08-05: 3 シナリオ（start-work L216 / feature-block-design L246 / retrospective L281）の「テンプレート対象なので実行する」を、`template.manifest` の実態に合わせた条件付き記述へ置換した。他シナリオの追従漏れも点検し、**追加の漏れは 0 件**（L73 / L102 は CLAUDE.md 自体が manifest 対象で正しい。L128 / L139 は「manifest に追加しない」と正しく書かれている。L280 の `docs/records/retrospectives/README.md` は空インデックス生成対象で正しく、`template/` 側の実在も確認した）。なお L272 / L278 の `skills/retrospective/template.md` / `flow-template.md` は実在し `sync-template.ps1` とは無関係のスキル内テンプレートである。誤りではないが「同期」の語が紛らわしく、改善余地として記録するにとどめた
 
 ## 結論
 
-（open）
+Task 1 で対処済み（コミット `359835d`）。起票経路・クロスリポジトリ参照形式・close トリガーを含む課題管理規範の整備は ADR-0063。

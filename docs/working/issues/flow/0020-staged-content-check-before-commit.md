@@ -11,7 +11,8 @@ read-back verification（ADR-0038）は「ファイル内容が意図どおり�
 
 ## 検討状況
 
-- （なし）
+- 2026-08-05: **再発 2 回**（ADR-0031）。範囲の広い `git add docs/` が、ユーザーが手動管理している untracked ファイル 4 件（`docs/inbox/` 3 件と `docs/conversation_log.md`）を巻き込んだ。1 回目は commit 直前の `git status --short` で気づき `git restore --staged` で回避したが、**2 回目は気づかずコミットまで通し**、`git rm --cached` ＋ `git commit --amend` で修復した（`36980d7` → `6f2c1fb`）
+- 2026-08-05: **1 回目の直後に再発防止手順を worklog へ記録していた**（`MakeAiInstructions-2026-08-05-03` の procedure 項目3「`git add <ディレクトリ>` を使わず変更したファイルを列挙する」）。**記録した直後に同じ操作で再発している**ため、記述による規律では防げないことの実測になる。`docs/reference/` 系の知見「記述による規律は再発を防がず、実効的なのは機械検査である」と整合する。対策設計時は、コミット直前のステージ内容確認を**機械的な gate**（フック等）として置けるかを先に調べること（ADR-0039 の「環境・ツール設定による構造的解決を規範追加より優先する」に従う）。関連 worklog: `MakeAiInstructions-2026-08-05-05`
 
 ## 結論
 

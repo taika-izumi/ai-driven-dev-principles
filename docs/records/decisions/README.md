@@ -79,3 +79,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0071](0071-b-group-firing-check-as-mandatory-table-walk.md) | B 群の発火判定は、行数の固定された表を毎回読み下ろす手順として担保する | Accepted | 2026-08-05 |
 | [0072](0072-pre-finalization-review-triggered-by-user-only.md) | 確定前レビューの発動はユーザーの指示に限り、AI は次手として提示するにとどめる | Accepted | 2026-08-05 |
 | [0073](0073-dispatch-norms-carry-provenance-and-sunset-path.md) | 委譲制約の規範項目には根拠と世代を添え、実測にもとづく退役経路を持たせる | Accepted | 2026-08-05 |
+| [0074](0074-handoff-pruning-recovery-via-git-history-only.md) | ハンドオフ剪定で落とした情報の受け皿は git 履歴のみとし、明示アーカイブを設けない | Proposed | 2026-08-06 |
+| [0075](0075-handoff-two-stage-pruning-discipline.md) | ハンドオフの剪定は二段階で行う（セッション境界で基準付き圧縮、サイクル境界で初期状態への書き換え） | Proposed | 2026-08-06 |
+| [0076](0076-handoff-status-add-ready-for-next-cycle.md) | handoff の Status に `ready-for-next-cycle` を正式追加する | Proposed | 2026-08-06 |
+| [0077](0077-handoff-external-references-use-stable-identifiers.md) | handoff の外部参照は安定識別子で書く | Proposed | 2026-08-06 |

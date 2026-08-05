@@ -89,7 +89,7 @@
    5. §2.1 で「worklog 送り」と判定した課題候補の記録漏れもここで拾う
 
    本工程は、Post ラッパーに完全に入らなかった場合（消化記録の行そのものが無い）を回収する唯一の経路である。書かれなかったものは即時には検出できないため、外形的に必ず残る `git log` との事後突合で拾う設計になっている
-3. `session-handoff update` を呼ぶ。「次セッション開始時のアクション」に起票済み issue 番号を記載し、Status を `ready-for-next-cycle` へ遷移する
+3. `session-handoff` の cycle-reset 操作を呼ぶ（剪定・書き換えの手順は session-handoff 側の定義に従う。ADR-0075）。「次セッション開始時のアクション」に起票済み issue 番号を記載し、Status を `in_progress` から `ready-for-next-cycle` へ遷移する（ADR-0076）
 
 コミットはスキル内では行わない（ユーザーまたは通常フローに委ねる）。
 

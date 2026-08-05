@@ -60,3 +60,4 @@
 | [0044](flow/0044-skill-revision-unverifiable-in-same-session.md) | スキルを改定したサイクルでは、その改定を同一セッション内で検証できない | open | 2026-08-05 |
 | [0045](flow/0045-issue-countermeasure-feasibility-unchecked.md) | 既存 open 課題の対策方針が実行可能かを点検する工程がない | open | 2026-08-05 |
 | [0046](flow/0046-cycle-scale-re-estimation-checkpoint-missing.md) | サイクル規模の再見積もりチェックポイントがない | open | 2026-08-05 |
+| [0047](flow/0047-dispatch-constraint-injection-via-hook.md) | サブエージェント委譲の常時制約を、規範文ではなくフックで機械注入できる | open | 2026-08-05 |

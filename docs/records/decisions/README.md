@@ -75,3 +75,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0067](0067-pre-finalization-review-as-new-skill.md) | 非コード成果物の確定前レビューは新規スキルとして立て、start-work から配線する | Accepted | 2026-08-05 |
 | [0068](0068-cross-repo-issue-reference-format.md) | 他リポジトリの課題は `<repo>#Issue-NNNN` で修飾して参照する | Accepted | 2026-08-05 |
 | [0069](0069-general-skill-extension-target-own-repo-only.md) | 汎用スキルの拡張先は自リポジトリの `skills/` に限り、third-party プラグインのスキルは編集しない | Accepted | 2026-08-05 |
+| [0070](0070-dispatch-constraints-as-norm-not-hook-injection.md) | サブエージェント委譲の常時制約は規範文で実装し、フックによる機械注入は採らない | Accepted | 2026-08-05 |
+| [0071](0071-b-group-firing-check-as-mandatory-table-walk.md) | B 群の発火判定は、行数の固定された表を毎回読み下ろす手順として担保する | Accepted | 2026-08-05 |
+| [0072](0072-pre-finalization-review-triggered-by-user-only.md) | 確定前レビューの発動はユーザーの指示に限り、AI は次手として提示するにとどめる | Accepted | 2026-08-05 |

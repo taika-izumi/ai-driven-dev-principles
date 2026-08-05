@@ -1,9 +1,9 @@
 # Handoff: LoopForAlpha 構造観察型 flow 課題 6 件の取り込み
 
 - **Branch**: feature/intake-structural-flow-issues
-- **Last Updated**: 2026-08-06 00:40 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 取り込み本体完了（受け皿起票＋LoopForAlpha 側 close 済み）。残りは master マージとその後処理
+- **Last Updated**: 2026-08-06 01:00 (Asia/Tokyo)
+- **Status**: completed（master へ merge `116f2f1`・retrospective 実施済み）
+- **Current Phase**: 全フェーズ完了
 
 ## 作業の目的・背景
 
@@ -40,8 +40,8 @@ ADR-0062 で 2 サイクル繰り延べていた LoopForAlpha の構造観察型
 
 ## Post ラッパー消化記録
 
-- 2026-08-05 セッション冒頭・Issue-0044 追記（master 直コミット `ed31e93`）: ADR=なし（既定路線の消化。新規決定なし） / worklog=未判定（節目未到達のため未発火）
-- 2026-08-05 受け皿起票完了（`16dc1c4`）: ADR=なし（ADR-0061 で定義済みの経路の適用。受け皿対応はユーザー承認済みの定型判断） / worklog=保留（LoopForAlpha 側 close 完了時にまとめて判定）
+- 2026-08-05 セッション冒頭・Issue-0044 追記（master 直コミット `ed31e93`）: ADR=なし（既定路線の消化。新規決定なし） / worklog=棄却（delta なし。retrospective Phase 3 突合で確定）
+- 2026-08-05 受け皿起票完了（`16dc1c4`）: ADR=なし（ADR-0061 で定義済みの経路の適用。受け皿対応はユーザー承認済みの定型判断） / worklog=棄却（当該マイルストーン自体に delta なし。分類器障害の delta は次行の id で捕捉。retrospective Phase 3 突合で確定）
 - 2026-08-06 取り込み完了（LoopForAlpha `a43d3f3`）: ADR=なし（定義済み経路の適用のみ。新規決定なし） / worklog=`MakeAiInstructions-2026-08-06-01`（権限分類器停止時の Monitor 待機再試行）
 
 ## 次セッション開始時のアクション

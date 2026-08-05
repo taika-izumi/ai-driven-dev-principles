@@ -67,3 +67,4 @@
 | [0051](flow/0051-handoff-status-value-mismatch-between-skills.md) | retrospective が要求するハンドオフ Status 値を session-handoff が定義していない | open | 2026-08-05 |
 | [0052](flow/0052-retrospective-exemption-and-deferral-conditions-undefined.md) | マージ直後 retrospective の免除・繰り延べ・規模による裁量条件が未定義 | open | 2026-08-05 |
 | [0053](flow/0053-retrospective-material-loss-across-session-restart.md) | セッション再起動を挟むと retrospective の素材（定性的な学び）が失われる | open | 2026-08-05 |
+| [0054](flow/0054-fallback-norm-ignores-transient-outage.md) | pre-action-review の撤退規範が一時的なインフラ障害と恒常的な失敗を区別しない | open | 2026-08-06 |

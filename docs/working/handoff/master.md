@@ -76,7 +76,8 @@
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。直近サイクル中の分は `feature_flow-issue-intake-and-worklog-pipeline.md` 参照（Phase 3 で両方向の突合済み・未消化なし）。
 
-- 2026-08-05 master merge + retrospective 完了: ADR=なし（振り返りは課題抽出のみで意思決定を行わない。ADR-0021） / worklog=棄却（本工程に delta なし。サイクル中の delta は 5 件すべて記録済み）
+- 2026-08-05 master merge + retrospective 完了: ADR=なし（振り返りは課題抽出のみで意思決定を行わない。ADR-0021） / worklog=`MakeAiInstructions-2026-08-05-06`（Phase 3 の突合で、消化記録の id を省略形で書いたため機械突合が偽陽性を出した）
+- 2026-08-05 セッション終了（切り替え直前。ADR-0058）: ADR=なし（終了処理に意思決定なし） / worklog=同上（`MakeAiInstructions-2026-08-05-06`。retrospective Phase 3 と同一 context のため 1 件に集約）
 
 ## 次セッション開始時のアクション
 

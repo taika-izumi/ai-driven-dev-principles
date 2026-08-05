@@ -1,6 +1,6 @@
 # ADR-0067: 非コード成果物の確定前レビューは新規スキルとして立て、`start-work` から配線する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-05
 
 ## Context
@@ -13,7 +13,7 @@ Issue-0034 は「計画・仕様など非コード成果物の確定前に、実
 2. `writing-plans` / `feature-block-design` の末尾に独立レビュー工程を必須ステップとして足す
 3. 新規スキルを立てる
 
-ADR-0065 により、案 1 と案 2 のうち `requesting-code-review` / `writing-plans` は選べない。いずれも superpowers プラグインのスキルであり、自リポジトリの編集対象にならない。**残る選択肢は「`feature-block-design` のみを拡張する」か「新規スキルを立てる」の 2 つ**である。
+ADR-0069 により、案 1 と案 2 のうち `requesting-code-review` / `writing-plans` は選べない。いずれも superpowers プラグインのスキルであり、自リポジトリの編集対象にならない。**残る選択肢は「`feature-block-design` のみを拡張する」か「新規スキルを立てる」の 2 つ**である。
 
 ## Considered Alternatives
 
@@ -38,7 +38,7 @@ ADR-0065 により、案 1 と案 2 のうち `requesting-code-review` / `writin
 ## Consequences
 
 - **計画と仕様の両方を 1 つの工程で覆える。** 成果物の種類ごとに別々のスキルへ分散させずに済む
-- **superpowers への依存を増やさずに射程を広げられる。** 既存スキルの穴を、自リポジトリ側のスキルで補完する形（ADR-0065 の方針と整合）
+- **superpowers への依存を増やさずに射程を広げられる。** 既存スキルの穴を、自リポジトリ側のスキルで補完する形（ADR-0069 の方針と整合。本 ADR はその第 1 例になる）
 - **スキル数が増える。** `start-work` Phase 2 の選択肢が 1 つ増え、ナビゲーションの判断が 1 段複雑になる
 - **発動条件（どの規模から必須にするか）は本 ADR では決めていない。** 3 観点の独立レビュー＋実証の実行はコストが大きく、閾値の設計を誤ると小規模な作業まで重くなる。authoring 時の設計事項として Issue-0034 に残す
 - **`feature-block-design` は変更しない。** 新規スキルが仕様・計画の双方を受けるため、既存スキルへの二重の記述を避ける

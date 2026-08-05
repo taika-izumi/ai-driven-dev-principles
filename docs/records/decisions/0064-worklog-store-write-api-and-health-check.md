@@ -1,6 +1,6 @@
 # ADR-0064: 中央ストアの書き込みは行終端を明示できる API に限定し、健全性検査は正負の対照を同梱する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-05
 
 ## Context

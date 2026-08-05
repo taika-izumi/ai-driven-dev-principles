@@ -1,6 +1,6 @@
 # ADR-0066: サブエージェント委譲の定型項目は「委譲先の作業量を増やすか」で常時適用と条件発火に分ける
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-05
 
 ## Context

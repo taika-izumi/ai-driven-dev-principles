@@ -70,3 +70,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0062](0062-cycle-scope-worklog-pipeline-throughput-first.md) | 今サイクルは worklog パイプラインの疎通を優先し、構造観察型の取り込みは次サイクルへ送る | Accepted | 2026-08-05 |
 | [0063](0063-distributed-issue-handover-path.md) | 配布先からの申し送りを起票経路として定義し、受け皿の実在確認を close トリガーとする | Proposed | 2026-08-05 |
 | [0064](0064-worklog-store-write-api-and-health-check.md) | 中央ストアの書き込みは行終端を明示できる API に限定し、健全性検査は正負の対照を同梱する | Proposed | 2026-08-05 |
+| [0065](0065-skillify-requires-applicability-design-first.md) | 採用した worklog 候補は、根拠一覧をそのまま規範に写さず、適用条件の設計を挟んでからスキル化する | Proposed | 2026-08-05 |
+| [0066](0066-subagent-dispatch-items-split-by-workload-cost.md) | サブエージェント委譲の定型項目は「委譲先の作業量を増やすか」で常時適用と条件発火に分ける | Proposed | 2026-08-05 |
+| [0067](0067-pre-finalization-review-as-new-skill.md) | 非コード成果物の確定前レビューは新規スキルとして立て、start-work から配線する | Proposed | 2026-08-05 |

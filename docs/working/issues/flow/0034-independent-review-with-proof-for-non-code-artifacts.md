@@ -1,6 +1,6 @@
 # Issue-0034: 計画・仕様など非コード成果物の確定前に「実証を課した独立レビュー」を挟む工程がない
 
-- **Status**: open
+- **Status**: closed（2026-08-05）
 - **Opened**: 2026-07-31
 - **起票元**: `worklog-extract` 走査（2026-07-31、初回実行）候補1。中央ストア 94 エントリ中 7 件が該当し、`corrections`（人間の介入）比率が全クラスタ最高
 - **関連**: `superpowers:requesting-code-review`（射程はコード。タスク完了時・マージ前）、`superpowers:writing-plans`（自己レビューで完結）、`ai-driven-dev-principles:feature-block-design`、Issue-0006（横断的なパス変更で実装計画に網羅漏れが出る。open。症状が近いが本課題は工程の欠落）、Issue-0013（plan セルフレビューの整合観点。closed）、Issue-0033（委譲先への要求の定型化）、原則5（漸進的検証）
@@ -44,4 +44,4 @@ worklog の実測が示す自己レビューの限界:
 
 ## 結論
 
-（open。対策方式は ADR-0067 で確定。スキル authoring 完了時に close する）
+`skills/pre-finalization-review/` として skillified（2026-08-05）。対策方式は ADR-0067（新規スキル＋start-work 配線）、発動条件は ADR-0072（ユーザー指示のみ・提示は毎回）、根拠・世代の記録と退役経路は ADR-0073。

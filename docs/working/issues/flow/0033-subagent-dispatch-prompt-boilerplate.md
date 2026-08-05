@@ -1,6 +1,6 @@
 # Issue-0033: サブエージェント委譲の起動プロンプトに入れるべき定型項目が未定義
 
-- **Status**: open
+- **Status**: closed（2026-08-05）
 - **Opened**: 2026-07-31
 - **起票元**: `worklog-extract` 走査（2026-07-31、初回実行）候補2。中央ストア 94 エントリ中 10 件が該当し、単一クラスタとして再発回数が最多
 - **関連**: `superpowers:dispatching-parallel-agents`、`superpowers:subagent-driven-development`、`superpowers:requesting-code-review`、Issue-0034（実証を課した独立レビュー。委譲先へ課す要求の中身として隣接）、原則3（コンテキスト管理）、原則4（人間の関与）
@@ -47,4 +47,4 @@ worklog の根拠エントリから抽出された、実際に不足していた
 
 ## 結論
 
-（open）
+`skills/subagent-dispatch/` として skillified（2026-08-05）。適用条件は ADR-0066（A 群/B 群）、実装方式は ADR-0070（規範文。フック注入は Issue-0047 へ）、発火判定の担保は ADR-0071（判定表の読み下ろし＋判定行）、過剰適合の防止は ADR-0073（根拠・世代の記録と退役経路。ミューテーション 3 項目は適用例へ降格）。残課題: フック機械注入は Issue-0047、退役検出の機械化は Issue-0048。

@@ -47,8 +47,8 @@
 | [0022](flow/0022-adr-granularity-check.md) | ADR 起票時に粒度（1決定=1ADR）を確認する観点がない | closed | 2026-07-07 |
 | [0023](flow/0023-worklog-record-entry-count-and-priority-norm.md) | worklog-record の記録件数規範と複数 delta 候補時の優先順位付けが未明示 | closed | 2026-07-17 |
 | [0024](flow/0024-plugin-skill-availability-check-in-start-work.md) | プラグイン更新後の新規スキル availability 確認手順が start-work Phase -1 に未組み込み | closed | 2026-07-17 |
-| [0033](flow/0033-subagent-dispatch-prompt-boilerplate.md) | サブエージェント委譲の起動プロンプトに入れるべき定型項目が未定義 | open | 2026-07-31 |
-| [0034](flow/0034-independent-review-with-proof-for-non-code-artifacts.md) | 計画・仕様など非コード成果物の確定前に「実証を課した独立レビュー」を挟む工程がない | open | 2026-07-31 |
+| [0033](flow/0033-subagent-dispatch-prompt-boilerplate.md) | サブエージェント委譲の起動プロンプトに入れるべき定型項目が未定義 | closed | 2026-07-31 |
+| [0034](flow/0034-independent-review-with-proof-for-non-code-artifacts.md) | 計画・仕様など非コード成果物の確定前に「実証を課した独立レビュー」を挟む工程がない | closed | 2026-07-31 |
 | [0035](flow/0035-retrospective-lightweight-mode.md) | retrospective の簡易モードが正式な選択肢として未定義 | closed | 2026-07-31 |
 | [0037](flow/0037-worklog-record-post-wrapper-not-firing.md) | start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的） | closed | 2026-07-31 |
 | [0038](flow/0038-retrospective-phase3-findings-no-path-to-record.md) | retrospective の Phase 3 で得た知見を記録へ反映する経路がない | open | 2026-07-31 |
@@ -60,3 +60,5 @@
 | [0044](flow/0044-skill-revision-unverifiable-in-same-session.md) | スキルを改定したサイクルでは、その改定を同一セッション内で検証できない | open | 2026-08-05 |
 | [0045](flow/0045-issue-countermeasure-feasibility-unchecked.md) | 既存 open 課題の対策方針が実行可能かを点検する工程がない | open | 2026-08-05 |
 | [0046](flow/0046-cycle-scale-re-estimation-checkpoint-missing.md) | サイクル規模の再見積もりチェックポイントがない | open | 2026-08-05 |
+| [0047](flow/0047-dispatch-constraint-injection-via-hook.md) | サブエージェント委譲の常時制約を、規範文ではなくフックで機械注入できる | open | 2026-08-05 |
+| [0048](flow/0048-norm-item-retirement-detection-in-worklog-extract.md) | 規範項目の退役候補を worklog-extract の走査で機械検出できない | open | 2026-08-05 |

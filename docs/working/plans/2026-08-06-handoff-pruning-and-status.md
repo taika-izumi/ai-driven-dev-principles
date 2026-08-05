@@ -23,7 +23,7 @@
 **Files:**
 - Modify: `skills/session-handoff/SKILL.md`
 
-- [ ] **Step 1: frontmatter の description に cycle-reset を追記**
+- [x] **Step 1: frontmatter の description に cycle-reset を追記**
 
 old:
 
@@ -37,7 +37,7 @@ new:
 description: "セッション間で作業を継続するためのハンドオフファイル（docs/working/handoff/<branch>.md）を読む・作成する・更新する・確定する・サイクル完了時にリセット（cycle-reset）する。マイルストーン到達時・セッション終了時・retrospective 完了時に呼ばれる。"
 ```
 
-- [ ] **Step 2: フォーマット内の Status 行を 4 値化**
+- [x] **Step 2: フォーマット内の Status 行を 4 値化**
 
 old:
 
@@ -51,7 +51,7 @@ new:
 - **Status**: in_progress | paused | completed | ready-for-next-cycle
 ```
 
-- [ ] **Step 3: フォーマットのコードブロック直後に「Status の意味」表と「外部参照の書き方」を追加**
+- [x] **Step 3: フォーマットのコードブロック直後に「Status の意味」表と「外部参照の書き方」を追加**
 
 フォーマットの closing ``` の直後（「## 操作」の前）に以下を挿入:
 
@@ -70,12 +70,12 @@ new:
 ハンドオフから外部文書を参照するときは、安定識別子（ADR-NNNN / Issue-NNNN / ファイルパス / コミットハッシュ）を必ず含めること。節名・項番だけの参照は書かない（安定識別子への併記は可。例: 「`skills/retrospective/SKILL.md` の Phase 3」は可、「振り返りスキルの仕上げ節」だけは不可）。参照先の構造変更で参照が壊れることを防ぐ。
 ```
 
-- [ ] **Step 4: 操作数の宣言を 4 → 5 に更新**
+- [x] **Step 4: 操作数の宣言を 4 → 5 に更新**
 
 old: `このスキルは4つの操作を提供する。呼び出し側は操作を明示すること。`
 new: `このスキルは5つの操作を提供する。呼び出し側は操作を明示すること。`
 
-- [ ] **Step 5: finalize の手順を差し替え（基準付き圧縮の組み込み・Status 分岐追加・旧手順 4 の統合）**
+- [x] **Step 5: finalize の手順を差し替え（基準付き圧縮の組み込み・Status 分岐追加・旧手順 4 の統合）**
 
 「### 4. finalize — セッション終了確定」の手順 1〜5 全体を以下に置き換える（旧手順 4「消化記録の過去分削除」は新手順 2 の圧縮基準 2 種目に統合される。コミットブロックはそのまま新手順 5 に残す）:
 
@@ -100,7 +100,7 @@ new: `このスキルは5つの操作を提供する。呼び出し側は操作�
    ```
 ````
 
-- [ ] **Step 6: cycle-reset 操作を新設**
+- [x] **Step 6: cycle-reset 操作を新設**
 
 「### 4. finalize — セッション終了確定」ブロックの直後（「## 完了済みハンドオフの扱い」の前）に以下を挿入:
 
@@ -120,7 +120,7 @@ new: `このスキルは5つの操作を提供する。呼び出し側は操作�
 5. ファイルを git に add する。コミットはしない（`retrospective` の「スキル内ではコミットしない」前提と整合させ、セッション終了時の finalize または通常フローのコミットに委ねる）
 ```
 
-- [ ] **Step 7: 「完了済みハンドオフの扱い」のアーカイブ記述を ADR-0074 に合わせて更新**
+- [x] **Step 7: 「完了済みハンドオフの扱い」のアーカイブ記述を ADR-0074 に合わせて更新**
 
 old:
 
@@ -134,7 +134,7 @@ new:
 PR マージなどで作業完了した handoff は `Status: completed` のまま `docs/working/handoff/` に残す。アーカイブ機構（`docs/working/handoff/archive/` への移動）は設けない（ADR-0074。剪定・リセットで落とした情報の受け皿は git 履歴のみとする）。
 ```
 
-- [ ] **Step 8: 編集結果を grep で確認**
+- [x] **Step 8: 編集結果を grep で確認**
 
 Run: `grep -c "ready-for-next-cycle" skills/session-handoff/SKILL.md`
 Expected: `4`（フォーマット行 / Status 表 / finalize 手順 4 / cycle-reset 手順 4）
@@ -145,7 +145,7 @@ Expected: `3`（frontmatter / finalize 手順 4 / 操作 5 見出し）
 Run: `grep -n "5つの操作" skills/session-handoff/SKILL.md`
 Expected: 1 行ヒット
 
-- [ ] **Step 9: コミット**
+- [x] **Step 9: コミット**
 
 コミットメッセージを一時ファイルに書き、パス指定でコミット:
 
@@ -169,7 +169,7 @@ Expected: 1 file changed
 - Modify: `skills/retrospective/SKILL.md`（Phase 3 手順 3）
 - Modify: `docs/current/specs/2026-05-01-retrospective-design.md`（Phase 3 記述の書き換え更新。スナップショット規約）
 
-- [ ] **Step 1: retrospective SKILL.md の Phase 3 手順 3 を差し替え**
+- [x] **Step 1: retrospective SKILL.md の Phase 3 手順 3 を差し替え**
 
 old:
 
@@ -189,7 +189,7 @@ new:
    - 課題が複数ある場合は優先順位の目安を併記してよい（着手の決定はユーザー）
 ```
 
-- [ ] **Step 2: 既存 spec `2026-05-01-retrospective-design.md` の Phase 3 手順 3 を書き換え**
+- [x] **Step 2: 既存 spec `2026-05-01-retrospective-design.md` の Phase 3 手順 3 を書き換え**
 
 old:
 
@@ -203,7 +203,7 @@ new:
 3. `session-handoff` の cycle-reset 操作を呼ぶ（剪定・書き換えの手順は session-handoff 側の定義に従う。ADR-0075）。「次セッション開始時のアクション」に起票済み issue 番号を記載し、Status を `in_progress` から `ready-for-next-cycle` へ遷移する（ADR-0076）
 ```
 
-- [ ] **Step 3: 編集結果を grep で確認**
+- [x] **Step 3: 編集結果を grep で確認**
 
 Run: `grep -c "cycle-reset" skills/retrospective/SKILL.md docs/current/specs/2026-05-01-retrospective-design.md`
 Expected: 各ファイル `1`
@@ -214,7 +214,7 @@ Expected: ヒットなし（誤記述の解消）
 Run: `grep -n "session-handoff update" docs/current/specs/2026-05-01-retrospective-design.md`
 Expected: ヒットなし
 
-- [ ] **Step 4: コミット**
+- [x] **Step 4: コミット**
 
 コミットメッセージ:
 
@@ -235,7 +235,7 @@ Expected: 2 files changed
 
 **Files:** なし（読み取りのみ）
 
-- [ ] **Step 1: Status 値・操作名・遷移記述の突合**
+- [x] **Step 1: Status 値・操作名・遷移記述の突合**
 
 Run: `grep -rn "ready-for-next-cycle" skills/`
 Expected: `session-handoff/SKILL.md` に 4 行、`retrospective/SKILL.md` に 1 行、`start-work/SKILL.md` に 0 行（start-work は変更対象外）
@@ -243,7 +243,7 @@ Expected: `session-handoff/SKILL.md` に 4 行、`retrospective/SKILL.md` に 1 
 Run: `grep -rn "cycle-reset" skills/ docs/current/specs/`
 Expected: `session-handoff/SKILL.md` 3 行 / `retrospective/SKILL.md` 1 行 / `2026-05-01-retrospective-design.md` 1 行 / `2026-08-06-handoff-pruning-and-status-design.md`（本サイクル spec 内の言及）
 
-- [ ] **Step 2: 旧記述の残存チェック**
+- [x] **Step 2: 旧記述の残存チェック**
 
 Run: `grep -rn "アーカイブ機構.*未実装" skills/`
 Expected: ヒットなし
@@ -253,20 +253,20 @@ Expected: ヒットなし
 **Files:**
 - Modify: `docs/working/issues/flow/0044-*.md`（検討状況へ実測結果を追記）
 
-- [ ] **Step 1: ユーザーにプラグイン更新を依頼**
+- [x] **Step 1: ユーザーにプラグイン更新を依頼**
 
 AI からは実行不可（ADR-0055）。ユーザーに `/plugin marketplace update ai-driven-dev-principles` の実行を依頼し、完了報告を待つ。
 
-- [ ] **Step 2: 同セッションでの改定スキル起動を実測（Issue-0044）**
+- [x] **Step 2: 同セッションでの改定スキル起動を実測（Issue-0044）**
 
 Skill ツールで `ai-driven-dev-principles:session-handoff` を呼び、返ってきた内容に cycle-reset 操作（操作 5）が含まれるかを確認する。
 Expected: 含まれる（直読み仮説どおりなら update 直後の同セッションで新内容が返る）
 
-- [ ] **Step 3: Issue-0044 の「検討状況」へ実測結果を 1 行追記**
+- [x] **Step 3: Issue-0044 の「検討状況」へ実測結果を 1 行追記**
 
 追記フォーマット（Step 2 の実測結果に応じて「反映を確認」または「反映されず旧内容が返った」を書き分ける）: `- 2026-08-06: session-handoff 改定（cycle-reset 追加）直後、プラグイン update 後の同セッションで Skill 起動 → 新内容の反映を確認 / 反映されず旧内容`
 
-- [ ] **Step 4: コミット**
+- [x] **Step 4: コミット**
 
 コミットメッセージ: `issues: 0044 にスキル改定の同セッション検証実測を追記`
 Run: `git add docs/working/issues/flow/0044-*.md && git commit -F <msg-file> -- docs/working/issues/flow/`
@@ -281,16 +281,16 @@ Expected: 1 file changed
 - Modify: `docs/working/issues/flow/0051-handoff-status-value-mismatch-between-skills.md`（close）
 - Modify: `docs/working/issues/README.md`（2 件の Status 更新）
 
-- [ ] **Step 1: 昇格前の粒度点検（ADR-0059 / ADR-0060）**
+- [x] **Step 1: 昇格前の粒度点検（ADR-0059 / ADR-0060）**
 
 ADR-0074〜0077 それぞれについて、タイトルが本文の全決定に答えているかを確認する（1 ADR = 1 つの問い）。答えていない決定があれば分割を提案してから昇格する。
 Expected: 4 件とも単一の問いに収まっている（起票時に分割済み）
 
-- [ ] **Step 2: 4 ADR の Status を Accepted に更新**
+- [x] **Step 2: 4 ADR の Status を Accepted に更新**
 
 各ファイルの `- **Status**: Proposed` → `- **Status**: Accepted`。`README.md` テーブルの 4 行も `Proposed` → `Accepted`。
 
-- [ ] **Step 3: Issue-0049 / Issue-0051 を close**
+- [x] **Step 3: Issue-0049 / Issue-0051 を close**
 
 両ファイルの `- **Status**: open` → `- **Status**: closed`、`- **Closed**: 2026-08-06` を追記、「結論」セクションを記入:
 
@@ -299,7 +299,7 @@ Expected: 4 件とも単一の問いに収まっている（起票時に分割�
 
 `docs/working/issues/README.md` の 0049 / 0051 行の Status も closed へ更新。
 
-- [ ] **Step 4: 整合確認**
+- [x] **Step 4: 整合確認**
 
 Run: `grep -l "Status.*: Proposed" docs/records/decisions/007[4-7]-*.md`
 Expected: ヒットなし
@@ -307,7 +307,7 @@ Expected: ヒットなし
 Run: `grep -n "0049\|0051" docs/working/issues/README.md`
 Expected: 両行とも closed 表記
 
-- [ ] **Step 5: コミット**
+- [x] **Step 5: コミット**
 
 コミットメッセージ:
 

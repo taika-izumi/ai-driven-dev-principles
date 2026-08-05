@@ -78,3 +78,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0070](0070-dispatch-constraints-as-norm-not-hook-injection.md) | サブエージェント委譲の常時制約は規範文で実装し、フックによる機械注入は採らない | Accepted | 2026-08-05 |
 | [0071](0071-b-group-firing-check-as-mandatory-table-walk.md) | B 群の発火判定は、行数の固定された表を毎回読み下ろす手順として担保する | Accepted | 2026-08-05 |
 | [0072](0072-pre-finalization-review-triggered-by-user-only.md) | 確定前レビューの発動はユーザーの指示に限り、AI は次手として提示するにとどめる | Accepted | 2026-08-05 |
+| [0073](0073-dispatch-norms-carry-provenance-and-sunset-path.md) | 委譲制約の規範項目には根拠と世代を添え、実測にもとづく退役経路を持たせる | Accepted | 2026-08-05 |

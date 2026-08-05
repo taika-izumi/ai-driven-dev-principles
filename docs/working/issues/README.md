@@ -61,3 +61,4 @@
 | [0045](flow/0045-issue-countermeasure-feasibility-unchecked.md) | 既存 open 課題の対策方針が実行可能かを点検する工程がない | open | 2026-08-05 |
 | [0046](flow/0046-cycle-scale-re-estimation-checkpoint-missing.md) | サイクル規模の再見積もりチェックポイントがない | open | 2026-08-05 |
 | [0047](flow/0047-dispatch-constraint-injection-via-hook.md) | サブエージェント委譲の常時制約を、規範文ではなくフックで機械注入できる | open | 2026-08-05 |
+| [0048](flow/0048-norm-item-retirement-detection-in-worklog-extract.md) | 規範項目の退役候補を worklog-extract の走査で機械検出できない | open | 2026-08-05 |

@@ -68,6 +68,7 @@
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。直近サイクル中の分は `feature_skillify-subagent-dispatch-and-pre-review.md` 参照（retrospective Phase 3 で突合済み・未消化なし）。
 
 - 2026-08-05 master merge（`da2d351`）+ retrospective 完了: ADR=なし（振り返りは課題抽出のみ。ADR-0021） / worklog=棄却（振り返り実施中の delta なし。サイクル分は `MakeAiInstructions-2026-08-05-07` で記録済み）
+- 2026-08-05 セッション終了（切り替え直前。ADR-0058）: ADR=なし（終了処理に意思決定なし） / worklog=棄却（`MakeAiInstructions-2026-08-05-07` 以降に新規 delta なし）
 
 ## 次セッション開始時のアクション
 

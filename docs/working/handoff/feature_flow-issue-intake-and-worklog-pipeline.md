@@ -3,7 +3,7 @@
 - **Branch**: feature/flow-issue-intake-and-worklog-pipeline（master から分岐。分岐元 `c5e18ab`）
 - **Last Updated**: 2026-08-05 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 計画の Task 1〜5 完了（= ADR-0062 の Task 0・Task 1）。次は Task 6（`worklog-extract` 再走査）
+- **Current Phase**: 計画の Task 1〜8 完了。ADR-0063〜0069 を Accepted へ昇格済み。残りは `finishing-a-development-branch` → master マージ → `retrospective`
 
 ## 作業の目的・背景
 
@@ -36,19 +36,26 @@
 - [x] **Task 3: ストアの書き側手段の是正**（LoopForAlpha#Issue-0050）。`Add-Content` 禁止と代替 3 手段の明示。コミット `00f2289`
 - [x] **Task 4: 健全性検査スクリプトの新設**（Issue-0032）。`skills/worklog-extract/scripts/check-store-health.py`。正負の対照を同梱。コミット `452f2da`
 - [x] **Task 5: 既存 CRLF の正規化と ADR-0064**（Issue-0032 close）。CR 5→0、内容不変を検証。コミット `a4f6250`
+- [x] **Task 6: `worklog-extract` 再走査**。118 件全数走査・14 クラスタ検出。Issue-0042 / 0043 起票、候補7 を Issue-0033 へ合流、7 件 deferred、2 件 rejected。台帳 18→31 行。コミット `125a846`
+- [x] **Task 7: 対策方針の設計**（スコープ変更。ADR-0065）。ADR-0066（委譲項目の A 群 / B 群分割）・ADR-0067（確定前レビューは新規スキル）。**スキル本体の authoring は次サイクル**。コミット `8b4068a`
+- [x] **Task 8: 配布先 flow 課題の close**。20 件中 5 件を close、15 件に処置を注記。LoopForAlpha 側コミット `438192c`
+- [x] **母数の訂正**（21→20 件・14 箇所）。目視で数えた誤り。コミット `58052a8`
+- [x] **ADR 粒度点検と昇格**。ADR-0063→0068 / ADR-0065→0069 へ分割し、0063〜0069 を Accepted。コミット `6f2c1fb`
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 計画 Task 6（`worklog-extract` 再走査）
-  - 状態: 未着手。前提（ストア健全性 `exit=0`）は満たしている
-  - 残り: スキル起動 → 候補提示 → ユーザー採否 → 台帳反映
+（なし。計画の全 8 タスクが完了）
 
-## 未着手のタスク（計画 `docs/working/plans/2026-08-05-flow-issue-intake-and-worklog-pipeline.md`）
+## 未着手のタスク
 
-- [ ] **Task 6**: `worklog-extract` 再走査（未処理分 + `deferred` 14 件の再浮上判定）
-- [ ] **Task 7**: `worklog-skillify` で Issue-0033 / 0034 を成果物化。配布先の証拠を既存課題へ追記
-- [ ] **Task 8**: LoopForAlpha 側 flow 課題の close 判定と一括処理（ADR-0061 / ADR-0063 の初回適用）
-- [ ] 完了後: ADR-0063 / 0064 を Accepted へ昇格 → `finishing-a-development-branch` → master マージ → `retrospective`
+- [ ] `superpowers:finishing-a-development-branch` で master への統合方法を決める
+- [ ] master マージ直後に `retrospective` を起動する（CLAUDE.md の必須手順）
+- [ ] `session-handoff` finalize
+
+### 次サイクルへ送った作業
+
+- [ ] **Issue-0033 / 0034 のスキル authoring**（ADR-0065 / 0066 / 0067 で設計は確定済み）。`adopted` のまま 4 サイクル目に入る
+- [ ] **構造観察型の配布先課題の取り込み**（`LoopForAlpha#Issue-0085` / `#0086` / `#0087` / `#0042` / `#0008` / `#0013`。ADR-0062）
 
 ## 既知のブロッカー・懸念
 
@@ -65,6 +72,8 @@
 
 - 2026-08-05 サイクルスコープ確定（ADR-0061/0062 Accepted・ブランチ作成）: ADR=0061, 0062 / worklog=`MakeAiInstructions-2026-08-05-01`
 - 2026-08-05 計画 Task 1〜5 完了（= ADR-0062 の Task 0・Task 1）: ADR=0063, 0064（いずれも Proposed。実装完了済みだが Task 6〜8 の結果で記述が動きうるため昇格は完了後） / worklog=`MakeAiInstructions-2026-08-05-02`
+- 2026-08-05 計画 Task 6〜8 完了（走査・設計・配布先 close）: ADR=0065, 0066, 0067（Task 7 のスコープ変更と設計） / worklog=`MakeAiInstructions-2026-08-05-03`（件数は機械で数えてから書く）・`-04`（セッション中のスキル編集は反映されない）
+- 2026-08-05 ADR 粒度点検・昇格: ADR=0068, 0069（分割で新設）／0063〜0069 を Accepted へ昇格 / worklog=`MakeAiInstructions-2026-08-05-05`（手順を書いた直後に同じ誤りを再発した。Issue-0020 の再発として課題側へも一次記録）
 
 ## 次セッション開始時のアクション
 

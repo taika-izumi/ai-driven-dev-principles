@@ -57,3 +57,6 @@
 | [0041](flow/0041-distributed-issue-handover-path-and-cross-repo-reference.md) | 配布先からの申し送り経路と、クロスリポジトリの Issue 参照形式が未定義 | closed | 2026-08-05 |
 | [0042](flow/0042-detector-detection-power-not-proven.md) | 検査・検出器の「検出力」を実証してから「守られている」と言う規律がない | open | 2026-08-05 |
 | [0043](flow/0043-decision-request-premises-not-front-loaded.md) | 意思決定要求の前提・用語・推奨理由・出典・被害規模を先に置く規範が、存在するのに効いていない | open | 2026-08-05 |
+| [0044](flow/0044-skill-revision-unverifiable-in-same-session.md) | スキルを改定したサイクルでは、その改定を同一セッション内で検証できない | open | 2026-08-05 |
+| [0045](flow/0045-issue-countermeasure-feasibility-unchecked.md) | 既存 open 課題の対策方針が実行可能かを点検する工程がない | open | 2026-08-05 |
+| [0046](flow/0046-cycle-scale-re-estimation-checkpoint-missing.md) | サイクル規模の再見積もりチェックポイントがない | open | 2026-08-05 |

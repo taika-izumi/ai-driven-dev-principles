@@ -2,8 +2,8 @@
 
 - **Branch**: feature/flow-issue-intake-and-worklog-pipeline（master から分岐。分岐元 `c5e18ab`）
 - **Last Updated**: 2026-08-05 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 計画の Task 1〜8 完了。ADR-0063〜0069 を Accepted へ昇格済み。残りは `finishing-a-development-branch` → master マージ → `retrospective`
+- **Status**: completed
+- **Current Phase**: 完了。master へ `--no-ff` マージ済み（`a0b16c9`）、feature ブランチ削除済み、`retrospective` 実施済み
 
 ## 作業の目的・背景
 
@@ -72,7 +72,7 @@
 
 - 2026-08-05 サイクルスコープ確定（ADR-0061/0062 Accepted・ブランチ作成）: ADR=0061, 0062 / worklog=`MakeAiInstructions-2026-08-05-01`
 - 2026-08-05 計画 Task 1〜5 完了（= ADR-0062 の Task 0・Task 1）: ADR=0063, 0064（いずれも Proposed。実装完了済みだが Task 6〜8 の結果で記述が動きうるため昇格は完了後） / worklog=`MakeAiInstructions-2026-08-05-02`
-- 2026-08-05 計画 Task 6〜8 完了（走査・設計・配布先 close）: ADR=0065, 0066, 0067（Task 7 のスコープ変更と設計） / worklog=`MakeAiInstructions-2026-08-05-03`（件数は機械で数えてから書く）・`-04`（セッション中のスキル編集は反映されない）
+- 2026-08-05 計画 Task 6〜8 完了（走査・設計・配布先 close）: ADR=0065, 0066, 0067（Task 7 のスコープ変更と設計） / worklog=`MakeAiInstructions-2026-08-05-03`（件数は機械で数えてから書く）・`MakeAiInstructions-2026-08-05-04`（セッション中のスキル編集は反映されない）
 - 2026-08-05 ADR 粒度点検・昇格: ADR=0068, 0069（分割で新設）／0063〜0069 を Accepted へ昇格 / worklog=`MakeAiInstructions-2026-08-05-05`（手順を書いた直後に同じ誤りを再発した。Issue-0020 の再発として課題側へも一次記録）
 
 ## 次セッション開始時のアクション

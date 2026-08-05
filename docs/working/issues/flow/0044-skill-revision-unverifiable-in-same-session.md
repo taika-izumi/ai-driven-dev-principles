@@ -21,6 +21,8 @@ ADR-0055 は「スキルが使えるか（availability）」の AI 側判定規�
 
 - 2026-08-05（次セッション冒頭）: **前項 (b) の availability を確認**。新セッション開始時点（`/plugin marketplace update` 実行**前**）の available-skills 一覧に `subagent-dispatch` / `pre-finalization-review` の両方がすでに掲載されていた。その後ユーザーが update を実行（`√ Updated 1 marketplace`）し、実行後の一覧にも両スキルが掲載。update 前から一覧に出ていたことは**リポジトリ直読み仮説をさらに支持する**（キャッシュ更新を経ずに新設スキルが認識された）。ただしこれは「セッション開始時の一覧構築が実体を読む」ことの確認であり、「セッション中のファイル編集が同セッションの Skill 起動に反映されるか」（本 Issue の核心）は未実測のまま。次にスキル改定が発生するサイクルで、改定直後に同セッションで起動して改定後本文が返るかを実測すること
 
+- 2026-08-06: **本 Issue の核心（同セッション編集の反映）を実測**。session-handoff 改定（cycle-reset 追加。コミット `4b9bd80`）と同一セッション内で、ユーザーの `/plugin marketplace update` 実行（`√ Updated 1 marketplace`）直後に Skill 起動 → **改定後の本文（cycle-reset 操作・Status 4 値・基準付き圧縮）が返った**。update 直後には available-skills 一覧の description も改定後の文言に変わっていた。2026-08-05 の「改定前の本文が返った」観測とは逆の結果であり、update を挟めば同セッション検証が可能なことを確認。update なしでの反映可否は未実測（今回は update を挟んだため切り分け不能）
+
 ## 結論
 
 （open）

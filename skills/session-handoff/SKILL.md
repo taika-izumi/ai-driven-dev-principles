@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: "セッション間で作業を継続するためのハンドオフファイル（docs/working/handoff/<branch>.md）を読む・作成する・更新する・確定する。マイルストーン到達時とセッション終了時に呼ばれる。"
+description: "セッション間で作業を継続するためのハンドオフファイル（docs/working/handoff/<branch>.md）を読む・作成する・更新する・確定する・サイクル完了時にリセット（cycle-reset）する。マイルストーン到達時・セッション終了時・retrospective 完了時に呼ばれる。"
 ---
 
 # session-handoff
@@ -24,7 +24,7 @@ docs/working/handoff/<branch-name>.md
 
 - **Branch**: <branch-name>
 - **Last Updated**: YYYY-MM-DD HH:MM (Asia/Tokyo)
-- **Status**: in_progress | paused | completed
+- **Status**: in_progress | paused | completed | ready-for-next-cycle
 - **Current Phase**: <作業タイプ>/<現在のスキル or 段階>
 
 ## 作業の目的・背景
@@ -75,9 +75,22 @@ docs/working/handoff/<branch-name>.md
 - ADR-NNNN: <タイトル>（YYYY-MM-DD）
 ```
 
+### Status の意味（ADR-0076）
+
+| 値 | 意味 |
+|----|------|
+| `in_progress` | 作業進行中 |
+| `paused` | 中断中（再開待ち） |
+| `completed` | 作業完了（feature ブランチのマージ完了時など、そのブランチの handoff が役目を終えた状態） |
+| `ready-for-next-cycle` | サイクル完了・次サイクル待ち（長命ブランチの handoff が、retrospective 完了後にユーザーの次サイクル判断を待つ状態） |
+
+### 外部参照の書き方（ADR-0077）
+
+ハンドオフから外部文書を参照するときは、安定識別子（ADR-NNNN / Issue-NNNN / ファイルパス / コミットハッシュ）を必ず含めること。節名・項番だけの参照は書かない（安定識別子への併記は可。例: 「`skills/retrospective/SKILL.md` の Phase 3」は可、「振り返りスキルの仕上げ節」だけは不可）。参照先の構造変更で参照が壊れることを防ぐ。
+
 ## 操作
 
-このスキルは4つの操作を提供する。呼び出し側は操作を明示すること。
+このスキルは5つの操作を提供する。呼び出し側は操作を明示すること。
 
 ### 1. read — ハンドオフ読み込み
 
@@ -128,12 +141,16 @@ docs/working/handoff/<branch-name>.md
 
 手順:
 1. update と同様の更新を実施
-2. **「次セッション開始時のアクション」セクションを必ず埋める**:
+2. **基準付き圧縮を実施する（ADR-0075）**。圧縮対象は次の 2 種のみ:
+   - 詳細が他の正本（ADR / issue / worklog / plan / spec / コミット履歴）に記録済みの完了タスク・記述 → 1 行要約＋正本への参照（安定識別子）に置き換える
+   - 役目を終えた状態情報（解消済みブロッカー、確定済み過去セッションの消化記録行。ADR-0057）→ 削除する
+
+   **圧縮しないもの**: 正本が handoff 以外にないもの（進行中タスクの状態・残り、現役の申し送り・懸念）。無条件の 1 行要約はしない。落とした情報の受け皿は git 履歴のみとし、退避ファイルは作らない（ADR-0074）
+3. **「次セッション開始時のアクション」セクションを必ず埋める**:
    - 最初に確認すべきファイル
    - 最初に実行すべきコマンド/スキル
    - 留意点
-3. Status を更新する（作業継続なら `paused`、完了なら `completed`、まだ進行中なら `in_progress`）
-4. 「Post ラッパー消化記録」のうち、確定済みの過去セッション分の行は削除してよい（履歴は git に残る。ADR-0057）
+4. Status を更新する（作業継続なら `paused`、完了なら `completed`、まだ進行中なら `in_progress`）。cycle-reset 実施済みで次サイクル未着手のまま終了する場合は `ready-for-next-cycle` を維持する（`paused` 等で上書きしない）
 5. ファイルを git に add してコミットする:
 
    ```powershell
@@ -141,9 +158,23 @@ docs/working/handoff/<branch-name>.md
    git commit -m "chore: update handoff for <branch>"
    ```
 
+### 5. cycle-reset — サイクル完了リセット
+
+呼ばれるタイミング: サブプロジェクトの master マージ後、`retrospective` の仕上げ（Phase 3）から呼ばれる（ADR-0075）
+
+手順:
+1. 完了サイクルの経緯を落とす（受け皿は git 履歴のみ。ADR-0074）:
+   - 「完了済みタスク」を「過去サイクルは retrospective / git 履歴参照」の 1 行に集約する
+   - 「Post ラッパー消化記録」の行を全行削除する
+   - 本文各節に残る完了サイクル固有の経緯記述を除去する
+2. 「既知のブロッカー・懸念」（申し送り）を **1 件ずつ現役性点検**し、現役のものだけを残す（一括削除も一括温存もしない。実測済みの申し送りは削ると同じ罠を再び踏むため、落とすのは役目を終えたと確認できたものだけ）
+3. 「作業の目的・背景」を「直近サイクルの成果 1 段落＋次サイクル待ち」に書き直す
+4. Status を `ready-for-next-cycle` へ更新し（ADR-0076）、「次セッション開始時のアクション」を次サイクル候補で更新する
+5. ファイルを git に add する。コミットはしない（`retrospective` の「スキル内ではコミットしない」前提と整合させ、セッション終了時の finalize または通常フローのコミットに委ねる）
+
 ## 完了済みハンドオフの扱い
 
-PR マージなどで作業完了した handoff は `Status: completed` のまま `docs/working/handoff/` に残す。アーカイブ機構（`docs/working/handoff/archive/` への移動）は本スキルでは未実装。将来必要になれば追加する。
+PR マージなどで作業完了した handoff は `Status: completed` のまま `docs/working/handoff/` に残す。アーカイブ機構（`docs/working/handoff/archive/` への移動）は設けない（ADR-0074。剪定・リセットで落とした情報の受け皿は git 履歴のみとする）。
 
 ## 対応する原則
 

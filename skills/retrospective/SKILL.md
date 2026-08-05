@@ -106,9 +106,9 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
    5. 振り分け規則で「worklog 送り」とした delta 型候補の記録漏れもここで拾う
 
    本工程は、Post ラッパーに完全に入らなかった場合（消化記録の行そのものが無い）を回収する唯一の経路である（設計意図は `docs/current/specs/2026-05-01-retrospective-design.md` Phase 3 参照）
-3. `session-handoff` の **update** 操作を呼ぶ:
+3. `session-handoff` の **cycle-reset** 操作を呼ぶ（剪定・書き換えの手順は session-handoff 側の定義に従う。ADR-0075）:
+   - Status は `in_progress` → `ready-for-next-cycle` へ遷移する（ADR-0076）
    - 「次セッション開始時のアクション」に「抽出した課題は issues に起票済み（Issue-NNNN〜。着手はユーザー判断）」旨を記す
-   - handoff Status を `completed` → `ready-for-next-cycle` へ遷移
    - 課題が複数ある場合は優先順位の目安を併記してよい（着手の決定はユーザー）
 
 ## 出力ファイル

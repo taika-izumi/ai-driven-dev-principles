@@ -2,8 +2,8 @@
 
 - **Branch**: feature/skillify-subagent-dispatch-and-pre-review
 - **Last Updated**: 2026-08-05 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装完了（plan Task 1〜6 全完了）・マージ判断待ち
+- **Status**: completed
+- **Current Phase**: master へ merge 済み（`da2d351`）・retrospective 実施済み・ブランチ削除済み
 
 ## 作業の目的・背景
 
@@ -55,6 +55,7 @@
 
 - 2026-08-05 brainstorming 完了（設計承認・ADR 昇格）: ADR=0070/0071/0072/0073（すべて Accepted 済み） / worklog=`MakeAiInstructions-2026-08-05-07`（規範化時の過剰適合点検の欠落。corrections 型）
 - 2026-08-05 plan 全タスク完了（実装フェーズ）: ADR=なし（計画どおりの実行で新規意思決定なし） / worklog=棄却（実行中の delta なし）
+- 2026-08-05 master merge（`da2d351`）+ retrospective 完了: ADR=なし（振り返りは課題抽出のみ。ADR-0021） / worklog=棄却（振り返り実施中の delta なし。サイクル分は `-07` で記録済み・Phase 3 突合で未消化なし）
 
 ## 次セッション開始時のアクション
 

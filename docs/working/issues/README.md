@@ -62,3 +62,8 @@
 | [0046](flow/0046-cycle-scale-re-estimation-checkpoint-missing.md) | サイクル規模の再見積もりチェックポイントがない | open | 2026-08-05 |
 | [0047](flow/0047-dispatch-constraint-injection-via-hook.md) | サブエージェント委譲の常時制約を、規範文ではなくフックで機械注入できる | open | 2026-08-05 |
 | [0048](flow/0048-norm-item-retirement-detection-in-worklog-extract.md) | 規範項目の退役候補を worklog-extract の走査で機械検出できない | open | 2026-08-05 |
+| [0049](flow/0049-handoff-single-file-growth-no-pruning-rules.md) | ハンドオフが単一ファイルへの時系列追記で肥大し、完了情報の剪定規約がない | open | 2026-08-05 |
+| [0050](flow/0050-retrospective-cadence-bound-to-subproject-granularity.md) | 振り返りの契機がサブプロジェクト粒度に従属し、長期化すると 1 回で扱う材料が過大になる | open | 2026-08-05 |
+| [0051](flow/0051-handoff-status-value-mismatch-between-skills.md) | retrospective が要求するハンドオフ Status 値を session-handoff が定義していない | open | 2026-08-05 |
+| [0052](flow/0052-retrospective-exemption-and-deferral-conditions-undefined.md) | マージ直後 retrospective の免除・繰り延べ・規模による裁量条件が未定義 | open | 2026-08-05 |
+| [0053](flow/0053-retrospective-material-loss-across-session-restart.md) | セッション再起動を挟むと retrospective の素材（定性的な学び）が失われる | open | 2026-08-05 |

@@ -1,10 +1,10 @@
-# AI Agent Meta-Guidelines
+# AI-Driven Development Guidelines
 
-AIエージェントを活用したシステム開発のためのメタ・ガイドライン。
+AI駆動開発ガイドライン — AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系。
 
 ## 概要
 
-このリポジトリは、AIエージェントとの協働開発において有用な普遍的原則（メタ・ガイドライン）と、それを GitHub Copilot CLI / Claude Code で実践するための仕組みを提供する。
+このリポジトリは、AIエージェントとの協働開発において有用な普遍的原則（AI駆動開発ガイドライン）と、それを GitHub Copilot CLI / Claude Code で実践するための仕組みを提供する。
 
 対象とする「システム」には、通常のソフトウェア（Webアプリ、API、CLIなど）だけでなく、AIエージェントによる情報収集・分析・意思決定を含むワークフロー型システムも含む。
 
@@ -14,7 +14,7 @@ AIエージェントを活用したシステム開発のためのメタ・ガイ
 
 | レイヤー | ファイル | 役割 |
 |----------|----------|------|
-| Layer 1 | [`docs/overview/principles.md`](docs/overview/principles.md) | ツール非依存のメタ・ガイドライン原則集 |
+| Layer 1 | [`docs/overview/principles.md`](docs/overview/principles.md) | ツール非依存の AI駆動開発ガイドライン原則集 |
 | Layer 2 | [`CLAUDE.md`](CLAUDE.md) | エージェント向け行動指示（GitHub Copilot CLI / Claude Code 共通） |
 | Layer 3 | [`skills/`](skills/) | ワークフローを実装するスキル群 |
 

@@ -35,7 +35,7 @@ skills/（どうやるか）
 
 | レイヤー | ファイル | 主な読者 | 役割 |
 |----------|----------|----------|------|
-| Layer 1 | `docs/principles.md` | 人間 | ツール非依存のAI駆動開発ガイドライン原則集。判断の拠り所、「なぜ」の記録 |
+| Layer 1 | `docs/principles.md` | 人間 | ツール非依存の AI駆動開発ガイドライン原則集。判断の拠り所、「なぜ」の記録 |
 | Layer 2 | `.github/copilot-instructions.md` | AIエージェント | Layer 1 の原則を Copilot 向けに翻訳した行動指示 |
 | Layer 3 | `skills/` | AIエージェント | 特定のワークフローを実装するスキル群 |
 

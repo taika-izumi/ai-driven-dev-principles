@@ -23,7 +23,11 @@
 ## Consequences
 
 - 初見の読者・エージェントに体系の対象（開発の進め方）が名前から伝わる
-- 書き換え対象は現行の規範文書（README / CLAUDE.md / principles.md / CONTRIBUTING / スキル本文 / template / plugin メタデータ）。追記型の記録（過去の ADR・retrospective・完了済み plan / handoff）は書き換えない（ADR-0011）。具体的な対象範囲は実装サイクルの plan で確定する（リポジトリ内の全出現は 94 箇所・46 ファイル、2026-08-06 時点の実測）
+- 書き換え対象は現行の規範文書（README / CLAUDE.md / principles.md / CONTRIBUTING / スキル本文 / template / plugin メタデータ）。追記型の記録（過去の ADR・retrospective・完了済み plan / handoff・issue）は書き換えない（ADR-0011）
+- 対象範囲は実装サイクルの plan 時に以下のとおり確定した（2026-08-06 再実測: 102 箇所・49 ファイル）:
+  - `docs/current/specs/` は**本文を書き換え、ファイル名は維持**する。`docs/current/` の仕様書は「現時点のシステム全容が分かるスナップショット」という規約上の位置づけであり、CLAUDE.md の節見出し `## メタ・ガイドライン` 改名への参照追従も必要なため。ファイル名（例: `2026-04-12-meta-guidelines-design.md`）は ADR 等からの参照を壊さないため変更しない
+  - 英語表記も対象に含める: `README.md` タイトル `# AI Agent Meta-Guidelines`、`.claude-plugin/plugin.json` のキーワード `"meta-guidelines"`。日本語の表記揺れ（中点なし等）は実測 0 件
+  - 生きた文書である `docs/working/handoff/master.md` の背景説明 1 行は master マージ時に更新する
 - 「AI駆動システム」（folder-structure.md）は定義付きの現状のまま維持する
 - template 対象ファイル（CLAUDE.md / principles.md）の変更を含むため `scripts/sync-template.ps1` の実行が必要
 - 実装完了・検証後に Accepted へ昇格する（ADR-0019）

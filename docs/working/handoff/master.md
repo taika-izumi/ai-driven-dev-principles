@@ -56,12 +56,14 @@
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。直近サイクル中の分は `feature_rename-to-ai-driven-dev-guideline.md` 参照（retrospective Phase 3 で突合済み・未消化なし）。
 
-- 2026-08-07 master merge（`992a49f`）+ retrospective 完了: ADR=なし（振り返りは課題抽出のみ。ADR-0021） / worklog=`MakeAiInstructions-2026-08-07-03`（総ざらいでスキル反映の実測を記録。未消化なし）
+- 2026-08-07 master merge（`992a49f`）+ retrospective 完了（`f707ab3`）: ADR=なし（振り返りは課題抽出のみ。ADR-0021） / worklog=`MakeAiInstructions-2026-08-07-03`（総ざらいでスキル反映の実測を記録。未消化なし）
+- 2026-08-07 セッション終了（切り替え直前。ADR-0058）: ADR=なし（Proposed 残なし・未コミットドラフトなしを確認。終了処理に意思決定なし） / worklog=棄却（`-03` 以降に新規 delta なし。ユーザー指示の注入も躓きも発生していない）
 
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
 2. **直近サイクルは完了**: 追加作業不要。抽出した課題は issues に起票済み（Issue-0055 / 0056 / 0057。着手はユーザー判断）。delta 型 3 件は worklog 送り（`MakeAiInstructions-2026-08-06-05` / `-08-07-01` / `-02`）
+   - **保留中のユーザー判断 1 件**: 振り返りの system 課題 #2（`docs/records/retrospectives/system/2026-08-07-rename-to-ai-driven-dev-guideline.md`）— 改名後に `docs/current/specs/2026-04-12-meta-guidelines-design.md` のファイル名と本文の呼称が乖離した件。ADR-0078 の決定どおりの意図的な状態のため、そもそも課題として扱うかを含めて未起票のまま保留した。次サイクルで要否を判断する
 3. **次サイクルの候補（着手はユーザー判断）**: 優先の目安は上記「未着手のタスク」の順。**Issue-0056/0057 のペア**（今サイクルで実害が出た構造欠落。対策先はどちらも既存スキルで 2 件まとめて 1 サイクルにできる）が最有力。次いで **Issue-0044**（切り分け完了済みで運用規範 1 行で足りる可能性）、**Issue-0045**（open 24 件に増え棚卸しの価値が上昇）
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る

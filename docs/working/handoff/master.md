@@ -7,7 +7,7 @@
 
 ## 作業の目的・背景
 
-本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AIエージェント駆動開発のメタ・ガイドライン（5原則 + スキル群 + ADR）を整備するプロジェクト。
+本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AI駆動開発ガイドライン（5原則 + スキル群 + ADR。AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系）を整備するプロジェクト。
 
 **直近サイクル（2026-08-06: ハンドオフ剪定規約と Status 整合）**: Issue-0049/0051 を同時対処し、ADR-0074〜0077（二段階剪定・受け皿は git 履歴のみ・Status 4 値化・外部参照の安定識別子）を Accepted 化。`session-handoff` に finalize 基準付き圧縮と cycle-reset 操作を実装し、`retrospective` Phase 3 を接続した。あわせて Issue-0044 の核心（同セッション検証可否）を実測し、plugin update を挟めば反映されることを確認。本ハンドオフ自体が cycle-reset の初回実運用（旧 Status 不整合注記を除去済み）。次サイクル着手はユーザー判断待ち。
 

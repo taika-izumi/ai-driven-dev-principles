@@ -24,7 +24,7 @@
 
 - 初見の読者・エージェントに体系の対象（開発の進め方）が名前から伝わる
 - 書き換え対象は現行の規範文書（README / CLAUDE.md / principles.md / CONTRIBUTING / スキル本文 / template / plugin メタデータ）。追記型の記録（過去の ADR・retrospective・完了済み plan / handoff・issue）は書き換えない（ADR-0011）
-- 対象範囲は実装サイクルの plan 時に以下のとおり確定した（2026-08-06 再実測: 102 箇所・49 ファイル）:
+- 対象範囲は実装サイクルの plan 時に以下のとおり確定した（2026-08-06 再実測: 本項を書く直前の時点で 102 箇所・49 ファイル。本項自身が旧名称を含むため、直後の plan では 103 箇所と計上している。うち書き換え対象は 37 箇所）:
   - `docs/current/specs/` は**本文を書き換え、ファイル名は維持**する。`docs/current/` の仕様書は「現時点のシステム全容が分かるスナップショット」という規約上の位置づけであり、CLAUDE.md の節見出し `## メタ・ガイドライン` 改名への参照追従も必要なため。ファイル名（例: `2026-04-12-meta-guidelines-design.md`）は ADR 等からの参照を壊さないため変更しない
   - 英語表記も対象に含める: `README.md` タイトル `# AI Agent Meta-Guidelines`、`.claude-plugin/plugin.json` のキーワード `"meta-guidelines"`。日本語の表記揺れ（中点なし等）は実測 0 件
   - 生きた文書である `docs/working/handoff/master.md` の背景説明 1 行は master マージ時に更新する

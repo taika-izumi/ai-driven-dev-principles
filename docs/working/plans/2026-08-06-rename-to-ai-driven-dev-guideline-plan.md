@@ -590,6 +590,8 @@ Task 7 と同じ commit にまとめるため、ここではコミットしな�
 - Modify: `docs/current/specs/2026-07-04-project-folder-structure/04-layer-docs-updates.md`（L55）
 - Modify: `docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md`（L19）
 
+> **順序依存: Task 6 を必ず先に完了させること。** `2026-04-12-meta-guidelines-design.md` と `2026-04-13-contributing-and-gateway-skill-design.md` には修飾語の重複が起きる箇所（前者 L1・L8、後者 L32）が含まれており、Task 6 でそれらを処理して初めて残りが単純置換になる。Task 6 未完了のまま本タスクで `replace_all` すると、「AIエージェント活用システム開発のための AI駆動開発ガイドライン」のような重複表現が生じる。
+
 いずれも文字列「メタ・ガイドライン」を「AI駆動開発ガイドライン」へ置き換えるだけでよい（前後の語との重複が起きない箇所）。各ファイルで `replace_all` を使ってよい。置換後の各行は以下のとおり:
 
 - [ ] **Step 1: `2026-04-12-meta-guidelines-design.md` の残り 4 箇所を置換する**

@@ -21,6 +21,7 @@
 | [0031](system/0031-worklog-model-field-delta-origin-vs-record-time.md) | worklog の model フィールドが「記録時」定義でモデルまたぎセッションで delta を誤帰属 | closed | 2026-07-18 |
 | [0032](system/0032-worklog-extract-store-validation-detection-means.md) | worklog-extract のストア健全性検証の具体的検出手段が未定義 | closed | 2026-07-18 |
 | [0036](system/0036-worklog-extract-unclustered-singleton-ledger-handling.md) | worklog-extract でクラスタ化されなかった単発エントリの台帳上の扱いが未定義 | open | 2026-07-31 |
+| [0055](system/0055-specs-relative-adr-links-broken.md) | 仕様書内から ADR を相対パスで参照しているリンクが壊れている | open | 2026-08-07 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 
@@ -68,3 +69,5 @@
 | [0052](flow/0052-retrospective-exemption-and-deferral-conditions-undefined.md) | マージ直後 retrospective の免除・繰り延べ・規模による裁量条件が未定義 | open | 2026-08-05 |
 | [0053](flow/0053-retrospective-material-loss-across-session-restart.md) | セッション再起動を挟むと retrospective の素材（定性的な学び）が失われる | open | 2026-08-05 |
 | [0054](flow/0054-fallback-norm-ignores-transient-outage.md) | pre-action-review の撤退規範が一時的なインフラ障害と恒常的な失敗を区別しない | open | 2026-08-06 |
+| [0056](flow/0056-plan-verification-commands-never-executed-before-finalization.md) | 計画に書いた検証コマンドが「実行可能か」を確定前に誰も確かめていない | open | 2026-08-07 |
+| [0057](flow/0057-subagent-report-identifiers-relayed-without-verification.md) | サブエージェントの完了報告に含まれる識別子を検証せず後続へ転記する経路がある | open | 2026-08-07 |

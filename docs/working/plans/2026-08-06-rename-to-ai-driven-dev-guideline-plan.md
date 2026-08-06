@@ -776,29 +776,39 @@ git commit -m "chore: sync template after 体系呼称 rename (ADR-0078)"
 - Modify: `docs/records/decisions/0078-rename-meta-guidelines-to-ai-driven-dev-guidelines.md`（Status 行）
 - Modify: `docs/records/decisions/README.md`（L86 の Status セル）
 
-- [ ] **Step 1: 書き換え対象スコープに旧名称が残っていないことを確認する**
+- [ ] **Step 1: 検証スコープを組み立てる**
+
+> **注意**: `Get-ChildItem -Path README.md -Recurse` のようにファイル名へ `-Recurse` を付けると、PowerShell はファイル名を**フィルタ**として解釈し、リポジトリ中の同名ファイル（`docs/records/decisions/README.md` など）をすべて拾ってしまう。書き換え対象外の追記型記録が偽陽性として混入するため、ルート直下のファイルとディレクトリは分けて集めること。
 
 Run:
 ```powershell
-Get-ChildItem -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Recurse -File | Select-String -Pattern 'メタ・ガイドライン' -Encoding utf8
+$rootFiles = 'README.md','CLAUDE.md','CONTRIBUTING.md'
+$dirs = 'docs/overview','docs/current/specs','skills','template','.claude-plugin'
+$scope = @()
+$scope += Get-Item $rootFiles
+$scope += Get-ChildItem -Path $dirs -Recurse -File
+"走査対象ファイル数（母数）: $($scope.Count)"
 ```
-Expected: 出力なし（0 行）
+Expected: 母数が出力される（実測 65 ファイル。ファイル追加により増減しうる）
 
-- [ ] **Step 2: 英語表記の旧名称も残っていないことを確認する**
+- [ ] **Step 2: 書き換え対象スコープに旧名称が残っていないことを確認する**
 
 Run:
 ```powershell
-Get-ChildItem -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Recurse -File | Select-String -Pattern 'meta-guidelines' -Encoding utf8
+($scope | Select-String -Pattern 'メタ・ガイドライン' -Encoding utf8 | Measure-Object).Count
+($scope | Select-String -Pattern 'meta-guidelines' -Encoding utf8 | Measure-Object).Count
 ```
-Expected: 出力なし（0 行）
+Expected: 両方とも `0`（日本語・英語とも旧名称が残っていないこと）
 
-- [ ] **Step 3: 置換ミスによる重複表現が無いことを確認する**
+- [ ] **Step 3: 置換ミスによる重複表現・表記揺れが無いことを確認する**
 
 Run:
 ```powershell
-Get-ChildItem -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Recurse -File | Select-String -Pattern 'AI駆動開発のAI駆動開発|AI駆動開発ガイドラインガイドライン' -Encoding utf8
+($scope | Select-String -Pattern 'AI駆動開発のAI駆動開発|AI駆動開発ガイドラインガイドライン' -Encoding utf8 | Measure-Object).Count
+($scope | Select-String -Pattern '[ぁ-んァ-ヶー一-龠]AI駆動開発ガイドライン' -Encoding utf8 | Measure-Object).Count
+($scope | Select-String -Pattern 'AI駆動開発ガイドライン' -Encoding utf8 | Measure-Object).Count
 ```
-Expected: 出力なし（0 行）
+Expected: 1 行目 `0`（重複表現なし）、2 行目 `0`（和文が直接続く表記揺れなし。本リポジトリは和文の直後に英字始まりの語が来るとき半角スペースを入れる）、3 行目 `39`（元の日本語 37 箇所＋ `CLAUDE.md` と `template/CLAUDE.md` へ挿入した一行定義の 2 件）
 
 - [ ] **Step 4: 書き換えない対象に触れていないことを確認する**
 

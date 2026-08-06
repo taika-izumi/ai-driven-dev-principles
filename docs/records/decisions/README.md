@@ -83,4 +83,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0075](0075-handoff-two-stage-pruning-discipline.md) | ハンドオフの剪定は二段階で行う（セッション境界で基準付き圧縮、サイクル境界で初期状態への書き換え） | Accepted | 2026-08-06 |
 | [0076](0076-handoff-status-add-ready-for-next-cycle.md) | handoff の Status に `ready-for-next-cycle` を正式追加する | Accepted | 2026-08-06 |
 | [0077](0077-handoff-external-references-use-stable-identifiers.md) | handoff の外部参照は安定識別子で書く | Accepted | 2026-08-06 |
-| [0078](0078-rename-meta-guidelines-to-ai-driven-dev-guidelines.md) | 体系の呼称を「メタ・ガイドライン」から「AI駆動開発ガイドライン」へ改める | Proposed | 2026-08-06 |
+| [0078](0078-rename-meta-guidelines-to-ai-driven-dev-guidelines.md) | 体系の呼称を「メタ・ガイドライン」から「AI駆動開発ガイドライン」へ改める | Accepted | 2026-08-06 |

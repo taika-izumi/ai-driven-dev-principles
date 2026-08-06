@@ -1,6 +1,6 @@
 # ADR-0078: 体系の呼称を「メタ・ガイドライン」から「AI駆動開発ガイドライン」へ改める
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-06
 
 ## Context

@@ -45,9 +45,9 @@
 
 </EXTREMELY-IMPORTANT>
 
-## メタ・ガイドライン
+## AI駆動開発ガイドライン
 
-以下は `docs/overview/principles.md` に定義された5原則に基づく行動指示である。
+AI駆動開発ガイドラインとは、AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系を指す。以下は `docs/overview/principles.md` に定義された5原則に基づく行動指示である。
 
 ### 意思決定の記録
 

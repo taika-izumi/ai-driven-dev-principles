@@ -1,13 +1,13 @@
 {
   "name": "ai-driven-dev-principles",
-  "description": "AI駆動開発のメタ・ガイドライン スキル群を配信するマーケットプレイス（単一プラグイン）",
+  "description": "AI駆動開発ガイドラインのスキル群を配信するマーケットプレイス（単一プラグイン）",
   "owner": {
     "name": "taika-izumi"
   },
   "plugins": [
     {
       "name": "ai-driven-dev-principles",
-      "description": "AI駆動開発のメタ・ガイドラインを実装するスキル群",
+      "description": "AI駆動開発ガイドラインを実装するスキル群",
       "version": "0.1.0",
       "source": "./",
       "author": {

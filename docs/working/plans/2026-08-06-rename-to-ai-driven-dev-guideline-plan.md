@@ -680,13 +680,13 @@ AI駆動開発ガイドライン運用で得られる「スキル化・ルール
 
 Run:
 ```powershell
-Select-String -Path docs/current/specs -Pattern 'メタ・ガイドライン' -Recurse -Encoding utf8
+Get-ChildItem -Path docs/current/specs -Recurse -File | Select-String -Pattern 'メタ・ガイドライン' -Encoding utf8
 ```
 Expected: 出力なし（0 行）
 
 Run:
 ```powershell
-(Select-String -Path docs/current/specs -Pattern 'AI駆動開発ガイドライン' -Recurse -Encoding utf8 | Measure-Object).Count
+(Get-ChildItem -Path docs/current/specs -Recurse -File | Select-String -Pattern 'AI駆動開発ガイドライン' -Encoding utf8 | Measure-Object).Count
 ```
 Expected: `18`（Task 6 の 3 箇所 + Task 7 の 15 箇所）
 
@@ -723,7 +723,7 @@ git commit -m "docs: rename 体系呼称 to AI駆動開発ガイドライン in 
 
 Run:
 ```powershell
-Select-String -Path template -Pattern 'メタ・ガイドライン' -Recurse -Encoding utf8
+Get-ChildItem -Path template -Recurse -File | Select-String -Pattern 'メタ・ガイドライン' -Encoding utf8
 ```
 Expected: 3 行ヒット（`template/CLAUDE.md` L48 / `template/docs/overview/principles.md` L1・L59）
 
@@ -739,7 +739,7 @@ Expected: `[sync-template] Done. 7 files synced to template/` が出力される
 
 Run:
 ```powershell
-Select-String -Path template -Pattern 'メタ・ガイドライン' -Recurse -Encoding utf8
+Get-ChildItem -Path template -Recurse -File | Select-String -Pattern 'メタ・ガイドライン' -Encoding utf8
 ```
 Expected: 出力なし（0 行）
 
@@ -780,7 +780,7 @@ git commit -m "chore: sync template after 体系呼称 rename (ADR-0078)"
 
 Run:
 ```powershell
-Select-String -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Pattern 'メタ・ガイドライン' -Recurse -Encoding utf8
+Get-ChildItem -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Recurse -File | Select-String -Pattern 'メタ・ガイドライン' -Encoding utf8
 ```
 Expected: 出力なし（0 行）
 
@@ -788,7 +788,7 @@ Expected: 出力なし（0 行）
 
 Run:
 ```powershell
-Select-String -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Pattern 'meta-guidelines' -Recurse -CaseSensitive:$false -Encoding utf8
+Get-ChildItem -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Recurse -File | Select-String -Pattern 'meta-guidelines' -Encoding utf8
 ```
 Expected: 出力なし（0 行）
 
@@ -796,7 +796,7 @@ Expected: 出力なし（0 行）
 
 Run:
 ```powershell
-Select-String -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Pattern 'AI駆動開発のAI駆動開発|AI駆動開発ガイドラインガイドライン' -Recurse -Encoding utf8
+Get-ChildItem -Path README.md,CLAUDE.md,CONTRIBUTING.md,docs/overview,docs/current/specs,skills,template,.claude-plugin -Recurse -File | Select-String -Pattern 'AI駆動開発のAI駆動開発|AI駆動開発ガイドラインガイドライン' -Encoding utf8
 ```
 Expected: 出力なし（0 行）
 

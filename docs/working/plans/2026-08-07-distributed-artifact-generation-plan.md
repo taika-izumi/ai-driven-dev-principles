@@ -593,7 +593,7 @@ git commit -m "refactor: 出所リスト行をコロン形へ統一（R3・ADR-0
 **Files:**
 - Modify: `skills/subagent-dispatch/SKILL.md:35-38,46-50,56`
 - Modify: `skills/pre-finalization-review/SKILL.md:43,53,54`
-- Modify: `skills/retrospective/SKILL.md:54`
+- Modify: `skills/retrospective/SKILL.md:54`（＋ Step 4-2 で 53・136 行目）
 - Modify: `skills/worklog-record/references/store-format.md:88`
 - Modify: `docs/records/retrospectives/README.md:21`
 
@@ -642,6 +642,24 @@ git commit -m "refactor: 出所リスト行をコロン形へ統一（R3・ADR-0
 適合: | 長時間かつ書き込みを伴う作業を委譲するとき | … | 本項目を含むクラスタ（中央ストア 10 件）由来。全件が単一プロジェクト出所。世代: claude-opus-4-7〜claude-opus-5[1m]（出所: Issue-0033 項目4 / LoopForAlpha） |
 ```
 
+- [ ] **Step 4-2: Task 5 のレビューが積み残した `retrospective/SKILL.md` の 2 行を処理する**
+
+53 行目は Task 5 で「手順文として本文へ移す」書き換えを受けたが、移した結果むき出しになった用語が配布先で解決できない。配布物に ADR は含まれず、配布される CLAUDE.md の該当節見出しは「意思決定の即時記録（継続適用）」で語が一致しないため、読み手が参照先へ辿れない。節見出しと語を揃える。
+
+```
+現状: - 意思決定の継続検出ルール（ADR-0006）は本スキル中も常時適用される。ただし…
+適合: - 意思決定の即時記録（継続適用）のルール（ADR-0006）は本スキル中も常時適用される。ただし…
+```
+
+136 行目は 1 行に 2 識別子・コロン 2 個の変則形で、Task 5 の統一から漏れている。機能上は先頭の識別子で `listline` 判定になり配布物からは消えるが、後続の書き手へ「2 件を 1 行に詰めてよい」という誤ったお手本を残す。
+
+```
+現状: - ADR-0010: 振り返りフェーズ導入 / ADR-0011: 保管規約（時系列追記型）
+適合: - ADR-0010〜0011: 振り返りフェーズ導入・保管規約（時系列追記型）
+```
+
+54 行目（Step 1 の R2 対象）と同じ節・隣接行のため、同一コミットで処理する。
+
 - [ ] **Step 5: R2 違反が消えたことを確認する**
 
 ```powershell
@@ -649,6 +667,15 @@ pwsh -NoProfile -File scripts/build-dist.ps1 2>&1 | Select-String '  R2'
 ```
 
 期待: 出力なし（`skills/` 配下の R2 違反 0 件。`docs/records/retrospectives/README.md` は Task 8 で `sync-template.ps1` 側が検査する）。
+
+Step 4-2 の 2 行は次で確認する（53 行目は `ok`＝本文として残る、136 行目は `listline`＝行ごと削除される）。
+
+```powershell
+. ./scripts/lib/strip-provenance.ps1
+$lines = (ConvertTo-LfContent -Content ([System.IO.File]::ReadAllText("$PWD/skills/retrospective/SKILL.md"))) -split "`n"
+Get-LineVerdict -Line $lines[52] -InFence:$false    # 期待: ok
+Get-LineVerdict -Line $lines[135] -InFence:$false   # 期待: listline
+```
 
 - [ ] **Step 6: コミット**
 
@@ -936,10 +963,18 @@ git commit -m "feat: sync-template.ps1 へ判定・変換・-Check を組み込�
 **Files:**
 - Modify: `CONTRIBUTING.md`
 - Modify: `skills/extend-guidelines/SKILL.md`
+- Modify: `docs/current/specs/2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md`（R3 本文の精緻化。Step 1 参照）
 
 - [ ] **Step 1: 規約節を新設する**
 
 `CONTRIBUTING.md` の「全シナリオ共通: 過剰適合の点検」節の直後へ、新しい節「全シナリオ共通: 配布対象ソースの記法規約」を追加する。内容は spec `01-provenance-notation-convention.md` の「出所識別子の定義」「プレースホルダの判別」「適用範囲」「規約（R1〜R5）」「R3 が必要な理由（実例）」を写す。
+
+**R3 については規約文だけでは書き方を誤る**ことが Task 5 のレビューで実測された。次を明示する（あわせて spec 01 の R3 本文も同じ精度へ改める）:
+
+- 複数の識別子を連結するときは、2 件目以降は 4 桁のみを書く（`- ADR-0084/0085: 説明` は可、`- ADR-0084/ADR-0085: 説明` と `- ADR-0084 / Issue-0033: 説明` は R3 違反になる）
+- 説明を省いた `- ADR-0084` だけの行は R3 違反になる
+- 区切りは半角コロン＋半角スペース 1 個で統一する（全角コロンやスペース無しは検査を通ってしまうため、規約側で書式を指定する）
+- **出所リスト行は出所の索引であり、規範文・手順文を書く場所ではない**（配布物では行ごと削除されるため、手順文を書くと配布先で消える。実例として `retrospective/SKILL.md` の「意思決定の継続検出ルールは常時適用」の行が、行頭に識別子を置いたために削除対象になりかけた）
 
 節末に執行点を書く:
 
@@ -980,9 +1015,11 @@ git commit -m "feat: sync-template.ps1 へ判定・変換・-Check を組み込�
 ```powershell
 Select-String -Path CONTRIBUTING.md -Pattern '配布対象ソースの記法規約' | Measure-Object | Select-Object -ExpandProperty Count
 Select-String -Path skills/extend-guidelines/SKILL.md -Pattern 'build-dist.ps1' | Measure-Object | Select-Object -ExpandProperty Count
+Select-String -Path CONTRIBUTING.md -Pattern '2 件目以降は 4 桁のみ' | Measure-Object | Select-Object -ExpandProperty Count
+Select-String -Path docs/current/specs/2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md -Pattern '2 件目以降は 4 桁のみ' | Measure-Object | Select-Object -ExpandProperty Count
 ```
 
-期待: 1 本目は 5 以上（節見出し 1 ＋ チェックリスト 4）、2 本目は 1 以上。
+期待: 1 本目は 5 以上（節見出し 1 ＋ チェックリスト 4）、2 本目は 1 以上、3・4 本目は 1 以上（R3 の書き方の精緻化が CONTRIBUTING と spec 01 の両方に入っていること）。
 
 - [ ] **Step 5: `extend-guidelines` の変更を配布物へ反映する**
 

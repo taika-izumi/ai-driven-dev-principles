@@ -6,7 +6,7 @@
 
 本ガイドラインで指示する `start-work`, `decision-log`, `session-handoff`, `feature-block-design`, `pre-action-review`, `retrospective`, `extend-guidelines` などのスキルは、プラグイン `ai-driven-dev-principles` から提供される。本ファイルが配置されたプロジェクトで作業する前に、利用するツール（GitHub Copilot CLI または Claude Code）に当該プラグインをインストール・有効化しておくこと。
 
-インストール手順は本リポジトリ（[taika-izumi/ai-driven-dev-principles](https://github.com/taika-izumi/ai-driven-dev-principles)）の README を参照（GitHub Copilot CLI 利用時は「Copilot CLI へのインストール」節、Claude Code 利用時は「Claude Code へのインストール」節）。
+インストール手順はガイドライン配信元リポジトリ（[taika-izumi/ai-driven-dev-principles](https://github.com/taika-izumi/ai-driven-dev-principles)）の README を参照（GitHub Copilot CLI 利用時は「Copilot CLI へのインストール」節、Claude Code 利用時は「Claude Code へのインストール」節）。
 
 プラグイン未インストール環境では本ガイドラインの大半が機能しないため、利用者は事前に環境準備を完了させること。
 

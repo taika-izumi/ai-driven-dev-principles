@@ -1,6 +1,6 @@
 # ADR-0079: ガイドライン拡張の全経路に過剰適合点検を課し、点検結果の記録を義務化する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-07
 
 ## Context

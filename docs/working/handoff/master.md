@@ -54,10 +54,13 @@
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（構造化質問ツール使用前に毎回確認。ADR-0036）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
+- **リモート同期**: 2026-08-07 のセッション終了時に `origin/master` へ push 済み（それ以前は 38 コミット分が未 push で滞留していた）。push は自動では行われないため、必要な区切りでユーザーが指示すること
 
 ## Post ラッパー消化記録
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。直近サイクル中の分は `feature_overfitting-check-for-extensions.md` 参照（retrospective Phase 3 で突合済み・未消化なし）。
+
+- 2026-08-07 セッション終了（切り替え直前。ADR-0058）: ADR=なし（Proposed 残なし・未コミットドラフトなしを確認。終了処理に意思決定なし） / worklog=棄却（`-06` 以降に新規 delta なし。躓き・ユーザーからの修正指示とも発生していない）
 
 ## 次セッション開始時のアクション
 

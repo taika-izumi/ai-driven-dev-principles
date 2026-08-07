@@ -64,8 +64,21 @@ function Remove-ProvenanceFromLine {
     # 種別 5: 括弧を中身ごと削除
     $out = [regex]::Replace($body, $script:ReType5, '')
 
-    # 種別 1〜4: 括弧内のトークンと隣接する区切りを除去
+    # 種別 1〜4: **バッククォートで囲まれた識別子は囲みごと除去する。**
+    # 識別子だけを外すと空の対（`` の 2 連）が残り、後段の掃除では消せない。
+    # PowerShell の単一引用符内ではバッククォートがエスケープにならないため、
+    # '``(?=`)' のような書き方は「2 連＋直後にもう 1 つ」を要求してしまい意図どおり動かない
+    # （実測。むしろコードフェンスの 3 連に一致する）。[char]96 で組み立てること。
+    $bt = [char]96
     $pattern13 = $script:ReType13 + '(?:\s*項目[\d/]+)?'
+    $out = [regex]::Replace($out, "$bt$pattern13$bt", '')
+    $out = [regex]::Replace($out, "$bt$($script:ReType4)$bt", { param($m)
+        $prefix = (($m.Value.Trim([char]96)) -split '-20')[0]
+        if ($prefix -match $script:ReNeutral) { return $m.Value }   # 中立名は残す
+        return ''
+    })
+
+    # 続いて、囲まれていない識別子を除去する
     $out = [regex]::Replace($out, $pattern13, '')
     $out = [regex]::Replace($out, $script:ReType4, { param($m)
         $prefix = ($m.Value -split '-20')[0]
@@ -74,7 +87,6 @@ function Remove-ProvenanceFromLine {
     })
 
     # 除去で生じた区切りの残骸を掃除（行頭インデントは $body に含まれないので影響しない）
-    $out = [regex]::Replace($out, '``(?=`)', '')      # 中身が空になったバッククォート対のみ
     $out = [regex]::Replace($out, '（\s*[。、・/〜]?\s*', '（')
     $out = [regex]::Replace($out, '\s*[。、・/〜]?\s*）', '）')
     $out = $out -replace '（）', ''
@@ -181,6 +193,9 @@ function Invoke-StripProvenanceSelfTest {
         @{ In='規範（ADR-0073。条件の追加は観測が根拠）を守る';          Out='規範（条件の追加は観測が根拠）を守る' }
         @{ In='…出所のため（出所: LoopForAlpha）';                     Out='…出所のため' }
         @{ In='- **関連**: ADR-NNNN 等（あれば）';                     Out='- **関連**: ADR-NNNN 等（あれば）' }
+        # バッククォートで囲まれた識別子（囲みごと消えること。空の対が残らないこと）
+        @{ In=('（実測: 取り逃していた。' + [char]96 + 'LoopForAlpha-2026-07-19-05' + [char]96 + '）'); Out='（実測: 取り逃していた）' }
+        @{ In=('サンプル ' + [char]96 + 'X-2026-01-01-01' + [char]96 + ' は中立名なので残す');          Out=('サンプル ' + [char]96 + 'X-2026-01-01-01' + [char]96 + ' は中立名なので残す') }
     )
     foreach ($c in $convert) {
         $actual = Remove-ProvenanceFromLine -Line $c.In

@@ -74,3 +74,4 @@
 | [0057](flow/0057-subagent-report-identifiers-relayed-without-verification.md) | サブエージェントの完了報告に含まれる識別子を検証せず後続へ転記する経路がある | open | 2026-08-07 |
 | [0059](flow/0059-adr-0065-gate-not-wired-into-worklog-skillify.md) | ADR-0065 の適用条件設計ゲートが worklog-skillify に配線されていない | open | 2026-08-07 |
 | [0060](flow/0060-claude-md-decision-triggers-missing-guideline-change.md) | CLAUDE.md の意思決定即時記録トリガーに「ガイドライン・ルールの追加・変更」が無い | open | 2026-08-07 |
+| [0061](flow/0061-skill-revision-scenario-steps-assume-new-creation.md) | 「Skillを新規作成・改定するとき」シナリオの手順・チェックリストが新規作成前提のまま | open | 2026-08-07 |

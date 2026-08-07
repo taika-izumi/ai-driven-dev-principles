@@ -696,6 +696,34 @@ git commit -m "refactor: 本文中の出所識別子を括弧内へ移し、根�
 適合: - 書式: `<repo>#Issue-NNNN`（例: `OtherProject#Issue-NNNN`）
 ```
 
+- [ ] **Step 4-2: 除去後に文が壊れる行を書き換える（規約適合だが要対処）**
+
+R1 は識別子を括弧内に置くことを許すが、**括弧内でその識別子が文の構成要素になっている**場合、除去すると日本語が壊れる。規約違反ではないため生成器は止まらず、配布物の品質だけが落ちる。
+
+見つけ方は機械的にできる。変換を全ファイルへ適用し、出力に連続空白または助詞の浮きが生じた行を拾う。
+
+```powershell
+. ./scripts/lib/strip-provenance.ps1
+$root = (Get-Location).Path
+Get-ChildItem skills -Recurse -File | ForEach-Object {
+  $rel = $_.FullName.Substring($root.Length + 1)
+  foreach ($l in ([System.IO.File]::ReadAllText($_.FullName) -split "`n")) {
+    if ((Get-LineVerdict -Line $l -InFence:$false) -ne 'ok') { continue }
+    $o = Remove-ProvenanceFromLine -Line $l
+    if ($o -match '[ 　]{2,}|[はがをにでとへも][ 　]') { "$rel :: $o" }
+  }
+}
+```
+
+2026-08-07 の実測では `'ok'` 行 111 のうち 3 行が該当（`worklog-record/references/store-format.md`・`retrospective/template.md`・`worklog-skillify/SKILL.md` の各 1 行）。括弧内の識別子を文から外し、出所として末尾へ寄せる。
+
+```
+違反: （実測。同じ罠は `scripts/sync-template.ps1` が ADR-0033 で解決済み）
+適合: （実測。同じ罠は `scripts/sync-template.ps1` で解決済み（ADR-0033））
+```
+
+書き換え後に上記スクリプトを再実行し、**該当 0 件**になることを確認する。
+
 - [ ] **Step 5: 違反 0 件で生成が通ることを確認する**
 
 ```powershell

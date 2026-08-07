@@ -12,8 +12,9 @@ $manifestPath = Join-Path $repoRoot "template.manifest"
 $templateDir = Join-Path $repoRoot "template"
 . (Join-Path $PSScriptRoot 'lib/strip-provenance.ps1')
 
-# 相対パス算出のヘルパ（template/ 基準。build-dist.ps1 の Get-RepoRelativePath と同型の重複を防ぐ）
-function Get-RepoRelativePath {
+# 相対パス算出のヘルパ。基準は template/ であり、リポジトリルート基準の
+# build-dist.ps1 の Get-RepoRelativePath とは意味が違うので名前を分ける
+function Get-TemplateRelativePath {
     param([string]$FullName)
     return ($FullName.Substring($templateDir.Length + 1) -replace '\\', '/')
 }
@@ -174,7 +175,7 @@ if ($Check) {
     $bomFiles = New-Object System.Collections.Generic.List[string]
     if (Test-Path $templateDir) {
         foreach ($f in (Get-ChildItem -Path $templateDir -Recurse -File)) {
-            $rel = Get-RepoRelativePath -FullName $f.FullName
+            $rel = Get-TemplateRelativePath -FullName $f.FullName
             $bytes = [System.IO.File]::ReadAllBytes($f.FullName)
             if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
                 $bomFiles.Add($rel)
@@ -223,7 +224,7 @@ Write-Host "[sync-template] Done. $totalFiles files synced to template/"
 # template/ の自己検査（ADR-0083。build-dist.ps1 の自己検査と同じ形）
 $leak = 0
 foreach ($f in (Get-ChildItem -Path $templateDir -Recurse -File)) {
-    $rel = Get-RepoRelativePath -FullName $f.FullName
+    $rel = Get-TemplateRelativePath -FullName $f.FullName
     $content = [System.IO.File]::ReadAllText($f.FullName)
     foreach ($lk in (Get-ProvenanceLeak -Content $content -Path $rel)) {
         Write-Host "  ! identifier remains: ${rel}:$($lk.Line)  $($lk.Text)"; $leak++

@@ -1030,8 +1030,8 @@ git commit -m "feat: sync-template.ps1 へ判定・変換・-Check を組み込�
 ```powershell
 Select-String -Path CONTRIBUTING.md -Pattern '配布対象ソースの記法規約' | Measure-Object | Select-Object -ExpandProperty Count
 Select-String -Path skills/extend-guidelines/SKILL.md -Pattern 'build-dist.ps1' | Measure-Object | Select-Object -ExpandProperty Count
-Select-String -Path CONTRIBUTING.md -Pattern '2 件目以降は 4 桁のみ' | Measure-Object | Select-Object -ExpandProperty Count
-Select-String -Path docs/current/specs/2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md -Pattern '2 件目以降は 4 桁のみ' | Measure-Object | Select-Object -ExpandProperty Count
+Select-String -Path CONTRIBUTING.md -Pattern '2 件目以降は 4 桁の数字だけ' | Measure-Object | Select-Object -ExpandProperty Count
+Select-String -Path docs/current/specs/2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md -Pattern '2 件目以降は 4 桁の数字だけ' | Measure-Object | Select-Object -ExpandProperty Count
 ```
 
 期待: 1 本目は 5 以上（節見出し 1 ＋ チェックリスト 4）、2 本目は 1 以上、3・4 本目は 1 以上（R3 の書き方の精緻化が CONTRIBUTING と spec 01 の両方に入っていること）。

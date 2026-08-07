@@ -112,6 +112,8 @@ ADRファイルとインデックスは一緒にコミットする。ただし�
 
 未コミットの間、ドラフトは関連論点の進展に応じて**書き直し自由**とする（書き直しは想定された更新であり手戻りではない）。コミット漏れは `start-work` の Phase 2 Post とセッション終了処理で確認される。
 
+**設計を確定させた ADR ドラフト（設計文書ファイルを作らない拡張で、ADR が設計文書を兼ねる型）のコミットは spec 確定点 (c) にあたる。** コミットの前に `start-work` の「確定前レビューの提示規則」に従って確定前レビューを提示すること（ADR-0080）。設計を確定させるものではない ADR（記録のみの決定）はこれに当たらない。
+
 ```bash
 git add docs/records/decisions/NNNN-slug.md docs/records/decisions/README.md
 git commit -m "adr: NNNN - タイトル"

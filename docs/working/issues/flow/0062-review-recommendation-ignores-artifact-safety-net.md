@@ -1,7 +1,8 @@
 # Issue-0062: 確定前レビューの次手提示が成果物の性質を問わず中立で、安全網の無い成果物でも非推奨側に倒れる
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-07
+- **Closed**: 2026-08-07
 - **起票元**: `retrospectives/flow/2026-08-07-overfitting-check-for-extensions.md` 課題#1
 - **関連**: ADR-0072（確定前レビューの発動はユーザー指示のみ・AI は毎回提示）、`skills/pre-finalization-review/SKILL.md`、worklog `MakeAiInstructions-2026-08-07-04`、Issue-0034（確定前の独立レビュー工程の導入元）
 
@@ -23,7 +24,8 @@ ADR-0072 は「`writing-plans` / `feature-block-design` の完了後に確定前
 ## 検討状況
 
 - 2026-08-07: 起票のみ（対策の設計・採否は次サイクル。ADR-0021）
+- 2026-08-07: 対策サイクルで ADR-0080 を策定。設計段階で「spec レビュー済みの写像 plan に軽量レビュー（仕様適合単観点）を推奨する」枝も設計したが、本 ADR 自身への確定前レビューで根拠の崩壊が実証され撤回した（Issue-0006 は spec に明示されない横断参照側の漏れであり、母数を spec 要件数に取る突合では原理的に拾えない）。再導入条件は ADR-0080 の Considered Alternatives 6 に記載
 
 ## 結論
 
-（未定）
+ADR-0080（確定前レビューは spec/plan 確定点で提示し、未レビューの規範・手順文書の変更を含む成果物では推奨側に倒す）で対処。`start-work` に判定規則の正本を置き、`pre-finalization-review` / `feature-block-design` / `session-handoff` を整合させた。

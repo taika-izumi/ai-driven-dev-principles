@@ -42,7 +42,7 @@ Run:
 ```powershell
 Select-String -Path skills\start-work\SKILL.md -Pattern "確定前レビュー" -Context 2,2
 ```
-Expected: 1 件ヒット。80 行目の「`superpowers:writing-plans` または `feature-block-design` が完了した直後は、確定前レビュー（`pre-finalization-review`）の実施を次手の選択肢として毎回提示する（実施はユーザー判断。ADR-0072）。」が表示される（Phase 2 マッピング表の行にも「pre-finalization-review」が現れるため、Context 付きで両者を区別すること）
+Expected: **2 件**（Phase 2 マッピング表の行「計画・仕様など非コード成果物の確定前レビュー（ユーザー指示時）」と、置換対象である 80 行目の「`superpowers:writing-plans` または `feature-block-design` が完了した直後は、確定前レビュー…」）。置換対象は後者のみ。前者の表の行は変更しない
 
 - [ ] **Step 2: 提示規範の 1 行を規則本体へ置き換える**
 
@@ -103,6 +103,17 @@ brainstorming の完了直後には提示しない（`feature-block-design` の�
 
 推奨判定が真になったサイクルの各確定点では、「本サイクルで何がレビュー済みで、この成果物の何が未レビューか」を提示に含める（実施判断はユーザーに残るため、その判断材料を供給する）。上流 spec がレビュー済みで当該 plan がその写像である場合は、「写像欠落（spec 要件が plan から脱落すること）は独立レビューでのみ捕捉できる」旨を添える。差分明示を伴う提示は長文になるため、構造化質問ツールは使わず、説明と番号付き選択肢をテキストのみのターンで提示する（CLAUDE.md「ユーザーへの質問と意思決定要求」）。
 
+**3-2. 反対材料の併記**
+
+推奨判定が真になったサイクルの確定点提示では、次の 2 つを満たす。
+
+- **(a) 推奨の由来を明示する**: 推奨が上記の既定（判定に迷う場合はフル側へ倒す規定）に由来する場合は、**その旨を明示し**、判定を迷わせた両側の事情を提示する。内容判定による推奨と既定による推奨とが、提示を読んだだけで区別できるようにする
+- **(b) 反対材料の欄を常設する**: 提示に「推奨と逆を示す材料」の欄を設ける。認識している材料があればそれを書き、無ければ「特定できた反対材料: なし」と明記する（**不在の判定も出力に残す**）。材料は成果物の具体箇所・実測 id を指すこと。成果物に紐づかない一般論を反対材料として書かない
+
+推奨理由だけを書いて反対材料を落とさないこと。片側だけの提示は、本規則が塞ごうとしている「AI のフレーミングがユーザーの判断を誘導する」偏りと同型であり、推奨の向きを直しても説明が片側のままでは同じ誘導が残る。
+
+適用範囲は**推奨判定が真になったサイクルの確定点提示に限る**。それ以外の提示への拡大は、実測が足りないため行わない（ADR-0080 Decision 3-2）。
+
 **4. 判定材料の記録**
 
 確定点を通過したら、提示結果（フル実施 / 差分再確認 / 見送り / 非発火）を `session-handoff` update が「Post ラッパー消化記録」の当該マイルストーン行へ併記する。記録が確認できない場合は**未レビューとみなす**（安全側へ倒れる）。「本サイクル」とは現 feature ブランチの作業単位（cycle-reset まで）を指す。
@@ -112,12 +123,39 @@ brainstorming の完了直後には提示しない（`feature-block-design` の�
 
 - [ ] **Step 4: 実装結果を検証する**
 
+**節の構成要素を 1 つずつ固定して数える。** 見出しだけ・一部の段落だけを見る検証は、中核規範が丸ごと欠落しても緑を返す（実測: 推奨判定の中核段落を削除した状態で、見出し確認と 3 語句の OR 検索は両方 PASS した）。
+
 Run:
 ```powershell
-Select-String -Path skills\start-work\SKILL.md -Pattern "^### 確定前レビューの提示規則（ADR-0080）$"
-Select-String -Path skills\start-work\SKILL.md -Pattern "spec 確定点 \(c\)|判定に迷う場合|未レビューとみなす"
+'^### 確定前レビューの提示規則（ADR-0080）$',
+'^\*\*1\. 確定点\*\*$',
+'^\| spec 確定点 \(a\) \|',
+'^\| spec 確定点 \(b\) \|',
+'^\| spec 確定点 \(c\) \|',
+'^\| plan 確定点 \|',
+'^brainstorming の完了直後には提示しない',
+'^\*\*2\. 推奨判定\*\*$',
+'フルレビュー（3 観点）を選択肢の先頭に置き',
+'^- 判定に迷う場合は',
+'^\*\*3\. 差分明示\*\*$',
+'^推奨判定が真になったサイクルの各確定点では',
+'^\*\*3-2\. 反対材料の併記\*\*$',
+'^- \*\*\(a\) 推奨の由来を明示する\*\*',
+'^- \*\*\(b\) 反対材料の欄を常設する\*\*',
+'特定できた反対材料: なし',
+'^推奨理由だけを書いて反対材料を落とさないこと',
+'^\*\*4\. 判定材料の記録\*\*$',
+'未レビューとみなす',
+'^確定前レビュー（`pre-finalization-review`）は、下記「確定前レビューの提示規則」に従って提示する' | ForEach-Object {
+  "{0}  {1}" -f (Select-String -Path skills\start-work\SKILL.md -Pattern $_ | Measure-Object).Count, $_ }
 ```
-Expected: 1 行目の検索で新設した節見出しが 1 件ヒットする（見出し行そのものを固定して数えるため、本文中の言及ではヒットしない）。2 行目で 3 件ヒットする（確定点 (c)・迷ったときの既定・記録欠落時の既定が揃っていることの確認）
+Expected: 20 行すべての先頭が `1`（各構成要素がちょうど 1 箇所ずつ存在する）。0 の行があれば、その要素が挿入されていないか文言がずれている
+
+Run（旧文言が残っていないこと）:
+```powershell
+(Select-String -Path skills\start-work\SKILL.md -Pattern "完了した直後は、確定前レビュー" | Measure-Object).Count
+```
+Expected: `0`
 
 Run:
 ```powershell
@@ -207,13 +245,28 @@ description: "計画・仕様など非コード成果物の確定前に、実証
 
 - [ ] **Step 5: 実装結果を検証する**
 
+**4 つの編集（frontmatter / いつ使うか / 適用例の節 / 根拠と世代）を 1 つずつ固定して数える。** 節見出しだけを見る検証は、見出しを入れて本文を入れ忘れた状態を検出できない（実測: 適用例の 3 クラス本文を削除した状態でも見出し確認は PASS した）。
+
 Run:
 ```powershell
-Select-String -Path skills\pre-finalization-review\SKILL.md -Pattern "^## 適用例: 独立レビューでしか捕まらなかった欠陥（ADR-0080）$"
-Select-String -Path skills\pre-finalization-review\SKILL.md -Pattern "spec 確定点と plan 確定点"
-Select-String -Path skills\pre-finalization-review\SKILL.md -Pattern "writing-plans / feature-block-design の完了後に"
+'^description: .*spec 確定点と plan 確定点で start-work から毎回提示され',
+'^- ただし AI 側は、spec 確定点と plan 確定点で本スキルの実施を',
+'^- \*\*確定点の定義と推奨順位の規則の正本は',
+'^## 適用例: 独立レビューでしか捕まらなかった欠陥（ADR-0080）$',
+'^1\. \*\*選定漏れ型',
+'^2\. \*\*文書間相互作用型',
+'^3\. \*\*検出力欠陥型',
+'7 件はすべて LoopForAlpha 由来',
+'^- 推奨順位の規則（ADR-0080）の根拠:' | ForEach-Object {
+  "{0}  {1}" -f (Select-String -Path skills\pre-finalization-review\SKILL.md -Pattern $_ | Measure-Object).Count, $_ }
 ```
-Expected: 1 行目 = 1 件（新設した節見出し）。2 行目 = 2 件（frontmatter と「いつ使うか」の両方が更新されている）。3 行目 = **0 件**（旧 description の文言が残っていない）
+Expected: 9 行すべての先頭が `1`
+
+Run（旧 description の文言が残っていないこと）:
+```powershell
+(Select-String -Path skills\pre-finalization-review\SKILL.md -Pattern "writing-plans / feature-block-design の完了後に" | Measure-Object).Count
+```
+Expected: `0`
 
 - [ ] **Step 6: コミットする**
 
@@ -261,12 +314,22 @@ git commit -m "feat(pre-finalization-review): 適用例と新提示規則への�
 
 - [ ] **Step 3: 実装結果を検証する**
 
+**語句ごとに件数を数える。** 複数語句を OR でまとめると、両語句が同一行にある場合に `Select-String` は 1 行としか数えず、期待値がずれるうえ片方の欠落も検出できない（実測: 正しい実装でも OR 検索の結果は 1 件で、期待値 2 に届かなかった）。
+
 Run:
 ```powershell
-Select-String -Path skills\feature-block-design\SKILL.md -Pattern "writing-plans への直行を推奨し"
-Select-String -Path skills\feature-block-design\SKILL.md -Pattern "spec 確定点 \(b\)|推奨側に固定しないこと"
+'spec 確定点 \(b\)',
+'推奨側に固定しないこと',
+'確定前レビューの提示を経てスキル終了' | ForEach-Object {
+  "{0}  {1}" -f (Select-String -Path skills\feature-block-design\SKILL.md -Pattern $_ | Measure-Object).Count, $_ }
 ```
-Expected: 1 行目 = **0 件**（旧文言が消えている）。2 行目 = 2 件
+Expected: 3 行すべての先頭が `1`（3 行目は Step 2 の Phase 0 改訂が入っていることの確認）
+
+Run（旧文言が残っていないこと）:
+```powershell
+(Select-String -Path skills\feature-block-design\SKILL.md -Pattern "writing-plans への直行を推奨し" | Measure-Object).Count
+```
+Expected: `0`
 
 - [ ] **Step 4: コミットする**
 
@@ -322,17 +385,23 @@ git commit -m "fix(feature-block-design): 非該当終了時の直行推奨を�
 
 - [ ] **Step 4: 実装結果を検証する**
 
-Run:
-```powershell
-(Select-String -Path skills\session-handoff\SKILL.md -Pattern "review=" | Measure-Object).Count
-```
-Expected: `4`（フォーマット節の形式行・その直後の但し書き・update 手順 8・finalize の圧縮しないもの。`Measure-Object -Line` は入力オブジェクトの行数を数えるもので件数集計には使わない）
+**4 箇所を場所ごとに固定して数える。** 総件数だけを見る検証は、finalize への追記を落として別の場所に `review=` を書いた状態を検出できない（実測: finalize の追記を落とし read 手順へ書いた欠陥状態でも、総件数 4・`ADR-0080` 3 件で両方 PASS した）。`-SimpleMatch` を付けるのは、パターンに正規表現メタ文字（`<` `>` `（` バッククォート等）を含むため。
 
 Run:
 ```powershell
-Select-String -Path skills\session-handoff\SKILL.md -Pattern "ADR-0080"
+'ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<',
+'`review=` は確定点（spec 確定点 / plan 確定点）を通過したマイルストーンにのみ書く',
+'確定前レビューの結果（`review=`）も併記する',
+'見送りの記録＝`review=` を含む消化記録行' | ForEach-Object {
+  "{0}  {1}" -f (Select-String -Path skills\session-handoff\SKILL.md -Pattern $_ -SimpleMatch | Measure-Object).Count, $_ }
 ```
-Expected: 3 件（但し書き・update 手順 8・finalize）
+Expected: 4 行すべての先頭が `1`（フォーマット節の形式行・その直後の但し書き・update 手順 8・finalize の「圧縮しないもの」）
+
+Run:
+```powershell
+(Select-String -Path skills\session-handoff\SKILL.md -Pattern "ADR-0080" | Measure-Object).Count
+```
+Expected: `3`（但し書き・update 手順 8・finalize）
 
 - [ ] **Step 5: コミットする**
 
@@ -364,11 +433,11 @@ git commit -m "feat(session-handoff): 確定前レビュー結果の記録を消
 
 - [ ] **Step 2: 実装結果を検証する**
 
-Run:
+Run（行を固定して数える。他の行に `ADR-0080` を書いても緑にならないようにする）:
 ```powershell
-Select-String -Path README.md -Pattern "ADR-0080"
+(Select-String -Path README.md -Pattern '^\| \[`pre-finalization-review`\]\(skills/pre-finalization-review/\) \|.*ADR-0080' | Measure-Object).Count
 ```
-Expected: 1 件
+Expected: `1`
 
 - [ ] **Step 3: コミットする**
 
@@ -405,18 +474,24 @@ git commit -m "docs: README のスキル一覧へ提示規則の変更を反映�
 
 - [ ] **Step 3: 実装結果を検証する**
 
-Run:
-```powershell
-Select-String -Path docs\records\decisions\0067-pre-finalization-review-as-new-skill.md,docs\records\decisions\0072-pre-finalization-review-triggered-by-user-only.md -Pattern "部分修正（ADR-0080）"
-Select-String -Path docs\records\decisions\0067-pre-finalization-review-as-new-skill.md,docs\records\decisions\0072-pre-finalization-review-triggered-by-user-only.md -Pattern "^- \*\*Status\*\*"
-```
-Expected: 1 行目 = 2 件（各ファイル 1 件ずつ）。2 行目 = 2 件で、いずれも `Accepted`（Superseded / Deprecated へ変わっていないこと）
+**ファイルごとに 1 件ずつ確認し、Status は文字列まで含めて数える。** 2 ファイル同時指定で合計 2 件を数えるだけでは、片方に 2 行追記した状態を検出できない。また `^- \*\*Status\*\*` の件数だけでは、値が `Superseded` に変わっても 2 件のまま緑になる（いずれも実測で確認済み）。
 
 Run:
 ```powershell
-Select-String -Path docs\records\decisions\README.md -Pattern "\[0067\]|\[0072\]"
+foreach ($f in 'docs\records\decisions\0067-pre-finalization-review-as-new-skill.md','docs\records\decisions\0072-pre-finalization-review-triggered-by-user-only.md') {
+  $add = (Select-String -Path $f -Pattern '部分修正（ADR-0080）' | Measure-Object).Count
+  $acc = (Select-String -Path $f -Pattern '^- \*\*Status\*\*: Accepted$' | Measure-Object).Count
+  "追記=$add Accepted=$acc  $f" }
 ```
-Expected: 2 件で、いずれも Status 列が `Accepted`（インデックスの変更は不要。変わっていないことの確認）
+Expected: 2 行とも `追記=1 Accepted=1`
+
+Run（インデックスの Status 列が Accepted のままであること）:
+```powershell
+'^\| \[0067\]\(.+\) \|.+\| Accepted \| ',
+'^\| \[0072\]\(.+\) \|.+\| Accepted \| ' | ForEach-Object {
+  "{0}  {1}" -f (Select-String -Path docs\records\decisions\README.md -Pattern $_ | Measure-Object).Count, $_ }
+```
+Expected: 2 行とも先頭が `1`（インデックスは変更しない。変わっていないことの確認）
 
 - [ ] **Step 4: コミットする**
 
@@ -506,19 +581,27 @@ ADR-0080（確定前レビューは spec/plan 確定点で提示し、未レビ�
 
 - [ ] **Step 4: 実装結果を検証する**
 
+**ヘッダだけでなく、本タスクの実質的な成果物（検討状況・結論）まで固定する。** ヘッダ 2 行だけを見る検証は、結論が「（未定）」のまま放置された状態を検出できない（実測で確認済み）。
+
 Run:
 ```powershell
-Select-String -Path docs\working\issues\flow\0062-review-recommendation-ignores-artifact-safety-net.md -Pattern "^- \*\*Status\*\*: closed$|^- \*\*Closed\*\*: 2026-08-07$"
-Select-String -Path docs\working\issues\README.md -Pattern "0062.*closed"
-Select-String -Path docs\working\issues\flow\0006-cross-cutting-change-plan-coverage.md -Pattern "ADR-0080"
+$i62 = 'docs\working\issues\flow\0062-review-recommendation-ignores-artifact-safety-net.md'
+'^- \*\*Status\*\*: closed$',
+'^- \*\*Closed\*\*: 2026-08-07$',
+'^- 2026-08-07: 対策サイクルで ADR-0080 を策定',
+'^ADR-0080（確定前レビューは spec/plan 確定点で提示し' | ForEach-Object {
+  "{0}  {1}" -f (Select-String -Path $i62 -Pattern $_ | Measure-Object).Count, $_ }
+(Select-String -Path $i62 -Pattern '^（未定）$' | Measure-Object).Count
 ```
-Expected: 1 行目 = 2 件、2 行目 = 1 件、3 行目 = 1 件
+Expected: 最初の 4 行はすべて先頭が `1`、最後の行は `0`（結論の未定プレースホルダが残っていないこと）
 
-Run（0006 が誤って close されていないこと）:
+Run（インデックス更新と、0006 側の追記・誤 close の有無）:
 ```powershell
-Select-String -Path docs\working\issues\flow\0006-cross-cutting-change-plan-coverage.md -Pattern "^- \*\*Status\*\*: open$"
+(Select-String -Path docs\working\issues\README.md -Pattern "0062.*closed" | Measure-Object).Count
+(Select-String -Path docs\working\issues\flow\0006-cross-cutting-change-plan-coverage.md -Pattern "ADR-0080" | Measure-Object).Count
+(Select-String -Path docs\working\issues\flow\0006-cross-cutting-change-plan-coverage.md -Pattern "^- \*\*Status\*\*: open$" | Measure-Object).Count
 ```
-Expected: 1 件
+Expected: `1` / `1` / `1`（3 行目は Issue-0006 を誤って close していないことの確認）
 
 - [ ] **Step 5: コミットする**
 
@@ -555,12 +638,10 @@ $files = @(
   'docs\records\decisions\0072-pre-finalization-review-triggered-by-user-only.md',
   'docs\working\issues\flow\0006-cross-cutting-change-plan-coverage.md'
 )
-foreach ($f in $files) {
-  $n = (Select-String -Path $f -Pattern 'ADR-0080' | Measure-Object).Count
-  "$f : $n"
-}
+$bad = @($files | Where-Object { (Select-String -Path $_ -Pattern 'ADR-0080' | Measure-Object).Count -lt 1 })
+if ($bad) { "NG: $($bad -join ', ')" } else { 'OK (all >=1)' }
 ```
-Expected: 8 ファイルすべてが 1 以上（各ファイルに ADR-0080 由来の変更が入っていること）。`Group-Object Filename` は使わない — 同名ファイル（SKILL.md）が basename で束ねられ、ファイル別集計にならないため
+Expected: `OK (all >=1)`。合否を文字列で判定させる（件数を 8 行印字するだけの形にすると、0 のファイルを目視で見落とす）。`Group-Object Filename` は使わない — 同名ファイル（SKILL.md）が basename で束ねられ、ファイル別集計にならないため
 
 - [ ] **Step 3: Status を Accepted へ更新する**
 
@@ -594,11 +675,12 @@ Expected: 8 ファイルすべてが 1 以上（各ファイルに ADR-0080 由�
 
 Run:
 ```powershell
-Select-String -Path docs\records\decisions\0080-review-presentation-scaled-by-unreviewed-normative-content.md -Pattern "^- \*\*Status\*\*: Accepted$"
-Select-String -Path docs\records\decisions\README.md -Pattern "\[0080\].*Accepted"
-Select-String -Path docs\records\decisions\0080-review-presentation-scaled-by-unreviewed-normative-content.md -Pattern "^## 過剰適合点検（ADR-0079）$"
+$adr = 'docs\records\decisions\0080-review-presentation-scaled-by-unreviewed-normative-content.md'
+"{0}  Status Accepted" -f (Select-String -Path $adr -Pattern '^- \*\*Status\*\*: Accepted$' | Measure-Object).Count
+"{0}  index Accepted"  -f (Select-String -Path docs\records\decisions\README.md -Pattern '^\| \[0080\]\(.+\) \|.+\| Accepted \| ' | Measure-Object).Count
+"{0}  点検ブロック"     -f (Select-String -Path $adr -Pattern '^## 過剰適合点検（ADR-0079）$' | Measure-Object).Count
 ```
-Expected: 3 行とも 1 件ずつ（3 行目は点検ブロックがコミット時点で存在することの確認。ADR-0079 の執行点）
+Expected: 3 行とも先頭が `1`（3 行目は点検ブロックがコミット時点で存在することの確認。ADR-0079 の執行点）
 
 - [ ] **Step 6: コミットする**
 

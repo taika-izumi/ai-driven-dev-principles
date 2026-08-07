@@ -8,7 +8,10 @@ Set-StrictMode -Version Latest
 $script:ReType13    = '(?<![A-Za-z0-9])(?:[A-Za-z][A-Za-z0-9]*#)?(?:ADR|Issue)-\d{4}'
 $script:ReType4     = '(?<![A-Za-z0-9])(?:[A-Za-z][A-Za-z0-9]*)?-20\d\d-\d\d-\d\d(?:-\d\d)?'
 $script:ReType5     = '（出所[:：][^）]*）'
-$script:ReNeutral   = '^(?:X|Proj|<project>)$'
+# 中立名の許可リスト。`<project>` は入れない（種別 4 の正規表現がプロジェクト名部に
+# 英数字始まりを要求するため `<project>-2026-01-01-01` は接頭辞なしと解釈され、
+# ここへ来る値が空文字列になる。書いても到達しない。実測で確認済み）
+$script:ReNeutral   = '^(?:X|Proj)$'
 $script:ReListColon = '^\s*[-*]\s*(?:[A-Za-z][A-Za-z0-9]*#)?(?:ADR|Issue)-\d{4}(?:\s*[/〜]\s*\d{4})*\s*[:：]'
 $script:ReListHead  = '^\s*[-*]\s*(?:[A-Za-z][A-Za-z0-9]*#)?(?:ADR|Issue)-\d{4}'
 

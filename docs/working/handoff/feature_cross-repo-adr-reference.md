@@ -1,9 +1,9 @@
 # Handoff: 配布物からの出所識別子の除去（Issue-0067 対策）
 
 - **Branch**: feature/cross-repo-adr-reference
-- **Last Updated**: 2026-08-07 23:05 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張 / plan 確定済み・実装着手前
+- **Last Updated**: 2026-08-08 01:20 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: ガイドライン拡張 / 実装中（Task 1〜3 完了・Task 4 から再開）
 
 ## 作業の目的・背景
 
@@ -25,6 +25,7 @@
 ## 完了済みタスク
 
 - [x] Task 1: 配布構造の実機判定（2026-08-07）— **構造 A が成立**。検証は別名エントリで行い本番エントリは無変更
+- [x] Task 2・3: 共有ライブラリ `scripts/lib/strip-provenance.ps1`（2026-08-07・コミット `6311a78`）— 自己テスト 17/17、冪等性 18 ファイル差分 0、識別子なし行 1384 行が不変。レビュー 2 巡で Major 4・Minor 5 を全件反映
 
 - [x] 事象の実測と原因の切り分け（2026-08-07）— `template/` は ADR-0027 の「説明文は保持」の残余、`skills/` は ADR-0016 で template 同期の検査対象外
 - [x] Issue-0067 起票（2026-08-07）
@@ -36,16 +37,17 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装の開始（Task 1 から）
-  - 状態: plan 確定済み（`docs/working/plans/2026-08-07-distributed-artifact-generation-plan.md`。コミット `7a1c0fc`）。spec・plan とも確定前レビューを通過し全指摘を反映済み
-  - 残り: 実行方式（`subagent-driven-development` / `executing-plans`）をユーザーが選択して Task 1 から着手する
+- [ ] **現在の作業**: Task 4（生成器 `scripts/build-dist.ps1`）から再開
+  - 状態: 共有ライブラリが完成し、`skills/` 18 ファイルに対して規約違反 36 件（R2 15・R3 15・R4 6）を検出できる状態
+  - 残り: 計画の Task 4〜12。実行方式は `superpowers:subagent-driven-development`（タスクごとに実装 → 仕様準拠レビュー → 品質レビュー）
 
 ## 未着手のタスク
 
-- [ ] Task 2〜4: 共有ライブラリと生成器の実装
-- [ ] Task 5〜7: ソースの規約適合化（36 行 ＋ template ソース 1 行 ＋ R5 1 行）
-- [ ] Task 8〜11: `sync-template.ps1` 改修 / CONTRIBUTING 配線 / ADR-0027 注記 / 本番切替
-- [ ] Task 12: 全体検証 → ADR-0081/0082/0083 の粒度点検・Accepted 昇格 → Issue-0067 close
+- [ ] Task 4: 生成器 `build-dist.ps1`（生成・`-Check`・自己検査。`dist/.claude-plugin/plugin.json` の複写も生成器の責務）
+- [ ] Task 5〜7: ソースの規約適合化（R3 15 行・R2 16 行・R4 6 行・R5 1 行 ＋ 除去後に文が壊れる 3 行）
+- [ ] Task 8: `sync-template.ps1` の改修（判定・変換・`-Check`。処理順を「読む→判定→削除→書き出す」へ）
+- [ ] Task 9〜11: CONTRIBUTING 配線 / ADR-0027 注記 / プラグイン本番エントリを `./dist` へ切替
+- [ ] Task 12: 全体検証 → ADR-0081/0082/0083 の Accepted 昇格 → Issue-0067 close
 
 ## 既知のブロッカー・懸念
 
@@ -67,15 +69,23 @@
 
 - 2026-08-07 Task 1 完了（配布構造の実機判定・構造 A 成立。コミット `560be0f`）: ADR=なし（ADR-0082 が定めた判定手順の実行であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-07-17`（検証中に本番プラグインのインストール記録が消える事故。緩和策が実機で破れた型） / review=非発火（確定点ではない）
 
+- 2026-08-07 Task 2・3 完了（共有ライブラリ。コミット `6311a78`）: ADR=なし（ADR-0083 の実装であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-07-18`（仕様の条件を実装へ落とす際に外した型） / review=非発火（確定点ではない。実装レビューは二段で実施済み）
+
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: `docs/working/plans/2026-08-07-distributed-artifact-generation-plan.md`（12 タスク。仕様は `docs/current/specs/2026-08-07-distributed-artifact-generation/`）
-2. 最初に実行すべきコマンド/スキル: `start-work` → 実行方式を選んで計画の Task 1 から着手（`superpowers:subagent-driven-development` または `superpowers:executing-plans`）
-3. 留意点:
-   - **spec も plan も確定前レビュー済み**。実装中に設計を変える判断が出たら `decision-log` を呼び、spec を書き換えで更新する（差分ファイルを作らない）
-   - Task 1 と Task 11 はユーザーへ `/plugin marketplace update` の依頼が要る（エージェントからは実行できない）
+1. 最初に確認すべきファイル: `docs/working/plans/2026-08-07-distributed-artifact-generation-plan.md` の **Task 4 以降**（Task 1〜3 は完了済み。計画は各タスクが自己完結しており、前セッションの文脈がなくても再開できる）
+2. 最初に実行すべきコマンド/スキル: `start-work` → `superpowers:subagent-driven-development` で Task 4 から
+3. 再開前の健全性確認:
+   ```powershell
+   pwsh -NoProfile -Command ". ./scripts/lib/strip-provenance.ps1; Invoke-StripProvenanceSelfTest"
+   ```
+   期待: `all 17 cases passed`
+4. 留意点:
+   - **構造 A で確定済み**。計画 Task 1 Step 5 の構造 B 読み替え表は適用しない
+   - **Task 11 の本番エントリ切替は事故が起きた領域**。切替後に `installed_plugins.json` を確認し、記録が消えていたらユーザーへ再 install を依頼する（計画 Task 11 Step 2）
+   - 実装レビューは仕様準拠 → 品質の二段で行う。**規約に適合していても配布物が壊れる型**が実在するため、レビュアーには識別子を含まない行の不変性と冪等性を必ず確認させる
    - サブエージェントへ委譲するときは `subagent-dispatch` を呼び、B 群判定行を残す
-   - Task 12 で ADR-0081/0082/0083 を Accepted へ昇格し、Issue-0067 を close する
+   - 検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている（スキルは提供していない）。片付けるならユーザースコープでのアンインストールが要る
 
 ## 重要な意思決定の履歴
 

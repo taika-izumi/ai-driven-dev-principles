@@ -55,7 +55,7 @@ description: "worklog-extract で採用された候補から、writing-skills �
 
 ## 関連 ADR
 
-- ADR-0044（スコープ3分岐・skill3 橋渡し）
-- ADR-0045（台帳ライフサイクル・`adopted` 状態と遷移）
-- ADR-0046（writing-skills 既定・Skill Creator 設計時借用・実行環境ガード）
-- ADR-0079（出所点検）
+- ADR-0044: スコープ3分岐・skill3 橋渡し
+- ADR-0045: 台帳ライフサイクル・`adopted` 状態と遷移
+- ADR-0046: writing-skills 既定・Skill Creator 設計時借用・実行環境ガード
+- ADR-0079: 出所点検

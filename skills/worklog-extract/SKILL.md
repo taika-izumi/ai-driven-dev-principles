@@ -60,7 +60,7 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 
 ## 関連 ADR
 
-- ADR-0044（overlap 対応・Issue 起票先行・scope 3分岐）
-- ADR-0045（台帳による処理済み除外・deferred 再浮上・adopted 状態・スキル2フロー）
-- ADR-0048/0049/0051（読み側互換: model 材料・v 版数判別・friction 読み替え）
-- ADR-0054（走査直前のストア健全性検証: エンコーディング/EOL の loud validation）
+- ADR-0044: overlap 対応・Issue 起票先行・scope 3分岐
+- ADR-0045: 台帳による処理済み除外・deferred 再浮上・adopted 状態・スキル2フロー
+- ADR-0048/0049/0051: 読み側互換（model 材料・v 版数判別・friction 読み替え）
+- ADR-0054: 走査直前のストア健全性検証（エンコーディング/EOL の loud validation）

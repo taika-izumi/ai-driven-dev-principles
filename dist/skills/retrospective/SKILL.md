@@ -1,32 +1,32 @@
 ---
 name: retrospective
-description: "サブプロジェクト1サイクル完了直後（feature ブランチを master へマージ後、handoff finalize 前）に実施する、サイクル末尾の課題抽出記録スキル。AI が plan / git log / handoff から課題候補（事象/原因/影響、system/flow 分類つき）を一括提示し、ユーザーが修正と起票判断を行う。フロー課題は delta 型（worklog で捕捉可能）か構造観察型かを振り分け、delta 型で急がないものは worklog パイプラインへ委ねる（ADR-0056）。抽出課題は docs/working/issues/system|flow/ へ起票し（ADR-0028）、対策の採否・設計・ADR化は次サイクルへ委ねる（ADR-0021）。rubber-duck 独立レビューはユーザー要求時のみのオプション。"
+description: "サブプロジェクト1サイクル完了直後（feature ブランチを master へマージ後、handoff finalize 前）に実施する、サイクル末尾の課題抽出記録スキル。AI が plan / git log / handoff から課題候補（事象/原因/影響、system/flow 分類つき）を一括提示し、ユーザーが修正と起票判断を行う。フロー課題は delta 型（worklog で捕捉可能）か構造観察型かを振り分け、delta 型で急がないものは worklog パイプラインへ委ねる。抽出課題は docs/working/issues/system|flow/ へ起票し、対策の採否・設計・ADR化は次サイクルへ委ねる。rubber-duck 独立レビューはユーザー要求時のみのオプション。"
 ---
 
 # retrospective
 
-サイクル末尾に「課題抽出記録（issue 詳細の正本）」を作成するスキル。残す情報は次の2つに限定する（ADR-0056）:
+サイクル末尾に「課題抽出記録（issue 詳細の正本）」を作成するスキル。残す情報は次の2つに限定する:
 
-1. **課題の詳細記録**（事象 / 原因 / 影響、system / flow 分類）— issue が「要約＋ライフサイクル管理」、本記録が「詳細の正」（ADR-0028）
+1. **課題の詳細記録**（事象 / 原因 / 影響、system / flow 分類）— issue が「要約＋ライフサイクル管理」、本記録が「詳細の正」
 2. **最小のサイクル文脈**（対象・期間・merge コミット・関連 plan / ADR へのポインタ）— 課題詳細を将来単独で読むためのヘッダ
 
-旧5観点のうち Went Well / Tech Notes は観点として廃止した。スキル化に有用な知見（躓き・人間の指示＝ delta）は worklog パイプライン（worklog-record → worklog-extract → worklog-skillify）が捕捉・再利用する（ADR-0056）。
+旧5観点のうち Went Well / Tech Notes は観点として廃止した。スキル化に有用な知見（躓き・人間の指示＝ delta）は worklog パイプライン（worklog-record → worklog-extract → worklog-skillify）が捕捉・再利用する。
 
 ## いつ使うか
 
 サブプロジェクトの feature ブランチを master へ `--no-ff` マージし、対応 handoff を completed 状態へ遷移させる**直前**。`start-work` Phase 2 マッピング表の「サブプロジェクト完了直後の振り返り」行から推奨される。
 
-実行は **手動トリガー**のみ。merge 検知などの自動起動は導入していない（ADR-0010）。形式は単一で、開始時の形式選択（完全版 / 簡易版）は設けない（ADR-0056）。
+実行は **手動トリガー**のみ。merge 検知などの自動起動は導入していない。形式は単一で、開始時の形式選択（完全版 / 簡易版）は設けない。
 
-## スコープ（決定を維持。ADR-0021）
+## スコープ（決定を維持）
 
 retrospective は **「課題の抽出と分類」までに限定**する。対策の設計・採否判断（採用/保留/却下）・即時 ADR ドラフト化は**行わない**。それらは次の作業サイクルの責務。
 
 抽出した課題は**バックログとして記録・起票するのみ**。着手の要否・時期はユーザーの判断に委ねる。ユーザーが対策を要すると判断した時点で、その課題を起点に通常フロー（`start-work` →（規模に応じ brainstorming）→ 対策決定で ADR 起票）を開始する。
 
-課題の issue 起票（Phase 2）は**記録行為であり、対策の設計・採否判断ではない**（ADR-0028）。
+課題の issue 起票（Phase 2）は**記録行為であり、対策の設計・採否判断ではない**。
 
-## worklog パイプラインとの棲み分け（ADR-0056）
+## worklog パイプラインとの棲み分け
 
 `docs/working/issues/README.md` を唯一のバックログとして、2つの起票経路が合流する:
 
@@ -45,13 +45,13 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 
 ### 重複防止（両方向）
 
-- retrospective 側: 起票前に既存 open 課題（worklog-extract 由来を含む）と突合し、既存があれば「検討状況」へ追記する（ADR-0031）
+- retrospective 側: 起票前に既存 open 課題（worklog-extract 由来を含む）と突合し、既存があれば「検討状況」へ追記する
 - worklog-extract 側: Issue 草案化時に retrospective 由来のバックログと重複排除する（worklog-extract 手順8。唯一の合流点）
 
 ## 重要な前提
 
-- 意思決定の即時記録（継続適用）のルール（ADR-0006）は本スキル中も常時適用される。ただし retrospective 内では対策の採否を決めないため、retrospective 起因の ADR 起票は発生しない
-- 出力ファイルは時系列追記型（ADR-0011）に従い、一度書いたら原則上書き禁止（typo 修正のみ例外）
+- 意思決定の即時記録（継続適用）のルールは本スキル中も常時適用される。ただし retrospective 内では対策の採否を決めないため、retrospective 起因の ADR 起票は発生しない
+- 出力ファイルは時系列追記型に従い、一度書いたら原則上書き禁止（typo 修正のみ例外）
 - スキル内ではコミットしない。コミットはユーザーまたは通常フローに委ねる
 
 ## 手順
@@ -73,19 +73,19 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
    - 事象 / 原因 / 影響
    - system / flow 分類
    - flow 候補には delta 型 / 構造観察型の判定・worklog 記録状況・起票要否の提案（振り分け規則）
-   - 既存 open 課題の再発・進展は新規候補とせず「検討状況」追記対象として提示（ADR-0031）
+   - 既存 open 課題の再発・進展は新規候補とせず「検討状況」追記対象として提示
 2. ユーザーが修正・追加・削除と起票判断を行う
 3. 末尾に確認1問:「このサイクル中に言語化されたが未起票の気づき（会話中の指摘・見送った論点など）はありませんか？」（体系全体を走査する構造チェック工程は設けない）
 
 ### Phase 2: 記録保存と起票（メイン実行）
 
-1. `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`（メイン記録。テンプレートは `skills/retrospective/template.md`）と、起票したフロー課題があれば `flow/YYYY-MM-DD-<topic>.md`（`skills/retrospective/flow-template.md`）を書き出す（ADR-0021。両フォルダで同名。フォルダ・ファイルはオンデマンド作成）
-2. 起票対象の課題を**全件** `docs/working/issues/` へ起票する（ADR-0028）:
+1. `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`（メイン記録。テンプレートは `skills/retrospective/template.md`）と、起票したフロー課題があれば `flow/YYYY-MM-DD-<topic>.md`（`skills/retrospective/flow-template.md`）を書き出す（両フォルダで同名。フォルダ・ファイルはオンデマンド作成）
+2. 起票対象の課題を**全件** `docs/working/issues/` へ起票する:
    1. インデックス `docs/working/issues/README.md` 全体（両セクション）の最大番号+1 で採番する
    2. `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open。課題内容は要約のみとし、「起票元」に `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載）
    3. インデックスの対応セクションに1行追加する
    4. 振り返りファイル側の各課題項目に「**起票**: Issue-NNNN」行を記載する
-3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する（ADR-0031）
+3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する
 4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**
 5. ユーザーへ提示し確認を得る
 
@@ -98,7 +98,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
    - 出力フォーマット指定（短い指摘のリスト形式、優先度タグ付き）
 
    結果はメインが受け取り、ユーザーと相談の上で反映する。やり取りは記録ファイルの「Independent Review Notes」節（実施時のみ追加）に記録する
-2. **worklog 総ざらい確認（マイルストーン突合。ADR-0057）**: サイクル中のマイルストーンと中央ストアのエントリを突合し、Post ラッパーの消化漏れを回収する:
+2. **worklog 総ざらい確認（マイルストーン突合）**: サイクル中のマイルストーンと中央ストアのエントリを突合し、Post ラッパーの消化漏れを回収する:
    1. サイクル中のマイルストーンを列挙する。情報源は handoff の「Post ラッパー消化記録」と「完了済みタスク」、および当該ブランチの `git log`
    2. 各マイルストーンについて、消化記録に `worklog=` の記載（エントリ id または棄却）があるかを検査し、記載が無いものを未消化として洗い出す
    3. 中央ストア `<home>/.ai-dev-worklog/<project>/log.jsonl` の当該サイクル分エントリと、消化記録に記載された id を突合する
@@ -106,8 +106,8 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
    5. 振り分け規則で「worklog 送り」とした delta 型候補の記録漏れもここで拾う
 
    本工程は、Post ラッパーに完全に入らなかった場合（消化記録の行そのものが無い）を回収する唯一の経路である（設計意図は `docs/current/specs/2026-05-01-retrospective-design.md` Phase 3 参照）
-3. `session-handoff` の **cycle-reset** 操作を呼ぶ（剪定・書き換えの手順は session-handoff 側の定義に従う。ADR-0075）:
-   - Status は `in_progress` → `ready-for-next-cycle` へ遷移する（ADR-0076）
+3. `session-handoff` の **cycle-reset** 操作を呼ぶ（剪定・書き換えの手順は session-handoff 側の定義に従う）:
+   - Status は `in_progress` → `ready-for-next-cycle` へ遷移する
    - 「次セッション開始時のアクション」に「抽出した課題は issues に起票済み（Issue-NNNN〜。着手はユーザー判断）」旨を記す
    - 課題が複数ある場合は優先順位の目安を併記してよい（着手の決定はユーザー）
 
@@ -116,7 +116,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 - メイン記録: `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`
 - フロー課題記録: `docs/records/retrospectives/flow/YYYY-MM-DD-<topic>.md`（起票したフロー課題がある場合のみ）
 - 課題起票: `docs/working/issues/system|flow/NNNN-<slug>.md` + `docs/working/issues/README.md` への行追加
-- インデックス更新: `docs/records/retrospectives/README.md` に行追加（過去行の編集は禁止、ADR-0011）
+- インデックス更新: `docs/records/retrospectives/README.md` に行追加（過去行の編集は禁止）
 - テンプレ参照: `skills/retrospective/template.md`（メイン）/ `skills/retrospective/flow-template.md`（フロー）
 
 ## 対応する原則
@@ -129,10 +129,4 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 
 ## 関連
 
-- ADR-0056: 課題抽出記録への純化・worklog 委譲・振り分け規則・単一形式・rubber-duck オプション化
-- ADR-0031: 既存 open 課題の再発・進展は issue の「検討状況」へ一次記録
-- ADR-0028: 振り返り課題の全件起票と issues の system/flow フォルダ分割
-- ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
-- ADR-0010: 振り返りフェーズ導入
-- ADR-0011: 保管規約（時系列追記型）
 - 関連スキル: start-work, decision-log, session-handoff, worklog-record, worklog-extract

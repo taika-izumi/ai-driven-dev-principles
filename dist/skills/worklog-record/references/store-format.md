@@ -13,16 +13,16 @@
 
 ## エンコーディング・改行コード（全ストアファイル共通契約）
 
-すべてのストアファイル（`log.jsonl` / `processed.jsonl` / `projects.json`）は **UTF-8（BOM なし）・改行 LF 固定**とする（ADR-0054）。
+すべてのストアファイル（`log.jsonl` / `processed.jsonl` / `projects.json`）は **UTF-8（BOM なし）・改行 LF 固定**とする。
 
-- このストアはリポジトリ外にあり、`.gitattributes` による改行正規化（ADR-0037）の管轄外。契約は各スキルの読み書き手順で守る
+- このストアはリポジトリ外にあり、`.gitattributes` による改行正規化の管轄外。契約は各スキルの読み書き手順で守る
 - 全プラットフォーム・全ツール共有のため、別 OS・別ツールの既定追記（BOM 付き・CRLF・UTF-16 等）が混ざると連結1パス走査が壊れる
-- **書き側手段**: 行終端を明示できる API を使う。**`Add-Content` は使わないこと** — `-Encoding` はエンコーディングだけを制御し行終端子は制御しないため、Windows では CRLF を書き契約に違反する（実測。同じ罠は `scripts/sync-template.ps1` で解決済み（ADR-0033））
+- **書き側手段**: 行終端を明示できる API を使う。**`Add-Content` は使わないこと** — `-Encoding` はエンコーディングだけを制御し行終端子は制御しないため、Windows では CRLF を書き契約に違反する（実測。同じ罠は `scripts/sync-template.ps1` で解決済み）
   - Python（推奨。バイト単位で確実）: `open(path, "a", encoding="utf-8", newline="\n")`
   - PowerShell: `[System.IO.File]::AppendAllText($path, $line + "`n", [System.Text.UTF8Encoding]::new($false))`
   - POSIX シェル: `>>` リダイレクト
   - `projects.json` の全体書き換え（upsert）も同じ規律で保存する（Python なら `open(path, "w", encoding="utf-8", newline="\n")`）
-- **読み側検証**: `worklog-extract` は走査直前に `skills/worklog-extract/scripts/check-store-health.py` を実行し、BOM・CR・非 UTF-8・JSON パース不能行を検出する。1 件でもあれば報告して停止する（silent tolerance はしない）。既存行の正規化は内容不変のバイト正規化に限り、ユーザーの明示 opt-in でのみ実行する。検査スクリプトは正負の対照を `--self-test` として同梱しており、スクリプトを変更したら対照を走らせてから使う（LoopForAlpha#Issue-0084）
+- **読み側検証**: `worklog-extract` は走査直前に `skills/worklog-extract/scripts/check-store-health.py` を実行し、BOM・CR・非 UTF-8・JSON パース不能行を検出する。1 件でもあれば報告して停止する（silent tolerance はしない）。既存行の正規化は内容不変のバイト正規化に限り、ユーザーの明示 opt-in でのみ実行する。検査スクリプトは正負の対照を `--self-test` として同梱しており、スクリプトを変更したら対照を走らせてから使う
 
 ## projects.json
 
@@ -50,26 +50,26 @@ delta ペア（`friction` または `corrections` の少なくとも一方が必
 
 | フィールド | 型 | 説明 |
 |---|---|---|
-| `v` | number | スキーマ版数。現行は `2`（ADR-0049） |
+| `v` | number | スキーマ版数。現行は `2` |
 | `id` | string | `<project>-<date>-<NN>`。台帳との突合キー |
 | `date` | string | YYYY-MM-DD |
 | `project` | string | 出所プロジェクト名（連結後も行内で出所が分かる） |
-| `model` | string | delta 発生元の AI モデル ID（例 `"claude-fable-5"`。記録時と異なる場合は発生元を優先）。モデル固有か全モデル共通かの判別材料（ADR-0048） |
+| `model` | string | delta 発生元の AI モデル ID（例 `"claude-fable-5"`。記録時と異なる場合は発生元を優先）。モデル固有か全モデル共通かの判別材料 |
 | `scope` | enum | `project-specific` / `general-candidate`（record 時は暫定） |
 | `title` | string | 動詞句15文字程度 |
 | `context` | string | 何をしていてなぜ発生したか |
 | `procedure` | string[] | 実際に踏んだ手順 |
-| `friction` | string[] | 躓き型 delta。複数の躓きは要素を分ける（ADR-0051） |
+| `friction` | string[] | 躓き型 delta。複数の躓きは要素を分ける |
 | `corrections` | string[] | 注入型 delta（人間の指示・修正を発言に近い形で） |
 
-### スキーマ版数と互換読み（ADR-0049 / ADR-0051）
+### スキーマ版数と互換読み
 
 - 書き込み側は常に現行版数 `"v":2` を必ず書く（台帳レコードも同様）
 - 読み側規約: **`v` フィールドなしの行 = v1（初版スキーマ）と解釈する**。v1 行は `model` なしを許容し、`friction`（string）は 1 要素配列として読み替える
 - 既存の v1 行は書き換えない（追記専用）
 - 注: サイクル名「worklog v1.1」はパイプライン全体の改訂名であり、スキーマ版数 `v`（現行 2）とは別物
 
-### 記録単位（ADR-0053）
+### 記録単位
 
 1 エントリ = **同一 `context`（作業テーマ）を共有する delta の束**。
 
@@ -77,15 +77,15 @@ delta ペア（`friction` または `corrections` の少なくとも一方が必
 - 節目に独立した作業テーマの delta が複数あれば、テーマごとに複数エントリを記録してよい
 - 「どれを捨てるか」の優先順位判断はしない（ノイズ抑制は記録ゲート＝delta の存在が担う）
 
-### id 採番アルゴリズム（強化。ADR-0050）
+### id 採番アルゴリズム（強化）
 
 1. `date` = 今日（YYYY-MM-DD）、`project` = フォルダ名
 2. **追記の直前に** `<folderName>/log.jsonl` を読む（無ければ NN=01）
 3. 同一 `project` かつ同一 `date` のエントリ数を数え、その数+1 を2桁ゼロ埋めして NN とする
 4. `id = "<project>-<date>-<NN>"` で 1 行追記する
-5. **追記後に log.jsonl を読み直し、自行の id が他エントリと重複していないか検証する**（読み直し規範と整合している。ADR-0038）。重複を検出した場合、**自分が書いた行のみ id を再採番して書き直す**（追記専用原則の唯一の例外。台帳突合レコードが発生する前・自分が書いた直後の行の修復に限るため安全）
+5. **追記後に log.jsonl を読み直し、自行の id が他エントリと重複していないか検証する**（読み直し規範と整合している）。重複を検出した場合、**自分が書いた行のみ id を再採番して書き直す**（追記専用原則の唯一の例外。台帳突合レコードが発生する前・自分が書いた直後の行の修復に限るため安全）
 
-> 注: 旧記述「末尾を見て採番」（ADR-0045。当初の spec）の改善版（ADR-0050）。並行セッションの採番競合（Issue-0027）に対し、直前再カウントで競合窓を縮め、読み直し検証で検出・回復する。加えて末尾1行だけでなく同一 date 全件をカウントすることで、順序が乱れた場合でも正しい NN が決まる。
+> 注: 旧記述「末尾を見て採番」（当初の spec）の改善版。並行セッションの採番競合に対し、直前再カウントで競合窓を縮め、読み直し検証で検出・回復する。加えて末尾1行だけでなく同一 date 全件をカウントすることで、順序が乱れた場合でも正しい NN が決まる。
 
 ## 台帳レコード（processed.jsonl、1行1レコード、追記専用）
 
@@ -97,7 +97,7 @@ delta ペア（`friction` または `corrections` の少なくとも一方が必
 
 | フィールド | 型 | 説明 |
 |---|---|---|
-| `v` | number | スキーマ版数。現行は `2`。`v` なしの行は v1 と解釈する（ADR-0049） |
+| `v` | number | スキーマ版数。現行は `2`。`v` なしの行は v1 と解釈する |
 | `id` | string | 対象エントリまたはクラスタ代表の id |
 | `outcome` | enum | `adopted` / `skillified` / `rejected` / `merged` / `deferred`（**採否結果**。エントリ側 outcome とは別物。状態遷移: `adopted` → `skillified` または `merged`） |
 | `evidence_count` | number | `deferred` のときのみ。保留時点のクラスタ根拠数 |

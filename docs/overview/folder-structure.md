@@ -146,7 +146,7 @@ docs/working/issues/
 
 （ADR-0068）課題番号はリポジトリ内で一意に採番されるため、`Issue-NNNN` という無修飾の表記はリポジトリをまたぐと別の課題を指す。**他リポジトリの課題を参照するときは必ずリポジトリ名で修飾する**:
 
-- 書式: `<repo>#Issue-NNNN`（例: `LoopForAlpha#Issue-0069`）
+- 書式: `<repo>#Issue-NNNN`（例: `OtherProject#Issue-NNNN`）
 - 同一リポジトリ内の参照は従来どおり `Issue-NNNN` でよい
 - worklog 台帳（`processed.jsonl`）の `ref` フィールドも同様に、リポジトリ名を含む形で記録する（例: `MakeAiInstructions:docs/working/issues/flow/0034-....md`）
 

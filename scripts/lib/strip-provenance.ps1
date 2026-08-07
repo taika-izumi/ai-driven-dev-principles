@@ -131,6 +131,31 @@ function Test-ProvenanceConvention {
     return ,$violations.ToArray()
 }
 
+# 残存識別子の検査（build-dist.ps1 の自己検査・-Check の共通実装。ADR-0083）。
+# Test-ProvenanceConvention と同じ適用範囲（.py/.ps1 はコメント行のみ、それ以外はフェンス外のみ）
+# を使うが、検出対象は種別 1〜4（Get-IdentifierMatch。中立名除外込み）に加えて種別 5
+# （`（出所: …）`）も含める。自己検査が種別 5 を見ていないと、掃除規則の対象外（変換しない）
+# 行に残った `（出所: …）` が exit=0 のまま出荷される（実測）。
+function Get-ProvenanceLeak {
+    param([string]$Content, [string]$Path)
+    $Content = ConvertTo-LfContent -Content $Content
+    $leaks = New-Object System.Collections.Generic.List[object]
+    $isScript = $Path -match '\.(py|ps1)$'
+    $inFence = $false
+    $i = 0
+    foreach ($line in ($Content -split "`n")) {
+        $i++
+        if (-not $isScript -and $line.TrimStart().StartsWith('```')) { $inFence = -not $inFence; continue }
+        if ($inFence -or ($isScript -and -not $line.TrimStart().StartsWith('#'))) { continue }
+        $hasType5 = [regex]::IsMatch($line, $script:ReType5)
+        if ((Get-IdentifierMatch -Line $line).Count -gt 0 -or $hasType5) {
+            $leaks.Add([pscustomobject]@{ Line=$i; Text=$line.Trim() })
+        }
+    }
+    # Test-ProvenanceConvention と同じ理由で `.ToArray()` に単項カンマを掛ける（`,@(...)` は不可）。
+    return ,$leaks.ToArray()
+}
+
 function Remove-ProvenanceNotation {
     param([string]$Content, [string]$Path = '')
     $Content = ConvertTo-LfContent -Content $Content
@@ -171,10 +196,15 @@ function Remove-ProvenanceNotation {
         }
         $final.Add($out[$i])
     }
-    # 連続空行を 1 行へ
+    # 連続空行を 1 行へ（フェンス内は対象外。コードフェンス内の二重空行（PEP 8 的な空行など）を
+    # 無条件に保持するため、フェンス状態を追跡してフェンス内・フェンス境界行はそのまま通す。
+    # これを追跡しないと、識別子を含まない .md のフェンス内二重空行まで畳まれる（実測）。
     $collapsed = New-Object System.Collections.Generic.List[string]
     $prevBlank = $false
+    $inFence2 = $false
     foreach ($l in $final) {
+        if ($l.TrimStart().StartsWith('```')) { $inFence2 = -not $inFence2; $collapsed.Add($l); $prevBlank = $false; continue }
+        if ($inFence2) { $collapsed.Add($l); $prevBlank = $false; continue }
         $blank = ($l.Trim() -eq '')
         if ($blank -and $prevBlank) { continue }
         $collapsed.Add($l); $prevBlank = $blank
@@ -224,7 +254,43 @@ function Invoke-StripProvenanceSelfTest {
             $fail++
         }
     }
+
+    # Get-ProvenanceLeak（種別 5 を含めた残存検査。フェンス内は対象外であること）
+    $leakCases = @(
+        @{ Content='本文（出所: LoopForAlpha）';                         Path='x.md'; Expect=1 }
+        @{ Content='X-2026-01-01-01';                                  Path='x.md'; Expect=0 }
+        @{ Content=('```' + "`n" + 'ADR-0001 in fence' + "`n" + '```'); Path='x.md'; Expect=0 }
+    )
+    foreach ($c in $leakCases) {
+        $actual = (Get-ProvenanceLeak -Content $c.Content -Path $c.Path).Count
+        if ($actual -ne $c.Expect) {
+            Write-Host "  FAIL leak expect=$($c.Expect) actual=$actual :: $($c.Content)"
+            $fail++
+        }
+    }
+
+    # Remove-ProvenanceNotation（内容レベル）: フェンス内の二重空行は識別子ゼロなら完全不変であること
+    # （I-4: フェンス外専用だった連続空行の畳み込みがフェンス内へ誤って効いていた問題の対照）
+    $fencedDoubleBlank = @'
+```
+code1
+
+
+code2
+```
+'@
+    $contentCases = @(
+        @{ In=$fencedDoubleBlank; Path='x.md' }
+    )
+    foreach ($c in $contentCases) {
+        $actual = Remove-ProvenanceNotation -Content $c.In -Path $c.Path
+        if ($actual -ne $c.In) {
+            Write-Host "  FAIL content-unchanged expect=[$($c.In)] actual=[$actual]"
+            $fail++
+        }
+    }
+
     if ($fail -gt 0) { Write-Host "[strip-provenance] self-test: $fail case(s) failed"; return $false }
-    Write-Host "[strip-provenance] self-test: all $($cases.Count + $convert.Count) cases passed"
+    Write-Host "[strip-provenance] self-test: all $($cases.Count + $convert.Count + $leakCases.Count + $contentCases.Count) cases passed"
     return $true
 }

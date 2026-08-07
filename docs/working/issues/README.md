@@ -26,6 +26,7 @@
 | [0064](system/0064-check-block-heading-level-inconsistent.md) | 過剰適合点検ブロックの見出しレベルが記録先ごとに 2 通りで存在確認を単一 grep で書けない | open | 2026-08-07 |
 | [0067](system/0067-distributed-artifacts-reference-repo-local-adr-numbers.md) | 配布先へ届く成果物が、本リポジトリ固有の ADR 番号を無修飾で参照している | open | 2026-08-07 |
 | [0070](system/0070-provenance-check-misses-script-prose.md) | 出所識別子の機械判定がスクリプト内の散文（docstring・利用者向けメッセージ）に届かない | open | 2026-08-08 |
+| [0071](system/0071-distributed-skills-reference-undistributed-documents.md) | 配布されるスキルが、配布されない文書を必須参照にしている | open | 2026-08-08 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

@@ -89,3 +89,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0081](0081-distributed-artifact-adr-reference-scope.md) | 配布物から除くのは「配布先で解決できない参照」であり、決定記録番号に限らない | Proposed | 2026-08-07 |
 | [0082](0082-distribute-generated-artifact-not-source.md) | 保守者向けの根拠注記はソースに残し、注記を除去した生成物を配布する | Proposed | 2026-08-07 |
 | [0083](0083-provenance-notation-convention-enforced-by-generator.md) | 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる | Proposed | 2026-08-07 |
+| [0084](0084-convention-scope-exceeds-machine-check-scope.md) | 記法規約の適用範囲は機械判定の範囲より広く取り、差分は書き手が守る | Proposed | 2026-08-08 |

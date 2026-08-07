@@ -86,3 +86,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0078](0078-rename-meta-guidelines-to-ai-driven-dev-guidelines.md) | 体系の呼称を「メタ・ガイドライン」から「AI駆動開発ガイドライン」へ改める | Accepted | 2026-08-06 |
 | [0079](0079-overfitting-check-required-for-guideline-extensions.md) | ガイドライン拡張の全経路に過剰適合点検を課し、点検結果の記録を義務化する | Accepted | 2026-08-07 |
 | [0080](0080-review-presentation-scaled-by-unreviewed-normative-content.md) | 確定前レビューは spec/plan 確定点で提示し、未レビューの規範・手順文書の変更を含む成果物では推奨側に倒す | Accepted | 2026-08-07 |
+| [0081](0081-distributed-artifact-adr-reference-scope.md) | 配布物から除くのは「配布先で解決できない参照」であり、決定記録番号に限らない | Proposed | 2026-08-07 |
+| [0082](0082-distribute-generated-artifact-not-source.md) | 保守者向けの根拠注記はソースに残し、注記を除去した生成物を配布する | Proposed | 2026-08-07 |
+| [0083](0083-provenance-notation-convention-enforced-by-generator.md) | 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる | Proposed | 2026-08-07 |

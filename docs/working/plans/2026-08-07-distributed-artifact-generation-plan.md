@@ -21,7 +21,7 @@
 | `scripts/build-dist.ps1` | 新規 | `skills/` → `dist/` の生成、`-Check`、自己検査 |
 | `scripts/sync-template.ps1` | 改修 | 判定・変換ステップと `-Check` を追加。`Copy-Item` をテキスト書き出しへ置換 |
 | `.claude-plugin/marketplace.json` | 改修 | 本番エントリの `source` を `./dist` へ（構造 A の場合） |
-| `skills/` 配下 8 ファイル | 改修 | 記法規約への適合（36 行。R2 15・R3 15・R4 6） |
+| `skills/` 配下 8 ファイル | 改修 | 記法規約への適合（36 行。R2 15・R3 15・R4 6）＋ 除去後に文が壊れる 10 行（規約適合だが要対処。Task 7 Step 4-2） |
 | `docs/records/retrospectives/README.md` | 改修 | 同上（1 行。R2） |
 | `docs/overview/folder-structure.md` | 改修 | R5 適合（1 行） |
 | `CONTRIBUTING.md` | 改修 | 規約節の新設と 4 シナリオへの配線 |
@@ -666,6 +666,7 @@ git commit -m "refactor: 本文中の出所識別子を括弧内へ移し、根�
 - Modify: `skills/worklog-record/SKILL.md:69`
 - Modify: `skills/worklog-record/references/store-format.md:93-95`
 - Modify: `docs/overview/folder-structure.md:149`
+- Step 4-2 の対象（除去後に文が壊れる行。2026-08-08 の実測で 3 行 → 10 行へ拡大）: `skills/pre-finalization-review/SKILL.md:24,32`・`skills/retrospective/SKILL.md:21`・`skills/retrospective/template.md:25`・`skills/worklog-record/SKILL.md:12`・`skills/worklog-record/references/store-format.md:20,80,86`・`skills/worklog-skillify/SKILL.md:44`・`skills/worklog-extract/SKILL.md:49`
 
 - [ ] **Step 1: ハンドオフ書式テンプレートから識別子を除く**
 
@@ -700,29 +701,53 @@ git commit -m "refactor: 本文中の出所識別子を括弧内へ移し、根�
 
 R1 は識別子を括弧内に置くことを許すが、**括弧内でその識別子が文の構成要素になっている**場合、除去すると日本語が壊れる。規約違反ではないため生成器は止まらず、配布物の品質だけが落ちる。
 
-見つけ方は機械的にできる。変換を全ファイルへ適用し、出力に連続空白または助詞の浮きが生じた行を拾う。
+**この検出は機械だけでは完結しない**（2026-08-08 の実測で判明。当初計画は正規表現 1 本で全件拾える前提だったが、次の 2 方向で破れた）:
+
+- **誤爆**: 行全体へ `'[ 　]{2,}|[はがをにでとへも][ 　]'` を掛けると、元から存在する正常な表現（`（例: …）で書くこと` など）に大量に当たる。実測で 60 件超がヒットし、終了条件「該当 0 件」は達成不能だった
+- **取りこぼし**: 文法的には壊れないが意味が失われる型（`（ADR-0083 の追補）` → `（追補）`）は、どの正規表現でも拾えない
+
+したがって**機械的な事前絞り込み＋全数読解**の 2 段で行う。
+
+**(1) 事前絞り込み**: 除去で「新たに生じた」不審な並びだけを拾う。同じ並びが元の行にも同数あれば、それは除去が作ったものではない（この差分比較が誤爆を消す）。
 
 ```powershell
 . ./scripts/lib/strip-provenance.ps1
 $root = (Get-Location).Path
+$patterns = @(
+    '（[はがをにでとへもの、。・/〜\s]', '[はがをにでとへもの]）', '）[はがをにでとへもの]',
+    '（\s*）', '[^\s]  +[^\s]', '[。、]\s*[はがをにでとへもの]', '[はがをにでとへもの][ 　]', '[（。、][ 　]'
+)
 Get-ChildItem skills -Recurse -File | ForEach-Object {
-  $rel = $_.FullName.Substring($root.Length + 1)
-  foreach ($l in ([System.IO.File]::ReadAllText($_.FullName) -split "`n")) {
+  $rel = $_.FullName.Substring($root.Length + 1) -replace '\\', '/'
+  $i = 0; $inFence = $false; $isScript = $rel -match '\.(py|ps1)$'
+  foreach ($l in ((ConvertTo-LfContent -Content ([System.IO.File]::ReadAllText($_.FullName))) -split "`n")) {
+    $i++
+    if (-not $isScript -and $l.TrimStart().StartsWith('```')) { $inFence = -not $inFence; continue }
+    if ($inFence -or ($isScript -and -not $l.TrimStart().StartsWith('#'))) { continue }
     if ((Get-LineVerdict -Line $l -InFence:$false) -ne 'ok') { continue }
     $o = Remove-ProvenanceFromLine -Line $l
-    if ($o -match '[ 　]{2,}|[はがをにでとへも][ 　]') { "$rel :: $o" }
+    foreach ($p in $patterns) {
+      if (([regex]::Matches($o, $p)).Count -gt ([regex]::Matches($l, $p)).Count) { "HIT $rel`:$i"; break }
+    }
   }
 }
 ```
 
-2026-08-07 の実測では `'ok'` 行 111 のうち 3 行が該当（`worklog-record/references/store-format.md`・`retrospective/template.md`・`worklog-skillify/SKILL.md` の各 1 行）。括弧内の識別子を文から外し、出所として末尾へ寄せる。
+2026-08-08 の実測では `'ok'` 行 **112** のうち **9 行**がヒットする（`pre-finalization-review/SKILL.md:24,32`・`retrospective/SKILL.md:21`・`retrospective/template.md:25`・`worklog-record/SKILL.md:12`・`worklog-record/references/store-format.md:20,80,86`・`worklog-skillify/SKILL.md:44`）。
+
+**(2) 全数読解**: ヒットしなかった行にも意味の欠落型が潜むため、`'ok'` 行 **112 行すべて**について変換前後の対を出力し、1 行ずつ読んで「配布先の読み手が読める日本語か」を判定する。実測では `worklog-extract/SKILL.md:49`（`（ADR-0083 の追補）` → `（追補）`）が (1) では拾えず読解でのみ検出された。
+
+対処は、括弧内の識別子を文から外し、出所として末尾へ寄せる。
 
 ```
 違反: （実測。同じ罠は `scripts/sync-template.ps1` が ADR-0033 で解決済み）
 適合: （実測。同じ罠は `scripts/sync-template.ps1` で解決済み（ADR-0033））
+
+違反: ## スコープ（ADR-0021 を維持）
+適合: ## スコープ（ADR-0021 の範囲を維持する）  ← 除去後: 「## スコープ」
 ```
 
-書き換え後に上記スクリプトを再実行し、**該当 0 件**になることを確認する。
+**終了条件**: 書き換え後に (1) を再実行して**ヒット 0 件**、かつ (2) の読解で**破綻 0 件**。読解の母数（112 行）と判定結果を報告に残すこと。
 
 - [ ] **Step 5: 違反 0 件で生成が通ることを確認する**
 

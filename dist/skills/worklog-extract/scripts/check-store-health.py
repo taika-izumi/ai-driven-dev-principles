@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""中央ストアのバイト健全性を検査する（ADR-0054 の契約: UTF-8 / BOM なし / LF 固定 / 全行 JSON パース可能）。
+"""中央ストアのバイト健全性を検査する（契約: UTF-8 / BOM なし / LF 固定 / 全行 JSON パース可能）。
 
 grep 系では CR を検出できないため、バイト列を直接数える。
 --self-test は検出器自身の検出力を確かめる（正の対照 = 既知の欠陥で発火するか、
@@ -21,7 +21,7 @@ def find_bom_offsets(raw):
     """BOM の混入位置を返す（ファイル先頭、および各行の先頭）。
 
     ストアは追記専用のため、BOM はファイル頭だけでなく「追記チャンクの先頭」= 行頭にも
-    混入しうる（Issue-0032）。頭だけを見る実装ではそれを取り逃がす。
+    混入しうる。頭だけを見る実装ではそれを取り逃がす。
     一方、JSON 文字列値の内部に現れる U+FEFF は行頭に来ないため、行頭に限定することで
     誤検出を避けつつ実際の混入経路を捕捉できる。
     """
@@ -109,7 +109,7 @@ def run_check(root):
             print(f"  OK {rel}")
 
     if total:
-        print(f"[check-store-health] 違反 {total} 件。走査を中止する（ADR-0054: silent tolerance はしない）")
+        print(f"[check-store-health] 違反 {total} 件。走査を中止する（検出した違反は見逃さない）")
         return 1
     print(f"[check-store-health] {len(targets)} ファイルすべて健全")
     return 0

@@ -23,6 +23,7 @@
 | [0036](system/0036-worklog-extract-unclustered-singleton-ledger-handling.md) | worklog-extract でクラスタ化されなかった単発エントリの台帳上の扱いが未定義 | open | 2026-07-31 |
 | [0055](system/0055-specs-relative-adr-links-broken.md) | 仕様書内から ADR を相対パスで参照しているリンクが壊れている | open | 2026-08-07 |
 | [0058](system/0058-legacy-contributing-gateway-spec-stale.md) | contributing-and-gateway 仕様書が旧名称・旧構成のまま陳腐化している | open | 2026-08-07 |
+| [0064](system/0064-check-block-heading-level-inconsistent.md) | 過剰適合点検ブロックの見出しレベルが記録先ごとに 2 通りで存在確認を単一 grep で書けない | open | 2026-08-07 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 
@@ -75,3 +76,5 @@
 | [0059](flow/0059-adr-0065-gate-not-wired-into-worklog-skillify.md) | ADR-0065 の適用条件設計ゲートが worklog-skillify に配線されていない | open | 2026-08-07 |
 | [0060](flow/0060-claude-md-decision-triggers-missing-guideline-change.md) | CLAUDE.md の意思決定即時記録トリガーに「ガイドライン・ルールの追加・変更」が無い | open | 2026-08-07 |
 | [0061](flow/0061-skill-revision-scenario-steps-assume-new-creation.md) | 「Skillを新規作成・改定するとき」シナリオの手順・チェックリストが新規作成前提のまま | open | 2026-08-07 |
+| [0062](flow/0062-review-recommendation-ignores-artifact-safety-net.md) | 確定前レビューの次手提示が成果物の性質を問わず中立で、安全網の無い成果物でも非推奨側に倒れる | open | 2026-08-07 |
+| [0063](flow/0063-plan-document-sync-policy-undefined.md) | 実装中に確定した文言を作業文書（plan）へ反映するかの規約が未定義 | open | 2026-08-07 |

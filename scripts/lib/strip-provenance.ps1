@@ -70,7 +70,9 @@ function Remove-ProvenanceFromLine {
     # '``(?=`)' のような書き方は「2 連＋直後にもう 1 つ」を要求してしまい意図どおり動かない
     # （実測。むしろコードフェンスの 3 連に一致する）。[char]96 で組み立てること。
     $bt = [char]96
-    $pattern13 = $script:ReType13 + '(?:\s*項目[\d/]+)?'
+    # 桁のみの継続形（ADR-0048/0049/0051 の 2 件目以降）は ReListColon と同じ形で吸収する。
+    # 付けないと裸の 4 桁（0049/0051）が残る（実測）。
+    $pattern13 = $script:ReType13 + '(?:\s*[/〜]\s*\d{4})*' + '(?:\s*項目[\d/]+)?'
     $out = [regex]::Replace($out, "$bt$pattern13$bt", '')
     $out = [regex]::Replace($out, "$bt$($script:ReType4)$bt", { param($m)
         $prefix = (($m.Value.Trim([char]96)) -split '-20')[0]
@@ -87,10 +89,17 @@ function Remove-ProvenanceFromLine {
     })
 
     # 除去で生じた区切りの残骸を掃除（行頭インデントは $body に含まれないので影響しない）
-    $out = [regex]::Replace($out, '（\s*[。、・/〜]?\s*', '（')
-    $out = [regex]::Replace($out, '\s*[。、・/〜]?\s*）', '）')
+    # 括弧に隣接する区切りは反復で落とす。1 個しか落とさないと括弧内に識別子が 2 つ以上あるとき
+    # 残骸が出て、冪等性も壊れる（実測）。
+    # 識別子の間に取り残された区切りの連続（`。 / 。` `。。` など）を先頭 1 個へ畳む。
+    # 先頭の `(?<!:[。、・/〜])` は URL の `://` を守るためのもの（skills/ に URL は無いが、
+    # sync-template.ps1 は docs/ 配下へも同じ変換を掛けるため）。
+    $out = [regex]::Replace($out, '(?<!:[。、・/〜])(?<=[。、・/〜])\s*(?:[。、・/〜]\s*)+', '')
+    # 量化子は `+` ではなく `*`。`+` にすると区切りを伴わない残骸（`（Issue-0034 の…` →
+    # `（ の…` の先頭空白）が落ちなくなる。旧実装の `?` はこれを落としていたので `+` は退行になる（実測）。
+    $out = [regex]::Replace($out, '（\s*(?:[。、・/〜]\s*)*', '（')
+    $out = [regex]::Replace($out, '\s*(?:[。、・/〜]\s*)*）', '）')
     $out = $out -replace '（）', ''
-    $out = [regex]::Replace($out, '(?<=\S)[ 　]{2,}', ' ')
     return ($indent + $out.TrimEnd())
 }
 
@@ -117,6 +126,8 @@ function Test-ProvenanceConvention {
     }
     # `,@($violations)` と書かないこと。List に `@()` を掛けたものへ単項カンマを適用すると
     # 「Argument types do not match」で失敗する（実測）。`.ToArray()` が最も曖昧さがない。
+    # 呼び出し側も `@(Test-ProvenanceConvention ...)` と書かないこと。単項カンマで包んだ戻り値へ
+    # さらに `@()` を掛けると二重配列になり、`.Count` が要素数によらず常に 1 になる。単純代入で受けること。
     return ,$violations.ToArray()
 }
 
@@ -132,12 +143,21 @@ function Remove-ProvenanceNotation {
         $line = $lines[$i]
         if (-not $isScript -and $line.TrimStart().StartsWith('```')) { $inFence = -not $inFence; $out.Add($line); continue }
         if ($inFence -or ($isScript -and -not $line.TrimStart().StartsWith('#'))) { $out.Add($line); continue }
-        if ((Get-LineVerdict -Line $line -InFence:$false) -eq 'listline') {
+        $verdict = Get-LineVerdict -Line $line -InFence:$false
+        if ($verdict -eq 'listline') {
             [void]$droppedAfter.Add($out.Count)   # この位置の直後で 1 行落ちた
             continue
         }
-        $out.Add((Remove-ProvenanceFromLine -Line $line))
+        # 変換は識別子を含む行（'ok'）だけに限定する。掃除規則は spec 02 §4 の
+        # 「括弧内の識別子はトークンと隣接する区切りとともに除去する」文脈でのみ働くべきもので、
+        # 識別子と無関係な行へ掛けると表の桁揃え・末尾スラッシュ・行末 2 空白の強制改行が壊れる（実測）。
+        if ($verdict -eq 'ok') { $out.Add((Remove-ProvenanceFromLine -Line $line)) }
+        else                   { $out.Add($line) }
     }
+    # 以降 2 パスは Markdown の整形であり、スクリプトへは掛けない
+    # （PEP 8 の二重空行を潰すため。check-store-health.py で 8 箇所の実害を確認）
+    if ($isScript) { return ($out -join "`n") }
+
     # 出所リスト行を実際に削除した節に限り、空になった見出しを畳む
     # （無条件に「見出しの次が見出しなら削除」とすると、もともと見出しが連続する箇所を壊す）
     $final = New-Object System.Collections.Generic.List[string]

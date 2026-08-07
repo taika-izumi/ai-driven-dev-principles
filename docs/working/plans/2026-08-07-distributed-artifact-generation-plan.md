@@ -1063,13 +1063,13 @@ git commit -m "docs: 配布対象ソースの記法規約を CONTRIBUTING へ新
 Status は `Accepted` のまま変えない（`decision-log` の台帳監査における「部分修正あり（本体現役・状態変更なし）」の扱い）。
 
 ```markdown
-- **部分修正（2026-08-07・ADR-0083）**: 本 ADR の「説明文は保持し、インデックス行のみ除去する」は、出所識別子については適用されなくなった。`sync-template.ps1` は保持した説明文からも出所識別子を除去する。空インデックス生成そのものの規約は変わらない。
+- **部分修正（<実施日>・ADR-0083）**: 本 ADR の実現方法のうち、同期が内容を変えないことを前提にした記述が適用されなくなった。「説明文は保持し、インデックス行のみ除去する」（保持した説明文からも識別子を除去し、出所リスト行は行ごと削除される）と、「verbatim コピー対象」「verbatim コピーする」（manifest 記載ファイルも変換を通る）の 3 箇所が対象。シード基準と空インデックス生成そのものの規約は変わらない。Status は Accepted のまま維持する。
 ```
 
 - [ ] **Step 2: 注記が入ったことを確認する**
 
 ```powershell
-Select-String -Path docs/records/decisions/0027-template-seed-criteria.md -Pattern '部分修正（2026-08-07' | Measure-Object | Select-Object -ExpandProperty Count
+Select-String -Path docs/records/decisions/0027-template-seed-criteria.md -Pattern '部分修正（20' | Measure-Object | Select-Object -ExpandProperty Count
 Select-String -Path docs/records/decisions/0027-template-seed-criteria.md -Pattern '^- \*\*Status\*\*: Accepted' | Measure-Object | Select-Object -ExpandProperty Count
 ```
 

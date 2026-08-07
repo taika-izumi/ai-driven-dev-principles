@@ -769,9 +769,13 @@ Get-ChildItem skills -Recurse -File | ForEach-Object {
 ```
 違反: （実測。同じ罠は `scripts/sync-template.ps1` が ADR-0033 で解決済み）
 適合: （実測。同じ罠は `scripts/sync-template.ps1` で解決済み（ADR-0033））
+```
 
+**括弧の中身を書き足す方式では直らない**（2026-08-08 の実測）。括弧が丸ごと消えるのは識別子が括弧内の唯一の内容であるときだけなので、`## スコープ（ADR-0021 を維持）` を `## スコープ（ADR-0021 の範囲を維持する）` へ変えても、除去後は `## スコープ（の範囲を維持する）` が残り破綻は解消しない。**識別子を文の外へ出し、末尾の独立した括弧（または出所注記）へ移すこと。**
+
+```
 違反: ## スコープ（ADR-0021 を維持）
-適合: ## スコープ（ADR-0021 の範囲を維持する）  ← 除去後: 「## スコープ」
+適合: ## スコープ（ADR-0021）          ← 除去後: 「## スコープ」
 ```
 
 **終了条件**: 書き換え後に (1) を再実行して**ヒット 0 件**、かつ (2) の読解で**破綻 0 件**。読解の母数（112 行）と判定結果を報告に残すこと。
@@ -786,13 +790,24 @@ pwsh -NoProfile -File scripts/build-dist.ps1; "exit=$LASTEXITCODE"
 
 - [ ] **Step 6: 生成物に識別子が残っていないことを確認する**
 
+**判定には共有ライブラリの `Get-ProvenanceLeak` を使う**（素朴な `Select-String` を使わないこと。理由は下記）。
+
 ```powershell
-Get-ChildItem dist -Recurse -File -Exclude *.py,*.ps1 | Select-String -Pattern '(?<![A-Za-z0-9])(?:[A-Za-z][A-Za-z0-9]*#)?(?:ADR|Issue)-\d{4}','(?<![A-Za-z0-9])(?:[A-Za-z][A-Za-z0-9]*)?-20\d\d-\d\d-\d\d(?:-\d\d)?' | Measure-Object | Select-Object -ExpandProperty Count
+. ./scripts/lib/strip-provenance.ps1
+$root = (Get-Location).Path
+$leak = 0
+Get-ChildItem dist -Recurse -File | ForEach-Object {
+  $rel = $_.FullName.Substring($root.Length + 1) -replace '\\', '/'
+  foreach ($x in (Get-ProvenanceLeak -Content ([System.IO.File]::ReadAllText($_.FullName)) -Path $rel)) {
+    "  ${rel}:$($x.Line)  $($x.Text)"; $leak++
+  }
+}
+"leak total = $leak"
 ```
 
-期待: `0`。
+期待: `leak total = 0`。
 
-**`-Exclude *.py,*.ps1` は必須**。スクリプトのコード部分は規約の適用対象外（spec 00 スコープ外・01 適用範囲）であり、`check-store-health.py` の docstring とコード行にある識別子 3 件は移行後も恒久的に `dist/` に残る。除外しないとこの確認は必ず失敗し、スコープ外のはずのコード修正へ誘導してしまう。種別 4 の正規表現も合わせて確認する（完了基準 4 は「02 が定める正規表現」による判定を求めている）。
+**素朴な正規表現（`Select-String` に種別 1〜4 のパターンを直接渡す形）を使ってはならない**。2026-08-08 の実測で、その方式は Step 2・3 が**意図的に導入する**中立名プレースホルダ（`X-2026-07-16-01` 等）を 4 件拾い、期待値 0 が原理的に達成不能になる。`Get-ProvenanceLeak` は spec 02 が定める中立名の許可リスト（`^(?:X|Proj|<project>)$`）と適用範囲（`.py` / `.ps1` はコメント行のみ、フェンス内は対象外）を適用するため、完了基準 4 の「02 が定める正規表現による判定」を正しく実装している。素朴な方式は `-Exclude *.py,*.ps1` のような手当ても必要になり、除外を忘れると `check-store-health.py` のコード行にある識別子 3 件でも失敗する。
 
 - [ ] **Step 7: コミット**
 
@@ -1121,13 +1136,21 @@ pwsh -NoProfile -File scripts/sync-template.ps1; "sync exit=$LASTEXITCODE"
 - [ ] **Step 2: 両生成物に識別子が残っていないことを確認する**
 
 ```powershell
-$re = @('(?<![A-Za-z0-9])(?:[A-Za-z][A-Za-z0-9]*#)?(?:ADR|Issue)-\d{4}',
-        '(?<![A-Za-z0-9])(?:[A-Za-z][A-Za-z0-9]*)?-20\d\d-\d\d-\d\d(?:-\d\d)?')
-(Get-ChildItem dist -Recurse -File -Exclude *.py,*.ps1 | Select-String -Pattern $re | Measure-Object).Count
-(Get-ChildItem template -Recurse -File | Select-String -Pattern $re | Measure-Object).Count
+. ./scripts/lib/strip-provenance.ps1
+$root = (Get-Location).Path
+foreach ($dir in @('dist', 'template')) {
+  $leak = 0
+  Get-ChildItem $dir -Recurse -File | ForEach-Object {
+    $rel = $_.FullName.Substring($root.Length + 1) -replace '\\', '/'
+    foreach ($x in (Get-ProvenanceLeak -Content ([System.IO.File]::ReadAllText($_.FullName)) -Path $rel)) {
+      "  ${rel}:$($x.Line)  $($x.Text)"; $leak++
+    }
+  }
+  "$dir leak total = $leak"
+}
 ```
 
-期待: どちらも `0`。`dist/` 側でスクリプトを除外する理由は Task 7 Step 6 と同じ（コード部分は規約の適用対象外で、`check-store-health.py` に識別子 3 件が恒久的に残る）。`template/` にスクリプトは含まれないため除外は不要。
+期待: どちらも `0`。判定に `Get-ProvenanceLeak` を使う理由は Task 7 Step 6 と同じ（中立名プレースホルダの許可リストと `.py` / `.ps1` の適用範囲を尊重するため。素朴な正規表現では意図的に導入したプレースホルダを拾って必ず失敗する）。
 
 - [ ] **Step 3: `-Check` が同期済みの状態で成功することを確認する**
 

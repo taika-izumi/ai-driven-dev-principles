@@ -1,6 +1,8 @@
 # sync-template.ps1
 # template.manifest に基づいてリポジトリ直下から template/ へ完全同期する
-# 使い方: pwsh scripts/sync-template.ps1 (PowerShell 5.1でも動作可)
+# 使い方: pwsh scripts/sync-template.ps1 [-Check] (PowerShell 5.1でも動作可)
+
+param([switch]$Check)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -8,6 +10,7 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $manifestPath = Join-Path $repoRoot "template.manifest"
 $templateDir = Join-Path $repoRoot "template"
+. (Join-Path $PSScriptRoot 'lib/strip-provenance.ps1')
 
 # 空インデックス生成対象（repo固有のデータ行を除去してコピーする。ADR-0027）
 $emptyIndexTargets = @(
@@ -109,59 +112,98 @@ $files = Get-Content $manifestPath |
     Where-Object { $_ -notmatch '^\s*#' } |
     ForEach-Object { $_.Trim() }
 
-Write-Host "[sync-template] Cleaning template/ ..."
-if (Test-Path $templateDir) {
-    Remove-Item -Recurse -Force $templateDir
-}
-
 Write-Host "[sync-template] Reading template.manifest..."
 Write-Host "[sync-template] Syncing $($files.Count) files + $($emptyIndexTargets.Count) empty indexes..."
 
+# 1〜2. manifest 記載ファイルと空インデックスの内容を集める
+$pending = [ordered]@{}
 foreach ($file in $files) {
     $sourcePath = Join-Path $repoRoot $file
-    $destPath = Join-Path $templateDir $file
-
-    if (-not (Test-Path $sourcePath)) {
-        Write-Warning "  ! $file not found, skipping"
-        continue
-    }
-
-    $destDir = Split-Path -Parent $destPath
-    if (-not (Test-Path $destDir)) {
-        New-Item -ItemType Directory -Path $destDir -Force | Out-Null
-    }
-
-    Copy-Item -Path $sourcePath -Destination $destPath -Force
-    Write-Host "  ✓ $file"
+    if (-not (Test-Path $sourcePath)) { Write-Warning "  ! $file not found, skipping"; continue }
+    $pending[$file] = [System.IO.File]::ReadAllText($sourcePath)
 }
-
-# 空インデックスの生成（ADR-0027）
 foreach ($target in $emptyIndexTargets) {
     $sourcePath = Join-Path $repoRoot $target
-    $destPath = Join-Path $templateDir $target
+    if (-not (Test-Path $sourcePath)) { Write-Warning "  ! $target not found, skipping"; continue }
+    $lines = Get-Content $sourcePath
+    $pending[$target] = ((New-EmptyIndexContent -Lines $lines) -join "`n") + "`n"
+}
 
-    if (-not (Test-Path $sourcePath)) {
-        Write-Warning "  ! $target not found, skipping empty index generation"
-        continue
+# 3. 全件判定（違反があれば template/ を触らずに停止する）
+$violations = New-Object System.Collections.Generic.List[object]
+foreach ($k in $pending.Keys) {
+    foreach ($v in (Test-ProvenanceConvention -Content $pending[$k] -Path $k)) {
+        $violations.Add([pscustomobject]@{ Path=$k; Line=$v.Line; Rule=$v.Rule; Text=$v.Text })
     }
+}
+if ($violations.Count -gt 0) {
+    Write-Host "[sync-template] Convention violations: $($violations.Count)"
+    foreach ($v in $violations) { Write-Host "  ! $($v.Path):$($v.Line)  $($v.Rule)"; Write-Host "      $($v.Text)" }
+    Write-Host '[sync-template] Aborted. template/ was not modified.'
+    exit 1
+}
 
+# 4. 変換を適用した最終内容を作る
+$generated = [ordered]@{}
+foreach ($k in $pending.Keys) { $generated[$k] = (Remove-ProvenanceNotation -Content $pending[$k] -Path $k) }
+
+if ($Check) {
+    $existing = @{}
+    $bomFiles = New-Object System.Collections.Generic.List[string]
+    if (Test-Path $templateDir) {
+        foreach ($f in (Get-ChildItem -Path $templateDir -Recurse -File)) {
+            $rel = $f.FullName.Substring($templateDir.Length + 1) -replace '\\', '/'
+            $bytes = [System.IO.File]::ReadAllBytes($f.FullName)
+            if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+                $bomFiles.Add($rel)
+            }
+            $existing[$rel] = ConvertTo-LfContent -Content ([System.IO.File]::ReadAllText($f.FullName))
+        }
+    }
+    $diff = 0
+    foreach ($k in $generated.Keys) {
+        if (-not $existing.ContainsKey($k)) { Write-Host "  ! missing in template/: $k"; $diff++; continue }
+        if ($existing[$k] -ne $generated[$k]) { Write-Host "  ! content differs: $k"; $diff++ }
+    }
+    foreach ($k in $existing.Keys) { if (-not $generated.Contains($k)) { Write-Host "  ! stale file: $k"; $diff++ } }
+    foreach ($rel in $bomFiles) { Write-Host "  ! BOM found: $rel"; $diff++ }
+    foreach ($k in $generated.Keys) {
+        foreach ($lk in (Get-ProvenanceLeak -Content $generated[$k] -Path $k)) {
+            Write-Host "  ! identifier remains: ${k}:$($lk.Line)  $($lk.Text)"; $diff++
+        }
+    }
+    if ($diff -gt 0) { Write-Host "[sync-template] Out of date: $diff difference(s)."; exit 1 }
+    Write-Host '[sync-template] Up to date.'
+    exit 0
+}
+
+Write-Host "[sync-template] Cleaning template/ ..."
+if (Test-Path $templateDir) { Remove-Item -Recurse -Force $templateDir }
+
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+foreach ($k in $generated.Keys) {
+    $destPath = Join-Path $templateDir $k
     $destDir = Split-Path -Parent $destPath
     if (-not (Test-Path $destDir)) {
         New-Item -ItemType Directory -Path $destDir -Force | Out-Null
     }
-
-    $lines = Get-Content $sourcePath
-    $outputLines = New-EmptyIndexContent -Lines $lines
-
-    # 改行は LF 固定で書き出す（WriteAllLines は環境依存の改行になり、LF 正規化されたコミット内容と食い違う。ADR-0033）
-    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-    $content = ($outputLines -join "`n") + "`n"
-    [System.IO.File]::WriteAllText($destPath, $content, $utf8NoBom)
-    Write-Host "  ✓ $target (empty index generated)"
+    [System.IO.File]::WriteAllText($destPath, $generated[$k], $utf8NoBom)
+    Write-Host "  ✓ $k"
 }
 
-$totalFiles = $files.Count + $emptyIndexTargets.Count
+$totalFiles = $generated.Count
 Write-Host "[sync-template] Done. $totalFiles files synced to template/"
+
+# template/ の自己検査（ADR-0083。build-dist.ps1 の自己検査と同じ形）
+$leak = 0
+foreach ($f in (Get-ChildItem -Path $templateDir -Recurse -File)) {
+    $rel = $f.FullName.Substring($templateDir.Length + 1) -replace '\\', '/'
+    $content = [System.IO.File]::ReadAllText($f.FullName)
+    foreach ($lk in (Get-ProvenanceLeak -Content $content -Path $rel)) {
+        Write-Host "  ! identifier remains: ${rel}:$($lk.Line)  $($lk.Text)"; $leak++
+    }
+}
+if ($leak -gt 0) { Write-Host "[sync-template] Self-check failed: $leak identifier(s) remain in template/."; exit 1 }
 
 # CLAUDE.md 規模計測（ADR-0040。警告のみで同期はブロックしない）
 & (Join-Path $PSScriptRoot "check-claude-md-size.ps1")

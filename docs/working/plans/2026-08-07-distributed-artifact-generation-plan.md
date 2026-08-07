@@ -252,6 +252,9 @@ git commit -m "feat: 出所識別子の判定関数と自己テストを追加�
         @{ In='規範（ADR-0073。条件の追加は観測が根拠）を守る';          Out='規範（条件の追加は観測が根拠）を守る' }
         @{ In='…出所のため（出所: LoopForAlpha）';                     Out='…出所のため' }
         @{ In='- **関連**: ADR-NNNN 等（あれば）';                     Out='- **関連**: ADR-NNNN 等（あれば）' }
+        # バッククォートで囲まれた識別子（囲みごと消えること。空の対が残らないこと）
+        @{ In=('（実測: 取り逃していた。' + [char]96 + 'LoopForAlpha-2026-07-19-05' + [char]96 + '）'); Out='（実測: 取り逃していた）' }
+        @{ In=('サンプル ' + [char]96 + 'X-2026-01-01-01' + [char]96 + ' は中立名なので残す');          Out=('サンプル ' + [char]96 + 'X-2026-01-01-01' + [char]96 + ' は中立名なので残す') }
     )
     foreach ($c in $convert) {
         $actual = Remove-ProvenanceFromLine -Line $c.In
@@ -262,7 +265,7 @@ git commit -m "feat: 出所識別子の判定関数と自己テストを追加�
     }
 ```
 
-あわせて末尾の合格メッセージを `all $($cases.Count + $convert.Count) cases passed` へ変える。
+あわせて末尾の合格メッセージを `all $($cases.Count + $convert.Count) cases passed` へ変える（判定 11 ＋ 変換 6 ＝ 17 ケース）。
 
 - [ ] **Step 2: 自己テストを走らせて失敗を確認する**
 
@@ -285,8 +288,21 @@ function Remove-ProvenanceFromLine {
     # 種別 5: 括弧を中身ごと削除
     $out = [regex]::Replace($body, $script:ReType5, '')
 
-    # 種別 1〜4: 括弧内のトークンと隣接する区切りを除去
+    # 種別 1〜4: **バッククォートで囲まれた識別子は囲みごと除去する。**
+    # 識別子だけを外すと空の対（`` の 2 連）が残り、後段の掃除では消せない。
+    # PowerShell の単一引用符内ではバッククォートがエスケープにならないため、
+    # '``(?=`)' のような書き方は「2 連＋直後にもう 1 つ」を要求してしまい意図どおり動かない
+    # （実測。むしろコードフェンスの 3 連に一致する）。[char]96 で組み立てること。
+    $bt = [char]96
     $pattern13 = $script:ReType13 + '(?:\s*項目[\d/]+)?'
+    $out = [regex]::Replace($out, "$bt$pattern13$bt", '')
+    $out = [regex]::Replace($out, "$bt$($script:ReType4)$bt", { param($m)
+        $prefix = (($m.Value.Trim([char]96)) -split '-20')[0]
+        if ($prefix -match $script:ReNeutral) { return $m.Value }   # 中立名は残す
+        return ''
+    })
+
+    # 続いて、囲まれていない識別子を除去する
     $out = [regex]::Replace($out, $pattern13, '')
     $out = [regex]::Replace($out, $script:ReType4, { param($m)
         $prefix = ($m.Value -split '-20')[0]
@@ -295,7 +311,6 @@ function Remove-ProvenanceFromLine {
     })
 
     # 除去で生じた区切りの残骸を掃除（行頭インデントは $body に含まれないので影響しない）
-    $out = [regex]::Replace($out, '``(?=`)', '')      # 中身が空になったバッククォート対のみ
     $out = [regex]::Replace($out, '（\s*[。、・/〜]?\s*', '（')
     $out = [regex]::Replace($out, '\s*[。、・/〜]?\s*）', '）')
     $out = $out -replace '（）', ''
@@ -378,7 +393,7 @@ function Remove-ProvenanceNotation {
 pwsh -NoProfile -Command ". ./scripts/lib/strip-provenance.ps1; Invoke-StripProvenanceSelfTest"
 ```
 
-期待: `[strip-provenance] self-test: all 15 cases passed`
+期待: `[strip-provenance] self-test: all 17 cases passed`
 
 - [ ] **Step 5: コミット**
 
@@ -983,6 +998,14 @@ git commit -m "docs: ADR-0027 へ ADR-0083 による部分修正の注記を追�
 
 確認: `Skill` ツールで `start-work` を起動し、ベースディレクトリが `<repo>/dist/skills/start-work` を指し、本文に出所識別子が含まれないこと。
 
+**インストール記録の確認を省略しないこと。** Task 1 の実測で、同一マーケットプレイスから別のプラグインをインストールしたとき、既存プラグインのインストール記録が `installed_plugins.json` から消える事象が起きた（ガイドラインスキル 12 本が一覧から消失）。次で記録を確認する。
+
+```powershell
+python -c "import json,io; d=json.load(io.open(r'C:/Users/d12an/.claude/plugins/installed_plugins.json',encoding='utf-8')); [print(k) for k in d['plugins']]"
+```
+
+期待: `ai-driven-dev-principles@ai-driven-dev-principles` が含まれる。消えていたらユーザーへ `/plugin install ai-driven-dev-principles@ai-driven-dev-principles` を依頼して復旧する（Task 1 でこの手順により復旧を確認済み）。
+
 - [ ] **Step 3: コミット**
 
 ```bash
@@ -1045,7 +1068,7 @@ Move-Item $backup $victim
 pwsh -NoProfile -Command ". ./scripts/lib/strip-provenance.ps1; Invoke-StripProvenanceSelfTest"
 ```
 
-期待: `all 15 cases passed`。
+期待: `all 17 cases passed`。
 
 - [ ] **Step 5: 配布物の書式例が壊れていないことを目視で確認する**
 
@@ -1104,6 +1127,6 @@ git commit -m "chore: ADR-0081/0082/0083 を Accepted へ昇格し Issue-0067 �
 
 **2. プレースホルダ**: 「TBD」「後で」等は無い。移行タスク（5〜7）は行番号と変換の型を示し、検証を生成器の通過で担保している。Task 6 Step 4 の散文補完のみユーザー確認を条件としており、これは spec 05 の制約に由来する意図的な人間ゲートである。
 
-**3. 型の整合**: `Test-ProvenanceConvention` / `Remove-ProvenanceNotation` / `Get-LineVerdict` / `Get-IdentifierMatch` / `Remove-ProvenanceFromLine` / `Invoke-StripProvenanceSelfTest` の 6 関数を Task 2/3 で定義し、Task 4/8 で同名で呼んでいる。自己テストの件数は Task 2 で 11、Task 3 で +4 して 15 とし、Task 12 Step 4 の期待値と一致させた。
+**3. 型の整合**: `Test-ProvenanceConvention` / `Remove-ProvenanceNotation` / `Get-LineVerdict` / `Get-IdentifierMatch` / `Remove-ProvenanceFromLine` / `Invoke-StripProvenanceSelfTest` の 6 関数を Task 2/3 で定義し、Task 4/8 で同名で呼んでいる。自己テストの件数は Task 2 で 11、Task 3 で +6 して 17 とし、Task 12 Step 4 の期待値と一致させた。
 
 **4. 順序**: Task 1（構造判定）が最初、移行（5〜7）が `sync-template.ps1` 改修（8）より前、`extend-guidelines` 改定（9）の後に配布物再生成を挟んでいる。

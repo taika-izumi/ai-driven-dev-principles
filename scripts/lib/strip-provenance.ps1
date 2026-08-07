@@ -54,6 +54,102 @@ function Get-LineVerdict {
     return 'ok'
 }
 
+function Remove-ProvenanceFromLine {
+    param([string]$Line)
+
+    # 行頭のインデントは掃除規則の対象外にする（Markdown のネストが潰れるため）
+    $indent = [regex]::Match($Line, '^[ 　\t]*').Value
+    $body   = $Line.Substring($indent.Length)
+
+    # 種別 5: 括弧を中身ごと削除
+    $out = [regex]::Replace($body, $script:ReType5, '')
+
+    # 種別 1〜4: 括弧内のトークンと隣接する区切りを除去
+    $pattern13 = $script:ReType13 + '(?:\s*項目[\d/]+)?'
+    $out = [regex]::Replace($out, $pattern13, '')
+    $out = [regex]::Replace($out, $script:ReType4, { param($m)
+        $prefix = ($m.Value -split '-20')[0]
+        if ($prefix -match $script:ReNeutral) { return $m.Value }   # 中立名は残す
+        return ''
+    })
+
+    # 除去で生じた区切りの残骸を掃除（行頭インデントは $body に含まれないので影響しない）
+    $out = [regex]::Replace($out, '``(?=`)', '')      # 中身が空になったバッククォート対のみ
+    $out = [regex]::Replace($out, '（\s*[。、・/〜]?\s*', '（')
+    $out = [regex]::Replace($out, '\s*[。、・/〜]?\s*）', '）')
+    $out = $out -replace '（）', ''
+    $out = [regex]::Replace($out, '(?<=\S)[ 　]{2,}', ' ')
+    return ($indent + $out.TrimEnd())
+}
+
+function ConvertTo-LfContent {
+    param([string]$Content)
+    return ($Content -replace "`r`n", "`n" -replace "`r", "`n")
+}
+
+function Test-ProvenanceConvention {
+    param([string]$Content, [string]$Path)
+    $Content = ConvertTo-LfContent -Content $Content   # ソース側の CRLF に依存しない（ADR-0033）
+    $violations = New-Object System.Collections.Generic.List[object]
+    $isScript = $Path -match '\.(py|ps1)$'
+    $inFence = $false
+    $i = 0
+    foreach ($line in ($Content -split "`n")) {
+        $i++
+        if (-not $isScript -and $line.TrimStart().StartsWith('```')) { $inFence = -not $inFence; continue }
+        if ($isScript -and -not $line.TrimStart().StartsWith('#')) { continue }
+        $v = Get-LineVerdict -Line $line -InFence:$inFence
+        if ($v -in @('R2','R3','R4')) {
+            $violations.Add([pscustomobject]@{ Line=$i; Rule=$v; Text=$line.Trim() })
+        }
+    }
+    # `,@($violations)` と書かないこと。List に `@()` を掛けたものへ単項カンマを適用すると
+    # 「Argument types do not match」で失敗する（実測）。`.ToArray()` が最も曖昧さがない。
+    return ,$violations.ToArray()
+}
+
+function Remove-ProvenanceNotation {
+    param([string]$Content, [string]$Path = '')
+    $Content = ConvertTo-LfContent -Content $Content
+    $isScript = $Path -match '\.(py|ps1)$'
+    $out = New-Object System.Collections.Generic.List[string]
+    $droppedAfter = New-Object System.Collections.Generic.HashSet[int]   # 出所リスト行を削除した直前の出力位置
+    $inFence = $false
+    $lines = $Content -split "`n"
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        $line = $lines[$i]
+        if (-not $isScript -and $line.TrimStart().StartsWith('```')) { $inFence = -not $inFence; $out.Add($line); continue }
+        if ($inFence -or ($isScript -and -not $line.TrimStart().StartsWith('#'))) { $out.Add($line); continue }
+        if ((Get-LineVerdict -Line $line -InFence:$false) -eq 'listline') {
+            [void]$droppedAfter.Add($out.Count)   # この位置の直後で 1 行落ちた
+            continue
+        }
+        $out.Add((Remove-ProvenanceFromLine -Line $line))
+    }
+    # 出所リスト行を実際に削除した節に限り、空になった見出しを畳む
+    # （無条件に「見出しの次が見出しなら削除」とすると、もともと見出しが連続する箇所を壊す）
+    $final = New-Object System.Collections.Generic.List[string]
+    for ($i = 0; $i -lt $out.Count; $i++) {
+        if ($out[$i] -match '^#{2,}\s') {
+            $j = $i + 1
+            while ($j -lt $out.Count -and $out[$j].Trim() -eq '') { $j++ }
+            $sectionLostLine = $false
+            for ($k = $i + 1; $k -le $j; $k++) { if ($droppedAfter.Contains($k)) { $sectionLostLine = $true; break } }
+            if ($sectionLostLine -and ($j -ge $out.Count -or $out[$j] -match '^#{2,}\s')) { $i = $j - 1; continue }
+        }
+        $final.Add($out[$i])
+    }
+    # 連続空行を 1 行へ
+    $collapsed = New-Object System.Collections.Generic.List[string]
+    $prevBlank = $false
+    foreach ($l in $final) {
+        $blank = ($l.Trim() -eq '')
+        if ($blank -and $prevBlank) { continue }
+        $collapsed.Add($l); $prevBlank = $blank
+    }
+    return ($collapsed -join "`n")
+}
+
 function Invoke-StripProvenanceSelfTest {
     $cases = @(
         # 判定（適合）
@@ -80,7 +176,20 @@ function Invoke-StripProvenanceSelfTest {
             $fail++
         }
     }
+    $convert = @(
+        @{ In='記録先へ1行残す（ADR-0057）。';                         Out='記録先へ1行残す。' }
+        @{ In='規範（ADR-0073。条件の追加は観測が根拠）を守る';          Out='規範（条件の追加は観測が根拠）を守る' }
+        @{ In='…出所のため（出所: LoopForAlpha）';                     Out='…出所のため' }
+        @{ In='- **関連**: ADR-NNNN 等（あれば）';                     Out='- **関連**: ADR-NNNN 等（あれば）' }
+    )
+    foreach ($c in $convert) {
+        $actual = Remove-ProvenanceFromLine -Line $c.In
+        if ($actual -ne $c.Out) {
+            Write-Host "  FAIL convert expect=[$($c.Out)] actual=[$actual]"
+            $fail++
+        }
+    }
     if ($fail -gt 0) { Write-Host "[strip-provenance] self-test: $fail case(s) failed"; return $false }
-    Write-Host "[strip-provenance] self-test: all $($cases.Count) cases passed"
+    Write-Host "[strip-provenance] self-test: all $($cases.Count + $convert.Count) cases passed"
     return $true
 }

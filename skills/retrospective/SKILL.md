@@ -50,8 +50,8 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 
 ## 重要な前提
 
-- 意思決定の継続検出ルール（ADR-0006）は本スキル中も常時適用される。ただし retrospective 内では対策の採否を決めないため、retrospective 起因の ADR 起票は発生しない
-- 出力ファイルは ADR-0011（時系列追記型）に従い、一度書いたら原則上書き禁止（typo 修正のみ例外）
+- 意思決定の即時記録（継続適用）のルール（ADR-0006）は本スキル中も常時適用される。ただし retrospective 内では対策の採否を決めないため、retrospective 起因の ADR 起票は発生しない
+- 出力ファイルは時系列追記型（ADR-0011）に従い、一度書いたら原則上書き禁止（typo 修正のみ例外）
 - スキル内ではコミットしない。コミットはユーザーまたは通常フローに委ねる
 
 ## 手順
@@ -133,5 +133,5 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 - ADR-0031: 既存 open 課題の再発・進展は issue の「検討状況」へ一次記録
 - ADR-0028: 振り返り課題の全件起票と issues の system/flow フォルダ分割
 - ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
-- ADR-0010: 振り返りフェーズ導入 / ADR-0011: 保管規約（時系列追記型）
+- ADR-0010〜0011: 振り返りフェーズ導入・保管規約（時系列追記型）
 - 関連スキル: start-work, decision-log, session-handoff, worklog-record, worklog-extract

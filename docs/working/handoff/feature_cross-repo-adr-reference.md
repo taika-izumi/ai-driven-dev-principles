@@ -49,7 +49,8 @@
 
 ## 既知のブロッカー・懸念
 
-- **Task 1 は本番のプラグインエントリを差し替えてはならない。** 差し替えると当セッションのガイドラインスキルが 18 本から 1 本になり、復旧にユーザーの再 update が要る。検証は別名エントリ `ai-driven-dev-principles-probe` で行う（計画 Task 1）
+- **同一マーケットプレイスへ 2 つ目のプラグインをインストールすると、1 つ目のインストール記録が消える**（2026-08-07 実測）。本番エントリに一切触れずに別名エントリで検証したにもかかわらず、`ai-driven-dev-principles` の記録が `installed_plugins.json` から消え、ガイドラインスキル 12 本が使えなくなった。復旧は `/plugin install ai-driven-dev-principles@ai-driven-dev-principles`（ユーザー操作。エージェントからは実行できない）。**Task 11 の本番切替でも同じ危険がある**ため、切替後は必ずインストール記録を確認すること（計画 Task 11 Step 2 に手順を追記済み）
+- **検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている。** `./dist` に skills が無いためスキルは提供していないが、片付けるならユーザースコープでのアンインストールが要る（プロジェクトスコープの uninstall は「インストールされていない」と返る）
 - **構造 A の成立を実機で確認済み（2026-08-07）。** 検証用エントリ `ai-driven-dev-principles-probe`（`source: "./dist"`）でスキルを起動したところ、ベースディレクトリが `dist/skills/probe-skill` を指した。マーケットプレイスの `source` にサブディレクトリを指定できる。**構造 B へのフォールバックは不要**で、計画 Task 1 Step 5 の読み替え表は適用しない
 - **計画に載せた PowerShell は写経実行で検証済み**（自己テスト 15/15・実データ違反 36・見出し消失 0・インデント破壊 0・CR 0）。ただし `build-dist.ps1` 本体の全体実行はまだ行っていない
 - **`,@($list)` は List に対して型エラーになる**（実測）。単項カンマで包むときは `.ToArray()` を使う
@@ -63,6 +64,8 @@
 - 2026-08-07 brainstorming 完了（配布物の記録参照の扱いを設計）: ADR=0081（設計収束にあわせ書き直し）・0082（配布体制）・0083（記法規約と検査） / worklog=`MakeAiInstructions-2026-08-07-13`・`MakeAiInstructions-2026-08-07-14`（確定点ではないため `review=` は省略。spec 確定点 (a) は `feature-block-design` 完了時）
 - 2026-08-07 spec 確定点 (a)（`feature-block-design` 完了・spec 6 ファイル確定）: ADR=0081/0082/0083（いずれも Proposed のままコミット `9b974ba`。実装完了時に Accepted 昇格） / worklog=`MakeAiInstructions-2026-08-07-15` / review=フル実施（claude-opus-5）＋差分再確認（claude-opus-5）
 - 2026-08-07 plan 確定点（`superpowers:writing-plans` 完了・12 タスクの計画を確定。コミット `7a1c0fc`）: ADR=なし（既存 ADR-0081〜0083 の写像であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-07-16` / review=軽量レビュー実施（claude-opus-5。写像欠落と自己テスト整合に限定。Critical 2・Major 5・Minor 5 を全件反映し、修正版を写経実行して検証）
+
+- 2026-08-07 Task 1 完了（配布構造の実機判定・構造 A 成立。コミット `560be0f`）: ADR=なし（ADR-0082 が定めた判定手順の実行であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-07-17`（検証中に本番プラグインのインストール記録が消える事故。緩和策が実機で破れた型） / review=非発火（確定点ではない）
 
 ## 次セッション開始時のアクション
 

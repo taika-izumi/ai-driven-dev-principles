@@ -125,12 +125,12 @@ docs/current/specs/YYYY-MM-DD-<topic>/
 
 ### Phase 6: 横断ラッパー処理
 
-`start-work` の横断ラッパーが自動適用する:
+本スキルの完了時点が spec 確定点 (a) にあたるため、まず `start-work` の「確定前レビューの提示規則」に従って確定前レビューを提示し、次手（writing-plans への遷移を含む）を確認する（ADR-0080）。
+
+そのうえで `start-work` の横断ラッパーが自動適用する:
 
 - ADR 候補（機能ブロック構造の選択など）を `decision-log` 経由で記録
-- handoff を update（マイルストーン到達）
-
-本スキルの完了時点が spec 確定点 (a) にあたるため、その後は `start-work` の「確定前レビューの提示規則」に従って確定前レビューを提示し、次手（writing-plans への遷移を含む）を確認する（ADR-0080）。
+- handoff を update（マイルストーン到達）。確定前レビューの提示結果を `review=` として併記する
 
 ## 対応する原則
 

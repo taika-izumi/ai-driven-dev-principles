@@ -1,6 +1,6 @@
 # ADR-0080: 確定前レビューは spec/plan 確定点で提示し、未レビューの規範・手順文書の変更を含む成果物では推奨側に倒す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-07
 
 ## Context

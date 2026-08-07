@@ -1,7 +1,7 @@
 # Handoff: 確定前レビューの提示規則の導入サイクル完了・次サイクル待ち
 
 - **Branch**: master（feature/review-recommendation-by-artifact-type を merge `afed223` として取り込み）
-- **Last Updated**: 2026-08-07 17:43 (Asia/Tokyo)
+- **Last Updated**: 2026-08-07 18:05 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: 全フェーズ完了。次サイクル着手はユーザー判断
 
@@ -62,6 +62,8 @@
 ## Post ラッパー消化記録
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照（確定点を通過したマイルストーンには `review=` を併記する。ADR-0080）。直近サイクル中の分は `feature_review-recommendation-by-artifact-type.md` 参照（retrospective Phase 3 で突合済み・未消化なし）。
+
+- 2026-08-07 セッション終了（切り替え直前。ADR-0058）: ADR=なし（Proposed 残ゼロ・未コミットドラフトなしを確認。終了処理に意思決定なし） / worklog=`MakeAiInstructions-2026-08-07-12`（既存ファイル経路の推測による Edit 失敗。`-2026-08-04-02` と同型の再発） / review=非発火（推奨判定が偽。確定点ではないため）
 
 ## 次セッション開始時のアクション
 

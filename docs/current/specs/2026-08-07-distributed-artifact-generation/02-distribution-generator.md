@@ -27,36 +27,43 @@ scripts/build-dist.ps1 [-Check]
 
 ### 共有ライブラリのインターフェース
 
-`scripts/lib/strip-provenance.ps1` は次の 2 関数を公開する。
+`scripts/lib/strip-provenance.ps1` は次の 4 関数を生成器へ公開する。
 
 | 関数 | 入力 | 出力 |
 |---|---|---|
 | `Test-ProvenanceConvention` | ファイル内容（文字列）、ファイルパス（診断用） | 違反の配列（行番号・違反した規約 ID・内容） |
 | `Remove-ProvenanceNotation` | ファイル内容（文字列）、ファイルパス（適用範囲の判定用） | 出所識別子を除去した内容（文字列） |
+| `Get-IdentifierMatch` | 行（文字列） | 行内の出所識別子の配列。自己検査と除去数の集計に使う |
+| `ConvertTo-LfContent` | ファイル内容（文字列） | CRLF / CR を LF へ正規化した内容。行分割の前処理に使う |
+
+このほか検証用に自己テスト `Invoke-StripProvenanceSelfTest` を公開する。`Get-LineVerdict` / `Remove-ProvenanceFromLine` / `Test-InsideParen` はライブラリ内部の実装詳細であり、生成器からは直接呼ばない。
 
 `Test-ProvenanceConvention` のファイルパスは診断表示だけでなく、`.py` / `.ps1` をコメント行のみに限定する適用範囲の判定にも使う。`Remove-ProvenanceNotation` も同じ理由でパスを取る。
 
-両関数の戻り値は配列である。呼び出し側で `@(...)` を重ねると二重配列になり `.Count` が常に 1 を返すため、単純代入で受けること。
+`Test-ProvenanceConvention` と `Get-IdentifierMatch` の戻り値は配列である。呼び出し側で `@(...)` を重ねると二重配列になり `.Count` が常に 1 を返すため、単純代入で受けること。
 
 ### 標準出力
 
 ```
-[build-dist] Scanning 25 source files...
+[build-dist] Scanning 18 source files...
 [build-dist] Convention violations: 0
-[build-dist] Generating dist/ ...
-  ✓ skills/start-work/SKILL.md          (21 identifiers removed)
-  ✓ skills/session-handoff/SKILL.md     (17 identifiers removed)
+  ✓ skills/start-work/SKILL.md (21 identifiers removed)
+  ✓ skills/session-handoff/SKILL.md (17 identifiers removed)
   ...
-[build-dist] Done. 18 skill files + 1 plugin manifest written to dist/.
+[build-dist] Generating dist/ ...
+[build-dist] Done. 19 files written to dist/.
 ```
 
-規約違反時:
+`✓` 行（ファイル別の除去数）は生成内容の組み立て時に出力するため、`Generating` 行より前に並び、書き込みを行わない `-Check` でも表示される。`Done.` の件数は `plugin.json` を含む書き出しファイルの総数である。
+
+規約違反時（各違反は「位置と規約 ID」の行と「違反行の内容」の行の 2 行で出力する。規約 ID の定義はブロック 01 を参照）:
 
 ```
 [build-dist] Convention violations: 2
-  ! skills/retrospective/SKILL.md:54  R2  本文の文法要素として出所識別子が使われている
+  ! skills/retrospective/SKILL.md:54  R2
       - 出力ファイルは ADR-0011（時系列追記型）に従い、一度書いたら原則上書き禁止
-  ! skills/worklog-record/SKILL.md:69  R4  コードフェンス内に出所識別子がある
+  ! skills/worklog-record/SKILL.md:69  R4
+      {"v":2,"id":"MakeAiInstructions-2026-07-17-01",…}
 [build-dist] Aborted. dist/ was not modified.
 ```
 
@@ -64,11 +71,10 @@ scripts/build-dist.ps1 [-Check]
 
 ### 1. 走査対象の決定
 
-計 25 ファイル。
+配布対象ソースは計 25 ファイルで、走査は生成器ごとに分担する。
 
-- `skills/` 配下の全ファイル（18）
-- `template.manifest` に記載されたファイル（4。ブロック 03 が使用）
-- 空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容。ブロック 03 が生成した結果を判定に回す）
+- `scripts/build-dist.ps1`（本ブロック）: `skills/` 配下の全ファイル（18）
+- `scripts/sync-template.ps1`（ブロック 03）: `template.manifest` に記載されたファイル（4）と空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容）
 
 ### 2. 判定に用いる正規表現
 

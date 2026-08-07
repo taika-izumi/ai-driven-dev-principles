@@ -64,7 +64,7 @@ ADR-0072 の骨格（発動はユーザー指示のみ・AI は提示にとど�
 
 **4. 欠陥クラスの適用例記載**: 一次資料の欠陥クラス 3 種（選定漏れ型・文書間相互作用型・検出力欠陥型）を、拘束的列挙ではなく根拠 id 付きの適用例として `skills/pre-finalization-review/SKILL.md` に記載する。
 
-**5. 判定材料の記録**: 確定点を通過したら、確定前レビューの提示結果（フル実施 / 差分再確認 / 見送り / 非発火）を handoff の「Post ラッパー消化記録」の当該マイルストーン行に併記する。`session-handoff` の update 手順にこの併記を、finalize の「圧縮しないもの」に本サイクルのレビュー実施・見送りの記録を追加する。記録が確認できない場合は**未レビューとみなす**（片方向規範のため安全側に倒れる）。「本サイクル」とは現 feature ブランチの作業単位（cycle-reset まで）を指す。
+**5. 判定材料の記録**: 確定点を通過したら、確定前レビューの提示結果（フル実施 / 差分再確認 / 見送り / 非発火＝推奨判定が偽）を handoff の「Post ラッパー消化記録」の当該マイルストーン行に併記する。`session-handoff` の update 手順にこの併記を、finalize の「圧縮しないもの」に本サイクルのレビュー実施・見送りの記録を追加し、read の未消化検査に `review=` の欠落を、finalize の削除規定に本サイクルの `review=` 行の除外を加える。記録が確認できない場合は**未レビューとみなす**（片方向規範のため安全側に倒れる）。「本サイクル」とは現 feature ブランチの作業単位（cycle-reset まで）を指す。
 
 **変更対象**: `skills/start-work/SKILL.md`（Phase 2。判定規則の正本）、`skills/pre-finalization-review/SKILL.md`（frontmatter description・「いつ使うか」・実施手順・適用例・根拠と世代）、`skills/feature-block-design/SKILL.md`（適用要否判定の非該当終了時の「writing-plans への直行を推奨し」を、確定前レビューの提示を経由する文言へ改める。Issue-0062 と同型の推奨文言が新提示点に残るため）、`skills/session-handoff/SKILL.md`（Decision 5 の記録規範）。
 

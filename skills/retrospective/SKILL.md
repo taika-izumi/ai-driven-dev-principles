@@ -133,5 +133,6 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 - ADR-0031: 既存 open 課題の再発・進展は issue の「検討状況」へ一次記録
 - ADR-0028: 振り返り課題の全件起票と issues の system/flow フォルダ分割
 - ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
-- ADR-0010〜0011: 振り返りフェーズ導入・保管規約（時系列追記型）
+- ADR-0010: 振り返りフェーズ導入
+- ADR-0011: 保管規約（時系列追記型）
 - 関連スキル: start-work, decision-log, session-handoff, worklog-record, worklog-extract

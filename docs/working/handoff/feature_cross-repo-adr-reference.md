@@ -1,9 +1,9 @@
 # Handoff: 配布物における ADR 参照表記の規範化（Issue-0067 対策）
 
 - **Branch**: feature/cross-repo-adr-reference
-- **Last Updated**: 2026-08-07 19:36 (Asia/Tokyo)
+- **Last Updated**: 2026-08-07 22:10 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張 / brainstorming 完了・feature-block-design 起動前
+- **Current Phase**: ガイドライン拡張 / plan 確定済み・実装着手前
 
 ## 作業の目的・背景
 
@@ -34,16 +34,17 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: `feature-block-design` による spec 作成
-  - 状態: 設計方針は承認済み。構成要素が 3 つ以上（生成器 / 記法規約 / 検査 / 移行 / CONTRIBUTING 配線）のため分割仕様書の作成対象
-  - 残り: `docs/current/specs/2026-08-07-<topic>/` にディレクトリ分割形式で spec を作成し、過剰適合点検ブロックを spec へ記録する
+- [ ] **現在の作業**: 実装の開始（Task 1 から）
+  - 状態: plan 確定済み（`docs/working/plans/2026-08-07-distributed-artifact-generation-plan.md`。コミット `7a1c0fc`）。spec・plan とも確定前レビューを通過し全指摘を反映済み
+  - 残り: 実行方式（`subagent-driven-development` / `executing-plans`）をユーザーが選択して Task 1 から着手する
 
 ## 未着手のタスク
 
-- [ ] 過剰適合点検（ADR-0079。spec 確定前に 4 観点。**引用元のゲート脱落も見る**。Issue-0066）
-- [ ] spec 確定点 (a) の通過 → 確定前レビューの提示（ADR-0080）→ 結果を消化記録へ `review=` で記録
-- [ ] ADR-0081/0082/0083 の粒度点検・Accepted 昇格・コミット
-- [ ] 実装計画の作成（手作業 約 31 箇所 ＋ 生成器・検査の実装をどう分割・検証するか）
+- [ ] Task 1: 配布構造の実機判定（**ユーザーへ `/plugin marketplace update` の依頼が要る**。本番エントリは差し替えないこと）
+- [ ] Task 2〜4: 共有ライブラリと生成器の実装
+- [ ] Task 5〜7: ソースの規約適合化（36 行 ＋ template ソース 1 行 ＋ R5 1 行）
+- [ ] Task 8〜11: `sync-template.ps1` 改修 / CONTRIBUTING 配線 / ADR-0027 注記 / 本番切替
+- [ ] Task 12: 全体検証 → ADR-0081/0082/0083 の粒度点検・Accepted 昇格 → Issue-0067 close
 - [ ] マーケットプレイスの `source` にサブディレクトリを指定できるかの実機検証（構造 A の成立条件。不成立なら構造 B へフォールバック）
 - [ ] 配布物への適用と `dist/` 生成
 - [ ] 隣接論点の採否: `docs/overview/folder-structure.md` 149/151/153 行の他リポジトリ実課題名の例示
@@ -61,6 +62,8 @@
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照（確定点を通過したマイルストーンには `review=` を併記する。ADR-0080）。
 
 - 2026-08-07 brainstorming 完了（配布物の記録参照の扱いを設計）: ADR=0081（設計収束にあわせ書き直し）・0082（配布体制）・0083（記法規約と検査） / worklog=`MakeAiInstructions-2026-08-07-13`・`MakeAiInstructions-2026-08-07-14`（確定点ではないため `review=` は省略。spec 確定点 (a) は `feature-block-design` 完了時）
+- 2026-08-07 spec 確定点 (a)（`feature-block-design` 完了・spec 6 ファイル確定）: ADR=0081/0082/0083（いずれも Proposed のままコミット `9b974ba`。実装完了時に Accepted 昇格） / worklog=`MakeAiInstructions-2026-08-07-15` / review=フル実施（claude-opus-5）＋差分再確認（claude-opus-5）
+- 2026-08-07 plan 確定点（`superpowers:writing-plans` 完了・12 タスクの計画を確定。コミット `7a1c0fc`）: ADR=なし（既存 ADR-0081〜0083 の写像であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-07-16` / review=軽量レビュー実施（claude-opus-5。写像欠落と自己テスト整合に限定。Critical 2・Major 5・Minor 5 を全件反映し、修正版を写経実行して検証）
 
 ## 次セッション開始時のアクション
 

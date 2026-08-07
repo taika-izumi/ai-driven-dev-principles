@@ -55,14 +55,15 @@ foreach ($f in $sources) {
     if ($removed -gt 0) { $removedInfo.Add([pscustomobject]@{ Path=$rel; Removed=$removed }) }
 }
 
-# plugin.json も判定ゲートと LF 正規化の対象に入れる（I-2）。
-# 従来は無検査・無変換のまま $generated に入っており、識別子混入時に dist/ 全削除・書き出し
-# 完了後の自己検査まで検出が遅れ、git 管理下の dist/ が汚れた状態で残る問題があった（実証済み）。
-# CRLF のまま複写される問題も同様に LF 正規化で解消する。
+# plugin.json も LF 正規化の対象に入れる（I-2）。CRLF のまま複写される問題を解消する。
+# plugin.json は Remove-ProvenanceNotation を通さず「複写」するため、書き込み前検査には
+# Test-ProvenanceConvention ではなく Get-ProvenanceLeak を使う（I-5）。
+# Test-ProvenanceConvention は全角括弧内の識別子を 'ok'（＝変換で除去される前提）として扱うが、
+# plugin.json は変換されない複写物であるため、括弧内の種別 1〜4 がこの判定では素通りし、
+# dist/ 全削除・書き出し後の自己検査まで検出が遅れて git 管理下の dist/ が汚れた状態で残る
+# 問題があった（実証済み）。「規約適合か」ではなく「識別子が残っているか」を問う必要がある。
 $pluginContent = ConvertTo-LfContent -Content ([System.IO.File]::ReadAllText($pluginJsonPath))
-foreach ($v in (Test-ProvenanceConvention -Content $pluginContent -Path $pluginRel)) {
-    $allViolations.Add([pscustomobject]@{ Path=$pluginRel; Line=$v.Line; Rule=$v.Rule; Text=$v.Text })
-}
+$pluginLeaks = Get-ProvenanceLeak -Content $pluginContent -Path $pluginRel
 $generated["dist/$pluginRel"] = $pluginContent
 
 Write-Host "[build-dist] Convention violations: $($allViolations.Count)"
@@ -71,9 +72,20 @@ if ($allViolations.Count -gt 0) {
         Write-Host "  ! $($v.Path):$($v.Line)  $($v.Rule)"
         Write-Host "      $($v.Text)"
     }
+}
+if ($pluginLeaks.Count -gt 0) {
+    foreach ($lk in $pluginLeaks) {
+        Write-Host "  ! identifier in ${pluginRel}:$($lk.Line)  $($lk.Text)"
+    }
+}
+if ($allViolations.Count -gt 0 -or $pluginLeaks.Count -gt 0) {
     Write-Host '[build-dist] Aborted. dist/ was not modified.'
     exit 1
 }
+
+# M-10: ファイル別の除去数（✓ 行）は、違反ゼロを確認した直後・-Check の早期分岐より前に出す。
+# spec 02 は「Generating 行より前に並び、書き込みを行わない -Check でも表示される」と定めている。
+foreach ($info in $removedInfo) { Write-Host "  ✓ $($info.Path) ($($info.Removed) identifiers removed)" }
 
 # 3. -Check: 既存 dist/ と突合する
 if ($Check) {
@@ -102,6 +114,15 @@ if ($Check) {
         if (-not $generated.Contains($k)) { Write-Host "  ! stale file in dist/: $k"; $diff++ }
     }
     foreach ($rel in $bomFiles) { Write-Host "  ! BOM found: $rel"; $diff++ }
+    # Rec 1: 突合だけでは「ソースと dist/ が両方漏れを含む」場合に一致してしまい exit=0 を返す。
+    # -Check は書き込みを行わないため、既定モードの書き出し後自己検査（後段の Step 5）が走らない。
+    # ここで再生成した内容（$generated）そのものへ残存識別子検査を掛け、-Check 単独実行でも
+    # 「配布物に実在識別子 0 件」を担保する。
+    foreach ($k in $generated.Keys) {
+        foreach ($lk in (Get-ProvenanceLeak -Content $generated[$k] -Path $k)) {
+            Write-Host "  ! identifier remains: ${k}:$($lk.Line)  $($lk.Text)"; $diff++
+        }
+    }
     if ($diff -gt 0) { Write-Host "[build-dist] Out of date: $diff difference(s). Run build-dist.ps1."; exit 1 }
     Write-Host '[build-dist] Up to date.'
     exit 0
@@ -109,7 +130,6 @@ if ($Check) {
 
 # 4. 書き出し（完全削除してから作り直す）
 Write-Host '[build-dist] Generating dist/ ...'
-foreach ($info in $removedInfo) { Write-Host "  ✓ $($info.Path) ($($info.Removed) identifiers removed)" }
 if (Test-Path $distDir) { Remove-Item -Recurse -Force $distDir }
 foreach ($k in $generated.Keys) {
     $dest = Join-Path $repoRoot $k

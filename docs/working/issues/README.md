@@ -78,3 +78,5 @@
 | [0061](flow/0061-skill-revision-scenario-steps-assume-new-creation.md) | 「Skillを新規作成・改定するとき」シナリオの手順・チェックリストが新規作成前提のまま | open | 2026-08-07 |
 | [0062](flow/0062-review-recommendation-ignores-artifact-safety-net.md) | 確定前レビューの次手提示が成果物の性質を問わず中立で、安全網の無い成果物でも非推奨側に倒れる | closed | 2026-08-07 |
 | [0063](flow/0063-plan-document-sync-policy-undefined.md) | 実装中に確定した文言を作業文書（plan）へ反映するかの規約が未定義 | open | 2026-08-07 |
+| [0065](flow/0065-task-scoped-review-misses-cross-document-paths.md) | タスク単位のレビューでは、複数文書にまたがる規範の「経路が閉じているか」を検出できない | open | 2026-08-07 |
+| [0066](flow/0066-overfitting-check-misses-dropped-gates.md) | 過剰適合点検の観点 3 に、引用元の条件付き規範を無条件化する型を検出する手順がない | open | 2026-08-07 |

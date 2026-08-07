@@ -2,8 +2,8 @@
 
 - **Branch**: feature/review-recommendation-by-artifact-type
 - **Last Updated**: 2026-08-07 13:50 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/計画確定・レビュー反映済み（次: Task 1〜8 の実装）
+- **Status**: completed
+- **Current Phase**: 完了（master へ merge `afed223`・retrospective 実施済み）
 
 ## 作業の目的・背景
 
@@ -35,15 +35,11 @@ Issue-0062 の対策サイクル。ADR-0072 は確定前レビュー（`pre-fina
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: ブランチの仕上げ（master へのマージ判断）
-  - 状態: 実装・レビュー・修正がすべて完了。ブランチは 17 コミット、master との差分は 13 ファイル。最終レビューの総評は「条件付き可」で、条件（Major 4 件の修正）は `e5475e2` で充足済み
-  - 残り: master へマージ → `retrospective` → `session-handoff` cycle-reset → finalize
+（なし。master へ merge `afed223` 済み）
 
 ## 未着手のタスク
 
-- [ ] master へのマージ（`superpowers:finishing-a-development-branch`）
-- [ ] `retrospective`（master マージ直後・handoff finalize 前。CLAUDE.md の規範）
-- [ ] リモート push（自動では行わない。ユーザー指示が必要）
+（なし。以降のバックログは `docs/working/handoff/master.md` と `docs/working/issues/README.md` を参照）
 
 ## 既知のブロッカー・懸念
 

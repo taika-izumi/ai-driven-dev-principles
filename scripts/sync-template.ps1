@@ -12,6 +12,12 @@ $manifestPath = Join-Path $repoRoot "template.manifest"
 $templateDir = Join-Path $repoRoot "template"
 . (Join-Path $PSScriptRoot 'lib/strip-provenance.ps1')
 
+# 相対パス算出のヘルパ（template/ 基準。build-dist.ps1 の Get-RepoRelativePath と同型の重複を防ぐ）
+function Get-RepoRelativePath {
+    param([string]$FullName)
+    return ($FullName.Substring($templateDir.Length + 1) -replace '\\', '/')
+}
+
 # 空インデックス生成対象（repo固有のデータ行を除去してコピーする。ADR-0027）
 $emptyIndexTargets = @(
     "docs/records/decisions/README.md",
@@ -103,14 +109,15 @@ function New-EmptyIndexContent {
 
 # マニフェスト読み込み
 if (-not (Test-Path $manifestPath)) {
-    Write-Error "[sync-template] template.manifest not found at $manifestPath"
+    Write-Host "[sync-template] template.manifest not found at $manifestPath"
     exit 1
 }
 
-$files = Get-Content $manifestPath |
+# @() で囲む。manifest のエントリが 0 件・1 件のとき .Count が使えなくなるのを防ぐ
+$files = @(Get-Content $manifestPath |
     Where-Object { $_ -match '\S' } |
     Where-Object { $_ -notmatch '^\s*#' } |
-    ForEach-Object { $_.Trim() }
+    ForEach-Object { $_.Trim() })
 
 Write-Host "[sync-template] Reading template.manifest..."
 Write-Host "[sync-template] Syncing $($files.Count) files + $($emptyIndexTargets.Count) empty indexes..."
@@ -119,13 +126,22 @@ Write-Host "[sync-template] Syncing $($files.Count) files + $($emptyIndexTargets
 $pending = [ordered]@{}
 foreach ($file in $files) {
     $sourcePath = Join-Path $repoRoot $file
-    if (-not (Test-Path $sourcePath)) { Write-Warning "  ! $file not found, skipping"; continue }
+    if (-not (Test-Path $sourcePath)) {
+        # manifest 記載ファイルの欠損を黙って通すと配布物が欠けたまま exit 0 になる（実証済み）。
+        # template/ にはまだ触れていない段階のため、ここで止めても不変は保たれる。
+        Write-Host "[sync-template] source not found: $sourcePath"
+        exit 1
+    }
     $pending[$file] = [System.IO.File]::ReadAllText($sourcePath)
 }
 foreach ($target in $emptyIndexTargets) {
     $sourcePath = Join-Path $repoRoot $target
-    if (-not (Test-Path $sourcePath)) { Write-Warning "  ! $target not found, skipping"; continue }
-    $lines = Get-Content $sourcePath
+    if (-not (Test-Path $sourcePath)) {
+        Write-Host "[sync-template] source not found: $sourcePath"
+        exit 1
+    }
+    # @() で囲む。0 バイトのソースだと New-EmptyIndexContent 内の $Lines.Count が使えなくなる
+    $lines = @(Get-Content $sourcePath)
     $pending[$target] = ((New-EmptyIndexContent -Lines $lines) -join "`n") + "`n"
 }
 
@@ -136,9 +152,15 @@ foreach ($k in $pending.Keys) {
         $violations.Add([pscustomobject]@{ Path=$k; Line=$v.Line; Rule=$v.Rule; Text=$v.Text })
     }
 }
+Write-Host "[sync-template] Convention violations: $($violations.Count)"
 if ($violations.Count -gt 0) {
-    Write-Host "[sync-template] Convention violations: $($violations.Count)"
-    foreach ($v in $violations) { Write-Host "  ! $($v.Path):$($v.Line)  $($v.Rule)"; Write-Host "      $($v.Text)" }
+    foreach ($v in $violations) {
+        # 空インデックス対象は判定を「空インデックス化後」の内容に対して行うため、
+        # 報告する行番号がソースの行番号と一致しない（実証済み）。誤誘導を防ぐため明示する。
+        $label = if ($emptyIndexTargets -contains $v.Path) { "$($v.Path)（空インデックス化後）" } else { $v.Path }
+        Write-Host "  ! ${label}:$($v.Line)  $($v.Rule)"
+        Write-Host "      $($v.Text)"
+    }
     Write-Host '[sync-template] Aborted. template/ was not modified.'
     exit 1
 }
@@ -152,7 +174,7 @@ if ($Check) {
     $bomFiles = New-Object System.Collections.Generic.List[string]
     if (Test-Path $templateDir) {
         foreach ($f in (Get-ChildItem -Path $templateDir -Recurse -File)) {
-            $rel = $f.FullName.Substring($templateDir.Length + 1) -replace '\\', '/'
+            $rel = Get-RepoRelativePath -FullName $f.FullName
             $bytes = [System.IO.File]::ReadAllBytes($f.FullName)
             if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
                 $bomFiles.Add($rel)
@@ -172,7 +194,7 @@ if ($Check) {
             Write-Host "  ! identifier remains: ${k}:$($lk.Line)  $($lk.Text)"; $diff++
         }
     }
-    if ($diff -gt 0) { Write-Host "[sync-template] Out of date: $diff difference(s)."; exit 1 }
+    if ($diff -gt 0) { Write-Host "[sync-template] Out of date: $diff difference(s). Run sync-template.ps1."; exit 1 }
     Write-Host '[sync-template] Up to date.'
     exit 0
 }
@@ -188,7 +210,11 @@ foreach ($k in $generated.Keys) {
         New-Item -ItemType Directory -Path $destDir -Force | Out-Null
     }
     [System.IO.File]::WriteAllText($destPath, $generated[$k], $utf8NoBom)
-    Write-Host "  ✓ $k"
+    if ($emptyIndexTargets -contains $k) {
+        Write-Host "  ✓ $k (empty index generated)"
+    } else {
+        Write-Host "  ✓ $k"
+    }
 }
 
 $totalFiles = $generated.Count
@@ -197,7 +223,7 @@ Write-Host "[sync-template] Done. $totalFiles files synced to template/"
 # template/ の自己検査（ADR-0083。build-dist.ps1 の自己検査と同じ形）
 $leak = 0
 foreach ($f in (Get-ChildItem -Path $templateDir -Recurse -File)) {
-    $rel = $f.FullName.Substring($templateDir.Length + 1) -replace '\\', '/'
+    $rel = Get-RepoRelativePath -FullName $f.FullName
     $content = [System.IO.File]::ReadAllText($f.FullName)
     foreach ($lk in (Get-ProvenanceLeak -Content $content -Path $rel)) {
         Write-Host "  ! identifier remains: ${rel}:$($lk.Line)  $($lk.Text)"; $leak++

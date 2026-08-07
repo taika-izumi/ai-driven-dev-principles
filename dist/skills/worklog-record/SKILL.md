@@ -66,7 +66,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 ## エントリ例
 
 ```jsonl
-{"v":2,"id":"X-2026-07-17-01","date":"2026-07-17","project":"X","model":"claude-fable-5","scope":"general-candidate","title":"AskUserQuestion 前に環境変数を確認","context":"start-work Phase 1 で構造化質問ツールを使う前に、構造化質問ツールの運用チェックを実行","procedure":["Bash: echo $CLAUDE_CODE_DISABLE_MOUSE_CLICKS","値が 1 であることを確認してから AskUserQuestion 発行"],"corrections":["構造化質問ツール使用前に環境変数の値を確認すること"],"applied_rules":["<適用したルールの ID>"]}
+{"v":2,"id":"X-2026-07-17-01","date":"2026-07-17","project":"X","model":"claude-fable-5","scope":"general-candidate","title":"AskUserQuestion 前に環境変数を確認","context":"start-work Phase 1 で構造化質問ツールを使う前に、誤操作防止設定の運用チェックを実行","procedure":["Bash: echo $CLAUDE_CODE_DISABLE_MOUSE_CLICKS","値が 1 であることを確認してから AskUserQuestion 発行"],"corrections":["構造化質問ツール使用前に環境変数の値を確認すること"],"applied_rules":["ADR-NNNN"]}
 ```
 
 ## ストア仕様

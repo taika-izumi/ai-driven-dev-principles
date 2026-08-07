@@ -28,7 +28,7 @@
 
 ```json
 {
-  "MakeAiInstructions": { "path": "D:/Dev/002_AiDev/MakeAiInstructions", "lastSeen": "2026-07-17" }
+  "X": { "path": "/path/to/X", "lastSeen": "2026-07-17" }
 }
 ```
 
@@ -46,7 +46,7 @@
 
 必須（いずれか空なら記録を弾く）: `v` / `id` / `date` / `project` / `model` / `scope` / `title` / `context` / `procedure`
 delta ペア（`friction` または `corrections` の少なくとも一方が必須）: `friction` / `corrections`
-任意: `skillification_hint` / `outcome`（success/partial/failed＝作業結果）/ `tools` / `applied_rules`（逸脱注記可）/ `refs`
+任意: `skillification_hint` / `outcome`（success/partial/failed＝作業結果）/ `tools` / `applied_rules`（適用した規範を一意に指す文字列の配列。決定記録の番号など。逸脱注記可）/ `refs`
 
 | フィールド | 型 | 説明 |
 |---|---|---|

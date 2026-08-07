@@ -1,6 +1,6 @@
 ---
 name: extend-guidelines
-description: "ガイドラインの拡張（原則追加・Skill作成・CLAUDE.md更新）を行う際のゲートウェイ。CONTRIBUTING.mdを読み込み、brainstormingへ接続する。"
+description: "ガイドラインの拡張（原則追加・Skillの新規作成/改定・CLAUDE.md更新）を行う際のゲートウェイ。CONTRIBUTING.mdを読み込み、brainstormingへ接続する。"
 ---
 
 # extend-guidelines

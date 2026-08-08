@@ -1,6 +1,6 @@
 # ADR-0081: 配布物から除くのは「配布先で解決できない参照」であり、決定記録番号に限らない
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-07
 
 ## Context

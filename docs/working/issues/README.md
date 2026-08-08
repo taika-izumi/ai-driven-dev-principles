@@ -24,7 +24,7 @@
 | [0055](system/0055-specs-relative-adr-links-broken.md) | 仕様書内から ADR を相対パスで参照しているリンクが壊れている | open | 2026-08-07 |
 | [0058](system/0058-legacy-contributing-gateway-spec-stale.md) | contributing-and-gateway 仕様書が旧名称・旧構成のまま陳腐化している | open | 2026-08-07 |
 | [0064](system/0064-check-block-heading-level-inconsistent.md) | 過剰適合点検ブロックの見出しレベルが記録先ごとに 2 通りで存在確認を単一 grep で書けない | open | 2026-08-07 |
-| [0067](system/0067-distributed-artifacts-reference-repo-local-adr-numbers.md) | 配布先へ届く成果物が、本リポジトリ固有の ADR 番号を無修飾で参照している | open | 2026-08-07 |
+| [0067](system/0067-distributed-artifacts-reference-repo-local-adr-numbers.md) | 配布先へ届く成果物が、本リポジトリ固有の ADR 番号を無修飾で参照している | closed | 2026-08-07 |
 | [0070](system/0070-provenance-check-misses-script-prose.md) | 出所識別子の機械判定がスクリプト内の散文（docstring・利用者向けメッセージ）に届かない | open | 2026-08-08 |
 | [0071](system/0071-distributed-skills-reference-undistributed-documents.md) | 配布されるスキルが、配布されない文書を必須参照にしている | open | 2026-08-08 |
 | [0072](system/0072-halfwidth-paren-treated-as-fullwidth-in-judgment.md) | 括弧内判定が半角括弧を全角括弧と同一視し、除去後に空の括弧が残る | open | 2026-08-08 |

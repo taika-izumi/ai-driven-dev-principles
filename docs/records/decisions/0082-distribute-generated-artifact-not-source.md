@@ -1,6 +1,6 @@
 # ADR-0082: 保守者向けの根拠注記はソースに残し、注記を除去した生成物を配布する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-07
 
 ## Context

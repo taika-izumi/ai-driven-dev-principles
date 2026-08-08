@@ -1,6 +1,6 @@
 # ADR-0084: 記法規約の適用範囲は機械判定の範囲より広く取り、差分は書き手が守る
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-08
 
 ## Context

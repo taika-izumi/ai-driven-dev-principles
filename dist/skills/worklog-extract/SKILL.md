@@ -33,13 +33,13 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 7. **候補提示**: ランク付き候補リストを人間に提示。各候補に再発数・scope・重複有無・根拠エントリ参照を添える。頻度はハード閾値を置かずソフトな判断材料
 8. **人間採否 → 反映**:
    - **rejected / deferred** → 即 `processed.jsonl` へ追記（`deferred` は `evidence_count` に現クラスタ根拠数を記録）
-   - **採用** → Issue 草案化（`general` は本 repo `docs/working/issues/`、`project-specific` は当該プロジェクトの Issue 置き場）＋`adopted` を即 `processed.jsonl` へ追記し、`worklog-skillify` へ受け渡す
+   - **採用** → Issue 草案化（`general` はガイドライン配信元リポジトリの `docs/working/issues/`、`project-specific` は当該プロジェクトの Issue 置き場）＋`adopted` を即 `processed.jsonl` へ追記し、`worklog-skillify` へ受け渡す
    - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）
 
 ## 出力
 
 - ランク付き候補リスト（人間へ提示）
-- 採用候補の Issue 草案（general → 本 repo `docs/working/issues/`、project-specific → 当該プロジェクト）＋`worklog-skillify` への受け渡し
+- 採用候補の Issue 草案（general → ガイドライン配信元リポジトリの `docs/working/issues/`、project-specific → 当該プロジェクト）＋`worklog-skillify` への受け渡し
 - `processed.jsonl` への追記（`adopted` / `rejected` / `deferred`）
 
 `skillified` / `merged` の台帳追記は `worklog-skillify` 側の責務。

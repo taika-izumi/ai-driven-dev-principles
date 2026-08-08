@@ -1,6 +1,6 @@
 ---
 name: worklog-skillify
-description: "worklog-extract で採用された候補から、writing-skills 委譲で新規スキル作成または既存スキル拡張を行う。スコープ（汎用/プロジェクト固有/固有ルール）で成果物の配置先を振り分け、汎用パスを本 repo 以外で実行しようとした場合は警告する。ユーザーまたは worklog-extract から起動。"
+description: "worklog-extract で採用された候補から、writing-skills 委譲で新規スキル作成または既存スキル拡張を行う。スコープ（汎用/プロジェクト固有/固有ルール）で成果物の配置先を振り分け、汎用パスをガイドライン配信元リポジトリ以外で実行しようとした場合は警告する。ユーザーまたは worklog-extract から起動。"
 ---
 
 # worklog-skillify
@@ -14,10 +14,10 @@ description: "worklog-extract で採用された候補から、writing-skills �
 
 ## 実行環境ガード
 
-スキル冒頭で実行環境が本 repo（ai-driven-dev-principles）かを判定する:
+スキル冒頭で実行環境がガイドライン配信元リポジトリ（ai-driven-dev-principles）かを判定する:
 
 - 判定マーカー: `git remote -v` の URL に `ai-driven-dev-principles` を含む、または `.claude-plugin/plugin.json` の `name` が `ai-driven-dev-principles`
-- **汎用（プラグイン配信）パス かつ 本 repo でない**場合のみガード発火
+- **汎用（プラグイン配信）パス かつ 配信元リポジトリでない**場合のみガード発火
 - 固有パス（プロジェクトローカルスキル / CLAUDE.md 追記）はガード不要でそのまま進む
 
 **ガード発火時の対応**（ユーザー確認）:
@@ -32,7 +32,7 @@ description: "worklog-extract で採用された候補から、writing-skills �
 
 | scope | 配置先 |
 |-------|--------|
-| **汎用**（複数プロジェクトで再現・ドメイン非依存） | 本 repo のプラグイン配信スキル `skills/<name>/` |
+| **汎用**（複数プロジェクトで再現・ドメイン非依存） | 配信元リポジトリのプラグイン配信スキル `skills/<name>/` |
 | **プロジェクト固有だが価値あり** | そのプロジェクトのローカルスキル `.claude/skills/<name>/` |
 | **固有ルールでスキル化不要** | そのプロジェクトの `CLAUDE.md` に追記 |
 
@@ -40,9 +40,9 @@ description: "worklog-extract で採用された候補から、writing-skills �
 
 1. **実行環境ガード判定** → 必要なら警告＋ユーザー確認（上記 3 分岐）
 2. **スコープで振り分け先決定**（上表）
-3. **出所点検**（汎用スコープ、および本 repo（ai-driven-dev-principles）で実行し CLAUDE.md 追記へ振り分ける場合。本 repo の CLAUDE.md は template 経由で配布されるため）: 根拠エントリの出所プロジェクト数・モデル世代を数える。単一プロジェクトまたは単一モデル世代に偏る場合、CONTRIBUTING.md「全シナリオ共通: 過剰適合の点検」の是正パターン（適用例への降格 / 発動条件ゲート / 根拠と世代＋退役経路 / 見送り・スコープ降格）の適用をユーザーへ提示する（ADR-0079）
+3. **出所点検**（汎用スコープ、および配信元リポジトリ（ai-driven-dev-principles）で実行し CLAUDE.md 追記へ振り分ける場合。配信元の CLAUDE.md は template 経由で配布されるため）: 根拠エントリの出所プロジェクト数・モデル世代を数える。単一プロジェクトまたは単一モデル世代に偏る場合、CONTRIBUTING.md「全シナリオ共通: 過剰適合の点検」の是正パターン（適用例への降格 / 発動条件ゲート / 根拠と世代＋退役経路 / 見送り・スコープ降格）の適用をユーザーへ提示する（ADR-0079）
 4. **writing-skills へ委譲**してスキルを作成/拡張する。`references/skill-authoring-techniques.md` を併用し、description 最適化と定量 eval ループを回す（**Skill Creator は実行時ロードしない**。設計時に借用する。ADR-0046）
-5. **汎用パスは既存フローへ橋渡し**: 「Issue → `extend-guidelines` → スキル作成」の本 repo 既存フローに合流させる
+5. **汎用パスは既存フローへ橋渡し**: 「Issue → `extend-guidelines` → スキル作成」の配信元リポジトリの既存フローに合流させる
 6. **台帳追記**: 作成/拡張完了後、`processed.jsonl` へ確定結果を追記する
    - `skillified`（新規スキル作成）または `merged`（既存スキルへ統合）を追記
    - 対応する `adopted` エントリの状態を確定させる（追記専用 JSONL のため後続レコードで遷移を表現）

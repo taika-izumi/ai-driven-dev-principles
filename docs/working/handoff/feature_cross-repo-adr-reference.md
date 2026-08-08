@@ -1,9 +1,9 @@
 # Handoff: 配布物からの出所識別子の除去（Issue-0067 対策）
 
 - **Branch**: feature/cross-repo-adr-reference
-- **Last Updated**: 2026-08-08 01:20 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張 / 実装中（Task 1〜3 完了・Task 4 から再開）
+- **Last Updated**: 2026-08-08 10:57 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: ガイドライン拡張 / **計画 12 タスク完了**（残: プラグイン再読み込みの実機確認のみ。ユーザー操作が必要）
 
 ## 作業の目的・背景
 
@@ -14,18 +14,29 @@
 ## 関連ドキュメント
 
 - 対象課題: `docs/working/issues/system/0067-distributed-artifacts-reference-repo-local-adr-numbers.md`
-- 仕様（コミット `9b974ba`）: `docs/current/specs/2026-08-07-distributed-artifact-generation/`（00-overview ＋ 01〜05）
-- 計画（コミット `7a1c0fc`）: `docs/working/plans/2026-08-07-distributed-artifact-generation-plan.md`（12 タスク）
-- 本サイクルの決定（いずれも Proposed。実装完了時に Accepted 昇格）:
+- 仕様: `docs/current/specs/2026-08-07-distributed-artifact-generation/`（00-overview ＋ 01〜05。最終実装のスナップショットへ更新済み）
+- 計画: `docs/working/plans/2026-08-07-distributed-artifact-generation-plan.md`（12 タスク。全タスク完了。チェックボックスは未消化のままだが、消化は本ハンドオフとコミット列が正本）
+- 本サイクルの決定（**いずれも Accepted**）:
   - ADR-0081: 配布物から除くのは「配布先で解決できない参照」であり、決定記録番号に限らない
   - ADR-0082: 保守者向けの根拠注記はソースに残し、注記を除去した生成物を配布する
   - ADR-0083: 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる
+  - ADR-0084: 記法規約の適用範囲は機械判定の範囲より広く取り、差分は書き手が守る
+- ADR-0027 へ部分修正の注記を追加（Status は Accepted のまま）
 - 前提となる既存決定: ADR-0016 / ADR-0027 / ADR-0033 / ADR-0039 / ADR-0055 / ADR-0068 / ADR-0073
 
 ## 完了済みタスク
 
 - [x] Task 1: 配布構造の実機判定（2026-08-07）— **構造 A が成立**。検証は別名エントリで行い本番エントリは無変更
 - [x] Task 2・3: 共有ライブラリ `scripts/lib/strip-provenance.ps1`（2026-08-07・コミット `6311a78`）— 自己テスト 17/17、冪等性 18 ファイル差分 0、識別子なし行 1384 行が不変。レビュー 2 巡で Major 4・Minor 5 を全件反映
+- [x] Task 12: 全体検証と決定の確定（2026-08-08・コミット `001e5b9`/`a473ec8`/`b8b60f0`）— ADR-0081/0082/0083/0084 を Accepted へ昇格、Issue-0067 を close。**ブランチ全体レビューが、タスク単位のレビューでは原理的に検出できない 3 件を検出**（移行で追加された 10 行の書き換えが仕様に無い／規約として稼働する R1-a・R1-b が仕様にも決定にも無い／完了基準の件数が三すくみ）。仕様を最終実装のスナップショットへ更新し、R1-a・R1-b と自己参照の扱いを ADR-0084 の決定へ記録
+- [x] Task 11 Step 1・3: 配布元を `./dist` へ切替（2026-08-08・コミット `43efad6`）— **Step 2（実機確認）はユーザー操作待ちで未消化**
+- [x] Task 10: ADR-0027 への部分修正注記（2026-08-08・コミット `794c52a`/`c5f6ba3`/`bd4847d`）— レビューが**注記の射程が実態より狭い**ことを検出（仕様が名指ししていた 1 箇所だけを修正対象にしていたが、ADR-0027 は「verbatim コピー」も 2 箇所で宣言しており、実測で manifest 記載ファイルの 1 件が実際に変化していた）。根本原因の spec 03 も是正。**決定記録 84 件を全数走査し、他に部分修正が必要なものは無いと確認**（ADR-0016 は Task 11 後の弱い候補だが必須ではない）
+- [x] Task 9: 規約の文書化と配線（2026-08-08・コミット `5f7eb69`/`450f4e9`/`b2e4230`/`59cfff3`/`e241b85`/`5ac65f3`）— `CONTRIBUTING.md` へ規約節を新設し 6 シナリオへ配線、`extend-guidelines` 手順 6 を拡張。**品質レビューが「この節だけを読んで 4 作業を試す」形で実効性を検査し、3 作業で詰まった**（慣用形 `- **関連**: ADR-NNNN` が違反になる／規約適合でも括弧内に説明語を混ぜると壊れる／目視対象の所在が未記載）。規約表へ R1-a・R1-b・R3 追記を入れ、執行点を 4 手順化。実装の不整合 2 件を Issue-0072 と到達不能コード除去で処理
+- [x] Task 8: `sync-template.ps1` の改修（2026-08-08・コミット `b488ddc`/`a985c56`/`06f9033`/`648060a`/`2958f96`）— **`template/` の識別子 18 行 → 0 行**。判定・変換・`-Check`・自己検査を組み込み、処理順を「読む→判定→削除→書き出す」へ。**姉妹生成器 `build-dist.ps1` で是正済みの落とし穴 2 件が移っていなかった**のをレビューが検出（ソース欠損を警告で通し配布物が黙って欠ける経路・`@()` ガード欠落）。揃えるべき 7 点と意図的な差 2 点を spec 03 へ明文化
+- [x] Task 7: R4/R5 と破損行の移行（2026-08-08・コミット `b82fe12`/`87bd006`/`926717e`/`2a91da4`/`295724d`）— **規約違反 0 件になり `dist/` 19 ファイルが初生成された**。仕様準拠レビュー ✅（`ok` 行 127 全数読解で追加検出ゼロ）、品質レビュー Approved（配布物 18 ファイル 3,209 行を配布先の読み手として通読）。**配布先で実行時に決定記録番号が表示される状態**と**書式例の実プロジェクト名・開発機の絶対パス**を検出・是正。規約の適用範囲を機械判定の範囲より広く取る決定（ADR-0084）
+- [x] Task 6: R2 違反の移行と根拠の散文補完（2026-08-08・コミット `313bc56`/`8c63ed0`/`e6db3b0`/`3aeb826`）— 仕様準拠レビュー ✅（適用範囲 25 ファイル全数で R2 ゼロ・補完データの捏造ゼロ）、品質レビュー Approved。**識別子の除去で「本リポジトリ」が配布先では読み手自身のプロジェクトを指す**劣化を検出し是正。根拠の限界（全 9 行が単一プロジェクト由来）は表直下の 1 文へ集約（ユーザー承認済み）
+- [x] Task 5: R3 違反 15 行をコロン形へ移行（2026-08-08・コミット `7b3553d`）— 仕様準拠レビュー ✅（15/15 行の意味保存を文字レベルで実証）、品質レビュー Yes。**副産物として計画の欠陥 2 件を修正**（`c08f8e8`: Task 7 の破損行検出が機械だけでは完結しないと判明し 2 段方式へ・対象 3→10 行 / `f2f2112`: Task 5 レビューの Minor を Task 6・9 へ配分）
+- [x] Task 4: 生成器 `scripts/build-dist.ps1`（2026-08-08・コード `306c51f`→`e64f9c1`→`39b0756`、spec 追補 `d791a31`/`83d7495`/`03ec247`）— 仕様準拠レビュー（計画と逐語一致・実行 9 シナリオ）＋品質レビュー 3 巡で Approved。品質 Important 4 件（-Check の CRLF 誤検出 / plugin.json のゲート素通り / 自己検査の種別 5 欠落 / フェンス内空行の畳み込み）と Minor 6 件を反映し、ライブラリへ `Get-ProvenanceLeak` を新設（自己テスト 21/21）。現ソースでは違反 36 件（R2 15・R3 15・R4 6）で exit=1・dist/ 不変が正
 
 - [x] 事象の実測と原因の切り分け（2026-08-07）— `template/` は ADR-0027 の「説明文は保持」の残余、`skills/` は ADR-0016 で template 同期の検査対象外
 - [x] Issue-0067 起票（2026-08-07）
@@ -37,26 +48,27 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: Task 4（生成器 `scripts/build-dist.ps1`）から再開
-  - 状態: 共有ライブラリが完成し、`skills/` 18 ファイルに対して規約違反 36 件（R2 15・R3 15・R4 6）を検出できる状態
-  - 残り: 計画の Task 4〜12。実行方式は `superpowers:subagent-driven-development`（タスクごとに実装 → 仕様準拠レビュー → 品質レビュー）
+- [ ] **現在の作業**: Task 11 Step 2（配布元切替の実機確認）**のみ。ユーザー操作が必要**
+  - 状態: `.claude-plugin/marketplace.json` の `source` は `./dist` へ変更済み（コミット `43efad6`）。**ただし実機のプラグインキャッシュは切替前のまま**で、現在供給されているスキルは識別子入りの旧版。完了基準 5（実機で成立すること）が未実証
+  - 残り: ユーザーが `/plugin marketplace update ai-driven-dev-principles` を実行 → `start-work` を起動してベースディレクトリが `<repo>/dist/skills/start-work` を指すこと・本文に識別子が無いことを確認 → **`installed_plugins.json` にインストール記録が残っているか確認**（消えていたら再 install を依頼。過去に事故が起きた領域）
 
 ## 未着手のタスク
 
-- [ ] Task 4: 生成器 `build-dist.ps1`（生成・`-Check`・自己検査。`dist/.claude-plugin/plugin.json` の複写も生成器の責務）
-- [ ] Task 5〜7: ソースの規約適合化（R3 15 行・R2 16 行・R4 6 行・R5 1 行 ＋ 除去後に文が壊れる 3 行）
-- [ ] Task 8: `sync-template.ps1` の改修（判定・変換・`-Check`。処理順を「読む→判定→削除→書き出す」へ）
-- [ ] Task 9〜11: CONTRIBUTING 配線 / ADR-0027 注記 / プラグイン本番エントリを `./dist` へ切替
-- [ ] Task 12: 全体検証 → ADR-0081/0082/0083 の Accepted 昇格 → Issue-0067 close
+- [ ] 検証用プラグイン `ai-driven-dev-principles-probe` の後片付け（ユーザースコープでのアンインストール。ユーザー操作が必要）
+- [ ] master へのマージ → 直後に `retrospective` を起動
 
 ## 既知のブロッカー・懸念
 
 - **同一マーケットプレイスへ 2 つ目のプラグインをインストールすると、1 つ目のインストール記録が消える**（2026-08-07 実測）。本番エントリに一切触れずに別名エントリで検証したにもかかわらず、`ai-driven-dev-principles` の記録が `installed_plugins.json` から消え、ガイドラインスキル 12 本が使えなくなった。復旧は `/plugin install ai-driven-dev-principles@ai-driven-dev-principles`（ユーザー操作。エージェントからは実行できない）。**Task 11 の本番切替でも同じ危険がある**ため、切替後は必ずインストール記録を確認すること（計画 Task 11 Step 2 に手順を追記済み）
 - **検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている。** `./dist` に skills が無いためスキルは提供していないが、片付けるならユーザースコープでのアンインストールが要る（プロジェクトスコープの uninstall は「インストールされていない」と返る）
-- **構造 A の成立を実機で確認済み（2026-08-07）。** 検証用エントリ `ai-driven-dev-principles-probe`（`source: "./dist"`）でスキルを起動したところ、ベースディレクトリが `dist/skills/probe-skill` を指した。マーケットプレイスの `source` にサブディレクトリを指定できる。**構造 B へのフォールバックは不要**で、計画 Task 1 Step 5 の読み替え表は適用しない
-- **計画に載せた PowerShell は写経実行で検証済み**（自己テスト 15/15・実データ違反 36・見出し消失 0・インデント破壊 0・CR 0）。ただし `build-dist.ps1` 本体の全体実行はまだ行っていない
+- **配布元の切替は定義変更のみ完了。実機へ未反映**（2026-08-08）。`marketplace.json` は `./dist` を指すが、プラグインキャッシュは切替前のまま（`lastUpdated` が切替コミットより前）。現在このセッションへ供給されているスキルは識別子入りの旧版である。ユーザーの `/plugin marketplace update` を経るまで完了基準 5 は未達
+- **構造 A の成立を実機で確認済み（2026-08-07）。** 検証用エントリ `ai-driven-dev-principles-probe`（`source: "./dist"`）でスキルを起動したところ、ベースディレクトリが `dist/skills/probe-skill` を指した。マーケットプレイスの `source` にサブディレクトリを指定できる
 - **`,@($list)` は List に対して型エラーになる**（実測）。単項カンマで包むときは `.ToArray()` を使う
+- **PowerShell の `Set-Location` は .NET の静的 API に効かない**（2026-08-08 実測）。`[System.IO.File]::WriteAllText` 等はプロセスの作業ディレクトリを基準にするため、複製ディレクトリへ移動しても相対パスでは元のファイルを書き換える。隔離した検証では絶対パスを使う
+- **Task 4 品質レビューの未採用指摘 4 件はユーザー判断待ち**: M-5（`skills/` にバイナリを置くと生成で破損する。現状は全件テキストで実害なし）/ M-7（dist/ の削除→書き出しが非アトミック。失敗時は再実行か git checkout で回復）/ M-9（種別 5 の括弧内に全角括弧が入れ子だと残骸が出る）/ Rec 3（`.gitattributes` へ `dist/** text eol=lf` 等の明示。あわせて `skills/pre-action-review/SKILL.md` が作業ツリーで CRLF である件の統一）。採否を決める際は Task 4 の品質レビュー報告を参照
+- **4 連バッククォートのフェンス入れ子は非対応**（既存の割り切り）。フェンス判定は `Test-ProvenanceConvention` / `Remove-ProvenanceNotation` / `Get-ProvenanceLeak` の 3 箇所で共通の `StartsWith('```')` 方式のため、対応する場合は 3 箇所同時に直す。現状 `skills/` に 4 連フェンスは 0 件
 - **inbox 残置 3 件＋ `docs/conversation_log.md` はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
+- **本サイクルで分離した残課題 3 件**（いずれも「原理と実装の隙」に属し、次サイクル以降で判断）: Issue-0070（機械判定がスクリプト内の散文に届かない。フェンス開始行の穴も同じ課題へ記載）/ Issue-0071（配布されるスキルが配布されない文書を必須参照にしている。`extend-guidelines` が配布先で必ず中断する）/ Issue-0072（括弧内判定が半角括弧を全角と同一視する。実害 0 件・`Ordinal` 指定の 1 行で塞げることまで確認済み）
 - master 由来の申し送り（PowerShell の検索・集計の落とし穴、`Add-Content` 禁止、プラグイン update の必要性など）は `docs/working/handoff/master.md` の「既知のブロッカー・懸念」を参照
 
 ## Post ラッパー消化記録
@@ -71,24 +83,58 @@
 
 - 2026-08-07 Task 2・3 完了（共有ライブラリ。コミット `6311a78`）: ADR=なし（ADR-0083 の実装であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-07-18`（仕様の条件を実装へ落とす際に外した型） / review=非発火（確定点ではない。実装レビューは二段で実施済み）
 
+- 2026-08-08 Task 12 完了（全体検証・決定の確定。コミット `001e5b9`・`a473ec8`・`b8b60f0`）: ADR=0084 へ追記（R1-a・R1-b と自己参照・配布外文書名の扱いを決定として記録。既存 ADR への追記であり新規採番なし）。ADR-0081/0082/0083/0084 を Accepted へ昇格 / worklog=`MakeAiInstructions-2026-08-08-09`（静的 API が作業ディレクトリを見ない型）・`MakeAiInstructions-2026-08-08-10`（決定の昇格前に仕様が実装へ追いつかない型） / review=非発火（確定点ではない。ブランチ全体レビューで Critical 1・Important 4・Minor 7 を検出し、C-1 を除き全件反映）
+
+- 2026-08-08 Task 11 完了（配布元を `./dist` へ切替。コミット `43efad6`）: ADR=なし（ADR-0082 が定めた体制の適用であり新規の決定なし。切替の実施は `pre-action-review` を通しユーザー承認を得た） / worklog=棄却（delta なし。手順どおりの 1 行変更で、事故の再発もなかった） / review=非発火（確定点ではない）
+
+- 2026-08-08 Task 10 完了（ADR-0027 への部分修正注記。コミット `794c52a`・`c5f6ba3`・`bd4847d`）: ADR=なし（ADR-0083 の帰結の記録であり新規の決定なし） / worklog=棄却（delta は Task 9 の `MakeAiInstructions-2026-08-08-08` と同型＝上流文書の欠落が下流へ連鎖する型で、同一テーマの記録が既にある） / review=非発火（確定点ではない。1 行の注記のため仕様準拠と品質を 1 レビュアーで兼ねた。Major 1・Minor 3 を検出し全件反映して Approved）
+
+- 2026-08-08 Task 9 完了（規約の文書化と 6 シナリオへの配線。コミット `5f7eb69`・`450f4e9`・`b2e4230`・`59cfff3`・`e241b85`・`5ac65f3`）: ADR=なし（ADR-0083/0084 の文書化であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-08-08`（規約を書いた側は規約で作業していない型） / review=非発火（確定点ではない。仕様準拠レビューは 39 項目突合で ✅、品質レビューは Critical 2・Important 6・Minor 10 を検出し全件反映）
+
+- 2026-08-08 Task 8 完了（`sync-template.ps1` の改修。コミット `b488ddc`・`a985c56`・`06f9033`・`648060a`・`2958f96`）: ADR=なし（ADR-0083 の実装であり新規の決定なし。ADR-0084 の原理を散文へ適用した是正を含むが決定自体は既存） / worklog=`MakeAiInstructions-2026-08-08-06`（破壊的検証で実ファイルが消えた型）・`MakeAiInstructions-2026-08-08-07`（姉妹実装へ是正の知見が移らない型） / review=非発火（確定点ではない。仕様準拠レビュー ✅・品質レビュー Approved。Important 2 件を修正）
+
+- 2026-08-08 Task 7 完了（R4/R5 と破損行の移行。**違反 0 件・`dist/` 19 ファイル初生成**。コミット `b82fe12`・`87bd006`・`926717e`・`2a91da4`・`295724d`、計画改訂 `317fea6`）: ADR=0084（記法規約の適用範囲は機械判定の範囲より広く取り、差分は書き手が守る。作成時は Proposed。Task 12 で Accepted へ昇格） / worklog=`MakeAiInstructions-2026-08-08-05`（検査の実装可能性が規約の範囲を決めていた型） / review=非発火（確定点ではない。仕様準拠レビュー ✅・品質レビュー Approved。Important 2 件を修正し、原理と実装の隙 2 件を Issue-0070・Issue-0071 へ分離）
+
+- 2026-08-08 Task 6 完了（R2 違反の移行と根拠の散文補完。コミット `313bc56`・`8c63ed0`・`e6db3b0`・`3aeb826`）: ADR=なし（ADR-0083 の規約適用と ADR-0073 が求める根拠記載の実施であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-08-04`（識別子の除去で指示対象がすり替わる型） / review=非発火（確定点ではない。仕様準拠レビュー ✅・品質レビュー Approved。Important 2 件を修正）
+
+- 2026-08-08 Task 5 完了（R3 違反 15 行をコロン形へ移行。コミット `7b3553d`。計画改訂 `c08f8e8`・`f2f2112`）: ADR=なし（ADR-0083 の規約適用であり新規の決定なし） / worklog=`MakeAiInstructions-2026-08-08-03`（機械検出できる前提が二方向で破れた型） / review=非発火（確定点ではない。仕様準拠レビュー ✅・品質レビュー Yes、Minor 3 件は Task 6/9 へ配分済み）
+
+- 2026-08-08 Task 4 完了（生成器 `build-dist.ps1`。コード `306c51f`/`e64f9c1`/`39b0756`・spec 追補 `d791a31`/`83d7495`/`03ec247`）: ADR=なし（ADR-0082/0083 の範囲内の実装調整。plugin.json への残存検査適用・-Check の 4 条件化は spec へ記載済み） / worklog=`MakeAiInstructions-2026-08-08-01`（写経実行済み計画コードの環境依存欠陥）・`MakeAiInstructions-2026-08-08-02`（委譲プロンプトへのコード転記劣化） / review=非発火（確定点ではない。実装レビューは仕様準拠＋品質 3 巡で Approved）
+
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: `docs/working/plans/2026-08-07-distributed-artifact-generation-plan.md` の **Task 4 以降**（Task 1〜3 は完了済み。計画は各タスクが自己完結しており、前セッションの文脈がなくても再開できる）
-2. 最初に実行すべきコマンド/スキル: `start-work` → `superpowers:subagent-driven-development` で Task 4 から
-3. 再開前の健全性確認:
+**計画 12 タスクは完了済み。残るのはユーザー操作を要する 1 件のみ。**
+
+1. **ユーザーへ依頼する（最優先）**: 配布元切替の実機確認。エージェントからは実行できない
+   ```
+   /plugin marketplace update ai-driven-dev-principles
+   ```
+   実行後、次の 3 点を確認する:
+   - `start-work` を起動し、ベースディレクトリが `<repo>/dist/skills/start-work` を指すこと（現在は `<repo>/skills/start-work`）
+   - 起動した本文に出所識別子（`ADR-NNNN` 等）が含まれないこと
+   - **インストール記録が消えていないこと**（下記コマンド）。消えていたら `/plugin install ai-driven-dev-principles@ai-driven-dev-principles` を依頼する
+   ```powershell
+   python -c "import json,io; d=json.load(io.open(r'C:/Users/d12an/.claude/plugins/installed_plugins.json',encoding='utf-8')); [print(k) for k in d['plugins']]"
+   ```
+2. 健全性確認（作業前に回すと状態が分かる）:
    ```powershell
    pwsh -NoProfile -Command ". ./scripts/lib/strip-provenance.ps1; Invoke-StripProvenanceSelfTest"
+   pwsh -NoProfile -File scripts/build-dist.ps1 -Check
+   pwsh -NoProfile -File scripts/sync-template.ps1 -Check
    ```
-   期待: `all 17 cases passed`
+   期待: `all 21 cases passed` と、両生成器の `Up to date.`
+3. 実機確認が済んだら: master へマージ → **直後に `retrospective` を起動**（CLAUDE.md の規範）→ `session-handoff` の cycle-reset
 4. 留意点:
-   - **構造 A で確定済み**。計画 Task 1 Step 5 の構造 B 読み替え表は適用しない
-   - **Task 11 の本番エントリ切替は事故が起きた領域**。切替後に `installed_plugins.json` を確認し、記録が消えていたらユーザーへ再 install を依頼する（計画 Task 11 Step 2）
-   - 実装レビューは仕様準拠 → 品質の二段で行う。**規約に適合していても配布物が壊れる型**が実在するため、レビュアーには識別子を含まない行の不変性と冪等性を必ず確認させる
+   - **本番エントリ切替は事故が起きた領域**。インストール記録の確認を省略しない
+   - 検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている（マーケットプレイス定義からは削除済みで実体なし）。片付けるならユーザースコープでのアンインストールが要る
+   - **この体制では、規約に適合していても配布物が壊れる型が 5 つある**（`CONTRIBUTING.md`「機械判定が届かない領域」の表）。生成後の配布物を読む工程を必ず別に置く
    - サブエージェントへ委譲するときは `subagent-dispatch` を呼び、B 群判定行を残す
-   - 検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている（スキルは提供していない）。片付けるならユーザースコープでのアンインストールが要る
+   - **破壊的な検証を委譲したら、受け取り時に `git status --short` を全件確認すること**（2026-08-08 実測）。「複製で検証した」と報告した委譲先が実リポジトリのファイルを 2 度壊した。原因は PowerShell の `Set-Location` が .NET の静的 API（`[System.IO.File]::WriteAllText` 等）に効かないこと。委譲時は**絶対パスの使用**を明示し、検証前後の `git status` 比較を報告に含めさせる
 
 ## 重要な意思決定の履歴
 
-- ADR-0081: 配布物から除くのは「配布先で解決できない参照」であり、決定記録番号に限らない（2026-08-07・Proposed）
-- ADR-0082: 保守者向けの根拠注記はソースに残し、注記を除去した生成物を配布する（2026-08-07・Proposed）
-- ADR-0083: 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる（2026-08-07・Proposed）
+- ADR-0081: 配布物から除くのは「配布先で解決できない参照」であり、決定記録番号に限らない（2026-08-07・Accepted）
+- ADR-0082: 保守者向けの根拠注記はソースに残し、注記を除去した生成物を配布する（2026-08-07・Accepted）
+- ADR-0083: 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる（2026-08-07・Accepted）
+- ADR-0084: 記法規約の適用範囲は機械判定の範囲より広く取り、差分は書き手が守る（2026-08-08・Accepted）
+- ADR-0027 へ部分修正の注記を追加（Status は Accepted のまま維持）

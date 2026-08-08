@@ -49,7 +49,7 @@
 | 02 | 配布物生成器 | 配布対象ソースから識別子を除去した配布物を生成し、規約違反を検出したらエラーで停止する。生成物の陳腐化も検出する | `scripts/build-dist.ps1`、`scripts/lib/strip-provenance.ps1`（いずれも新規） |
 | 03 | template 同期への変換組み込み | `template/` の生成にも同じ判定と変換を適用する | `scripts/sync-template.ps1` |
 | 04 | プラグイン配布構造 | 生成物をプラグインのルートとして配布する構造を定義し、成立性を実機で検証する | `.claude-plugin/marketplace.json`、`.claude-plugin/plugin.json`、`dist/.claude-plugin/plugin.json`、`README.md` |
-| 05 | ソースの規約適合化 | 既存の規約違反 38 行を規約適合形へ書き換える | `skills/` 8 ファイル、`docs/records/retrospectives/README.md`、`docs/overview/folder-structure.md` |
+| 05 | ソースの規約適合化 | 既存の規約違反 38 行と、規約適合だが除去後に文が壊れる 10 行を書き換える | `skills/` 配下 12 ファイル、`docs/records/retrospectives/README.md`、`docs/overview/folder-structure.md`（計 14） |
 
 ### ブロック間関係
 

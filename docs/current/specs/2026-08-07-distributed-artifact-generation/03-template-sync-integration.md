@@ -65,7 +65,7 @@ scripts/sync-template.ps1 [-Check]
 
 | ソース | ソース側 | 空インデックス化後 | 生成物側 |
 |---|---|---|---|
-| `docs/overview/folder-structure.md` | 8 | （対象外） | 0 |
+| `docs/overview/folder-structure.md` | 7 | （対象外） | 0 |
 | `docs/records/retrospectives/README.md` | 128（種別 1〜3 が 121、種別 4 が 7） | 12 | 0 |
 | `docs/records/decisions/README.md` | 多数 | 0 | 0 |
 | `docs/working/issues/README.md` | 多数 | 0 | 0 |

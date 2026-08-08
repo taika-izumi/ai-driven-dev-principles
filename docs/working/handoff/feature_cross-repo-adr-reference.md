@@ -1,9 +1,9 @@
 # Handoff: 配布物からの出所識別子の除去（Issue-0067 対策）
 
 - **Branch**: feature/cross-repo-adr-reference
-- **Last Updated**: 2026-08-08 11:20 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張 / **計画 12 タスク・完了基準 7 項目をすべて達成**（master マージ待ち）
+- **Last Updated**: 2026-08-08 11:40 (Asia/Tokyo)
+- **Status**: completed（master へ merge `70365a5`・retrospective 実施済み）
+- **Current Phase**: 全フェーズ完了
 
 ## 作業の目的・背景
 
@@ -48,8 +48,7 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: なし（**計画 12 タスク・完了基準 7 項目をすべて満たした**）
-  - 次の判断: master へマージするか。マージ後は `retrospective` の起動が規範で求められる
+（なし。master へ merge `70365a5` 済み。以後の申し送りは `master.md` を参照）
 
 ## 未着手のタスク
 

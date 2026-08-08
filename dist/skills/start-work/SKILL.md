@@ -70,11 +70,11 @@ AIエージェントを活用した作業のフローを定義し、フロー通
 | コードレビュー対応 | superpowers:receiving-code-review | インライン指摘整理→対応 |
 | コードレビュー依頼 | superpowers:requesting-code-review | インラインPR説明作成 |
 | 完了前検証 | superpowers:verification-before-completion | インラインチェックリスト確認 |
-| ガイドライン拡張 | extend-guidelines | （本リポジトリ固有スキル、フォールバック不要） |
-| inbox の整理 | organize-inbox | （本リポジトリ固有スキル、フォールバック不要） |
+| ガイドライン拡張 | extend-guidelines | （本プラグイン提供のスキル、フォールバック不要） |
+| inbox の整理 | organize-inbox | （本プラグイン提供のスキル、フォールバック不要） |
 | 調査・分析・PoC | アドホック | アドホック |
-| サブプロジェクト完了直後の振り返り | retrospective | （本リポジトリ固有スキル、フォールバック不要） |
-| 計画・仕様など非コード成果物の確定前レビュー（発動はユーザー指示時。提示は確定点で毎回） | pre-finalization-review | （本リポジトリ固有スキル、フォールバック不要） |
+| サブプロジェクト完了直後の振り返り | retrospective | （本プラグイン提供のスキル、フォールバック不要） |
+| 計画・仕様など非コード成果物の確定前レビュー（発動はユーザー指示時。提示は確定点で毎回） | pre-finalization-review | （本プラグイン提供のスキル、フォールバック不要） |
 
 ユーザーに次手を確認する（推奨を提示するが強制しない。ユーザーの意図優先）。
 確定前レビュー（`pre-finalization-review`）は、下記「確定前レビューの提示規則」に従って提示する（実施の判断はユーザー）。

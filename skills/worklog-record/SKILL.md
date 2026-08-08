@@ -9,7 +9,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 
 ## いつ使うか
 
-`start-work` の Post ラッパーから、`session-handoff` update と同じマイルストーン契機で呼ばれる（ADR-0047 により全プロジェクトへ伝播）。手動起動も可。
+`start-work` の Post ラッパーから、`session-handoff` update と同じマイルストーン契機で呼ばれる（全プロジェクトへ伝播している。ADR-0047）。手動起動も可。
 
 マイルストーン契機:
 
@@ -66,7 +66,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 ## エントリ例
 
 ```jsonl
-{"v":2,"id":"MakeAiInstructions-2026-07-17-01","date":"2026-07-17","project":"MakeAiInstructions","model":"claude-fable-5","scope":"general-candidate","title":"AskUserQuestion 前に環境変数を確認","context":"start-work Phase 1 で構造化質問ツールを使う前に、ADR-0036 の運用チェックを実行","procedure":["Bash: echo $CLAUDE_CODE_DISABLE_MOUSE_CLICKS","値が 1 であることを確認してから AskUserQuestion 発行"],"corrections":["構造化質問ツール使用前に環境変数の値を確認すること"],"applied_rules":["ADR-0036"]}
+{"v":2,"id":"X-2026-07-17-01","date":"2026-07-17","project":"X","model":"claude-fable-5","scope":"general-candidate","title":"AskUserQuestion 前に環境変数を確認","context":"start-work Phase 1 で構造化質問ツールを使う前に、誤操作防止設定の運用チェックを実行","procedure":["Bash: echo $CLAUDE_CODE_DISABLE_MOUSE_CLICKS","値が 1 であることを確認してから AskUserQuestion 発行"],"corrections":["構造化質問ツール使用前に環境変数の値を確認すること"],"applied_rules":["ADR-NNNN"]}
 ```
 
 ## ストア仕様
@@ -82,9 +82,9 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 
 ## 関連 ADR
 
-- ADR-0044（記録ゲート・スキル1/2 責務境界・scope 暫定タグ）
-- ADR-0045（エントリスキーマ・delta 核心・id 採番・adopted 含む台帳ライフサイクル）
-- ADR-0047（start-work Post への配線・全プロジェクト伝播）
-- ADR-0048〜0053（v1.1 改訂: model 必須・スキーマ版数 v・id 採番強化・friction string[]・運用ガイド・記録単位）
-- ADR-0057（消化結果の handoff 記録・未発火とゲート棄却の外形的区別）
-- ADR-0058（セッション切り替え直前の発火契機）
+- ADR-0044: 記録ゲート・スキル1/2 責務境界・scope 暫定タグ
+- ADR-0045: エントリスキーマ・delta 核心・id 採番・adopted 含む台帳ライフサイクル
+- ADR-0047: start-work Post への配線・全プロジェクト伝播
+- ADR-0048〜0053: v1.1 改訂（model 必須・スキーマ版数 v・id 採番強化・friction string[]・運用ガイド・記録単位）
+- ADR-0057: 消化結果の handoff 記録・未発火とゲート棄却の外形的区別
+- ADR-0058: セッション切り替え直前の発火契機

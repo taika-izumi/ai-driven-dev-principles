@@ -33,20 +33,20 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 7. **候補提示**: ランク付き候補リストを人間に提示。各候補に再発数・scope・重複有無・根拠エントリ参照を添える。頻度はハード閾値を置かずソフトな判断材料
 8. **人間採否 → 反映**:
    - **rejected / deferred** → 即 `processed.jsonl` へ追記（`deferred` は `evidence_count` に現クラスタ根拠数を記録）
-   - **採用** → Issue 草案化（`general` は本 repo `docs/working/issues/`、`project-specific` は当該プロジェクトの Issue 置き場）＋`adopted` を即 `processed.jsonl` へ追記し、`worklog-skillify` へ受け渡す
+   - **採用** → Issue 草案化（`general` はガイドライン配信元リポジトリの `docs/working/issues/`、`project-specific` は当該プロジェクトの Issue 置き場）＋`adopted` を即 `processed.jsonl` へ追記し、`worklog-skillify` へ受け渡す
    - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）
 
 ## 出力
 
 - ランク付き候補リスト（人間へ提示）
-- 採用候補の Issue 草案（general → 本 repo `docs/working/issues/`、project-specific → 当該プロジェクト）＋`worklog-skillify` への受け渡し
+- 採用候補の Issue 草案（general → ガイドライン配信元リポジトリの `docs/working/issues/`、project-specific → 当該プロジェクト）＋`worklog-skillify` への受け渡し
 - `processed.jsonl` への追記（`adopted` / `rejected` / `deferred`）
 
 `skillified` / `merged` の台帳追記は `worklog-skillify` 側の責務。
 
 ## 再提案防止（二層）
 
-- **①台帳（厳密層）**: 処理済み id（`adopted` を含む）は丸ごと除外する。`adopted` は skill3 完了前の窓を厳密層で捕捉するために追加された（ADR-0045 追補）
+- **①台帳（厳密層）**: 処理済み id（`adopted` を含む）は丸ごと除外する。`adopted` は skill3 完了前の窓を厳密層で捕捉するためレビュー指摘を受けて追加された（ADR-0045）
 - **②既存スキル重複排除（あいまい層）**: 未処理でも既存 description と一致するものは除外。ただし本層は「スキルが作成されてから」効くため、`adopted` の厳密捕捉が併走することで完全性が確保される
 
 ## スコープ外（v1）
@@ -60,7 +60,7 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 
 ## 関連 ADR
 
-- ADR-0044（overlap 対応・Issue 起票先行・scope 3分岐）
-- ADR-0045（台帳による処理済み除外・deferred 再浮上・adopted 状態・スキル2フロー）
-- ADR-0048/0049/0051（読み側互換: model 材料・v 版数判別・friction 読み替え）
-- ADR-0054（走査直前のストア健全性検証: エンコーディング/EOL の loud validation）
+- ADR-0044: overlap 対応・Issue 起票先行・scope 3分岐
+- ADR-0045: 台帳による処理済み除外・deferred 再浮上・adopted 状態・スキル2フロー
+- ADR-0048/0049/0051: 読み側互換（model 材料・v 版数判別・friction 読み替え）
+- ADR-0054: 走査直前のストア健全性検証（エンコーディング/EOL の loud validation）

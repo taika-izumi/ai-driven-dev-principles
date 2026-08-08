@@ -22,7 +22,7 @@
   - **影響**: <時間損失・スコープ影響など>
   - **起票**: Issue-NNNN（`../../working/issues/system/NNNN-<slug>.md`）
 
-> 開発フロー課題 N 件は `flow/<同名>.md` 参照。worklog 送りとした delta 型候補 N 件（起票なし。ADR-0056 の振り分け規則）。
+> 開発フロー課題 N 件は `flow/<同名>.md` 参照。worklog 送りとした delta 型候補 N 件（起票なし。振り分け規則による。ADR-0056）。
 
 ## 3. 既存課題の再発・進展
 

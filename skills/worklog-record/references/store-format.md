@@ -17,7 +17,7 @@
 
 - このストアはリポジトリ外にあり、`.gitattributes` による改行正規化（ADR-0037）の管轄外。契約は各スキルの読み書き手順で守る
 - 全プラットフォーム・全ツール共有のため、別 OS・別ツールの既定追記（BOM 付き・CRLF・UTF-16 等）が混ざると連結1パス走査が壊れる
-- **書き側手段**: 行終端を明示できる API を使う。**`Add-Content` は使わないこと** — `-Encoding` はエンコーディングだけを制御し行終端子は制御しないため、Windows では CRLF を書き契約に違反する（実測。同じ罠は `scripts/sync-template.ps1` が ADR-0033 で解決済み）
+- **書き側手段**: 行終端を明示できる API を使う。**`Add-Content` は使わないこと** — `-Encoding` はエンコーディングだけを制御し行終端子は制御しないため、Windows では CRLF を書き契約に違反する（実測。同じ罠は `scripts/sync-template.ps1` で解決済み（ADR-0033））
   - Python（推奨。バイト単位で確実）: `open(path, "a", encoding="utf-8", newline="\n")`
   - PowerShell: `[System.IO.File]::AppendAllText($path, $line + "`n", [System.Text.UTF8Encoding]::new($false))`
   - POSIX シェル: `>>` リダイレクト
@@ -28,7 +28,7 @@
 
 ```json
 {
-  "MakeAiInstructions": { "path": "D:/Dev/002_AiDev/MakeAiInstructions", "lastSeen": "2026-07-17" }
+  "X": { "path": "/path/to/X", "lastSeen": "2026-07-17" }
 }
 ```
 
@@ -46,7 +46,7 @@
 
 必須（いずれか空なら記録を弾く）: `v` / `id` / `date` / `project` / `model` / `scope` / `title` / `context` / `procedure`
 delta ペア（`friction` または `corrections` の少なくとも一方が必須）: `friction` / `corrections`
-任意: `skillification_hint` / `outcome`（success/partial/failed＝作業結果）/ `tools` / `applied_rules`（逸脱注記可）/ `refs`
+任意: `skillification_hint` / `outcome`（success/partial/failed＝作業結果）/ `tools` / `applied_rules`（適用した規範を一意に指す文字列の配列。決定記録の番号など。逸脱注記可）/ `refs`
 
 | フィールド | 型 | 説明 |
 |---|---|---|
@@ -77,22 +77,22 @@ delta ペア（`friction` または `corrections` の少なくとも一方が必
 - 節目に独立した作業テーマの delta が複数あれば、テーマごとに複数エントリを記録してよい
 - 「どれを捨てるか」の優先順位判断はしない（ノイズ抑制は記録ゲート＝delta の存在が担う）
 
-### id 採番アルゴリズム（ADR-0050 で強化）
+### id 採番アルゴリズム（強化。ADR-0050）
 
 1. `date` = 今日（YYYY-MM-DD）、`project` = フォルダ名
 2. **追記の直前に** `<folderName>/log.jsonl` を読む（無ければ NN=01）
 3. 同一 `project` かつ同一 `date` のエントリ数を数え、その数+1 を2桁ゼロ埋めして NN とする
 4. `id = "<project>-<date>-<NN>"` で 1 行追記する
-5. **追記後に log.jsonl を読み直し、自行の id が他エントリと重複していないか検証する**（ADR-0038 の読み直し規範と整合）。重複を検出した場合、**自分が書いた行のみ id を再採番して書き直す**（追記専用原則の唯一の例外。台帳突合レコードが発生する前・自分が書いた直後の行の修復に限るため安全）
+5. **追記後に log.jsonl を読み直し、自行の id が他エントリと重複していないか検証する**（読み直し規範と整合している。ADR-0038）。重複を検出した場合、**自分が書いた行のみ id を再採番して書き直す**（追記専用原則の唯一の例外。台帳突合レコードが発生する前・自分が書いた直後の行の修復に限るため安全）
 
-> 注: ADR-0045 / spec 01 の旧記述「末尾を見て採番」の改善版（ADR-0050）。並行セッションの採番競合（Issue-0027）に対し、直前再カウントで競合窓を縮め、読み直し検証で検出・回復する。加えて末尾1行だけでなく同一 date 全件をカウントすることで、順序が乱れた場合でも正しい NN が決まる。
+> 注: 旧記述「末尾を見て採番」（ADR-0045。当初の spec）の改善版（ADR-0050）。並行セッションの採番競合（Issue-0027）に対し、直前再カウントで競合窓を縮め、読み直し検証で検出・回復する。加えて末尾1行だけでなく同一 date 全件をカウントすることで、順序が乱れた場合でも正しい NN が決まる。
 
 ## 台帳レコード（processed.jsonl、1行1レコード、追記専用）
 
 ```jsonl
-{"v":2,"id":"MakeAiInstructions-2026-07-16-01","outcome":"adopted","date":"2026-07-16"}
-{"v":2,"id":"MakeAiInstructions-2026-07-16-01","outcome":"skillified","ref":"skills/xxx","date":"2026-07-20"}
-{"v":2,"id":"LoopForAlpha-2026-07-18-03","outcome":"deferred","evidence_count":2,"date":"2026-07-20"}
+{"v":2,"id":"X-2026-07-16-01","outcome":"adopted","date":"2026-07-16"}
+{"v":2,"id":"X-2026-07-16-01","outcome":"skillified","ref":"skills/xxx","date":"2026-07-20"}
+{"v":2,"id":"X-2026-07-18-03","outcome":"deferred","evidence_count":2,"date":"2026-07-20"}
 ```
 
 | フィールド | 型 | 説明 |

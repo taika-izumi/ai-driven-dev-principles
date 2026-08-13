@@ -91,3 +91,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0083](0083-provenance-notation-convention-enforced-by-generator.md) | 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる | Accepted | 2026-08-07 |
 | [0084](0084-convention-scope-exceeds-machine-check-scope.md) | 記法規約の適用範囲は機械判定の範囲より広く取り、差分は書き手が守る | Accepted | 2026-08-08 |
 | [0085](0085-no-structured-question-tool-on-affected-models.md) | 事象確認済みモデルでは構造化質問ツールを使用せず、テキストの番号付き選択肢に一本化する | Accepted | 2026-08-13 |
+| [0086](0086-handoff-canonical-relocation-standard.md) | handoff に溜まる情報の正本置き場を種類別対応表で定め、finalize に移設工程を新設する | Proposed | 2026-08-13 |
+| [0087](0087-handoff-pruning-trigger-system.md) | handoff の剪定・移設はサイズ実測トリガーと作業単位完了の二系統で発火させる | Proposed | 2026-08-13 |
+| [0088](0088-handoff-section-volume-norms.md) | handoff の節別記載規範を定める（消化記録 1 行限定・分量目安・圧縮記録の残置禁止） | Proposed | 2026-08-13 |

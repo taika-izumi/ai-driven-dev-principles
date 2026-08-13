@@ -29,7 +29,7 @@ ADR-0089 に従う: 情報分類と配置先の定義（What/Where）の正本�
 | `skills/session-handoff/SKILL.md` | (a) フォーマット節へ節別規範（ADR-0088 の 7 項目） (b) 独立手順「移設」の新設（ADR-0086 決定 2） (c) read へサイズ実測（存在確認の直後）＋超過時提案＋受諾時の移設実行 (d) update へ消化記録の内容限定と分岐 (e) finalize の手順再構成（7 段: 実測→update 同様の更新→移設→基準付き圧縮→次アクション→Status→コミット。コミット対象に移設先の正本ファイルを含める） (f) finalize「圧縮しないもの」規定へ「保護は移設で正本を外へ作るまでの暫定」の文言追加 (g) cycle-reset 手順 2（申し送り現役性点検）の前段に移設判定を追加 (h) 「本サイクル」定義を「前回 cycle-reset から次の cycle-reset までの作業単位」へ（ブランチ非依存化） | プラグイン（dist/。記法規約の執行点 4 手順を適用） |
 | `skills/start-work/SKILL.md` | 「本サイクル」定義文言の同語彙化（上記 (h) と同じ 1 文のみ） | プラグイン（dist/） |
 | `docs/overview/folder-structure.md` | 配置表の既存行「技術調査・検証メモ」を「技術調査・検証メモ、セッション跨ぎに再利用する教訓・作業知見」へ拡張 | template（sync-template 実行） |
-| `docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md` | 本設計と矛盾する 3 箇所（cycle-reset の呼ばれるタイミング表現・finalize 手順構成・「cycle-reset は retrospective 経由でのみ発動する」の記述）をスナップショット規約に従い書き換え | なし |
+| `docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md` | 本設計と矛盾する記述をスナップショット規約に従い書き換え: (i)「数値ゲート（行数閾値等）は設けない」（サイズトリガー新設と矛盾） (ii) finalize 手順構成（移設工程が入り 7 段になる） (iii) cycle-reset の申し送り現役性点検（前段に移設判定が入る） (iv)「`skills/start-work/SKILL.md` → 変更なし」（「本サイクル」文言変更が入る）。なお「cycle-reset は retrospective 経由でのみ発動する」は撤回後も真のため書き換え対象ではない | なし |
 | `docs/records/decisions/0075-…` | Consequences へ部分修正の注記（保護規定は移設とセット運用へ） | なし |
 | `README.md` | スキル一覧テーブルの session-handoff 行を現状（5 操作＋移設手順）に合わせ更新 | なし |
 | ADR-0086/0087/0088/0089 | 新規（Proposed → 実装完了時 Accepted、対応 Issue close） | なし |
@@ -39,10 +39,10 @@ ADR-0089 に従う: 情報分類と配置先の定義（What/Where）の正本�
 ## 4. 完了基準
 
 1. session-handoff・start-work スキルに §3 (a)〜(h) が記載され、`scripts/build-dist.ps1`（-Check 含む）が違反 0 で通過する
-2. 配布物の目視: `dist/skills/session-handoff/SKILL.md` と `template/docs/overview/folder-structure.md` で、機械判定の届かない 5 型（半角括弧・識別子同居・実在固有名・自己参照・表示文字列)の違反がない
+2. 配布物の目視: `dist/skills/session-handoff/SKILL.md` と `template/docs/overview/folder-structure.md` で、機械判定の届かない 5 型（半角括弧・識別子同居・実在固有名・自己参照・表示文字列）の違反がない
 3. folder-structure.md の配置表の拡張行が本体と `template/` の両方に実在する（`scripts/sync-template.ps1 -Check` 通過）
 4. ADR-0075 の Consequences に移設セット運用の部分修正注記が実在する
-5. 旧 spec `2026-08-06-handoff-pruning-and-status-design.md` に「cycle-reset は retrospective 経由でのみ発動する」等の矛盾記述が残っていない（grep で不検出）
+5. 旧 spec `2026-08-06-handoff-pruning-and-status-design.md` に §3 (i)〜(iv) の矛盾記述が残っていない（「数値ゲート（行数閾値等）は設けない」等が grep で不検出）
 6. `README.md` のスキル一覧テーブルが session-handoff の現状（5 操作＋移設手順）を反映している
 7. ADR-0086/0087/0088/0089 が Accepted へ昇格し、Issue-0078〜0081 が close される（0078 は Issue-0050 への委譲を「結論」に明記して close）
 
@@ -50,7 +50,7 @@ ADR-0089 に従う: 情報分類と配置先の定義（What/Where）の正本�
 
 | 観点 | 判定 | 根拠 |
 |------|------|------|
-| 出所の偏り | 要是正→適用例への降格（数値のデフォルト値化）＋第 2 出所による値の再導出 — 適用済み | 根拠は Issue-0078〜0081（LoopForAlpha 実測、2026-08-13）と Issue-0049（同、closed）で出所 1 プロジェクト・課題 5 件。モデル世代: 肥大は複数モデル世代にわたる運用の堆積で単一世代に帰属できず、起票時の実測は claude-fable-5 で実施。是正として、(1) 数値（40KB・200 字）はデフォルト値（プロジェクト調整可・調整値優先）、(2) 40KB は第 2 出所（ガイドライン配信元リポジトリの handoff 全 20 ファイル実測）で発火率を検証して再導出、(3) 移設先は分類名参照でプロジェクトの folder-structure が解決 |
+| 出所の偏り | 要是正→適用例への降格（数値のデフォルト値化）＋第 2 出所による値の再導出 — 適用済み | 根拠は Issue-0078〜0081（LoopForAlpha 実測、2026-08-13）と Issue-0049（同、closed）で出所 1 プロジェクト・課題 5 件。モデル世代: 肥大は複数モデル世代にわたる運用の堆積で単一世代に帰属できず、起票時の実測は claude-fable-5 で実施。是正として、(1) 数値（40KB・200 字）はデフォルト値（プロジェクト調整可・調整値優先）、(2) 40KB は第 2 出所（ガイドライン配信元リポジトリの handoff 全 20 ファイル実測。40KB での発火 0 件＝健全ファイルを許容し実測肥大 97KB は捕捉）で検証して再導出、(3) 移設先は分類名参照でプロジェクトの folder-structure が解決。ADR-0089（責務境界）はユーザー提起 1 件が出所の一般規範だが、実測数値を含まない配布経路の構造（プラグイン/template の非対称）から導かれる設計原則であり、既存スキルへの適用も「改定機会に順次」で一括強制しない |
 | システム種別依存性 | 問題なし | handoff 運用は開発対象システムの種別・技術スタックに依存しない。「数週間の長期サイクル」という運用形態が実測の背景にあるが、サイズトリガーはサイクル長と無関係に機能するため、短サイクル運用でも害がない（発火しないだけ） |
 | AI モデル/ツール依存性 | 問題なし | 発動条件はファイルサイズ実測と操作契機（read/finalize/cycle-reset）で、いずれもモデル・ツール非依存にエージェントが観測・実行できる。実測コマンドは PowerShell / POSIX の両方を例示する。特定モデルの挙動を前提とする規範を含まない |
-| 退役経路 | 定義済み | サイズトリガーが長期にわたり未発火（肥大が構造的に再発しない）で、同型の delta が中央ストアへ現れない場合、移設工程・トリガー・節別規範の簡素化・退役を候補としてユーザーへ提案する。判断はユーザーが行う（ADR-0086/0087/0088 の各 Consequences に記載） |
+| 退役経路 | 定義済み | サイズトリガーが長期にわたり未発火（肥大が構造的に再発しない）で、同型の delta が中央ストアへ現れない場合、移設工程・トリガー・節別規範の簡素化・退役を候補としてユーザーへ提案する。判断はユーザーが行う（ADR-0086/0087/0088 の各 Consequences に記載）。ADR-0089 の責務境界規範は配布経路の非対称が解消された時点でユーザー判断により撤回する（ADR-0089 の Consequences に記載） |

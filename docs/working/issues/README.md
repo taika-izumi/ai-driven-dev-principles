@@ -93,3 +93,4 @@
 | [0079](flow/0079-handoff-as-canonical-store-unbounded.md) | 「正本が handoff 以外にないもの」の保護規則に、正本を外部へ移す誘導と上限がない | open | 2026-08-13 |
 | [0080](flow/0080-digest-record-line-length-unbounded.md) | 消化記録の「1 行」に長さ・内容の規範がなく、正本と詳細を重複記載して肥大する | open | 2026-08-13 |
 | [0081](flow/0081-handoff-free-sections-volume-norm-missing.md) | handoff の自由記述部の記載量を制御する規範がない（タイトル・次アクション・抜粋・圧縮記録） | open | 2026-08-13 |
+| [0082](flow/0082-choice-recommendation-spec-snapshot-stale.md) | 選択肢提示規範の spec が 3 世代前のツール選択規範のまま（スナップショット規約違反状態） | open | 2026-08-13 |

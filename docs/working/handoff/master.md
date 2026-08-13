@@ -65,7 +65,7 @@
 - **中央ストアの現状**: 本repo 54 件（〜`MakeAiInstructions-2026-08-08-10`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 更新済み（2026-08-08）
 - **検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている**（マーケットプレイス定義からは削除済みで実体なし）。片付けるならユーザースコープでのアンインストールが要る
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
-- `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（構造化質問ツール使用前に毎回確認。ADR-0036）
+- `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
 - **リモート同期**: 2026-08-07 のセッション終了時に `origin/master` へ push 済み。**今サイクル分（`70365a5` までの 61 コミット）は未 push**。push は自動では行われないため、必要な区切りでユーザーが指示すること
 

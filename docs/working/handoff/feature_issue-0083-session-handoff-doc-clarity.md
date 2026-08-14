@@ -1,9 +1,9 @@
 # Handoff: Issue-0083 session-handoff 文書の解釈揺れ 5 点の解消
 
 - **Branch**: feature/issue-0083-session-handoff-doc-clarity
-- **Last Updated**: 2026-08-14 22:02 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装・完了処理まで完了。master へのマージ判断待ち
+- **Last Updated**: 2026-08-14 22:15 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: master へマージ済み（`f557a04`・--no-ff）。retrospective 実施済み。本 handoff は役目を終えた
 
 ## 作業の目的・背景
 
@@ -26,13 +26,11 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: master へのマージ判断（ユーザー判断待ち）
-  - 状態: 実装・完了処理・検証まで全完了。ブランチ上のコミットは 3 件（`187a189` / `4540a2b` / `dcb325c`）
-  - 残り: マージ方式の決定（Issue-0084: --no-ff の完了フロー未配線が open である点に留意）→ マージ後 retrospective → 配布反映（push 後に `/plugin marketplace update` を依頼）
+（なし。マージ・retrospective まで完了。以降の状態は `master.md` が引き継ぐ）
 
 ## 未着手のタスク
 
-- [ ] master マージ後: retrospective → cycle-reset → finalize
+（なし）
 
 ## 既知のブロッカー・懸念
 

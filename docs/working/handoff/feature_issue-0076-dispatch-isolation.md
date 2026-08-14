@@ -1,9 +1,9 @@
 # Handoff: Issue-0076 対策（破壊的検証委譲の隔離制約）
 
 - **Branch**: feature/issue-0076-dispatch-isolation
-- **Last Updated**: 2026-08-15 06:55 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 改修/実装完了・ADR-0093 Accepted 昇格済み。次は master へのマージ
+- **Last Updated**: 2026-08-15 06:45 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了（master へ --no-ff マージ済み: faa9187。retrospective・cycle-reset 実施済み）
 
 ## 作業の目的・背景
 
@@ -26,13 +26,11 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: master への取り込み
-  - 状態: 実装・昇格・close 完了。feature ブランチはコミット済み
-  - 残り: master へ --no-ff でマージ → retrospective → cycle-reset → 配布反映（ユーザーによる `/plugin marketplace update`）
+（なし。master へマージ済み）
 
 ## 未着手のタスク
 
-- [ ] retrospective（system / flow）と cycle-reset
+（なし。以後の作業は `master.md` を参照）
 
 ## 既知のブロッカー・懸念
 

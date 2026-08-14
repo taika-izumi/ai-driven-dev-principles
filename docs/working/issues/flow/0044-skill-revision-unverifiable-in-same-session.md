@@ -33,6 +33,8 @@ ADR-0055 は「スキルが使えるか（availability）」の AI 側判定規�
 
 - 2026-08-14: **GitHub ソース化以降は「update だけでは反映されない」ことを実測し、ADR-0090 で運用を確定**。前サイクル改定（session-handoff / start-work）の反映を試みたところ、`/plugin marketplace update` はマーケットプレイスクローンを最新化するのみで、version 据え置き（0.1.0）の限りインストール済みキャッシュは再取得されず、`/plugin update` も「already at the latest version (0.1.0)」でスキップした。version を 0.1.1 へ bump（コミット `0ef304f`）して push した後の `/plugin marketplace update` は「(1 plugin bumped)」を出力し、プラグイン更新まで一括実施・改定後本文の供給を突合確認した。**過去の実測（update だけで反映）との矛盾は配布経路の変化で説明できる**: 2026-08-05〜07 時点の marketplace 登録は `source: directory`（本 repo 直指し）だったが、現在は GitHub ソース＋バージョンキーのキャッシュ（`known_marketplaces.json` で確認。ADR-0082 の dist 配布切替に伴う再登録）。したがって運用対処は「update 依頼」から「**version bump ＋ update 依頼**」へ更新される（ADR-0090。反映確認は従来どおり起動本文と実ファイルの突合）
 
+- 2026-08-15: **同一セッション内でスキルのバージョンが混在した実観測**。セッション開始時に `start-work` が 0.1.2 のキャッシュから、`session-handoff` 以降のスキルが 0.1.3 のキャッシュから読み込まれた（前サイクルで 0.1.3 へ bump・push 済みだが、ユーザーによる `/plugin marketplace update` が未実施だったため）。エージェント側から観測できるのは各スキル起動時に表示される base directory のバージョン部分のみ。混在自体が本サイクルの作業へ実害を与えたわけではないが、「どのバージョンの規範に従って作業しているか」がスキルごとに異なりうる状態は、規範改定が効いているかの検証を難しくする
+
 ## 結論
 
 （open。同セッション反映の運用対処は ADR-0090 で「version bump ＋ `/plugin marketplace update` 依頼」として確定。残るのは start-work Phase -1 等への規範組み込みの採否のみ）

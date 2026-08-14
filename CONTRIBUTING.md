@@ -492,7 +492,7 @@ ADR インデックス全体のステータス正確性を確認する保険的�
    - 小規模（1〜2 ファイル / 規約追加のみ）: brainstorming を省略し、`start-work` Phase 2 から writing-plans に直行してよい
 6. 対策の方針を決定したら、その時点で ADR を起票する（Proposed → 実装完了時に Accepted 昇格。ADR-0019）。**対策の決定とその ADR 化は本サイクルで行う**（retrospective では行っていない）
 7. 取り込み元の retrospective ファイルは**書き換えない**（ADR-0011 の追記型規約）。対策結果のフィードバックは次回の retrospective で記録する
-8. 対策サイクル完了時（ADR の Accepted 昇格時）に、対象 issue を close する（Status を closed に変更し「結論」に ADR 番号を記載。インデックスも更新）
+8. 対策サイクル完了時（ADR の Accepted 昇格時）に、対象 issue を close する（Status を closed に変更し「結論」に ADR 番号を記載。インデックスも更新）。昇格は `decision-log` の「承認の昇格」の手順（サイクル全体整合検査を含む）に従う（ADR-0092）
 
 ### チェックリスト
 

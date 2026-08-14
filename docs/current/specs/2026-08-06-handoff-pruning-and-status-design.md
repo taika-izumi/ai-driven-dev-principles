@@ -7,7 +7,7 @@
 
 ## 設計の骨子
 
-ハンドオフ肥大の根本原因は剪定機会の不足ではなく、**剪定の許可と基準が明文化されていないこと**。対処は「イベント駆動の構造的剪定規約」を `session-handoff` / `retrospective` の 2 スキルに組み込むことで行う。数値ゲート（行数閾値等）は設けない。
+ハンドオフ肥大の根本原因は剪定機会の不足ではなく、**剪定の許可と基準が明文化されていないこと**。対処は「イベント駆動の構造的剪定規約」を `session-handoff` / `retrospective` の 2 スキルに組み込むことで行う。サイズの実測トリガーは本設計の対象外とし、後続設計 `docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md`（ADR-0087）が定める。
 
 - 剪定で落とした情報の受け皿は git 履歴のみ。明示アーカイブファイルは設けない（ADR-0074）
 - 剪定は二段階: セッション境界（finalize）で基準付き圧縮、サイクル境界（retrospective 完了時）で初期状態への書き換え（ADR-0075）
@@ -37,9 +37,11 @@ finalize の手順に剪定ステップを追加する（ADR-0075 前段）。�
 1. **詳細が他の正本（ADR / issue / worklog / plan / spec / コミット履歴）に記録済みの完了タスク・記述** → 1 行要約＋正本への参照（安定識別子）に置き換える
 2. **役目を終えた状態情報**（解消済みブロッカー、確定済み過去セッションの消化記録行 = 既存 ADR-0057 規約）→ 削除する
 
-**圧縮しないもの**: 正本が handoff 以外にないもの（進行中タスクの状態・残り、現役の申し送り・懸念）。無条件の 1 行要約はしない。
+**圧縮しないもの**: 正本が handoff 以外にないもの（進行中タスクの状態・残り、現役の申し送り・懸念）。無条件の 1 行要約はしない。この保護規定はその後、`review=` を含む消化記録行の保護（ADR-0080）が加わり、独立手順「移設」で正本を外へ作るまでの暫定と位置付けられた（ADR-0086）。現状の正は `skills/session-handoff/SKILL.md` を参照。
 
 あわせて finalize の Status 更新ガイドに次の分岐を追加する: cycle-reset 実施済みで次サイクル未着手のまま終了する場合は `ready-for-next-cycle` を維持する（paused 等で上書きしない）。
+
+finalize の現行の手順構成は、後続設計により 7 段（サイズ実測・移設を含む）へ再構成されている。現状の正は `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §3 と `skills/session-handoff/SKILL.md` を参照。
 
 ## 変更 4: 新操作 `cycle-reset` の追加（`skills/session-handoff/SKILL.md` 操作 5）
 
@@ -50,7 +52,7 @@ finalize の手順に剪定ステップを追加する（ADR-0075 前段）。�
 手順:
 
 1. 完了サイクルの経緯を落とす: 完了済みタスクは「過去サイクルは retrospective / git 履歴参照」の 1 行に集約し、Post ラッパー消化記録は全行削除し、完了サイクル固有の記述を除去する（受け皿は git 履歴。ADR-0074）
-2. **申し送り（既知のブロッカー・懸念）を 1 件ずつ現役性点検**し、現役のものだけを残す（一括削除も一括温存もしない）
+2. 申し送り（既知のブロッカー・懸念）のうち教訓型は独立手順「移設」（`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §2）で先に移設し、**残りを 1 件ずつ現役性点検**して現役のものだけを残す（一括削除も一括温存もしない）
 3. 「作業の目的・背景」を「直近サイクルの成果 1 段落＋次サイクル待ち」に書き直す
 4. Status を `ready-for-next-cycle` へ更新し、「次セッション開始時のアクション」を次サイクル候補で更新する
 5. ファイルを git に add する。コミットはしない（`retrospective` の「スキル内ではコミットしない」前提と整合させ、セッション終了時の finalize または通常フローのコミットに委ねる）
@@ -69,8 +71,8 @@ Phase 3 手順 3 の現行記述「`session-handoff` の **update** 操作を呼
 
 ## 変更対象外
 
-- `CLAUDE.md` / `docs/overview/principles.md` / template 対象ファイル → 変更なし。`scripts/sync-template.ps1` の実行は不要
-- `skills/start-work/SKILL.md` → 変更なし（セッション終了処理は finalize を呼ぶ既存配線のまま。cycle-reset は retrospective 経由でのみ発動する）
+- `CLAUDE.md` / `docs/overview/principles.md` → 変更なし。ただし template 対象の `docs/overview/folder-structure.md` は後続設計（`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §5）で変更され、`scripts/sync-template.ps1` の実行が必要になった
+- `skills/start-work/SKILL.md` → 本設計での変更はなし（セッション終了処理は finalize を呼ぶ既存配線のまま。cycle-reset は retrospective 経由でのみ発動する）。ただし「本サイクル」の定義文言は後続設計（`docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md` §2）で変更された
 - 既存 handoff ファイルの一括修正 → しない。新規約は次回以降の操作時に適用される
 
 ## 検証

@@ -28,7 +28,7 @@
 | [0070](system/0070-provenance-check-misses-script-prose.md) | 出所識別子の機械判定がスクリプト内の散文（docstring・利用者向けメッセージ）に届かない | open | 2026-08-08 |
 | [0071](system/0071-distributed-skills-reference-undistributed-documents.md) | 配布されるスキルが、配布されない文書を必須参照にしている | open | 2026-08-08 |
 | [0072](system/0072-halfwidth-paren-treated-as-fullwidth-in-judgment.md) | 括弧内判定が半角括弧を全角括弧と同一視し、除去後に空の括弧が残る | open | 2026-08-08 |
-| [0083](system/0083-session-handoff-doc-clarity-review-leftovers.md) | session-handoff スキル文書にレビュー残の解釈揺れ箇所 5 点が残っている | open | 2026-08-14 |
+| [0083](system/0083-session-handoff-doc-clarity-review-leftovers.md) | session-handoff スキル文書にレビュー残の解釈揺れ箇所 5 点が残っている | closed | 2026-08-14 |
 | [0077](system/0077-distribution-artifact-layout-inconsistent.md) | 2 つの配布物の置き場が非対称で、`dist` の名前が実態（プラグインルート）と合っていない | open | 2026-08-08 |
 
 ## 開発フロー/ガイドライン課題（flow/）

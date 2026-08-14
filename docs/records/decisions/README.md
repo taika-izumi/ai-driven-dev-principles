@@ -95,3 +95,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0087](0087-handoff-pruning-trigger-system.md) | handoff の剪定・移設はサイズ実測トリガーで発火させる | Accepted | 2026-08-13 |
 | [0088](0088-handoff-section-volume-norms.md) | handoff の節別記載規範を定める（内容限定・字数目安・列挙外の節への既定規則・圧縮記録の残置禁止） | Accepted | 2026-08-13 |
 | [0089](0089-placement-definition-vs-skill-procedure-boundary.md) | 情報の配置定義は folder-structure.md を正本とし、スキルは分類名で参照する | Accepted | 2026-08-13 |
+| [0090](0090-version-bump-required-for-plugin-redistribution.md) | スキル改定の配布反映にはプラグインのバージョン更新を必須手順とする | Accepted | 2026-08-14 |

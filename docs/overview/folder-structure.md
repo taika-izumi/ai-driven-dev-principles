@@ -73,7 +73,7 @@ docs/
 | リリースノート・インシデント報告 | `docs/records/` |
 | リリース手順・運用手順 | `docs/reference/` |
 | 既知エラー・トラブルシュート | `docs/reference/` |
-| 技術調査・検証メモ | `docs/reference/` |
+| 技術調査・検証メモ、セッション跨ぎに再利用する教訓・作業知見 | `docs/reference/` |
 
 ## 7. 課題（issue）管理
 

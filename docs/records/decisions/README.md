@@ -98,3 +98,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0090](0090-version-bump-required-for-plugin-redistribution.md) | スキル改定の配布反映にはプラグインのバージョン更新を必須手順とする | Accepted | 2026-08-14 |
 | [0091](0091-session-handoff-doc-clarity-fixes.md) | session-handoff 文書の解釈揺れ 5 点は規範を変えない明確化改定として解消する | Accepted | 2026-08-14 |
 | [0092](0092-cycle-wide-consistency-check-before-adr-promotion.md) | 仕様・規範文書を編集したサイクルでは、決定の Accepted 昇格前に AI 自身によるサイクル全体整合検査を必須とする | Accepted | 2026-08-14 |
+| [0093](0093-destructive-verification-dispatch-isolation-constraints.md) | 破壊的検証の委譲には、隔離の作り方の指定・絶対パスの使用・前後状態比較・委譲側の独立確認を課す | Proposed | 2026-08-15 |

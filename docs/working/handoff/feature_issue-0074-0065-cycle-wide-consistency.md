@@ -1,9 +1,9 @@
 # Handoff: Issue-0074/0065 サイクル全体整合検査の設計
 
 - **Branch**: feature/issue-0074-0065-cycle-wide-consistency
-- **Last Updated**: 2026-08-15 05:32 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装完了・ADR-0092 Accepted 済み → master へのマージ判断待ち
+- **Last Updated**: 2026-08-15 05:45 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: サイクル完了（master へ --no-ff マージ済み: `beb52fa`。retrospective 実施済み）
 
 ## 作業の目的・背景
 
@@ -26,9 +26,7 @@ Issue-0074（決定を Accepted へ昇格させる前に仕様が実装のスナ
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: master へのマージと後続（retrospective・finalize）
-  - 状態: plan 全 8 タスク完了（実装 `954eabf`・昇格 `668c26f`）。検査の初回自己適用は指摘なし
-  - 残り: master へ --no-ff マージ → retrospective → cycle-reset → finalize → push → ユーザーによる `/plugin marketplace update` で 0.1.3 反映
+（なし。サイクル完了。以後の状態は `master.md` の handoff が正）
 
 ## 未着手のタスク
 

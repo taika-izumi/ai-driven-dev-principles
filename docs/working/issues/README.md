@@ -96,3 +96,4 @@
 | [0081](flow/0081-handoff-free-sections-volume-norm-missing.md) | handoff の自由記述部の記載量を制御する規範がない（タイトル・次アクション・抜粋・圧縮記録） | closed | 2026-08-13 |
 | [0082](flow/0082-choice-recommendation-spec-snapshot-stale.md) | 選択肢提示規範の spec が 3 世代前のツール選択規範のまま（スナップショット規約違反状態） | open | 2026-08-13 |
 | [0084](flow/0084-merge-mode-norm-not-wired-into-finishing-flow.md) | マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した | open | 2026-08-14 |
+| [0085](flow/0085-digest-field-extension-lacks-checklist.md) | 消化記録へフィールドを新設する拡張に、記録様式側の連動改定チェックリストが無い | open | 2026-08-15 |

@@ -1,7 +1,8 @@
 # Issue-0083: session-handoff スキル文書にレビュー残の解釈揺れ箇所 5 点が残っている
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-14
+- **Closed**: 2026-08-14
 - **起票元**: retrospectives/system/2026-08-14-handoff-bloat-control.md 課題#1
 - **関連**: ADR-0086 / ADR-0087 / ADR-0088、`skills/session-handoff/SKILL.md`、Issue-0079〜0081（closed。本課題は同対策の実装で残った品質改善候補）
 
@@ -12,7 +13,8 @@ handoff 肥大化制御サイクルの実装品質レビュー（全文走査）
 ## 検討状況
 
 - 2026-08-14: 起票。いずれも 1 句〜 1 行の追記で解消する見込み。対応時は spec `2026-08-13-handoff-bloat-control/` と ADR-0086/0088 との同期、および執行点 4 手順（dist 再生成）が必要
+- 2026-08-14: 確定前レビュー（3 観点・claude-opus-5）を経て修正方針を精密化し、5 点を一括解消。spec 00/01 同期・ADR-0086 部分修正注記・執行点 4 手順・plugin 0.1.2 bump を実施
 
 ## 結論
 
-（open）
+ADR-0091（規範を変えない明確化改定として 5 点を一括解消。ADR-0088 は決定 6 が既に対応表経由の移設を規定しているため変更なし）

@@ -1,6 +1,6 @@
 # ADR-0091: session-handoff 文書の解釈揺れ 5 点は規範を変えない明確化改定として解消する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-14
 
 ## Context

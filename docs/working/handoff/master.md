@@ -1,7 +1,7 @@
 # Handoff: Issue-0074/0065 対策サイクル完了・次サイクル待ち
 
 - **Branch**: master（feature/issue-0074-0065-cycle-wide-consistency を --no-ff で取り込み。マージコミット `beb52fa`）
-- **Last Updated**: 2026-08-15 05:45 (Asia/Tokyo)
+- **Last Updated**: 2026-08-15 05:50 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: サイクル完了（retrospective・cycle-reset 済み）。push と配布反映、次サイクル着手はユーザー判断
 
@@ -61,11 +61,13 @@
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: `origin/master` へ push 済み（`76c24ff` まで。2026-08-15。ローカルと同期）。push は自動では行われないため、必要な区切りでユーザーが指示すること
+- **リモート同期**: `origin/master` へ push 済み（2026-08-15 セッション終了の finalize コミットまでローカルと同期。直近サイクルのマージは `beb52fa`）。push は自動では行われないため、必要な区切りでユーザーが指示すること
 
 ## Post ラッパー消化記録
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は `feature_issue-0074-0065-cycle-wide-consistency.md` 参照（retrospective Phase 3 で突合済み・未消化なし）。
+
+- 2026-08-15 セッション終了（retrospective・cycle-reset・push・finalize）: ADR=なし（新規決定なし） / worklog=棄却（retrospective 以後の新規 delta なし）
 
 ## 次セッション開始時のアクション
 

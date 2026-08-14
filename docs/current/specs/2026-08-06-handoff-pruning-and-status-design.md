@@ -55,7 +55,7 @@ finalize の現行の手順構成は、後続設計により 7 段（サイズ�
 2. 申し送り（既知のブロッカー・懸念）のうち教訓型は独立手順「移設」（`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §2）で先に移設し、**残りを 1 件ずつ現役性点検**して現役のものだけを残す（一括削除も一括温存もしない）
 3. 「作業の目的・背景」を「直近サイクルの成果 1 段落＋次サイクル待ち」に書き直す
 4. Status を `ready-for-next-cycle` へ更新し、「次セッション開始時のアクション」を次サイクル候補で更新する
-5. ファイルを git に add する。コミットはしない（`retrospective` の「スキル内ではコミットしない」前提と整合させ、セッション終了時の finalize または通常フローのコミットに委ねる）
+5. handoff と、移設で作成・更新した正本ファイルを git に add する（add 範囲の拡張は後続設計 `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §2 による）。コミットはしない（`retrospective` の「スキル内ではコミットしない」前提と整合させ、セッション終了時の finalize または通常フローのコミットに委ねる）
 
 ## 変更 5: `retrospective` Phase 3 の修正（`skills/retrospective/SKILL.md`）
 

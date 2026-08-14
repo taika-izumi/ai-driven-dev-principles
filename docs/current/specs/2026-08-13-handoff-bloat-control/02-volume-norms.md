@@ -14,7 +14,7 @@
 
 当初案の「発火点を作業単位完了時へ一般化」は**撤回**した（発火ゲートは呼び出し元 retrospective にあり文言変更が無効。仮に retrospective を経ず発火させると worklog 総ざらいの情報源と `review=` 保持を壊す。ADR-0087 の Considered Alternatives 3）。呼び出し関係の一般化は Issue-0050 の検討へ委ね、サイクル内の実効制御はサイズトリガーが担う。
 
-ADR-0087 に由来する session-handoff 側の変更は次の 2 点のみ（移設まわりの変更は `01-relocation-standard.md` が定める）:
+本節（cycle-reset の扱い）に由来する session-handoff 側の変更は次の 2 点のみ（サイズトリガー由来の変更は §1、移設まわりの変更は `01-relocation-standard.md` が定める）:
 
 1. cycle-reset 手順 2（申し送りの現役性点検）の**前段に移設判定を追加**する（教訓型の申し送りを、落とす前に対応表で移設する。`01-relocation-standard.md` §2 (c)）
 2. 「本サイクル」の定義を「現 feature ブランチの作業単位（cycle-reset まで）」から「**前回 cycle-reset から次の cycle-reset までの作業単位**」へ改める（master 直接開発では feature ブランチが存在せず保持範囲が定義不能になるため。`skills/session-handoff/SKILL.md` と `skills/start-work/SKILL.md` の該当文言を同語彙へ揃える）

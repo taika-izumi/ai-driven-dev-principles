@@ -1,6 +1,6 @@
 # ADR-0086: handoff に溜まる情報の正本置き場を種類別対応表で定め、移設を独立手順として組み込む
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-13
 
 ## Context

@@ -1,7 +1,8 @@
 # Issue-0079: 「正本が handoff 以外にないもの」の保護規則に、正本を外部へ移す誘導と上限がない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-13
+- **Closed**: 2026-08-14
 - **起票元**: feature/handoff-bloat-analysis サイクルのアドホック調査（LoopForAlpha のハンドオフ肥大化）
 - **関連**: ADR-0075（基準付き圧縮の「圧縮しないもの」規定）、Issue-0049（closed。肥大化の元課題＝ADR-0074/0075 の起点。本課題はその対策の抜け道を扱う）、`skills/session-handoff/SKILL.md`、Issue-0021（Tech Notes の横断再利用＝知見の受け皿候補）、Issue-0078 / Issue-0080 / Issue-0081（兄弟課題）
 
@@ -29,3 +30,7 @@ LoopForAlpha での実測（2026-08-13、`docs/working/handoff/master.md` 99KB �
 ## 検討状況
 
 - 2026-08-13: 起票。対策の採否・設計は次サイクル（ユーザー判断）。ユーザー制約: 簡略化しすぎて引継ぎ後の作業精度が落ちることは避ける（移設は情報を失わない対策として整合）
+
+## 結論
+
+種類別対応表と独立手順「移設」を session-handoff スキルに定義した（ADR-0086）。「正本が handoff 以外にないもの」の保護は移設とセット運用へ改めた（ADR-0075 の部分修正注記）

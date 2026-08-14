@@ -1,7 +1,8 @@
 # Issue-0080: Post ラッパー消化記録の「1 行」に長さ・内容の規範がなく、正本を名指ししながら詳細を重複記載して肥大する
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-13
+- **Closed**: 2026-08-14
 - **起票元**: feature/handoff-bloat-analysis サイクルのアドホック調査（LoopForAlpha のハンドオフ肥大化）
 - **関連**: ADR-0057（消化記録の新設）、ADR-0080（`review=` の記録と保持）、`skills/session-handoff/SKILL.md`、Issue-0078 / Issue-0079 / Issue-0081（兄弟課題）
 
@@ -29,3 +30,7 @@ LoopForAlpha での実測（2026-08-13、`docs/working/handoff/master.md`）:
 ## 検討状況
 
 - 2026-08-13: 起票。対策の採否・設計は次サイクル（ユーザー判断）
+
+## 結論
+
+消化記録 1 行の内容を「判定結果＋安定識別子＋正本への参照」に限定し、1 行 200 字以内（デフォルト値）を規定した（ADR-0088）

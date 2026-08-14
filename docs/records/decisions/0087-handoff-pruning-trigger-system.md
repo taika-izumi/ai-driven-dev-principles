@@ -1,6 +1,6 @@
 # ADR-0087: handoff の剪定・移設はサイズ実測トリガーで発火させる
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-13
 
 ## Context

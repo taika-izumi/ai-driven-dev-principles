@@ -1,7 +1,8 @@
 # Issue-0078: cycle-reset の発火点が長期サイクル運用と噛み合わず、サイクル内の蓄積を制御する機構がない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-13
+- **Closed**: 2026-08-14
 - **起票元**: feature/handoff-bloat-analysis サイクルのアドホック調査（LoopForAlpha のハンドオフ肥大化）
 - **関連**: ADR-0075（finalize の基準付き圧縮と cycle-reset）、Issue-0049（closed。肥大化の元課題＝ADR-0074/0075 の起点。本課題はその対策の射程外を扱う）、`skills/session-handoff/SKILL.md`、Issue-0079 / Issue-0080 / Issue-0081（同調査で起票した兄弟課題）
 
@@ -32,3 +33,7 @@ LoopForAlpha（`D:\Dev\001_Trade\LoopForAlpha`）での実測（2026-08-13）:
 ## 検討状況
 
 - 2026-08-13: 起票。対策の採否・設計は次サイクル（ユーザー判断）
+
+## 結論
+
+サイクル内の実効制御はサイズ実測トリガー（ADR-0087）が担う。cycle-reset 発火点の一般化は撤回し（ADR-0087 の Considered Alternatives 3）、呼び出し関係の検討は Issue-0050 へ委譲した（同 issue 検討状況 2026-08-14 の行が受け皿）

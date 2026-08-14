@@ -24,6 +24,7 @@
 ## 検討状況
 
 - 2026-08-05: `LoopForAlpha#Issue-0086` を構造観察型として取り込み（ADR-0061 の経路）。詳細（事象/原因/影響）は起票元 issue と、その起票元 `LoopForAlpha` の `docs/records/retrospectives/flow/2026-08-05-stage4-walk-forward-driver.md` 課題#3 が正
+- 2026-08-14: Issue-0078 の close に伴い、cycle-reset 発火点（呼び出し関係）の一般化の検討を本課題へ受託（ADR-0087 の Considered Alternatives 3）。サイクル内の実効制御はサイズ実測トリガー（ADR-0087）が担うため、本課題では振り返り契機の設計と合わせて扱う
 
 ## 結論
 

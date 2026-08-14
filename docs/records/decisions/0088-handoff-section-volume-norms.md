@@ -1,6 +1,6 @@
 # ADR-0088: handoff の節別記載規範を定める（内容限定・字数目安・列挙外の節への既定規則・圧縮記録の残置禁止）
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-13
 
 ## Context

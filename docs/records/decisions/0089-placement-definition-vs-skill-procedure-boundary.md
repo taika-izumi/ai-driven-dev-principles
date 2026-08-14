@@ -1,6 +1,6 @@
 # ADR-0089: 情報の配置定義は folder-structure.md を正本とし、スキルは分類名で参照する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-13
 
 ## Context

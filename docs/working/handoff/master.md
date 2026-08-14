@@ -51,7 +51,7 @@
 - **配布元が `dist/` へ切り替わった**（ADR-0082。実機確認済み）。**`skills/` を編集しただけでは、実際に動くスキルは変わらない**。`scripts/build-dist.ps1` を実行して `dist/` を再生成し、生成物も同じコミットに含めること。手順は `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」の執行点（4 手順）
 - **規約に適合していても配布物が壊れる型が 5 つある**（ADR-0084）。生成器が判定できるのは識別子の位置だけで、括弧内に説明語を同居させた行・半角括弧・書式例の実在の固有名・自己参照（`本リポジトリ` / `本 repo`）・スクリプトの docstring と表示メッセージは判定を通過する。**生成後の配布物を読む工程を別に置くこと**
 - **確定前レビューの提示規則が稼働中**（ADR-0080）。spec 確定点（3 通り）と plan 確定点で毎回提示し、未レビューの規範・手順文書の変更を含む成果物ではフル推奨へ倒す。**提示結果は handoff の消化記録へ `review=` として必ず書くこと**——記録が無いと次の確定点で「未レビュー」に倒れる設計のため、書き漏らすと毎回フル推奨が立つ
-- **スキル改定の配布反映には version bump が必須**（ADR-0090）: 本サイクルで 0.1.2 へ bump 済み・**push 未実施**。push 後にユーザーが `/plugin marketplace update ai-driven-dev-principles` を実行して反映が完了する。確認は「起動本文と repo 実ファイルの突合」で行う（キャッシュ読取では判定不能）
+- **スキル改定の配布反映には version bump が必須**（ADR-0090）: 本サイクルで 0.1.2 へ bump・push 済み。**残るはユーザーによる `/plugin marketplace update ai-driven-dev-principles` の実行のみ**。確認は「起動本文と repo 実ファイルの突合」で行う（キャッシュ読取では判定不能）
 - **破壊的な検証を委譲したら、受け取り時に `git status --short` を全件確認すること**（2 度の実害。Issue-0076）。委譲時は複製の作り方と**絶対パスの使用**を明示し、検証前後の `git status` 比較を報告に含めさせる（技術的背景は `docs/reference/powershell-pitfalls.md`）
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**（`Add-Content` 禁止・`Set-Location` と静的 API・検索/集計の 5 点ほか）
@@ -60,7 +60,7 @@
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: `origin/master` へは `0bea9fc` まで push 済み。それ以降のローカルコミット（前サイクル finalize 1 件＋本サイクル 6 件）が**未 push**。push は自動では行われないため、必要な区切りでユーザーが指示すること
+- **リモート同期**: `origin/master` へ push 済み（`256d2ab` まで。2026-08-14。ローカルと同期）。push は自動では行われないため、必要な区切りでユーザーが指示すること
 
 ## Post ラッパー消化記録
 
@@ -72,7 +72,7 @@
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-2. **未完の後始末**: push が未実施（`0bea9fc` 以降 7 件）。push 後に `/plugin marketplace update ai-driven-dev-principles` の実行で 0.1.2 の配布反映が完了する（ADR-0090。反映確認は起動本文と `dist/` 実ファイルの突合）
+2. **未完の後始末**: `/plugin marketplace update ai-driven-dev-principles` の実行で 0.1.2 の配布反映が完了する（push 済み。ADR-0090。反映確認は起動本文と `dist/` 実ファイルの突合）
 3. **次サイクルの候補（着手はユーザー判断）**: 優先の目安は上記「未着手のタスク」の順。本命は **Issue-0074/0065 のペア**（実害 3 件・同じ根）。軽量に畳むなら **Issue-0072**（1 行修正で塞げることまで確認済み）
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る

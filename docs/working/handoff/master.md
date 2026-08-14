@@ -68,7 +68,7 @@
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: 前サイクルまでの分（`23e3fc6` まで）は push 済み。**今サイクル分（`693d87f`〜`9259eec` の 16 コミット＋retrospective 分）は未 push**。push は自動では行われないため、必要な区切りでユーザーが指示すること
+- **リモート同期**: 2026-08-14 セッション終了時に `origin/master` へ push 済み（`3d4f9be` まで。未 push 0 件）。push は自動では行われないため、必要な区切りでユーザーが指示すること
 - **今サイクルのスキル改定（session-handoff / start-work）はプラグイン未反映**。次に session-handoff / start-work を使う前にユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼すること（Issue-0044 の実測どおり、update を挟まないと改定前の本文が供給される）
 
 ## Post ラッパー消化記録

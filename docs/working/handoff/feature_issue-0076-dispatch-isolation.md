@@ -1,9 +1,9 @@
 # Handoff: Issue-0076 対策（破壊的検証委譲の隔離制約）
 
 - **Branch**: feature/issue-0076-dispatch-isolation
-- **Last Updated**: 2026-08-15 06:17 (Asia/Tokyo)
+- **Last Updated**: 2026-08-15 06:35 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 改修/設計確定（ADR-0093 レビュー反映済み）。次は実装
+- **Current Phase**: 改修/実装計画確定（plan 確定点通過・レビュー見送り）。次は実装
 
 ## 作業の目的・背景
 
@@ -24,15 +24,12 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: ADR-0093 ドラフトのコミット
-  - 状態: 改稿完了・レビュー済み。コミット直前
-  - 残り: コミット後、実装（`subagent-dispatch` 改定と同期対象の更新）へ進む
+- [ ] **現在の作業**: 実装計画の実行
+  - 状態: 計画確定（`docs/working/plans/2026-08-15-adr-0093-destructive-verification-dispatch.md`。8 タスク・完了基準つき）
+  - 残り: Task 1〜8 の実行（スキル 2 件改定・spec/pitfalls/ADR-0066/0071 同期・version bump・執行点 4 手順・コミット）
 
 ## 未着手のタスク
 
-- [ ] `skills/subagent-dispatch/SKILL.md` の改定（B 群 6 条件化・判定行キー追加・手順節へ受け取り時確認・既存並列行へ絶対パス追記）
-- [ ] 同期対象の更新: spec `docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md` / `docs/reference/powershell-pitfalls.md` / `skills/pre-finalization-review/SKILL.md` 手順 4
-- [ ] 執行点 4 手順（`scripts/build-dist.ps1`・`-Check` 両方・`dist/` 同コミット・目視 5 点）と version bump（ADR-0090）
 - [ ] 実装完了後: ADR-0093 Accepted 昇格（サイクル全体整合検査つき）・Issue-0076 close・master へマージ・retrospective
 
 ## 既知のブロッカー・懸念
@@ -43,6 +40,7 @@
 ## Post ラッパー消化記録
 
 - 2026-08-15 ADR-0093 設計確定・spec 確定点 (c) 通過: ADR=0093 / worklog=`MakeAiInstructions-2026-08-15-02` / review=フル実施（claude-opus-5）
+- 2026-08-15 実装計画作成完了・plan 確定点通過: ADR=なし（ADR-0093 の写像のみ・新規決定なし） / worklog=棄却（写像欠落の捕捉は writing-plans 自己レビュー手順による。delta なし） / review=見送り
 
 ## 次セッション開始時のアクション
 

@@ -8,7 +8,7 @@
     {
       "name": "ai-driven-dev-principles",
       "description": "AI駆動開発ガイドラインを実装するスキル群",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "source": "./dist",
       "author": {
         "name": "taika-izumi"

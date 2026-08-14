@@ -5,7 +5,7 @@
 ## ファイル追記・書き込み
 
 - **`Add-Content` は使わないこと**。Windows で CRLF を書き込み、中央ストア等の「UTF-8・BOM なし・LF 固定」契約に違反する。中央ストアへの追記は Python `open(path, "a", encoding="utf-8", newline="\n")` を使う（ADR-0064）
-- **`Set-Location` は .NET の静的 API に効かない**。`[System.IO.File]::WriteAllText` 等はプロセスの作業ディレクトリが基準のため、`Set-Location` 後の相対パスは意図しない場所を指す。**絶対パスを使用すること**。サブエージェントへ破壊的検証を委譲するときは、複製の作り方と絶対パスの使用を明示する（Issue-0076。同じ機構で 2 度の実害: 決定記録インデックス 92 行が空に／配布物に BOM 混入）
+- **`Set-Location` は .NET の静的 API に効かない**。`[System.IO.File]::WriteAllText` 等はプロセスの作業ディレクトリが基準のため、`Set-Location` 後の相対パスは意図しない場所を指す。**絶対パスを使用すること**。サブエージェントへ破壊的検証を委譲するときの制約一式は `subagent-dispatch` B 群「破壊的検証」の行が定める（ADR-0093。出所: Issue-0076。同じ機構で 2 度の実害: 決定記録インデックス 92 行が空に／配布物に BOM 混入）
 
 ## 型・構文
 

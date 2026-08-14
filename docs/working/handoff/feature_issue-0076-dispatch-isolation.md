@@ -1,9 +1,9 @@
 # Handoff: Issue-0076 対策（破壊的検証委譲の隔離制約）
 
 - **Branch**: feature/issue-0076-dispatch-isolation
-- **Last Updated**: 2026-08-15 06:35 (Asia/Tokyo)
+- **Last Updated**: 2026-08-15 06:55 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 改修/実装計画確定（plan 確定点通過・レビュー見送り）。次は実装
+- **Current Phase**: 改修/実装完了・ADR-0093 Accepted 昇格済み。次は master へのマージ
 
 ## 作業の目的・背景
 
@@ -21,16 +21,18 @@
 - [x] 構造的解決の調査と対策案比較・方針決定（2026-08-15）
 - [x] ADR-0093 ドラフト作成（2026-08-15）
 - [x] フル 3 観点レビュー（敵対的・実装整合性・仕様適合、claude-opus-5）と指摘反映の改稿（2026-08-15）
+- [x] 実装計画の作成と実行（8 タスク。コミット `198b925`）（2026-08-15）
+- [x] ADR-0093 Accepted 昇格（サイクル全体整合検査つき）・Issue-0076 close（2026-08-15）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の実行
-  - 状態: 計画確定（`docs/working/plans/2026-08-15-adr-0093-destructive-verification-dispatch.md`。8 タスク・完了基準つき）
-  - 残り: Task 1〜8 の実行（スキル 2 件改定・spec/pitfalls/ADR-0066/0071 同期・version bump・執行点 4 手順・コミット）
+- [ ] **現在の作業**: master への取り込み
+  - 状態: 実装・昇格・close 完了。feature ブランチはコミット済み
+  - 残り: master へ --no-ff でマージ → retrospective → cycle-reset → 配布反映（ユーザーによる `/plugin marketplace update`）
 
 ## 未着手のタスク
 
-- [ ] 実装完了後: ADR-0093 Accepted 昇格（サイクル全体整合検査つき）・Issue-0076 close・master へマージ・retrospective
+- [ ] retrospective（system / flow）と cycle-reset
 
 ## 既知のブロッカー・懸念
 
@@ -41,6 +43,7 @@
 
 - 2026-08-15 ADR-0093 設計確定・spec 確定点 (c) 通過: ADR=0093 / worklog=`MakeAiInstructions-2026-08-15-02` / review=フル実施（claude-opus-5）
 - 2026-08-15 実装計画作成完了・plan 確定点通過: ADR=なし（ADR-0093 の写像のみ・新規決定なし） / worklog=棄却（写像欠落の捕捉は writing-plans 自己レビュー手順による。delta なし） / review=見送り
+- 2026-08-15 実装完了・ADR-0093 Accepted 昇格: ADR=0093 / worklog=棄却（計画どおりの機械的編集。delta なし） / cyclecheck=実施（修正: ADR-0066 追記の項目数を 8 へ是正）
 
 ## 次セッション開始時のアクション
 

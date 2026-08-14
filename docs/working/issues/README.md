@@ -89,7 +89,7 @@
 | [0073](flow/0073-plan-verification-expectation-goes-stale.md) | 計画の検証ステップの期待値が、実装中に判明した事実で陳腐化する | open | 2026-08-08 |
 | [0074](flow/0074-spec-snapshot-check-missing-before-adr-promotion.md) | 決定を Accepted へ昇格させる前に、仕様が実装のスナップショットかを検査する工程がない | closed | 2026-08-08 |
 | [0075](flow/0075-review-lacks-usability-check-for-normative-docs.md) | 規約・手順文書の「読者が実際に使えるか」を検査する観点が確定前レビューにない | open | 2026-08-08 |
-| [0076](flow/0076-dispatch-lacks-isolation-method-constraint.md) | 破壊的な検証を委譲するとき、隔離の作り方を指定する制約項目がない | open | 2026-08-08 |
+| [0076](flow/0076-dispatch-lacks-isolation-method-constraint.md) | 破壊的な検証を委譲するとき、隔離の作り方を指定する制約項目がない | closed | 2026-08-08 |
 | [0078](flow/0078-cycle-reset-too-coarse-for-long-cycles.md) | cycle-reset の発火点が長期サイクル運用と噛み合わず、サイクル内の蓄積を制御する機構がない | closed | 2026-08-13 |
 | [0079](flow/0079-handoff-as-canonical-store-unbounded.md) | 「正本が handoff 以外にないもの」の保護規則に、正本を外部へ移す誘導と上限がない | closed | 2026-08-13 |
 | [0080](flow/0080-digest-record-line-length-unbounded.md) | 消化記録の「1 行」に長さ・内容の規範がなく、正本と詳細を重複記載して肥大する | closed | 2026-08-13 |

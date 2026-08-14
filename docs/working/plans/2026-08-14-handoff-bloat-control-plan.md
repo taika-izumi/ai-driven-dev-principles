@@ -37,7 +37,7 @@
 
 spec `00-overview.md` §3 の (a)〜(h) を 5 つの編集で実装する。対応: 編集 1 = (a)(b)、編集 2 = (c)、編集 3 = (d)、編集 4 = (e)(f)(h)、編集 5 = (g)。
 
-- [ ] **Step 1: 編集 1 — フォーマット節へ節別規範 (a)、独立手順「移設」の新設 (b)**
+- [x] **Step 1: 編集 1 — フォーマット節へ節別規範 (a)、独立手順「移設」の新設 (b)**
 
 「### 外部参照の書き方（ADR-0077）」節の直後・「## 操作」の直前に挿入する。変更前（アンカー）:
 
@@ -102,7 +102,7 @@ handoff が正本になっている記述を、種類に応じた正本の置き
 6. **移設で作成・更新した正本ファイルを、handoff と同じコミットに含める**（finalize のコミット手順を拡張する。正本が git 履歴に入らないまま handoff が参照だけになる状態を防ぐ）
 ```
 
-- [ ] **Step 2: 編集 2 — read へサイズ実測 (c)**
+- [x] **Step 2: 編集 2 — read へサイズ実測 (c)**
 
 read の手順 3〜6 をブロック全体で置き換える（番号振り直しの分離による中途状態を避けるため）。変更前:
 
@@ -131,7 +131,7 @@ read の手順 3〜6 をブロック全体で置き換える（番号振り直�
 7. ユーザーに「前回の続きから始めますか?」と確認する
 ```
 
-- [ ] **Step 3: 編集 3 — update へ消化記録の内容限定と分岐 (d)**
+- [x] **Step 3: 編集 3 — update へ消化記録の内容限定と分岐 (d)**
 
 update の手順 8・9 を置き換える。変更前（手順 8 の末尾と手順 9）:
 
@@ -148,7 +148,7 @@ update の手順 8・9 を置き換える。変更前（手順 8 の末尾と手
 10. ファイルを上書き保存する（コミットはセッション終了時、または明示的なコミットタイミングで実施）
 ```
 
-- [ ] **Step 4: 編集 4 — finalize の 7 段再構成 (e)・「圧縮しないもの」の暫定文言 (f)・「本サイクル」定義変更 (h)**
+- [x] **Step 4: 編集 4 — finalize の 7 段再構成 (e)・「圧縮しないもの」の暫定文言 (f)・「本サイクル」定義変更 (h)**
 
 finalize の手順ブロック全体を置き換える（対象は `### 4. finalize — セッション終了確定` 節内の `手順:` から PowerShell コードブロックまで。`手順:` はファイル内に複数あるが、同節内では一意）。変更前:
 
@@ -199,7 +199,7 @@ finalize の手順ブロック全体を置き換える（対象は `### 4. final
    ```
 ````
 
-- [ ] **Step 5: 編集 5 — cycle-reset へ移設判定の前段追加 (g)**
+- [x] **Step 5: 編集 5 — cycle-reset へ移設判定の前段追加 (g)**
 
 cycle-reset の手順 2〜5 をブロック全体で置き換える（番号振り直しの分離による中途状態を避けるため）。変更前:
 
@@ -220,7 +220,7 @@ cycle-reset の手順 2〜5 をブロック全体で置き換える（番号振�
 6. ファイルを git に add する。コミットはしない（`retrospective` の「スキル内ではコミットしない」前提と整合させ、セッション終了時の finalize または通常フローのコミットに委ねる）
 ```
 
-- [ ] **Step 6: ソースの grep 検証**
+- [x] **Step 6: ソースの grep 検証**
 
 Run（PowerShell）:
 ```powershell
@@ -248,7 +248,7 @@ Expected:
 **Files:**
 - Modify: `skills/start-work/SKILL.md`（「確定前レビューの提示規則」§4 判定材料の記録）
 
-- [ ] **Step 1: 1 文を置き換える**
+- [x] **Step 1: 1 文を置き換える**
 
 変更前（対象は「確定前レビューの提示規則」の「4. 判定材料の記録」段落の**末尾 1 文**。段落の他部分は変更しない）:
 ```markdown
@@ -260,7 +260,7 @@ Expected:
 「本サイクル」とは前回 cycle-reset から次の cycle-reset までの作業単位を指す。
 ```
 
-- [ ] **Step 2: 検証**
+- [x] **Step 2: 検証**
 
 Run: `Select-String -Path skills/start-work/SKILL.md,skills/session-handoff/SKILL.md -Pattern '現 feature ブランチの作業単位|現ブランチの作業単位'`
 Expected: 0 件（旧定義の残存なし。両スキルの語彙が揃う）
@@ -272,17 +272,17 @@ Expected: 0 件（旧定義の残存なし。両スキルの語彙が揃う）
 **Files:**
 - Regenerate: `dist/`（`scripts/build-dist.ps1`）
 
-- [ ] **Step 1: 生成器を実行する**
+- [x] **Step 1: 生成器を実行する**
 
 Run: `powershell -File scripts/build-dist.ps1`
 Expected: 正常終了（exit 0）。規約違反（識別子の位置違反）があれば非ゼロ終了するので、ソースを修正して再実行する
 
-- [ ] **Step 2: 両生成器を -Check で実行する**
+- [x] **Step 2: 両生成器を -Check で実行する**
 
 Run: `powershell -File scripts/build-dist.ps1 -Check` および `powershell -File scripts/sync-template.ps1 -Check`
 Expected: 両方 exit 0（sync-template 側はこの時点で差分なしのはず）
 
-- [ ] **Step 3: 配布物の目視（5 型）**
+- [x] **Step 3: 配布物の目視（5 型）**
 
 `dist/skills/session-handoff/SKILL.md` と `dist/skills/start-work/SKILL.md` を通読し、機械判定の届かない 5 型（半角括弧内の識別子・識別子と説明語の同居残骸・実在の固有名・自己参照「本リポジトリ」等・表示文字列内の識別子)がないことを確認する。補助 grep（5 型のうち識別子残存・自己参照・実在固有名のみを拾う。**通読目視の代替ではない** — 半角括弧内の識別子・表示文字列は目視で拾う）:
 
@@ -291,7 +291,7 @@ Select-String -Path dist/skills/session-handoff/SKILL.md,dist/skills/start-work/
 ```
 Expected: 0 件。違反を見つけたら（既存行由来でも）ソース側を修正し、Step 1 から再実行する
 
-- [ ] **Step 4: コミット 1（ソースと dist/ を同一コミットに）**
+- [x] **Step 4: コミット 1（ソースと dist/ を同一コミットに）**
 
 ```powershell
 git add skills/session-handoff/SKILL.md skills/start-work/SKILL.md dist/
@@ -306,7 +306,7 @@ git commit -m "feat: session-handoff へ移設手順・サイズトリガー・�
 - Modify: `docs/overview/folder-structure.md`（「6. 代表的なドキュメント種別の配置表」）
 - Regenerate: `template/`（`scripts/sync-template.ps1`）
 
-- [ ] **Step 1: 既存行を拡張する（新規行は追加しない）**
+- [x] **Step 1: 既存行を拡張する（新規行は追加しない）**
 
 変更前:
 ```markdown
@@ -318,17 +318,17 @@ git commit -m "feat: session-handoff へ移設手順・サイズトリガー・�
 | 技術調査・検証メモ、セッション跨ぎに再利用する教訓・作業知見 | `docs/reference/` |
 ```
 
-- [ ] **Step 2: sync-template を実行し、両 -Check を回す**
+- [x] **Step 2: sync-template を実行し、両 -Check を回す**
 
 Run: `powershell -File scripts/sync-template.ps1`、続けて `powershell -File scripts/sync-template.ps1 -Check` と `powershell -File scripts/build-dist.ps1 -Check`
 Expected: すべて exit 0
 
-- [ ] **Step 3: template 側の実在確認と目視**
+- [x] **Step 3: template 側の実在確認と目視**
 
 Run: `Select-String -Path docs/overview/folder-structure.md,template/docs/overview/folder-structure.md -Pattern 'セッション跨ぎに再利用する教訓・作業知見'`
 Expected: 各 1 件・計 2 件（完了基準 3。本体と template の両方）。あわせて template 側の変更行周辺を目視し 5 型の違反がないことを確認する
 
-- [ ] **Step 4: コミット 2（ソースと template/ を同一コミットに）**
+- [x] **Step 4: コミット 2（ソースと template/ を同一コミットに）**
 
 ```powershell
 git add docs/overview/folder-structure.md template/
@@ -344,7 +344,7 @@ git commit -m "docs: folder-structure の配置表へ教訓・作業知見の移
 
 スナップショット規約に従い既存仕様書を書き換えで更新する（差分ファイルを作らない）。spec `00-overview.md` §3 の (i)〜(iv) に、確定前レビューが検出した残存矛盾 2 件（(v) 「template 対象ファイル → 変更なし」行、(vi) 「圧縮しないもの」規定）を加えた 6 編集。(v)(vi) は spec §3 の列挙外からの追加であり、spec 側の列挙は Task 6 Step 3 で現状化する。
 
-- [ ] **Step 1: (i) 「数値ゲートは設けない」の書き換え（設計の骨子 節）**
+- [x] **Step 1: (i) 「数値ゲートは設けない」の書き換え（設計の骨子 節）**
 
 変更前:
 ```markdown
@@ -356,7 +356,7 @@ git commit -m "docs: folder-structure の配置表へ教訓・作業知見の移
 ハンドオフ肥大の根本原因は剪定機会の不足ではなく、**剪定の許可と基準が明文化されていないこと**。対処は「イベント駆動の構造的剪定規約」を `session-handoff` / `retrospective` の 2 スキルに組み込むことで行う。サイズの実測トリガーは本設計の対象外とし、後続設計 `docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md`（ADR-0087）が定める。
 ```
 
-- [ ] **Step 2: (ii) finalize 手順構成の現状化（変更 3 節の末尾へ追記）**
+- [x] **Step 2: (ii) finalize 手順構成の現状化（変更 3 節の末尾へ追記）**
 
 変更前（変更 3 節の Status 分岐段落）:
 ```markdown
@@ -370,7 +370,7 @@ git commit -m "docs: folder-structure の配置表へ教訓・作業知見の移
 finalize の現行の手順構成は、後続設計により 7 段（サイズ実測・移設を含む）へ再構成されている。現状の正は `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §3 と `skills/session-handoff/SKILL.md` を参照。
 ```
 
-- [ ] **Step 3: (iii) cycle-reset の現役性点検へ移設前段を反映（変更 4 節の手順 2）**
+- [x] **Step 3: (iii) cycle-reset の現役性点検へ移設前段を反映（変更 4 節の手順 2）**
 
 変更前:
 ```markdown
@@ -382,7 +382,7 @@ finalize の現行の手順構成は、後続設計により 7 段（サイズ�
 2. 申し送り（既知のブロッカー・懸念）のうち教訓型は独立手順「移設」（`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §2）で先に移設し、**残りを 1 件ずつ現役性点検**して現役のものだけを残す（一括削除も一括温存もしない）
 ```
 
-- [ ] **Step 4: (iv) 「start-work 変更なし」の現状化（変更対象外 節）**
+- [x] **Step 4: (iv) 「start-work 変更なし」の現状化（変更対象外 節）**
 
 変更前:
 ```markdown
@@ -394,7 +394,7 @@ finalize の現行の手順構成は、後続設計により 7 段（サイズ�
 - `skills/start-work/SKILL.md` → 本設計での変更はなし（セッション終了処理は finalize を呼ぶ既存配線のまま。cycle-reset は retrospective 経由でのみ発動する）。ただし「本サイクル」の定義文言は後続設計（`docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md` §2）で変更された
 ```
 
-- [ ] **Step 5: (v) 「template 対象ファイル → 変更なし」の現状化（変更対象外 節）**
+- [x] **Step 5: (v) 「template 対象ファイル → 変更なし」の現状化（変更対象外 節）**
 
 本 plan の Task 4 が template 対象の `docs/overview/folder-structure.md` を変更し `sync-template.ps1` を実行するため、この行は plan 完了時点で偽になる（確定前レビューの指摘）。変更前:
 
@@ -408,7 +408,7 @@ finalize の現行の手順構成は、後続設計により 7 段（サイズ�
 - `CLAUDE.md` / `docs/overview/principles.md` → 変更なし。ただし template 対象の `docs/overview/folder-structure.md` は後続設計（`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §5）で変更され、`scripts/sync-template.ps1` の実行が必要になった
 ```
 
-- [ ] **Step 6: (vi) 「圧縮しないもの」規定への暫定注記（変更 3 節）**
+- [x] **Step 6: (vi) 「圧縮しないもの」規定への暫定注記（変更 3 節）**
 
 変更前:
 
@@ -422,7 +422,7 @@ finalize の現行の手順構成は、後続設計により 7 段（サイズ�
 **圧縮しないもの**: 正本が handoff 以外にないもの（進行中タスクの状態・残り、現役の申し送り・懸念）。無条件の 1 行要約はしない。この保護規定はその後、`review=` を含む消化記録行の保護（ADR-0080）が加わり、独立手順「移設」で正本を外へ作るまでの暫定と位置付けられた（ADR-0086）。現状の正は `skills/session-handoff/SKILL.md` を参照。
 ```
 
-- [ ] **Step 7: grep 検証（完了基準 5）**
+- [x] **Step 7: grep 検証（完了基準 5）**
 
 Run（PowerShell）:
 ```powershell
@@ -445,7 +445,7 @@ Expected: 上 2 本 = 0 件（(i)(iv) の矛盾除去。SimpleMatch は start-wo
 - Modify: `docs/current/specs/2026-08-13-handoff-bloat-control/00-overview.md`（§3 表・§4 基準 4/5）
 - Modify: `README.md`（スキル一覧テーブルの session-handoff 行）
 
-- [ ] **Step 1: ADR-0075 Consequences へ追記**
+- [x] **Step 1: ADR-0075 Consequences へ追記**
 
 `- **部分修正（ADR-0080）**:` で始まる行（Consequences の最終行）の直後に追加する（再実行時は同内容の行が既に無いことを確認してから追加する）:
 
@@ -453,7 +453,7 @@ Expected: 上 2 本 = 0 件（(i)(iv) の矛盾除去。SimpleMatch は start-wo
 - **部分修正（ADR-0086）**: 「圧縮しないもの＝正本が handoff 以外にないもの」の保護規定は維持するが、保護は独立手順「移設」で正本を外へ作るまでの暫定とし、移設とセットで運用する（移設の対応表に該当する記述は、保護を理由に移設をスキップしない）。既存の ADR-0080 由来の注記とは対象条項が異なり両立する。二段階剪定の骨格は現役のため、Status は Accepted のまま維持する
 ```
 
-- [ ] **Step 2: ADR-0080 Consequences へ追記（「本サイクル」定義変更の部分修正）**
+- [x] **Step 2: ADR-0080 Consequences へ追記（「本サイクル」定義変更の部分修正）**
 
 確定前レビューの指摘: ADR-0080 の「5. 判定材料の記録」は「本サイクル」の旧定義（現 feature ブランチの作業単位）を明文化しており、実装後に唯一の矛盾記述として残る。ADR-0075 と同型の部分修正注記で現状化する。
 
@@ -463,7 +463,7 @@ Consequences の最終箇条書き `- 退役経路: ...相乗りする` の直�
 - **部分修正（ADR-0087）**: Decision 5 の「本サイクル」定義（現 feature ブランチの作業単位）は「前回 cycle-reset から次の cycle-reset までの作業単位」へ改められた（master 直接開発ではブランチ基準で保持範囲が定義できないため）。判定材料の記録規範そのものは現役のため、Status は Accepted のまま維持する
 ```
 
-- [ ] **Step 3: spec `00-overview.md` の変更対象一覧・完了基準を現状化**
+- [x] **Step 3: spec `00-overview.md` の変更対象一覧・完了基準を現状化**
 
 Task 5 の (v)(vi)・本タスクの ADR-0080 注記は spec §3 の列挙外からの追加のため、spec をスナップショットとして現状に合わせる（4 編集）。
 
@@ -516,7 +516,7 @@ Task 5 の (v)(vi)・本タスクの ADR-0080 注記は spec §3 の列挙外か
 5. 旧 spec `2026-08-06-handoff-pruning-and-status-design.md` に §3 (i)〜(vi) の矛盾記述が残っていない（「数値ゲート（行数閾値等）は設けない」等が grep で不検出）
 ```
 
-- [ ] **Step 4: README のスキル一覧を現状化**
+- [x] **Step 4: README のスキル一覧を現状化**
 
 変更前:
 ```markdown
@@ -528,7 +528,7 @@ Task 5 の (v)(vi)・本タスクの ADR-0080 注記は spec §3 の列挙外か
 | [`session-handoff`](skills/session-handoff/) | セッション間の作業引き継ぎファイル（ハンドオフ）を読む・作成する・更新する・確定する・サイクル完了時にリセットする（5 操作）。独立手順「移設」とサイズ実測トリガーで肥大化を制御する |
 ```
 
-- [ ] **Step 5: コミット 3（Task 5 の旧 spec 書き換えと合わせる）**
+- [x] **Step 5: コミット 3（Task 5 の旧 spec 書き換えと合わせる）**
 
 ```powershell
 git add docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md docs/current/specs/2026-08-13-handoff-bloat-control/00-overview.md docs/records/decisions/0075-handoff-two-stage-pruning-discipline.md docs/records/decisions/0080-review-presentation-scaled-by-unreviewed-normative-content.md README.md
@@ -539,12 +539,12 @@ git commit -m "docs: 旧剪定 spec・ADR-0075/0080・spec 現状化・README �
 
 ### Task 7: 完了基準の全体検証（spec `00-overview.md` §4 の 1〜6）
 
-- [ ] **Step 1: 基準 1 — 生成器の最終確認**
+- [x] **Step 1: 基準 1 — 生成器の最終確認**
 
 Run: `powershell -File scripts/build-dist.ps1 -Check` と `powershell -File scripts/sync-template.ps1 -Check`
 Expected: 両方 exit 0（違反 0）
 
-- [ ] **Step 2: 基準 2〜6 のチェックリスト消し込み**
+- [x] **Step 2: 基準 2〜6 のチェックリスト消し込み**
 
 | 基準 | 確認方法 | 期待値 |
 |---|---|---|
@@ -569,13 +569,13 @@ Expected: 全項目が期待値どおり。不一致があれば該当 Task に�
 
 前提: 本タスクは実装完了・検証通過後にのみ実施する。ADR の昇格は `decision-log` スキルの「承認の昇格」手順に従う（第 1 ステップの粒度点検を含む。点検の規範は decision-log 側が正本）。
 
-- [ ] **Step 1: ADR-0086〜0089 の Status を昇格する**
+- [x] **Step 1: ADR-0086〜0089 の Status を昇格する**
 
 4 ファイルそれぞれで変更前 `- **Status**: Proposed` → 変更後 `- **Status**: Accepted`。昇格前に decision-log の粒度点検を実施し、問題があればユーザーへ報告して指示を待つ。
 
 あわせて ADR インデックス `docs/records/decisions/README.md` の 0086〜0089 の 4 行の Status 列を `Proposed` → `Accepted` に更新する（decision-log「承認の昇格」手順がインデックスのテーブル更新を含むため。本体だけ昇格するとインデックスと乖離する）
 
-- [ ] **Step 2: Issue-0050 へ委譲の受け皿を追記する（close の前提。順序を逆にしない）**
+- [x] **Step 2: Issue-0050 へ委譲の受け皿を追記する（close の前提。順序を逆にしない）**
 
 `0050-retrospective-cadence-bound-to-subproject-granularity.md` の「検討状況」末尾に追加:
 
@@ -583,7 +583,7 @@ Expected: 全項目が期待値どおり。不一致があれば該当 Task に�
 - 2026-08-14: Issue-0078 の close に伴い、cycle-reset 発火点（呼び出し関係）の一般化の検討を本課題へ受託（ADR-0087 の Considered Alternatives 3）。サイクル内の実効制御はサイズ実測トリガー（ADR-0087）が担うため、本課題では振り返り契機の設計と合わせて扱う
 ```
 
-- [ ] **Step 3: Issue-0078〜0081 を close する**
+- [x] **Step 3: Issue-0078〜0081 を close する**
 
 各ファイル共通: `- **Status**: open` → `- **Status**: closed`、Opened 行の直後に `- **Closed**: 2026-08-14` を追加（既に `- **Closed**:` 行がある場合は追加しない。実施日が異なる場合は実施日を書く。以下同じ）。**対象 4 ファイルには `## 結論` 節が存在しない**（4 件とも実測で不在。課題フォーマットの正規の節のため新設が必要）。各ファイル末尾に `## 結論` 節を新設して以下を記入:
 
@@ -592,11 +592,11 @@ Expected: 全項目が期待値どおり。不一致があれば該当 Task に�
 - 0080: `消化記録 1 行の内容を「判定結果＋安定識別子＋正本への参照」に限定し、1 行 200 字以内（デフォルト値）を規定した（ADR-0088）`
 - 0081: `節別の字数規範（デフォルト 200 字）・列挙外の節への既定規則・圧縮記録の残置禁止を規定した（ADR-0088）`
 
-- [ ] **Step 4: 課題インデックスを更新する**
+- [x] **Step 4: 課題インデックスを更新する**
 
 `docs/working/issues/README.md` の 0078〜0081 の 4 行で `open` → `closed` に変更する
 
-- [ ] **Step 5: 検証**
+- [x] **Step 5: 検証**
 
 Run（PowerShell）:
 ```powershell
@@ -610,7 +610,7 @@ powershell -File scripts/sync-template.ps1 -Check
 ```
 Expected: 上 3 本 = 0 件（本体・インデックスとも昇格/close 済み）、`^## 結論` = 4 件（節の新設。完了基準 7）、委譲の明記 = 1 件、Issue-0050 の受け皿 = 1 件、`sync-template.ps1 -Check` = exit 0（`docs/working/issues/README.md` は空インデックス生成対象のため、編集後の生成器整合を確認する）
 
-- [ ] **Step 6: コミット 4**
+- [x] **Step 6: コミット 4**
 
 ```powershell
 git add docs/records/decisions/ docs/working/issues/

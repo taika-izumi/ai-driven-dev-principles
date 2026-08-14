@@ -1,9 +1,9 @@
 # Handoff: ハンドオフ肥大化の原因調査と対策検討
 
 - **Branch**: feature/handoff-bloat-analysis
-- **Last Updated**: 2026-08-14 19:52 (Asia/Tokyo)
+- **Last Updated**: 2026-08-14 20:46 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 対策実装/plan 確定済み（確定前レビューフル 3 観点・指摘反映済み）。subagent-driven-development で実装中
+- **Current Phase**: 対策実装/完了（plan Task 1〜8 実装・最終レビュー Approved・完了基準 1〜7 充足）。マージ・push・retrospective の判断待ち
 
 ## 作業の目的・背景
 
@@ -11,10 +11,10 @@ LoopForAlpha（本ガイドラインの利用先プロジェクト）でハン�
 
 ## 関連ドキュメント
 
-- Spec: `docs/current/specs/2026-08-13-handoff-bloat-control/`（00/01/02 の 3 ファイル。確定済み。00 は plan の Task 6 Step 3 で現状化予定）
-- Plan: `docs/working/plans/2026-08-14-handoff-bloat-control-plan.md`（確定済み。8 タスク・4 コミット）
-- 関連 ADR: ADR-0086 / ADR-0087 / ADR-0088 / ADR-0089（いずれも Proposed。実装完了時に Accepted 昇格）、部分修正予定: ADR-0075
-- 対象課題: Issue-0078〜0081（`docs/working/issues/flow/`）。派生起票: Issue-0082
+- Spec: `docs/current/specs/2026-08-13-handoff-bloat-control/`（00/01/02。実装済み・レビュー反映で現状化済み）
+- Plan: `docs/working/plans/2026-08-14-handoff-bloat-control-plan.md`（全タスク完了・チェックボックス消し込み済み）
+- 関連 ADR: ADR-0086 / ADR-0087 / ADR-0088 / ADR-0089（Accepted 昇格済み）、部分修正注記済み: ADR-0075 / ADR-0080
+- 対象課題: Issue-0078〜0081（closed。0078 は Issue-0050 へ委譲）。派生起票: Issue-0082
 - 本サイクルの割り込み決定: ADR-0085（質問ツール全面不使用。Accepted・実装済み）
 
 ## 完了済みタスク
@@ -22,16 +22,19 @@ LoopForAlpha（本ガイドラインの利用先プロジェクト）でハン�
 - [x] LoopForAlpha のハンドオフ実測調査と課題起票（2026-08-13 完了。詳細は Issue-0078〜0081 が正本）
 - [x] 割り込み対応: ADR-0085（Fable 5 での構造化質問ツール全面不使用）の決定・CLAUDE.md 改定・template 同期・確定前レビューフル実施（2026-08-13 完了。コミット `a278399` / `8774342`）
 - [x] 対策の brainstorming と spec 確定（2026-08-13 完了。スコープ: Issue-0078〜0081 一括＋移設先標準定義。確定前レビューフル 3 観点＋差分再確認まで実施し、指摘全件反映。コミット `c022858` / `9e0f134` / `6585556`）
+- [x] writing-plans と plan 確定（2026-08-14 完了。確定前レビューフル 3 観点・統合後 12 指摘全採用。コミット `fad0ee9`）
+- [x] plan Task 1〜8 の実装（2026-08-14 完了。subagent-driven-development・グループ単位の 2 段レビュー。コミット `b912dd8` `e6aae1a` `90710d3` `c15476b` `28fa0ac` `db05043`。最終レビュー Approved・完了基準 1〜7 充足。ADR-0086〜0089 Accepted・Issue-0078〜0081 close）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: plan の実装（subagent-driven-development・Task 1 から）
-  - 状態: plan 確定・コミット済み。実装未着手
-  - 残り: plan の Task 1〜8（詳細は plan が正本。レビュー反映で ADR-0080 注記・旧 spec (v)(vi)・spec 00 現状化が追加済み）
+（なし。実装完了。次はマージ・push・retrospective のユーザー判断）
 
 ## 未着手のタスク
 
-（plan の Task 1〜8 に集約。完了処理（ADR 昇格・Issue close）は plan Task 8）
+- [ ] master へのマージ（ユーザー判断。マージ直後に `retrospective` を起動）
+- [ ] push（ユーザー指示待ち）
+- [ ] スキル改定の反映: ユーザーに `/plugin marketplace update ai-driven-dev-principles` の実行を依頼（AI からは実行不可）
+- [ ] レビュー残 Minor の起票要否判断（ユーザー判断。内容は 2026-08-14 のセッション報告参照: 移設の参照箇所列挙の網羅性・「必須工程」の強度差・finalize 手順 3 の前方参照・対応表の標準パス併記漏れ・`spec 確定点 (a)(b)(c)` の session-handoff 単体での未定義）
 
 ## 既知のブロッカー・懸念
 
@@ -46,12 +49,13 @@ LoopForAlpha（本ガイドラインの利用先プロジェクト）でハン�
 - 2026-08-13 ADR-0085 対応完了（質問ツール全面不使用への規範改定。spec 確定点 (c) 通過・提示は失念により事後実施）: ADR=0085 / worklog=`MakeAiInstructions-2026-08-13-01` / review=フル実施（claude-opus-5。指摘 16 件中 12 件採用、Issue-0082 起票）
 - 2026-08-13 肥大化対策 spec 確定（spec 確定点 (b) 通過）: ADR=0086〜0089 起票（Proposed） / worklog=`MakeAiInstructions-2026-08-13-02` / review=フル実施（claude-opus-5 ×3。指摘 33 件全採用）＋差分再確認（claude-opus-5。反映 22/22・新規検出 5 件も修正済み）
 - 2026-08-14 実装計画確定（plan 確定点通過）: ADR=なし（設計判断は ADR-0086〜0089 で確定済み。plan は spec の写像） / worklog=`MakeAiInstructions-2026-08-14-01` / review=フル実施（claude-opus-5 ×3。統合後 12 指摘全採用。ADR-0080 注記・旧 spec (v)(vi)・spec 00 現状化を plan へ追加）
+- 2026-08-14 plan Task 1〜8 実装完了: ADR=なし（新規決定なし。レビュー修正は Proposed だった ADR-0086/0088 ドラフトの補修として処理し Task 8 で昇格） / worklog=`MakeAiInstructions-2026-08-14-02`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → plan `docs/working/plans/2026-08-14-handoff-bloat-control-plan.md`（チェックボックスで進捗確認）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` で plan の未完了タスクから実装を再開
-3. 留意点: 実装対象は配布対象ソース（記法規約の執行点 4 手順必須。plan 冒頭に記法規約の要点あり）。ADR 昇格・Issue close は plan Task 8。push はユーザー指示待ち
+1. 最初に確認すべきファイル: 本ハンドオフ（実装は完了済み。未着手のタスク節が残作業）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ ユーザーにマージ・push の判断を確認。マージ実施後は `retrospective` を起動
+3. 留意点: push はユーザー指示待ち。スキル改定はプラグイン更新（`/plugin marketplace update`）まで動作に反映されない。inbox 3 件はユーザー手動移動予定で organize-inbox 提案不要
 
 ## 重要な意思決定の履歴
 

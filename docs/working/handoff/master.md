@@ -53,7 +53,7 @@
 - **配布元が `dist/` へ切り替わった**（ADR-0082。実機確認済み）。**`skills/` を編集しただけでは、実際に動くスキルは変わらない**。`scripts/build-dist.ps1` を実行して `dist/` を再生成し、生成物も同じコミットに含めること。手順は `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」の執行点（4 手順）
 - **規約に適合していても配布物が壊れる型が 5 つある**（ADR-0084）。生成器が判定できるのは識別子の位置だけ。**生成後の配布物を読む工程を別に置くこと**。本サイクルでも目視 1 巡目で「除去後に文末が宙に浮く」型を 1 件検出した（規約違反 0 件で通過していた）
 - **確定前レビューの提示規則が稼働中**（ADR-0080）。spec 確定点（3 通り）と plan 確定点で毎回提示し、結果を消化記録へ `review=` で書く。**サイクル全体整合検査も稼働中**（ADR-0092）: 仕様・規範文書を編集したサイクルの Accepted 昇格前に必須。結果は `cyclecheck=` で記録し、昇格を含むマイルストーン名に `Accepted 昇格` を含めること
-- **スキル改定の配布反映には version bump が必須**（ADR-0090）: 本サイクルで 0.1.4 へ bump 済み。**push と、ユーザーによる `/plugin marketplace update ai-driven-dev-principles` が未実施**。反映確認は起動本文と `dist/` 実ファイルの突合。なお 0.1.3 の反映も未実施のままで、本セッションではスキルのバージョンが混在した（Issue-0044 に実観測を記録）
+- **スキル改定の配布反映には version bump が必須**（ADR-0090）: 本サイクルで 0.1.4 へ bump 済み。push 済み。**ユーザーによる `/plugin marketplace update ai-driven-dev-principles` が未実施**。反映確認は起動本文と `dist/` 実ファイルの突合。なお 0.1.3 の反映も未実施のままで、本セッションではスキルのバージョンが混在した（Issue-0044 に実観測を記録）
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**（`Add-Content` 禁止・`Set-Location` と静的 API・検索/集計の 5 点ほか）
 - **中央ストアの現状**: 本repo 63 件（〜`MakeAiInstructions-2026-08-15-03`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 更新済み（2026-08-15）
@@ -61,7 +61,7 @@
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）。**セッション途中でモデルを切り替えるとシステムプロンプトの記載と切替通知が食い違い、動作モデルを確定できない場合がある。その場合は使用しない側へ倒す**
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: 本サイクルのコミット（`9ebc984` / `198b925` / `84577cc` / マージ `faa9187`）と retrospective 分は**未 push**。push は自動では行わないため、必要な区切りでユーザーが指示すること
+- **リモート同期**: `origin/master` へ push 済み（2026-08-15。本サイクルのマージ `faa9187` と retrospective・cycle-reset `ef0f21d` まで同期。finalize の記述更新コミットのみ後続）。push は自動では行わないため、必要な区切りでユーザーが指示すること
 
 ## Post ラッパー消化記録
 
@@ -72,7 +72,7 @@
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-2. **未完の後始末**: 本サイクル分の push と、ユーザーによる `/plugin marketplace update ai-driven-dev-principles` の実行で 0.1.4 の配布反映が完了する（ADR-0090。反映確認は起動本文と `dist/` 実ファイルの突合）
+2. **未完の後始末**: ユーザーによる `/plugin marketplace update ai-driven-dev-principles` の実行で 0.1.4 の配布反映が完了する（ADR-0090。反映確認は起動本文と `dist/` 実ファイルの突合）
 3. **次サイクルの候補（着手はユーザー判断）**: 抽出課題は issues に起票済み（〜Issue-0087）。優先の目安は上記「未着手のタスク」の順。本命は **Issue-0086**（本サイクルで実発生・独立レビューのみが捕捉。Issue-0066 と同系統で同時対策の余地）。軽量に畳むなら **Issue-0072**（1 行修正で塞げることまで確認済み）
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る

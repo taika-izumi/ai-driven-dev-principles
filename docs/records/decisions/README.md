@@ -97,3 +97,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0089](0089-placement-definition-vs-skill-procedure-boundary.md) | 情報の配置定義は folder-structure.md を正本とし、スキルは分類名で参照する | Accepted | 2026-08-13 |
 | [0090](0090-version-bump-required-for-plugin-redistribution.md) | スキル改定の配布反映にはプラグインのバージョン更新を必須手順とする | Accepted | 2026-08-14 |
 | [0091](0091-session-handoff-doc-clarity-fixes.md) | session-handoff 文書の解釈揺れ 5 点は規範を変えない明確化改定として解消する | Accepted | 2026-08-14 |
+| [0092](0092-cycle-wide-consistency-check-before-adr-promotion.md) | 仕様・規範文書を編集したサイクルでは、決定の Accepted 昇格前に AI 自身によるサイクル全体整合検査を必須とする | Proposed | 2026-08-14 |

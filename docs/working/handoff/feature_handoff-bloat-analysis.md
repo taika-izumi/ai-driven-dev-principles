@@ -1,9 +1,9 @@
 # Handoff: ハンドオフ肥大化の原因調査と対策検討
 
 - **Branch**: feature/handoff-bloat-analysis
-- **Last Updated**: 2026-08-14 20:46 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 対策実装/完了（plan Task 1〜8 実装・最終レビュー Approved・完了基準 1〜7 充足）。マージ・push・retrospective の判断待ち
+- **Last Updated**: 2026-08-14 20:56 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了（master へ fast-forward マージ・retrospective 実施済み。以後の申し送りは `docs/working/handoff/master.md` が正本）
 
 ## 作業の目的・背景
 
@@ -31,10 +31,7 @@ LoopForAlpha（本ガイドラインの利用先プロジェクト）でハン�
 
 ## 未着手のタスク
 
-- [ ] master へのマージ（ユーザー判断。マージ直後に `retrospective` を起動）
-- [ ] push（ユーザー指示待ち）
-- [ ] スキル改定の反映: ユーザーに `/plugin marketplace update ai-driven-dev-principles` の実行を依頼（AI からは実行不可）
-- [ ] レビュー残 Minor の起票要否判断（ユーザー判断。内容は 2026-08-14 のセッション報告参照: 移設の参照箇所列挙の網羅性・「必須工程」の強度差・finalize 手順 3 の前方参照・対応表の標準パス併記漏れ・`spec 確定点 (a)(b)(c)` の session-handoff 単体での未定義）
+（なし。マージ・retrospective 実施済み。レビュー残 Minor は Issue-0083 として起票済み。push とプラグイン更新依頼は `master.md` の申し送りへ移管）
 
 ## 既知のブロッカー・懸念
 

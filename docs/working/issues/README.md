@@ -28,6 +28,7 @@
 | [0070](system/0070-provenance-check-misses-script-prose.md) | 出所識別子の機械判定がスクリプト内の散文（docstring・利用者向けメッセージ）に届かない | open | 2026-08-08 |
 | [0071](system/0071-distributed-skills-reference-undistributed-documents.md) | 配布されるスキルが、配布されない文書を必須参照にしている | open | 2026-08-08 |
 | [0072](system/0072-halfwidth-paren-treated-as-fullwidth-in-judgment.md) | 括弧内判定が半角括弧を全角括弧と同一視し、除去後に空の括弧が残る | open | 2026-08-08 |
+| [0083](system/0083-session-handoff-doc-clarity-review-leftovers.md) | session-handoff スキル文書にレビュー残の解釈揺れ箇所 5 点が残っている | open | 2026-08-14 |
 | [0077](system/0077-distribution-artifact-layout-inconsistent.md) | 2 つの配布物の置き場が非対称で、`dist` の名前が実態（プラグインルート）と合っていない | open | 2026-08-08 |
 
 ## 開発フロー/ガイドライン課題（flow/）
@@ -94,3 +95,4 @@
 | [0080](flow/0080-digest-record-line-length-unbounded.md) | 消化記録の「1 行」に長さ・内容の規範がなく、正本と詳細を重複記載して肥大する | closed | 2026-08-13 |
 | [0081](flow/0081-handoff-free-sections-volume-norm-missing.md) | handoff の自由記述部の記載量を制御する規範がない（タイトル・次アクション・抜粋・圧縮記録） | closed | 2026-08-13 |
 | [0082](flow/0082-choice-recommendation-spec-snapshot-stale.md) | 選択肢提示規範の spec が 3 世代前のツール選択規範のまま（スナップショット規約違反状態） | open | 2026-08-13 |
+| [0084](flow/0084-merge-mode-norm-not-wired-into-finishing-flow.md) | マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した | open | 2026-08-14 |

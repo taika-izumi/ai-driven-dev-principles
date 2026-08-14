@@ -1,22 +1,22 @@
-# Handoff: 配布物からの出所識別子の除去サイクル完了・次サイクル待ち
+# Handoff: handoff 肥大化制御サイクル完了・次サイクル待ち
 
-- **Branch**: master（feature/cross-repo-adr-reference を merge `70365a5` として取り込み）
-- **Last Updated**: 2026-08-08 11:40 (Asia/Tokyo)
+- **Branch**: master（feature/handoff-bloat-analysis を fast-forward で取り込み。先端 `9259eec`・マージコミットなし → Issue-0084）
+- **Last Updated**: 2026-08-14 20:59 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
-- **Current Phase**: 全フェーズ完了。次サイクル着手はユーザー判断
+- **Current Phase**: 全フェーズ完了（実装・最終レビュー・retrospective 済み）。次サイクル着手はユーザー判断
 
 ## 作業の目的・背景
 
 本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AI駆動開発ガイドライン（5原則 + スキル群 + ADR。AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系）を整備するプロジェクト。
 
-**直近サイクル（2026-08-08: 配布物からの出所識別子の除去）**: Issue-0067 の対策として、配布先で解決できない参照（決定記録番号・課題番号・クロスリポジトリ修飾参照・worklog エントリ id・出所注記の 5 種）を配布物から除去する体制を新設した。保守者向けの注記はソースに残し、除去した生成物を配布する（ADR-0082）。ソースの書き方を位置で規約化し、生成器が規約適合の検査を兼ねる（ADR-0083。規約違反は生成の失敗として顕在化させ、別途の lint を設けない）。移行の過程で「規約に適合していても配布物が壊れる型」が繰り返し見つかり、機械判定の範囲より広く規約の適用範囲を取り、差分は書き手が守る形へ改めた（ADR-0084）。規約違反 36 件 → 0 件、両配布物（`dist/` 19 ＋ `template/` 7 ファイル）とも識別子・実在の固有名・絶対パス 0 件。配布元を `dist/` へ切り替え、実機での成立まで確認済み。次サイクル着手はユーザー判断待ち。
+**直近サイクル（2026-08-13〜14: handoff 肥大化制御）**: 配布先実測（handoff 99KB・約 10KB/日 増）を起点に、「情報を削らず、置き場を直す」設計で Issue-0078〜0081 を一括対策した。session-handoff へ独立手順「移設」（種類別対応表・6 手順・3 起点の add 配線）、サイズ実測トリガー（デフォルト 40KB。read/finalize で実測）、節別記載規範（デフォルト 200 字・列挙外の節への既定規則）を導入（ADR-0086/0087/0088）。配置定義とスキル手順の責務境界を規定（ADR-0089）、folder-structure の配置表へ教訓・作業知見の移設先を明記。cycle-reset 発火点の一般化は撤回し Issue-0050 へ委譲。割り込みで ADR-0085（Fable 5 での構造化質問ツール全面不使用）も確定。確定前レビューを spec・plan 両確定点でフル実施（指摘 33＋12 件全採用）、実装は二段レビューで実欠陥 4 件を捕捉・修正し、完了基準 7 項目を全充足。ADR-0086〜0089 Accepted・Issue-0078〜0081 close。次サイクル着手はユーザー判断待ち。
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open: system 9 件 = 0003/0008/0028/0036/0055/0058/0064/0070/0071/0072 のうち 0067 は closed、flow 29 件。計 38 件）
-- 直近サイクルの retrospective: `docs/records/retrospectives/system/2026-08-08-distributed-artifact-generation.md` と `flow/2026-08-08-distributed-artifact-generation.md`
-- 直近サイクルの仕様: `docs/current/specs/2026-08-07-distributed-artifact-generation/`（00-overview ＋ 01〜05）
-- ADR インデックス: `docs/records/decisions/README.md`（0001〜0084。Rejected 3件）
+- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 43 件。2026-08-14 実測）
+- 直近サイクルの retrospective: `docs/records/retrospectives/system/2026-08-14-handoff-bloat-control.md` と `flow/2026-08-14-handoff-bloat-control.md`
+- 直近サイクルの仕様: `docs/current/specs/2026-08-13-handoff-bloat-control/`（00〜02）と plan `docs/working/plans/2026-08-14-handoff-bloat-control-plan.md`
+- ADR インデックス: `docs/records/decisions/README.md`（0001〜0089。Rejected 3件）
 - 記法規約と執行点: `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」
 - worklog スキーマ正典: `skills/worklog-record/references/store-format.md`（v2）
 - 原則: `docs/overview/principles.md` / Layer 2: `CLAUDE.md` / 拡張ルール: `CONTRIBUTING.md`
@@ -33,6 +33,7 @@
 
 バックログは `docs/working/issues/README.md` に一元化。次サイクルの候補として目安を示す:
 
+0. [ ] **今サイクル起票分**: **Issue-0083**（system・session-handoff 文書のレビュー残 5 点。各 1 句〜1 行の追記で解消見込みの軽量課題。対応時は spec/ADR 同期＋執行点 4 手順） / **Issue-0084**（flow・マージ方式 --no-ff の完了フロー未配線。今サイクルで実発生） / 関連: **Issue-0050** が cycle-reset 発火点（呼び出し関係）一般化の検討を Issue-0078 から受託済み。また master handoff の教訓型申し送り（PowerShell 落とし穴群など）は、今サイクル導入の独立手順「移設」の対応表では参照知識（`docs/reference/`）への移設対象——プラグイン更新後の初回 finalize/cycle-reset で移設提案が出る見込み
 1. [ ] **Issue-0074/0065 のペア**（flow・0074 は今サイクル起票）: 決定を Accepted へ昇格させる前に仕様が実装のスナップショットかを検査する工程がない / タスク単位レビューが文書間の経路を検出できない。**両者は同じ根（タスク単位の検査では累積のずれを検出できない）を持つ**ため、同時に扱うと対策が一度で設計できる。今サイクルで実害が 3 件出ており材料が揃っている
 2. [ ] **Issue-0076**（flow・今サイクル起票）: 破壊的検証の委譲で隔離の作り方を指定する項目がない。**同じ機構で 2 度実害が出た**（決定記録インデックス 92 行が空に／配布物に BOM 混入）。原因（`Set-Location` が .NET 静的 API に効かない）まで特定済みで、対策は B 群への項目追加で足りる可能性
 3. [ ] **Issue-0073**（flow・今サイクル起票）: 計画の検証期待値が実装中に陳腐化する。今サイクルで 4 件発生。Issue-0042/0056（検出器の検出力・検証コマンドの検査）と根が重なる
@@ -62,22 +63,25 @@
   - `Group-Object Filename` は basename で束ねるため、同名ファイル（`SKILL.md` 等）のファイル別集計に使えない。`Group-Object Path` を使うか、最初からファイルごとに個別実行する
   - **`Select-String` は行数を数えるため、複数語句を正規表現の OR でまとめると同一行にある場合に 1 件としか数えない**。語句ごとに個別実行して件数を確認すること（Issue-0042）
   - **`Measure-Object -Line` は件数集計に使えない**（入力オブジェクトの行数を数える）。件数は `(… | Measure-Object).Count`
-- **中央ストアの現状**: 本repo 54 件（〜`MakeAiInstructions-2026-08-08-10`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 更新済み（2026-08-08）
+- **中央ストアの現状**: 本repo 58 件（〜`MakeAiInstructions-2026-08-14-02`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 更新済み（2026-08-14）
 - **検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている**（マーケットプレイス定義からは削除済みで実体なし）。片付けるならユーザースコープでのアンインストールが要る
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: 2026-08-07 のセッション終了時に `origin/master` へ push 済み。**今サイクル分（`70365a5` までの 61 コミット）は未 push**。push は自動では行われないため、必要な区切りでユーザーが指示すること
+- **リモート同期**: 前サイクルまでの分（`23e3fc6` まで）は push 済み。**今サイクル分（`693d87f`〜`9259eec` の 16 コミット＋retrospective 分）は未 push**。push は自動では行われないため、必要な区切りでユーザーが指示すること
+- **今サイクルのスキル改定（session-handoff / start-work）はプラグイン未反映**。次に session-handoff / start-work を使う前にユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼すること（Issue-0044 の実測どおり、update を挟まないと改定前の本文が供給される）
 
 ## Post ラッパー消化記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照（確定点を通過したマイルストーンには `review=` を併記する。ADR-0080）。直近サイクル中の分は `feature_cross-repo-adr-reference.md` 参照（retrospective Phase 3 で突合済み・未消化なし。当サイクル 16 件がすべて消化記録から参照されている）。
+マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照（確定点を通過したマイルストーンには `review=` を併記する。ADR-0080）。直近サイクル中の分は `feature_handoff-bloat-analysis.md` 参照（retrospective Phase 3 で突合済み・未消化なし。消化記録 6 行と中央ストア 4 エントリが全件対応）。
+
+- 2026-08-14 マージ（fast-forward `9259eec`）・retrospective 実施・cycle-reset 完了: ADR=なし（課題起票のみ。対策の採否・設計は次サイクル） / worklog=棄却（新規 delta なし。fast-forward マージ件は Issue-0084 が構造観察型として捕捉）
 
 ## 次セッション開始時のアクション
 
-1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-2. **直近サイクルは完了**: 追加作業不要。抽出した課題は issues に起票済み（system は サイクル中に Issue-0070/0071/0072、flow は振り返りで Issue-0073〜0076。着手はユーザー判断）。delta 型 1 件は worklog 送り（`MakeAiInstructions-2026-08-08-07`）
-3. **次サイクルの候補（着手はユーザー判断）**: 優先の目安は上記「未着手のタスク」の順。**Issue-0074/0065 のペア**が最有力（今サイクルで実害 3 件・同じ根を持つ）。次いで **Issue-0076**（2 度の実害・原因特定済み）、**Issue-0070/0072 のペア**（ADR-0084 が引き受けた負債の機械化）
+1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）。**その前にユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼すること**（今サイクルの session-handoff / start-work 改定が未反映のため）
+2. **直近サイクルは完了**: 追加作業不要。抽出した課題は issues に起票済み（Issue-0083 / Issue-0084。着手はユーザー判断）。delta 型 2 件は worklog 送り（`MakeAiInstructions-2026-08-14-01` / `-02`）
+3. **次サイクルの候補（着手はユーザー判断）**: 優先の目安は上記「未着手のタスク」の順。**Issue-0083**（軽量・今サイクルの残欠）を単独で早く畳む選択肢と、**Issue-0074/0065 のペア**（前サイクルで実害 3 件・同じ根）を本命とする選択肢がある。push も未実施のため区切りの指示を推奨
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - **配布対象ソース（`template.manifest` 記載 / `skills/` 配下 / 空インデックス生成対象）を変更したら、コミット前に執行点 4 手順を実施する**（`CONTRIBUTING.md`。生成器の実行 → 両者を `-Check` → 生成物を同じコミットへ → 目視 5 点）。コミット前フックは無く、書き手の責任で行う
@@ -92,5 +96,5 @@
 
 ## 重要な意思決定の履歴
 
-- ADR-0081〜0084: 直近サイクル（配布物から除くのは配布先で解決できない参照 / 注記を除去した生成物を配布 / 位置で規約化し生成器が検査を兼ねる / 規約の適用範囲は機械判定より広く取る）
-- （ADR-0001〜0080 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）
+- ADR-0085〜0089: 直近サイクル（事象確認済みモデルでは構造化質問ツール不使用 / handoff 正本移設の標準 / サイズ実測トリガー / 節別記載規範 / 配置定義とスキル手順の責務境界）。部分修正注記: ADR-0075（保護は移設とセット運用）・ADR-0080（「本サイクル」定義変更）
+- （ADR-0001〜0084 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）

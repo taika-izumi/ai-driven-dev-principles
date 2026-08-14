@@ -1,9 +1,9 @@
 # Handoff: handoff 肥大化制御サイクル完了・次サイクル待ち
 
 - **Branch**: master（feature/handoff-bloat-analysis を fast-forward で取り込み。先端 `9259eec`・マージコミットなし → Issue-0084）
-- **Last Updated**: 2026-08-14 20:59 (Asia/Tokyo)
+- **Last Updated**: 2026-08-14 21:24 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
-- **Current Phase**: 全フェーズ完了（実装・最終レビュー・retrospective 済み）。次サイクル着手はユーザー判断
+- **Current Phase**: サイクル間の配布経路修復完了（プラグイン 0.1.1 反映済み）。次サイクル着手はユーザー判断
 
 ## 作業の目的・背景
 
@@ -43,7 +43,7 @@
 7. [ ] **Issue-0066**（flow）: 過剰適合点検が引用元のゲートの脱落を見ない。Issue-0065 とペアだったが、0065 は上記 1 で扱う
 8. [ ] **Issue-0057**（flow）: サブエージェント報告識別子の検証。今サイクルでも**自己申告と実態の食い違いが 2 回**（実在しない修正の報告／複製で検証したはずが実ファイル破壊）。Issue-0076 と併せて扱う余地あり
 9. [ ] **Issue-0020**（flow）: コミット時のステージ内容確認。**今サイクルでは再発ゼロ**（委譲先が全件でパス指定を守った）
-10. [ ] **Issue-0044**（flow）: スキル改定の同セッション反映。**今サイクルで再確認**（配布元切替後の `/plugin marketplace update` で反映を実測）。残るのは規範化の採否のみ
+10. [ ] **Issue-0044**（flow）: スキル改定の同セッション反映。**運用対処は ADR-0090 で確定**（version bump ＋ update 依頼。2026-08-14 実測）。残るのは start-work Phase -1 等への規範組み込みの採否のみ
 11. [ ] **Issue-0045**（flow）: 既存 open 課題の対策方針の実行可能性点検。open 38 件へ増加し、棚卸しの価値がさらに上昇
 12. [ ] **Issue-0064**（system）/ **Issue-0061/0058/0008** ほか低優先課題群 / **Issue-0028**（system・v2 テーマ）/ ループプロファイル抽出（ADR-0043）
 
@@ -52,7 +52,7 @@
 - **配布元が `dist/` へ切り替わった**（ADR-0082。実機確認済み）。**`skills/` を編集しただけでは、実際に動くスキルは変わらない**。`scripts/build-dist.ps1` を実行して `dist/` を再生成し、生成物も同じコミットに含めること。手順は `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」の執行点（4 手順）
 - **規約に適合していても配布物が壊れる型が 5 つある**（ADR-0084）。生成器が判定できるのは識別子の位置だけで、括弧内に説明語を同居させた行・半角括弧・書式例の実在の固有名・自己参照（`本リポジトリ` / `本 repo`）・スクリプトの docstring と表示メッセージは判定を通過する。**生成後の配布物を読む工程を別に置くこと**（今サイクルで、自己参照は 3 度にわたり別の箇所で見つかった）
 - **確定前レビューの提示規則が稼働中**（ADR-0080）。spec 確定点（3 通り）と plan 確定点で毎回提示し、未レビューの規範・手順文書の変更を含む成果物ではフル推奨へ倒す。**提示結果は handoff の消化記録へ `review=` として必ず書くこと**——記録が無いと次の確定点で「未レビュー」に倒れる設計のため、書き漏らすと毎回フル推奨が立つ
-- **スキルを改定したら、そのスキルを同セッションで使う前にユーザーへ `/plugin marketplace update` の実行を依頼すること**: update を挟まないと改定前の本文が供給される（4 サイクルで実測。Issue-0044）。プラグインキャッシュを読んでも供給内容は判定できない。確認は「起動して返った本文と repo 実ファイルの突合」で行う
+- **スキル改定の配布反映には version bump が必須**（ADR-0090）: `plugin.json` / `marketplace.json` の版を上げて push → `/plugin marketplace update` を依頼（版差分があればプラグイン更新まで一括。`/plugin update` 不要）。版据え置きでは update しても旧本文が供給され続ける（2026-08-14 実測。Issue-0044）。確認は「起動本文と repo 実ファイルの突合」で行う（キャッシュ読取では判定不能）
 - **破壊的な検証を委譲したら、受け取り時に `git status --short` を全件確認すること**（今サイクルで 2 度の実害。Issue-0076）。**PowerShell の `Set-Location` は .NET の静的 API に効かない**（`[System.IO.File]::WriteAllText` 等はプロセスの作業ディレクトリが基準）。委譲時は複製の作り方と**絶対パスの使用**を明示し、検証前後の `git status` 比較を報告に含めさせる
 - **`Add-Content` は使わないこと**。中央ストアへの追記は Python `open(path, "a", encoding="utf-8", newline="\n")`（ADR-0064）
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
@@ -63,25 +63,26 @@
   - `Group-Object Filename` は basename で束ねるため、同名ファイル（`SKILL.md` 等）のファイル別集計に使えない。`Group-Object Path` を使うか、最初からファイルごとに個別実行する
   - **`Select-String` は行数を数えるため、複数語句を正規表現の OR でまとめると同一行にある場合に 1 件としか数えない**。語句ごとに個別実行して件数を確認すること（Issue-0042）
   - **`Measure-Object -Line` は件数集計に使えない**（入力オブジェクトの行数を数える）。件数は `(… | Measure-Object).Count`
-- **中央ストアの現状**: 本repo 58 件（〜`MakeAiInstructions-2026-08-14-02`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 更新済み（2026-08-14）
+- **中央ストアの現状**: 本repo 59 件（〜`MakeAiInstructions-2026-08-14-03`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 更新済み（2026-08-14）
 - **検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている**（マーケットプレイス定義からは削除済みで実体なし）。片付けるならユーザースコープでのアンインストールが要る
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: 2026-08-14 セッション終了時に `origin/master` へ push 済み（`3d4f9be` まで。未 push 0 件）。push は自動では行われないため、必要な区切りでユーザーが指示すること
-- **今サイクルのスキル改定（session-handoff / start-work）はプラグイン未反映**。次に session-handoff / start-work を使う前にユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼すること（Issue-0044 の実測どおり、update を挟まないと改定前の本文が供給される）
+- **リモート同期**: `origin/master` へ push 済み（`0ef304f` まで。未 push 0 件。2026-08-14）。push は自動では行われないため、必要な区切りでユーザーが指示すること
+- **前サイクルのスキル改定（session-handoff / start-work）はプラグイン 0.1.1 として反映済み**（2026-08-14 に起動本文と実ファイルの突合で確認。ADR-0090）
 
 ## Post ラッパー消化記録
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照（確定点を通過したマイルストーンには `review=` を併記する。ADR-0080）。直近サイクル中の分は `feature_handoff-bloat-analysis.md` 参照（retrospective Phase 3 で突合済み・未消化なし。消化記録 6 行と中央ストア 4 エントリが全件対応）。
 
 - 2026-08-14 マージ（fast-forward `9259eec`）・retrospective 実施・cycle-reset 完了: ADR=なし（課題起票のみ。対策の採否・設計は次サイクル） / worklog=棄却（新規 delta なし。fast-forward マージ件は Issue-0084 が構造観察型として捕捉）
+- 2026-08-14 配布経路修復（プラグイン 0.1.1 bump・改定反映を実測確認・Issue-0044 追記）: ADR=0090（Accepted） / worklog=`MakeAiInstructions-2026-08-14-03`
 
 ## 次セッション開始時のアクション
 
-1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）。**その前にユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼すること**（今サイクルの session-handoff / start-work 改定が未反映のため）
+1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read。プラグインは 0.1.1 反映済みで前置作業は不要）
 2. **直近サイクルは完了**: 追加作業不要。抽出した課題は issues に起票済み（Issue-0083 / Issue-0084。着手はユーザー判断）。delta 型 2 件は worklog 送り（`MakeAiInstructions-2026-08-14-01` / `-02`）
-3. **次サイクルの候補（着手はユーザー判断）**: 優先の目安は上記「未着手のタスク」の順。**Issue-0083**（軽量・今サイクルの残欠）を単独で早く畳む選択肢と、**Issue-0074/0065 のペア**（前サイクルで実害 3 件・同じ根）を本命とする選択肢がある。push も未実施のため区切りの指示を推奨
+3. **次サイクルの候補（着手はユーザー判断）**: 優先の目安は上記「未着手のタスク」の順。**Issue-0083**（軽量・今サイクルの残欠）を単独で早く畳む選択肢と、**Issue-0074/0065 のペア**（前サイクルで実害 3 件・同じ根）を本命とする選択肢がある
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - **配布対象ソース（`template.manifest` 記載 / `skills/` 配下 / 空インデックス生成対象）を変更したら、コミット前に執行点 4 手順を実施する**（`CONTRIBUTING.md`。生成器の実行 → 両者を `-Check` → 生成物を同じコミットへ → 目視 5 点）。コミット前フックは無く、書き手の責任で行う
@@ -96,5 +97,6 @@
 
 ## 重要な意思決定の履歴
 
+- ADR-0090: スキル改定の配布反映にはプラグインのバージョン更新を必須手順とする（2026-08-14。サイクル間の運用対処）
 - ADR-0085〜0089: 直近サイクル（事象確認済みモデルでは構造化質問ツール不使用 / handoff 正本移設の標準 / サイズ実測トリガー / 節別記載規範 / 配置定義とスキル手順の責務境界）。部分修正注記: ADR-0075（保護は移設とセット運用）・ADR-0080（「本サイクル」定義変更）
 - （ADR-0001〜0084 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）

@@ -31,6 +31,8 @@ ADR-0055 は「スキルが使えるか（availability）」の AI 側判定規�
 
 - 2026-08-07（同日・次サイクル）: **上記の運用対処を実践し、2 回目の追認**（ADR-0079 サイクル）。`extend-guidelines` / `worklog-skillify` の改定後、実装の一環としてユーザーへ update 実行を依頼し（`√ Updated 1 marketplace`）、直後に `extend-guidelines` を起動して供給本文と repo 実ファイルを突合したところ、改定 4 箇所（改定入口の選択肢・新工程「### 5. 確定前の過剰適合点検」・renumber 後の「### 6.」）がすべて一致した。加えて **update 直後の available-skills 一覧の description も改定後の文言に更新されていた**（一覧の description は突合の第一次シグナルとして使える）。切り分け結論（update を挟めば反映される）は変わらず、運用対処が実務で機能することを確認
 
+- 2026-08-14: **GitHub ソース化以降は「update だけでは反映されない」ことを実測し、ADR-0090 で運用を確定**。前サイクル改定（session-handoff / start-work）の反映を試みたところ、`/plugin marketplace update` はマーケットプレイスクローンを最新化するのみで、version 据え置き（0.1.0）の限りインストール済みキャッシュは再取得されず、`/plugin update` も「already at the latest version (0.1.0)」でスキップした。version を 0.1.1 へ bump（コミット `0ef304f`）して push した後の `/plugin marketplace update` は「(1 plugin bumped)」を出力し、プラグイン更新まで一括実施・改定後本文の供給を突合確認した。**過去の実測（update だけで反映）との矛盾は配布経路の変化で説明できる**: 2026-08-05〜07 時点の marketplace 登録は `source: directory`（本 repo 直指し）だったが、現在は GitHub ソース＋バージョンキーのキャッシュ（`known_marketplaces.json` で確認。ADR-0082 の dist 配布切替に伴う再登録）。したがって運用対処は「update 依頼」から「**version bump ＋ update 依頼**」へ更新される（ADR-0090。反映確認は従来どおり起動本文と実ファイルの突合）
+
 ## 結論
 
-（open）
+（open。同セッション反映の運用対処は ADR-0090 で「version bump ＋ `/plugin marketplace update` 依頼」として確定。残るのは start-work Phase -1 等への規範組み込みの採否のみ）

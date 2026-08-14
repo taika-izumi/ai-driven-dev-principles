@@ -1,7 +1,8 @@
 # Issue-0065: タスク単位のレビューでは、複数文書にまたがる規範の「経路が閉じているか」を検出できない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-07
+- **Closed**: 2026-08-15
 - **起票元**: `retrospectives/flow/2026-08-07-review-presentation-by-artifact-type.md` 課題#1
 - **関連**: `superpowers:subagent-driven-development`（タスク単位の二段レビュー）、`skills/pre-finalization-review/SKILL.md`（適用例「文書間相互作用型」と同型）、ADR-0080、worklog `MakeAiInstructions-2026-08-07-11`
 
@@ -22,7 +23,8 @@
 ## 検討状況
 
 - 2026-08-07: 起票のみ（対策の設計・採否は次サイクル。ADR-0021）
+- 2026-08-15: ADR-0092 で対策を決定し close（Issue-0074 と統合設計）
 
 ## 結論
 
-（未定）
+ADR-0092（仕様・規範文書を編集したサイクルでは、決定の Accepted 昇格前に AI 自身によるサイクル全体整合検査を必須とする）で解決。「最終レビューの実施の確実化」側の対処を採り、毎サイクル必ず通る昇格チェックポイント（`skills/decision-log/SKILL.md`「承認の昇格」第 1 ステップ）に検査を紐づけた。検査観点 4（経路の閉じ: フック有無・二重発火・経路依存発火・記録順序）と観点 5（引用の条件保存）が本 Issue の欠陥 4 件に対応する。

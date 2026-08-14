@@ -99,3 +99,4 @@
 | [0085](flow/0085-digest-field-extension-lacks-checklist.md) | 消化記録へフィールドを新設する拡張に、記録様式側の連動改定チェックリストが無い | open | 2026-08-15 |
 | [0086](flow/0086-adr-rationale-vs-cited-evidence-check.md) | 決定の見送り理由が、引用した実測と矛盾していないかを突合する工程がない | open | 2026-08-15 |
 | [0087](flow/0087-dispatch-table-growth-consolidation-trigger.md) | 条件発火表の行数増加に、統廃合を検討する契機が定義されていない | open | 2026-08-15 |
+| [0088](flow/0088-issue-and-other-artifacts-growth-control.md) | Issue など handoff 以外の成果物に、肥大化を抑制する機構がない | open | 2026-08-15 |

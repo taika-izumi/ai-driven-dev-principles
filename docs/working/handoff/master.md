@@ -61,7 +61,7 @@
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: ローカル master が `origin/master` より先行（未 push。`2ae6712`〜`beb52fa` の本サイクル分）。push は自動では行われないため、必要な区切りでユーザーが指示すること
+- **リモート同期**: `origin/master` へ push 済み（`76c24ff` まで。2026-08-15。ローカルと同期）。push は自動では行われないため、必要な区切りでユーザーが指示すること
 
 ## Post ラッパー消化記録
 
@@ -70,7 +70,7 @@
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-2. **未完の後始末**: push（本サイクル分が未 push）と、ユーザーによる `/plugin marketplace update ai-driven-dev-principles` で 0.1.3 の配布反映（ADR-0090。反映確認は起動本文と `dist/` 実ファイルの突合）
+2. **未完の後始末**: ユーザーによる `/plugin marketplace update ai-driven-dev-principles` の実行で 0.1.3 の配布反映が完了する（push 済み。ADR-0090。反映確認は起動本文と `dist/` 実ファイルの突合）
 3. **次サイクルの候補（着手はユーザー判断）**: 抽出課題は issues に起票済み（〜Issue-0085。着手はユーザー判断）。優先の目安は上記「未着手のタスク」の順。本命は **Issue-0076**（2 度実害・対策小）。軽量に畳むなら **Issue-0072**（1 行修正で塞げることまで確認済み）
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る

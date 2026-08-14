@@ -1,7 +1,7 @@
 # Handoff: handoff 肥大化制御サイクル完了・次サイクル待ち
 
 - **Branch**: master（feature/handoff-bloat-analysis を fast-forward で取り込み。先端 `9259eec`・マージコミットなし → Issue-0084）
-- **Last Updated**: 2026-08-14 21:24 (Asia/Tokyo)
+- **Last Updated**: 2026-08-14 21:35 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: サイクル間の配布経路修復完了（プラグイン 0.1.1 反映済み）。次サイクル着手はユーザー判断
 
@@ -16,10 +16,11 @@
 - 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 43 件。2026-08-14 実測）
 - 直近サイクルの retrospective: `docs/records/retrospectives/system/2026-08-14-handoff-bloat-control.md` と `flow/2026-08-14-handoff-bloat-control.md`
 - 直近サイクルの仕様: `docs/current/specs/2026-08-13-handoff-bloat-control/`（00〜02）と plan `docs/working/plans/2026-08-14-handoff-bloat-control-plan.md`
-- ADR インデックス: `docs/records/decisions/README.md`（0001〜0089。Rejected 3件）
+- ADR インデックス: `docs/records/decisions/README.md`（0001〜0090。Rejected 3件）
 - 記法規約と執行点: `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」
 - worklog スキーマ正典: `skills/worklog-record/references/store-format.md`（v2）
 - 原則: `docs/overview/principles.md` / Layer 2: `CLAUDE.md` / 拡張ルール: `CONTRIBUTING.md`
+- PowerShell / .NET API の落とし穴集: `docs/reference/powershell-pitfalls.md`（2026-08-14 finalize で申し送りから移設）
 
 ## 完了済みタスク
 
@@ -33,7 +34,7 @@
 
 バックログは `docs/working/issues/README.md` に一元化。次サイクルの候補として目安を示す:
 
-0. [ ] **今サイクル起票分**: **Issue-0083**（system・session-handoff 文書のレビュー残 5 点。各 1 句〜1 行の追記で解消見込みの軽量課題。対応時は spec/ADR 同期＋執行点 4 手順） / **Issue-0084**（flow・マージ方式 --no-ff の完了フロー未配線。今サイクルで実発生） / 関連: **Issue-0050** が cycle-reset 発火点（呼び出し関係）一般化の検討を Issue-0078 から受託済み。また master handoff の教訓型申し送り（PowerShell 落とし穴群など）は、今サイクル導入の独立手順「移設」の対応表では参照知識（`docs/reference/`）への移設対象——プラグイン更新後の初回 finalize/cycle-reset で移設提案が出る見込み
+0. [ ] **今サイクル起票分**: **Issue-0083**（system・session-handoff 文書のレビュー残 5 点。各 1 句〜1 行の追記で解消見込みの軽量課題。対応時は spec/ADR 同期＋執行点 4 手順） / **Issue-0084**（flow・マージ方式 --no-ff の完了フロー未配線。今サイクルで実発生） / 関連: **Issue-0050** が cycle-reset 発火点（呼び出し関係）一般化の検討を Issue-0078 から受託済み。master handoff の教訓型申し送り（PowerShell 落とし穴群）は 2026-08-14 の finalize で `docs/reference/powershell-pitfalls.md` へ移設済み（独立手順「移設」の初適用）
 1. [ ] **Issue-0074/0065 のペア**（flow・0074 は今サイクル起票）: 決定を Accepted へ昇格させる前に仕様が実装のスナップショットかを検査する工程がない / タスク単位レビューが文書間の経路を検出できない。**両者は同じ根（タスク単位の検査では累積のずれを検出できない）を持つ**ため、同時に扱うと対策が一度で設計できる。今サイクルで実害が 3 件出ており材料が揃っている
 2. [ ] **Issue-0076**（flow・今サイクル起票）: 破壊的検証の委譲で隔離の作り方を指定する項目がない。**同じ機構で 2 度実害が出た**（決定記録インデックス 92 行が空に／配布物に BOM 混入）。原因（`Set-Location` が .NET 静的 API に効かない）まで特定済みで、対策は B 群への項目追加で足りる可能性
 3. [ ] **Issue-0073**（flow・今サイクル起票）: 計画の検証期待値が実装中に陳腐化する。今サイクルで 4 件発生。Issue-0042/0056（検出器の検出力・検証コマンドの検査）と根が重なる
@@ -53,23 +54,15 @@
 - **規約に適合していても配布物が壊れる型が 5 つある**（ADR-0084）。生成器が判定できるのは識別子の位置だけで、括弧内に説明語を同居させた行・半角括弧・書式例の実在の固有名・自己参照（`本リポジトリ` / `本 repo`）・スクリプトの docstring と表示メッセージは判定を通過する。**生成後の配布物を読む工程を別に置くこと**（今サイクルで、自己参照は 3 度にわたり別の箇所で見つかった）
 - **確定前レビューの提示規則が稼働中**（ADR-0080）。spec 確定点（3 通り）と plan 確定点で毎回提示し、未レビューの規範・手順文書の変更を含む成果物ではフル推奨へ倒す。**提示結果は handoff の消化記録へ `review=` として必ず書くこと**——記録が無いと次の確定点で「未レビュー」に倒れる設計のため、書き漏らすと毎回フル推奨が立つ
 - **スキル改定の配布反映には version bump が必須**（ADR-0090）: `plugin.json` / `marketplace.json` の版を上げて push → `/plugin marketplace update` を依頼（版差分があればプラグイン更新まで一括。`/plugin update` 不要）。版据え置きでは update しても旧本文が供給され続ける（2026-08-14 実測。Issue-0044）。確認は「起動本文と repo 実ファイルの突合」で行う（キャッシュ読取では判定不能）
-- **破壊的な検証を委譲したら、受け取り時に `git status --short` を全件確認すること**（今サイクルで 2 度の実害。Issue-0076）。**PowerShell の `Set-Location` は .NET の静的 API に効かない**（`[System.IO.File]::WriteAllText` 等はプロセスの作業ディレクトリが基準）。委譲時は複製の作り方と**絶対パスの使用**を明示し、検証前後の `git status` 比較を報告に含めさせる
-- **`Add-Content` は使わないこと**。中央ストアへの追記は Python `open(path, "a", encoding="utf-8", newline="\n")`（ADR-0064）
+- **破壊的な検証を委譲したら、受け取り時に `git status --short` を全件確認すること**（前サイクルで 2 度の実害。Issue-0076）。委譲時は複製の作り方と**絶対パスの使用**を明示し、検証前後の `git status` 比較を報告に含めさせる（技術的背景は `docs/reference/powershell-pitfalls.md`）
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
-- **`,@($list)` は List に対して型エラーになる**（実測）。単項カンマで包むときは `.ToArray()` を使う
-- **PowerShell の検索・集計の落とし穴**（いずれも実測）:
-  - `Select-String` に `-Recurse` は無い。再帰検索は `Get-ChildItem -Recurse -File` とのパイプで書く
-  - `Get-ChildItem -Path <ファイル名> -Recurse` はファイル名をフィルタ解釈して同名ファイルを全て拾う。ルート直下ファイルは `Get-Item`、ディレクトリは `Get-ChildItem -Recurse -File` で別々に集めてパイプする（Issue-0056）
-  - `Group-Object Filename` は basename で束ねるため、同名ファイル（`SKILL.md` 等）のファイル別集計に使えない。`Group-Object Path` を使うか、最初からファイルごとに個別実行する
-  - **`Select-String` は行数を数えるため、複数語句を正規表現の OR でまとめると同一行にある場合に 1 件としか数えない**。語句ごとに個別実行して件数を確認すること（Issue-0042）
-  - **`Measure-Object -Line` は件数集計に使えない**（入力オブジェクトの行数を数える）。件数は `(… | Measure-Object).Count`
+- **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**（`Add-Content` 禁止・`Set-Location` と静的 API・検索/集計の 5 点ほか。2026-08-14 に移設）
 - **中央ストアの現状**: 本repo 59 件（〜`MakeAiInstructions-2026-08-14-03`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 更新済み（2026-08-14）
 - **検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている**（マーケットプレイス定義からは削除済みで実体なし）。片付けるならユーザースコープでのアンインストールが要る
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済み（未確認モデルでの構造化質問ツール使用前に確認。ADR-0036）。ただし事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
 - ADR-0023 の留意（継続）: GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
-- **リモート同期**: `origin/master` へ push 済み（`0ef304f` まで。未 push 0 件。2026-08-14）。push は自動では行われないため、必要な区切りでユーザーが指示すること
-- **前サイクルのスキル改定（session-handoff / start-work）はプラグイン 0.1.1 として反映済み**（2026-08-14 に起動本文と実ファイルの突合で確認。ADR-0090）
+- **リモート同期**: `origin/master` へ push 済み（`0bea9fc` まで。2026-08-14。本 finalize コミットのみ未 push）。push は自動では行われないため、必要な区切りでユーザーが指示すること
 
 ## Post ラッパー消化記録
 
@@ -77,6 +70,7 @@
 
 - 2026-08-14 マージ（fast-forward `9259eec`）・retrospective 実施・cycle-reset 完了: ADR=なし（課題起票のみ。対策の採否・設計は次サイクル） / worklog=棄却（新規 delta なし。fast-forward マージ件は Issue-0084 が構造観察型として捕捉）
 - 2026-08-14 配布経路修復（プラグイン 0.1.1 bump・改定反映を実測確認・Issue-0044 追記）: ADR=0090（Accepted） / worklog=`MakeAiInstructions-2026-08-14-03`
+- 2026-08-14 セッション終了（finalize・PowerShell 落とし穴を `docs/reference/` へ移設）: ADR=なし（移設は ADR-0086 の既定手順） / worklog=棄却（`-03` 以降の新規 delta なし）
 
 ## 次セッション開始時のアクション
 

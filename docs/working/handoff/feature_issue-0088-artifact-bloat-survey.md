@@ -2,8 +2,8 @@
 
 - **Branch**: feature/issue-0088-artifact-bloat-survey
 - **Last Updated**: 2026-08-15 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装完了・ADR-0094〜0098 Accepted・Issue-0088 close 済み。残: master への --no-ff マージ（ユーザー判断）→ retrospective → 配布反映
+- **Status**: completed
+- **Current Phase**: サイクル完了（master へ --no-ff マージ済み `e4590bf`・retrospective 済み）。以後の正本は `docs/working/handoff/master.md`
 
 ## 作業の目的・背景
 

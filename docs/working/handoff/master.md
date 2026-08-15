@@ -56,7 +56,7 @@
 - **Issue 運用の新規範が稼働中**（ADR-0095〜0098）: 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須。正本は `docs/overview/issue-management.md`
 - **decision-log 152 行目の昇格条件要約は、課題管理定義の改定時に同時更新が必要**（意図された配線。ADR-0098 の複写乖離型の監視点）
 - **plugin 0.1.5 の配布反映が未実施**: ユーザーによる `/plugin marketplace update ai-driven-dev-principles` が必要（ADR-0090）。**課題管理定義は template 配布のため、既存配布先には `docs/overview/issue-management.md` の手動コピーが必要**
-- **リモート同期**: push 未実施。`origin/master` は前サイクル（`ef0f21d` 相当）まで。本サイクルの全コミット（`f2ac91f`〜cycle-reset）が未 push。push は自動では行わないため、区切りでユーザーが指示すること
+- **リモート同期**: `origin/master` へ push 済み（2026-08-16。本サイクルのマージ `e4590bf` と retrospective・cycle-reset `6a24e4e` まで同期）。push は自動では行わないため、必要な区切りでユーザーが指示すること
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**
 - **中央ストアの現状**: 本 repo 66 件（〜`MakeAiInstructions-2026-08-15-06`）＋ LoopForAlpha 106 件。`projects.json` lastSeen 2026-08-15
@@ -72,7 +72,7 @@
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-2. **未完の後始末**: push（ユーザー指示）→ `/plugin marketplace update ai-driven-dev-principles`（0.1.5 反映）→ 既存配布先への `docs/overview/issue-management.md` 手動コピー
+2. **未完の後始末**: `/plugin marketplace update ai-driven-dev-principles`（0.1.5 反映）→ 既存配布先への `docs/overview/issue-management.md` 手動コピー（push は 2026-08-16 実施済み）
 3. **次サイクルの候補（着手はユーザー判断）**: 抽出課題は issues に起票済み（〜Issue-0091）。本命は **Issue-0086**（Issue-0066 と同時対策の余地）。**Issue-0084 は 4 サイクル連続の手動適用で配線価値が上昇**。軽量なら **Issue-0072**。Issue-0088 系の続きは 0089/0090
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る

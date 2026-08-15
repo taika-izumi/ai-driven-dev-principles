@@ -85,7 +85,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
    2. `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open。課題内容は要約のみとし、「起票元」に `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載）
    3. インデックスの対応セクションに1行追加する
    4. 振り返りファイル側の各課題項目に「**起票**: Issue-NNNN」行を記載する
-3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する（ADR-0031）
+3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する（ADR-0031）。追記後にファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）
 4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**
 5. ユーザーへ提示し確認を得る
 

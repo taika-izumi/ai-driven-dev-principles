@@ -23,10 +23,11 @@
 CLAUDE.md
 docs/overview/principles.md
 docs/overview/folder-structure.md
+docs/overview/issue-management.md
 docs/inbox/README.md
 ```
 
-（`docs/principles.md` → `docs/overview/principles.md` へのパス変更、`docs/overview/folder-structure.md`・`docs/inbox/README.md` の新規追加。`docs/retrospectives/README.md` は verbatim コピー対象から外れ、下記の空インデックス生成へ移行。skills/ を含めない規約は ADR-0016 のまま維持）
+（`docs/principles.md` → `docs/overview/principles.md` へのパス変更、`docs/overview/folder-structure.md`・`docs/overview/issue-management.md`・`docs/inbox/README.md` の新規追加。`docs/retrospectives/README.md` は verbatim コピー対象から外れ、下記の空インデックス生成へ移行。skills/ を含めない規約は ADR-0016 のまま維持）
 
 ### scripts/sync-template.ps1
 

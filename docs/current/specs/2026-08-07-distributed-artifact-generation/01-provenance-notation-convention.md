@@ -43,7 +43,7 @@
 
 **配布対象ソース**にのみ適用する。判定は観測可能な 3 条件で行う。
 
-1. `template.manifest` に記載されているファイル（現在 4 ファイル）
+1. `template.manifest` に記載されているファイル（現在 5 ファイル）
 2. `skills/` 配下のファイル
 3. `sync-template.ps1` が空インデックスを生成する 3 ファイル（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）。**判定対象は空インデックス化後の内容とする**
 

@@ -74,10 +74,10 @@ scripts/build-dist.ps1 [-Check]
 
 ### 1. 走査対象の決定
 
-配布対象ソースは計 25 ファイルで、走査は生成器ごとに分担する。
+配布対象ソースは計 26 ファイルで、走査は生成器ごとに分担する。
 
 - `scripts/build-dist.ps1`（本ブロック）: `skills/` 配下の全ファイル（18）
-- `scripts/sync-template.ps1`（ブロック 03）: `template.manifest` に記載されたファイル（4）と空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容）
+- `scripts/sync-template.ps1`（ブロック 03）: `template.manifest` に記載されたファイル（5）と空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容）
 
 ### 2. 判定に用いる正規表現
 

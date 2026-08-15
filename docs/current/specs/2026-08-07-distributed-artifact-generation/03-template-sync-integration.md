@@ -26,9 +26,9 @@ scripts/sync-template.ps1 [-Check]
 
 | ステップ | 処理 |
 |---|---|
-| 1 | `template.manifest` を読み、コメント行・空行を除いてファイル一覧を得る（現在 4 ファイル: `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md`） |
+| 1 | `template.manifest` を読み、コメント行・空行を除いてファイル一覧を得る（現在 5 ファイル: `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/overview/issue-management.md` / `docs/inbox/README.md`） |
 | 2 | 空インデックス生成対象 3 ファイル（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）について、テーブルのデータ行と直後の引用ブロックを除去した内容をメモリ上で生成する |
-| 3 | ステップ 1・2 で得た**全 7 ファイル分の内容**へ `Test-ProvenanceConvention` を適用する。違反が 1 件でもあれば違反箇所と規約 ID を出力して非ゼロ終了する |
+| 3 | ステップ 1・2 で得た**全 8 ファイル分の内容**へ `Test-ProvenanceConvention` を適用する。違反が 1 件でもあれば違反箇所と規約 ID を出力して非ゼロ終了する |
 | 4 | `template/` を完全削除する |
 | 5 | 各内容へ `Remove-ProvenanceNotation` を適用し、`template/` 配下の対応するパスへ書き出す |
 | 6 | `template/` 配下に実在を指す出所識別子が 1 件も残っていないことを確認する（判定と同じ適用範囲・同じプレースホルダ判別を用いる）。残っていれば非ゼロ終了する |
@@ -66,6 +66,7 @@ scripts/sync-template.ps1 [-Check]
 | ソース | ソース側 | 空インデックス化後 | 生成物側 |
 |---|---|---|---|
 | `docs/overview/folder-structure.md` | 7 | （対象外） | 0 |
+| `docs/overview/issue-management.md` | 3 | （対象外） | 0 |
 | `docs/records/retrospectives/README.md` | 128（種別 1〜3 が 121、種別 4 が 7） | 12 | 0 |
 | `docs/records/decisions/README.md` | 多数 | 0 | 0 |
 | `docs/working/issues/README.md` | 多数 | 0 | 0 |

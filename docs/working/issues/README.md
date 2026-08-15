@@ -1,6 +1,6 @@
 # 課題（Issues）
 
-進行中・クローズ済みの課題のインデックス。運用ルールは `../../overview/folder-structure.md` の「課題（issue）管理」を参照。
+進行中・クローズ済みの課題のインデックス。運用ルールは `../../overview/issue-management.md`（課題管理定義）を参照。
 採番は両セクション通しの連番（インデックス全体の最大番号+1）。
 
 ## 対象システム固有の課題（system/）
@@ -99,3 +99,6 @@
 | [0085](flow/0085-digest-field-extension-lacks-checklist.md) | 消化記録へフィールドを新設する拡張に、記録様式側の連動改定チェックリストが無い | open | 2026-08-15 |
 | [0086](flow/0086-adr-rationale-vs-cited-evidence-check.md) | 決定の見送り理由が、引用した実測と矛盾していないかを突合する工程がない | open | 2026-08-15 |
 | [0087](flow/0087-dispatch-table-growth-consolidation-trigger.md) | 条件発火表の行数増加に、統廃合を検討する契機が定義されていない | open | 2026-08-15 |
+| [0088](flow/0088-issue-and-other-artifacts-growth-control.md) | Issue など handoff 以外の成果物に、肥大化を抑制する機構がない | closed | 2026-08-15 |
+| [0089](flow/0089-designated-home-naming-index-rules-missing.md) | 指定席（議事録・インシデント報告等）のファイル命名・索引の規約が未定義 | open | 2026-08-15 |
+| [0090](flow/0090-remaining-growth-artifacts-untreated.md) | 棚卸しで確認した残りの成長型成果物（インデックス 3 種・plans 残置・worklog 台帳）に抑制機構がない | open | 2026-08-15 |

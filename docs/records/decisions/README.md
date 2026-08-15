@@ -99,3 +99,8 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0091](0091-session-handoff-doc-clarity-fixes.md) | session-handoff 文書の解釈揺れ 5 点は規範を変えない明確化改定として解消する | Accepted | 2026-08-14 |
 | [0092](0092-cycle-wide-consistency-check-before-adr-promotion.md) | 仕様・規範文書を編集したサイクルでは、決定の Accepted 昇格前に AI 自身によるサイクル全体整合検査を必須とする | Accepted | 2026-08-14 |
 | [0093](0093-destructive-verification-dispatch-isolation-constraints.md) | 破壊的検証の委譲には、隔離の作り方の指定・絶対パスの使用・前後状態比較・委譲側の独立確認を課す | Accepted | 2026-08-15 |
+| [0094](0094-artifact-bloat-addressed-as-growth-pattern.md) | 成果物の肥大化（Issue-0088）は用途別対応ではなく成長様式への対策として扱う | Accepted | 2026-08-15 |
+| [0095](0095-issue-materials-lifecycle-split-colocation.md) | 長期化した Issue の関連情報は「検討中はフォルダ集約・close で性質別置き場へ移設」で配置する | Accepted | 2026-08-15 |
+| [0096](0096-issue-folder-promotion-trigger-and-role-system.md) | Issue のフォルダ昇格は観測可能な条件で提案し、フォルダ内は 4 役割・番号接頭辞の固定体系とする | Accepted | 2026-08-15 |
+| [0097](0097-issue-granularity-one-problem-many-questions.md) | Issue の粒度は「1 Issue ＝ 1 問題」とし、複数の問いの内包を認める | Accepted | 2026-08-15 |
+| [0098](0098-norm-placement-behavior-in-skills-structure-in-docs.md) | 規範の記載先は「発火条件・手順はスキル、構造・命名・分量の定義はプロジェクト文書」で分け、境界をまたぐ複写を禁止する | Accepted | 2026-08-15 |

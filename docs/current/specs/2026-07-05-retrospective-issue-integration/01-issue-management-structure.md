@@ -2,7 +2,7 @@
 
 ## 1. 対象ファイル
 
-- `docs/overview/folder-structure.md` — §2 分類表・§4 ディレクトリツリー・§6 配置表・§7 課題（issue）管理・§8 運用例の該当箇所（template 対象）
+- `docs/overview/folder-structure.md` — §2 分類表・§4 ディレクトリツリー・§6 配置表・§7 課題（issue）管理（早見表化。詳細規約は `docs/overview/issue-management.md` へ分離）・§8 運用例の該当箇所（template 対象）
 - `docs/working/issues/README.md` — インデックスの2セクション化（実データの移行はブロック04）
 
 ## 2. 責務
@@ -18,7 +18,7 @@ docs/working/issues/
   README.md          # インデックス（唯一）。system / flow の2セクション
   system/            # 対象システム固有の課題
     NNNN-<slug>.md
-    NNNN-<slug>/     # フォルダ昇格時（課題ファイルをフォルダ内 README.md にする。従来どおり）
+    NNNN-<slug>/     # フォルダ昇格時（課題ファイルは同名のままフォルダ内へ移動。README.md 化はしない）
   flow/              # 開発フロー/ガイドライン課題
     NNNN-<slug>.md
     NNNN-<slug>/
@@ -51,7 +51,7 @@ docs/working/issues/
 
 ## 検討状況
 
-（対策検討の経過。長期化したらフォルダ昇格を検討）
+（対策検討の経過。フォルダ外に資料が生じた時、または追記時のサイズ実測が目安値を超えた時にフォルダ昇格を提案。詳細は課題管理定義を参照）
 
 ## 結論
 
@@ -61,12 +61,12 @@ docs/working/issues/
 
 ### 3.4 インデックス形式
 
-`docs/working/issues/README.md` はフォルダに対応する2セクション構成。テーブル列は従来どおり（# / タイトル / Status / Opened）。リンク先は `system/NNNN-<slug>.md` 形式。
+`docs/working/issues/README.md` はフォルダに対応する2セクション構成。テーブル列は従来どおり（# / タイトル / Status / Opened）。リンク先は `system/NNNN-<slug>.md` 形式（フォルダ昇格済みの課題は `system/NNNN-<slug>/NNNN-<slug>.md` 形式とする）。
 
 ```markdown
 # 課題（Issues）
 
-進行中・クローズ済みの課題のインデックス。運用ルールは `../../overview/folder-structure.md` の「課題（issue）管理」を参照。
+進行中・クローズ済みの課題のインデックス。運用ルールは `../../overview/issue-management.md`（課題管理定義）を参照。
 採番は両セクション通しの連番（全体の最大番号+1）。
 
 ## 対象システム固有の課題（system/）
@@ -92,7 +92,7 @@ docs/working/issues/
 
 - §4 ディレクトリツリー: `issues/` の下に `system/` `flow/` を追記
 - §6 配置表: 「課題・未決事項」行の配置先を `docs/working/issues/system|flow/` に更新
-- §7 課題（issue）管理: 本ブロック 3.1〜3.5 の内容へ全面書き換え（フォーマット・インデックス例を含む）
+- §7 課題（issue）管理: 早見表（「やりたいこと → 読む節」形式）へ縮約し、本ブロック 3.1〜3.5 の詳細規約は課題管理定義（`docs/overview/issue-management.md`）へ分離する
 - §8 運用例: 課題起票のパス表記を新構造に合わせる（フローは不変）
 - §11 関連 ADR: ADR-0028 を追加
 

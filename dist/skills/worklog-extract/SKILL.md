@@ -34,7 +34,7 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 8. **人間採否 → 反映**:
    - **rejected / deferred** → 即 `processed.jsonl` へ追記（`deferred` は `evidence_count` に現クラスタ根拠数を記録）
    - **採用** → Issue 草案化（`general` はガイドライン配信元リポジトリの `docs/working/issues/`、`project-specific` は当該プロジェクトの Issue 置き場）＋`adopted` を即 `processed.jsonl` へ追記し、`worklog-skillify` へ受け渡す
-   - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）
+   - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）。既存 issue へ統合（追記）した場合はファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）
 
 ## 出力
 

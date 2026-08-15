@@ -83,7 +83,7 @@ ADR 検討中の未決事項などは従来どおり `decision-log` スキルの
 
 ## 7. 完了基準
 
-1. `docs/overview/folder-structure.md` §7 が新構造（system/flow・起票元フィールド・2セクションインデックス・通し採番）を定義している
+1. `docs/overview/folder-structure.md` §7 が課題管理定義（`docs/overview/issue-management.md`）への早見表を持ち、同定義が新構造（system/flow・起票元フィールド・2セクションインデックス・通し採番）を定義している
 2. `skills/retrospective/SKILL.md` と2テンプレートに起票手順が統合され、抽出限定スコープ（ADR-0021）の記述が維持されている
 3. `skills/decision-log/SKILL.md`・`CONTRIBUTING.md`・`docs/records/retrospectives/README.md`・`docs/current/specs/2026-07-04-project-folder-structure/01-folder-structure-definition.md` の課題管理参照が新構造と一致している
 4. 既存課題 Issue-0001 が `system/` に移動し、2026-07-05 振り返りの6課題＋旧型式 spec 方針の課題1件が起票済み（0007 は本サイクル完了時に ADR-0028 で close）

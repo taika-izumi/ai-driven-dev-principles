@@ -137,19 +137,19 @@ ADRは「下した決定」だけを記録する。仕様検討の議論中に�
 
 ### 起票
 
-1. 未決事項を検出したら `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open）。分類は、対象システム固有の課題なら `system/`、開発の進め方・スキル・原則・ガイドラインに関する課題なら `flow/`（議論由来の未決事項は大半が `system/`）。連番はインデックス `docs/working/issues/README.md` 全体（両セクション）の最大番号+1。フォーマットは `docs/overview/folder-structure.md` の「課題（issue）管理」を参照
+1. 未決事項を検出したら `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open）。分類は、対象システム固有の課題なら `system/`、開発の進め方・スキル・原則・ガイドラインに関する課題なら `flow/`（議論由来の未決事項は大半が `system/`）。連番はインデックス `docs/working/issues/README.md` 全体（両セクション）の最大番号+1。フォーマットは課題管理定義（標準: `docs/overview/issue-management.md`）を参照
 2. インデックス `docs/working/issues/README.md` の対応セクションに1行追加する
 
 ### ライフサイクル
 
 1. その論点について意思決定を下したら、通常どおり ADR を作成する
-2. ADR 化したら課題を close する: 課題ファイルの Status を `closed` に変更し、Closed 日付を記入し、「結論」セクションに ADR 番号を記載する。インデックスの Status も更新する
+2. ADR 化したら課題を close する: 課題ファイルの Status を `closed` に変更し、Closed 日付を記入し、「結論」セクションに ADR 番号を記載する。インデックスの Status も更新する。**フォルダ昇格済みの課題では、close 時に課題管理定義（標準: `docs/overview/issue-management.md`）の移設判定を実施する**（定義が見つからない場合は「再利用知見の移設・別論点の振り出し・残りは凍結」をデフォルトとして提案し、その旨をユーザーへ報告する）
 3. **クローズ済み課題は削除せずその場に残す**（追跡可能性の維持）
 
 ### 注意
 
 - 課題ファイル・インデックスは template には同期されない（新規プロジェクトでは空のインデックスから始まる）
-- 検討が長期化・多観点化した課題はフォルダへ昇格できる（`docs/overview/folder-structure.md` 参照）
+- 課題ファイルの外に置くべき資料が生じた時、または追記時のサイズ実測が目安値を超えた時、フォルダ昇格を提案する（判断はユーザー。条件・目安値・フォルダ内体系は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）
 
 ## ADR更新手順
 

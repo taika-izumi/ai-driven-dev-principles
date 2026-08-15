@@ -1,6 +1,6 @@
 # ADR-0094: 成果物の肥大化（Issue-0088）は用途別対応ではなく成長様式への対策として扱う
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-15
 
 ## Context

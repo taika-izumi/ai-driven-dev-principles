@@ -1,6 +1,6 @@
 # ADR-0095: 長期化した Issue の関連情報は「検討中はフォルダ集約・close で性質別置き場へ移設」で配置する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-15
 
 ## Context

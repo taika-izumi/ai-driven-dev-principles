@@ -1,6 +1,6 @@
 # ADR-0096: Issue のフォルダ昇格は観測可能な条件で提案し、フォルダ内は 4 役割・番号接頭辞の固定体系とする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-15
 
 ## Context

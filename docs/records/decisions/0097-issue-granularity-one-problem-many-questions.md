@@ -1,6 +1,6 @@
 # ADR-0097: Issue の粒度は「1 Issue ＝ 1 問題」とし、複数の問いの内包を認める
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-15
 
 ## Context

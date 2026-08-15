@@ -21,7 +21,7 @@
 - Create: `docs/overview/issue-management.md`
 - Modify: `template.manifest`（1 行追加）
 
-- [ ] **Step 1-1: `docs/overview/issue-management.md` を以下の内容で作成する**
+- [x] **Step 1-1: `docs/overview/issue-management.md` を以下の内容で作成する**
 
 ````markdown
 # 課題（issue）管理定義
@@ -174,7 +174,7 @@ docs/working/issues/
 `docs/working/issues/README.md` はフォルダに対応する2セクション構成。各セクションは1課題1行のテーブル（# / タイトル / Status / Opened）で、リンク先は `system|flow/NNNN-<slug>.md` 形式（フォルダ昇格済みの課題は `system|flow/NNNN-<slug>/NNNN-<slug>.md`）。採番規則（通し連番）を冒頭に明記する。
 ````
 
-- [ ] **Step 1-2: `template.manifest` の末尾（`docs/inbox/README.md` の行の直前）に 1 行追加する**
+- [x] **Step 1-2: `template.manifest` の末尾（`docs/inbox/README.md` の行の直前）に 1 行追加する**
 
 旧文字列（末尾 4 行）:
 
@@ -195,7 +195,7 @@ docs/overview/issue-management.md
 docs/inbox/README.md
 ```
 
-- [ ] **Step 1-3: 検証** — Run: `Test-Path docs/overview/issue-management.md`（期待: True）、`Select-String -Path template.manifest -Pattern 'issue-management'`（期待: 1 行ヒット）
+- [x] **Step 1-3: 検証** — Run: `Test-Path docs/overview/issue-management.md`（期待: True）、`Select-String -Path template.manifest -Pattern 'issue-management'`（期待: 1 行ヒット）
 
 ---
 
@@ -205,7 +205,7 @@ docs/inbox/README.md
 - Modify: `docs/overview/folder-structure.md`
 - Modify: `docs/working/issues/README.md`（冒頭の参照 1 行）
 
-- [ ] **Step 2-1: §7 全体を縮約版へ置き換える**。削除範囲は L78「## 7. 課題（issue）管理」から §7.5 本文の末尾（L157。次の見出し `## 8. 運用例...`＝L159 の直前）まで。以下に差し替え:
+- [x] **Step 2-1: §7 全体を縮約版へ置き換える**。削除範囲は L78「## 7. 課題（issue）管理」から §7.5 本文の末尾（L157。次の見出し `## 8. 運用例...`＝L159 の直前）まで。以下に差し替え:
 
 ```markdown
 ## 7. 課題（issue）管理
@@ -223,25 +223,25 @@ docs/inbox/README.md
 | 他リポジトリの課題を参照する | 9. クロスリポジトリの課題参照 |
 ```
 
-- [ ] **Step 2-2: §1 の「唯一の参照元」文言を分類に限定する**
+- [x] **Step 2-2: §1 の「唯一の参照元」文言を分類に限定する**
 
 旧: `プロジェクトで発生する情報・ドキュメントを「どこに置くか」の判断基準を定義する。本文書は配置判断の唯一の参照元であり、プロジェクト参画直後に読むべき文書として `docs/overview/` に置かれている。`
 
 新: `プロジェクトで発生する情報・ドキュメントを「どこに置くか」の判断基準を定義する。本文書は情報分類と配置判断の唯一の参照元であり、プロジェクト参画直後に読むべき文書として `docs/overview/` に置かれている（課題（issue）の運用詳細は `docs/overview/issue-management.md` が正）。`
 
-- [ ] **Step 2-3: §8 運用例の手順 2 を新条件へ書き換える**
+- [x] **Step 2-3: §8 運用例の手順 2 を新条件へ書き換える**
 
 旧: `2. **検討・叩き台** — 検討が多観点・長期になったら課題をフォルダに昇格し、現状分析・影響範囲・比較案・叩き台資料を並置する`
 
 新: `2. **検討・叩き台** — フォルダ外に置くべき資料が生じた時、または課題ファイルがサイズ目安を超えた時に課題をフォルダへ昇格し（課題管理定義の昇格条件）、検討ノート・時点資料を役割固定の命名で並置する`
 
-- [ ] **Step 2-4: `docs/working/issues/README.md` 冒頭の運用ルール参照を差し替える**
+- [x] **Step 2-4: `docs/working/issues/README.md` 冒頭の運用ルール参照を差し替える**
 
 旧: `進行中・クローズ済みの課題のインデックス。運用ルールは `../../overview/folder-structure.md` の「課題（issue）管理」を参照。`
 
 新: `進行中・クローズ済みの課題のインデックス。運用ルールは `../../overview/issue-management.md`（課題管理定義）を参照。`
 
-- [ ] **Step 2-5: 検証** — Run: `Select-String -Path docs/overview/folder-structure.md -Pattern 'issue-management'`（期待: **2 件**。§1 と §7 前文）、`Select-String -Path docs/overview/folder-structure.md -Pattern '長期化・多観点化|多観点・長期|README\.md.{0,2}とし'`（期待: 0 件）、`Select-String -Path docs/working/issues/README.md -Pattern 'issue-management'`（期待: 1 件）
+- [x] **Step 2-5: 検証** — Run: `Select-String -Path docs/overview/folder-structure.md -Pattern 'issue-management'`（期待: **2 件**。§1 と §7 前文）、`Select-String -Path docs/overview/folder-structure.md -Pattern '長期化・多観点化|多観点・長期|README\.md.{0,2}とし'`（期待: 0 件）、`Select-String -Path docs/working/issues/README.md -Pattern 'issue-management'`（期待: 1 件）
 
 ---
 
@@ -251,32 +251,32 @@ docs/inbox/README.md
 - Modify: `skills/decision-log/SKILL.md`（L140 / L146 / L152 付近）
 - Modify: `docs/records/decisions/0096-issue-folder-promotion-trigger-and-role-system.md`（Proposed につき書き直し可）
 
-- [ ] **Step 3-1: 起票手順（L140）の参照先を更新する**
+- [x] **Step 3-1: 起票手順（L140）の参照先を更新する**
 
 旧: `フォーマットは `docs/overview/folder-structure.md` の「課題（issue）管理」を参照`
 
 新: `フォーマットは課題管理定義（標準: `docs/overview/issue-management.md`）を参照`
 
-- [ ] **Step 3-2: ライフサイクル節の close 手順（L146）へ移設判定フックを追加する**
+- [x] **Step 3-2: ライフサイクル節の close 手順（L146）へ移設判定フックを追加する**
 
 旧: `2. ADR 化したら課題を close する: 課題ファイルの Status を `closed` に変更し、Closed 日付を記入し、「結論」セクションに ADR 番号を記載する。インデックスの Status も更新する`
 
 新: `2. ADR 化したら課題を close する: 課題ファイルの Status を `closed` に変更し、Closed 日付を記入し、「結論」セクションに ADR 番号を記載する。インデックスの Status も更新する。**フォルダ昇格済みの課題では、close 時に課題管理定義（標準: `docs/overview/issue-management.md`）の移設判定を実施する**（定義が見つからない場合は「再利用知見の移設・別論点の振り出し・残りは凍結」をデフォルトとして提案し、その旨をユーザーへ報告する）`
 
-- [ ] **Step 3-3: 旧昇格条件（L152）を新条件の要約＋参照へ書き換える**
+- [x] **Step 3-3: 旧昇格条件（L152）を新条件の要約＋参照へ書き換える**
 
 旧: `- 検討が長期化・多観点化した課題はフォルダへ昇格できる（`docs/overview/folder-structure.md` 参照）`
 
 新: `- 課題ファイルの外に置くべき資料が生じた時、または追記時のサイズ実測が目安値を超えた時、フォルダ昇格を提案する（判断はユーザー。条件・目安値・フォルダ内体系は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）`
 
-- [ ] **Step 3-4: ADR-0096 の「規範の定義場所と配線」節の末尾へ、レビューで確定した 2 判断を追補する**（Proposed ドラフトの書き直し。以下の 2 行を同節末尾へ追加）
+- [x] **Step 3-4: ADR-0096 の「規範の定義場所と配線」節の末尾へ、レビューで確定した 2 判断を追補する**（Proposed ドラフトの書き直し。以下の 2 行を同節末尾へ追加）
 
 ```markdown
 - close のスキル配線は decision-log の 1 経路のみとする。申し送り済み close・対処なし close にはスキル手順が存在しないため配線せず、課題管理定義の close 条項（経路を問わない判定）を正とする（スキル経路が新設された時点で配線を追加する）
 - 索引の一言説明は「プロジェクトの記述言語で書く」とする（原案の「日本語」から一般化。配布先の記述言語を限定しないため）
 ```
 
-- [ ] **Step 3-5: 検証** — Run: `Select-String -Path skills/decision-log/SKILL.md -Pattern '長期化・多観点化'`（期待: 0 件）、`Select-String -Path skills/decision-log/SKILL.md -Pattern 'issue-management'`（期待: 3 件）
+- [x] **Step 3-5: 検証** — Run: `Select-String -Path skills/decision-log/SKILL.md -Pattern '長期化・多観点化'`（期待: 0 件）、`Select-String -Path skills/decision-log/SKILL.md -Pattern 'issue-management'`（期待: 3 件）
 
 ---
 
@@ -285,13 +285,13 @@ docs/inbox/README.md
 **Files:**
 - Modify: `skills/retrospective/SKILL.md`（Phase 2 手順 3 = L88）
 
-- [ ] **Step 4-1: 既存課題への「検討状況」追記手順へ 1 句追加する**
+- [x] **Step 4-1: 既存課題への「検討状況」追記手順へ 1 句追加する**
 
 旧: `3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する（ADR-0031）`
 
 新: `3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する（ADR-0031）。追記後にファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）`
 
-- [ ] **Step 4-2: 検証** — Run: `Select-String -Path skills/retrospective/SKILL.md -Pattern 'issue-management'`（期待: 1 件）
+- [x] **Step 4-2: 検証** — Run: `Select-String -Path skills/retrospective/SKILL.md -Pattern 'issue-management'`（期待: 1 件）
 
 ---
 
@@ -300,13 +300,13 @@ docs/inbox/README.md
 **Files:**
 - Modify: `skills/session-handoff/SKILL.md`（独立手順「移設」手順 3 = L144）
 
-- [ ] **Step 5-1: 未解決事項の起票・追記行へ 1 句追加する**
+- [x] **Step 5-1: 未解決事項の起票・追記行へ 1 句追加する**
 
 旧: `   - 未解決事項 → 課題として起票する（**インデックスへの 1 行追加と通し採番を含む**。既存課題に一般形があれば「検討状況」へ追記する。system/flow の分岐はプロジェクトの課題管理規約に従う）`
 
 新: `   - 未解決事項 → 課題として起票する（**インデックスへの 1 行追加と通し採番を含む**。既存課題に一般形があれば「検討状況」へ追記する。system/flow の分岐はプロジェクトの課題管理規約に従う）。既存課題へ追記した場合はファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）`
 
-- [ ] **Step 5-2: 検証** — Run: `Select-String -Path skills/session-handoff/SKILL.md -Pattern '目安値超過ならフォルダ昇格'`（期待: 1 件）
+- [x] **Step 5-2: 検証** — Run: `Select-String -Path skills/session-handoff/SKILL.md -Pattern '目安値超過ならフォルダ昇格'`（期待: 1 件）
 
 ---
 
@@ -315,13 +315,13 @@ docs/inbox/README.md
 **Files:**
 - Modify: `skills/worklog-extract/SKILL.md`（手順 8 の Issue 草案化行 = L37）
 
-- [ ] **Step 6-1: 重複排除・統合の行へ 1 句追加する**
+- [x] **Step 6-1: 重複排除・統合の行へ 1 句追加する**
 
 旧: `   - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）`
 
 新: `   - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）。既存 issue へ統合（追記）した場合はファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）`
 
-- [ ] **Step 6-2: 検証** — Run: `Select-String -Path skills/worklog-extract/SKILL.md -Pattern '目安値超過ならフォルダ昇格'`（期待: 1 件）
+- [x] **Step 6-2: 検証** — Run: `Select-String -Path skills/worklog-extract/SKILL.md -Pattern '目安値超過ならフォルダ昇格'`（期待: 1 件）
 
 ---
 
@@ -330,19 +330,19 @@ docs/inbox/README.md
 **Files:**
 - Modify: `CONTRIBUTING.md`（「未決事項・課題を記録するとき」手順 1・手順 3、「振り返りで抽出された課題に対策するとき」手順 8）
 
-- [ ] **Step 7-0: 「未決事項・課題を記録するとき」手順 1 の参照先を更新する**
+- [x] **Step 7-0: 「未決事項・課題を記録するとき」手順 1 の参照先を更新する**
 
 旧（行末部分）: `フォーマットは `docs/overview/folder-structure.md` の「課題（issue）管理」を参照`
 
 新: `フォーマットは課題管理定義（`docs/overview/issue-management.md`）を参照`
 
-- [ ] **Step 7-1: 同シナリオ手順 3 へ 1 句追加する**
+- [x] **Step 7-1: 同シナリオ手順 3 へ 1 句追加する**
 
 旧: `3. ADR 化したら課題を close する（Status を closed に変更し「結論」に ADR 番号を記載。ファイルは削除せず残す）`
 
 新: `3. ADR 化したら課題を close する（Status を closed に変更し「結論」に ADR 番号を記載。ファイルは削除せず残す。フォルダ昇格済みの課題では課題管理定義（`docs/overview/issue-management.md`）の close 時移設判定を実施する）`
 
-- [ ] **Step 7-2: 「振り返りで抽出された課題に対策するとき」手順 8 へ 1 句追加する**
+- [x] **Step 7-2: 「振り返りで抽出された課題に対策するとき」手順 8 へ 1 句追加する**
 
 旧: `8. 対策サイクル完了時（ADR の Accepted 昇格時）に、対象 issue を close する（Status を closed に変更し「結論」に ADR 番号を記載。インデックスも更新）。昇格は `decision-log` の「承認の昇格」の手順（サイクル全体整合検査を含む）に従う（ADR-0092）`
 
@@ -350,7 +350,7 @@ docs/inbox/README.md
 
 CONTRIBUTING の 2 フックにはフォールバック句を付けない（本ファイルはガイドライン配信元リポジトリ内の文書であり、参照先定義が同リポジトリに常在するため。ADR-0096 の「各フックにフォールバック」の対象はプラグイン配布スキルの 4 フックとする）。
 
-- [ ] **Step 7-3: 検証** — Run: `Select-String -Path CONTRIBUTING.md -Pattern 'close 時移設判定'`（期待: 2 件）、`Select-String -Path CONTRIBUTING.md -Pattern '「課題（issue）管理」を参照'`（期待: 0 件）
+- [x] **Step 7-3: 検証** — Run: `Select-String -Path CONTRIBUTING.md -Pattern 'close 時移設判定'`（期待: 2 件）、`Select-String -Path CONTRIBUTING.md -Pattern '「課題（issue）管理」を参照'`（期待: 0 件）
 
 ---
 
@@ -365,15 +365,15 @@ CONTRIBUTING の 2 フックにはフォールバック句を付けない（本�
 - Modify: `docs/current/specs/2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md`（L46「現在 4 ファイル」）・`02-distribution-generator.md`（L77「計 25 ファイル」/ L80「（4）」）・`03-template-sync-integration.md`（L29 の 4 ファイル列挙 / L31「全 7 ファイル分」/ L72 影響ファイル表）
 - Modify: `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md`（L29 の未解決事項行）
 
-- [ ] **Step 8-1: 旧昇格規則の書き換え**。対象: 00-overview L86 / 01-folder-structure-definition L32・L37・L68 / 01-issue-management-structure L21・L54。各箇所を Read し、旧規則（「長期化・多観点化」による昇格 / 課題ファイルの README.md 化 / フォーマット内「長期化したらフォルダ昇格を検討」）を次の要約へ書き換える:
+- [x] **Step 8-1: 旧昇格規則の書き換え**。対象: 00-overview L86 / 01-folder-structure-definition L32・L37・L68 / 01-issue-management-structure L21・L54。各箇所を Read し、旧規則（「長期化・多観点化」による昇格 / 課題ファイルの README.md 化 / フォーマット内「長期化したらフォルダ昇格を検討」）を次の要約へ書き換える:
   - 昇格条件: 「フォルダ外に置くべき資料が生じた時、または追記時のサイズ実測が目安値（デフォルト 10KB、1KB = 1000 バイト）を超えた時に提案（判断はユーザー）」
   - 昇格操作: 「課題ファイルは同名のままフォルダ内へ移動（README.md 化はしない）」
   - フォルダ内: 「4 役割（課題ファイル / `NNNN-log.md` / `NNNN-note-<slug>.md` / `NNNN-YYYY-MM-DD-<slug>.<拡張子>`）・全ファイル番号接頭辞・索引義務」
-- [ ] **Step 8-2: 分離の反映**。01-issue-management-structure の L5（構成説明）・L64（インデックスのリンク形式 → 昇格形 `system|flow/NNNN-<slug>/NNNN-<slug>.md` を併記）・L69（ひな形の参照文 → `../../overview/issue-management.md` へ）・L95（「§7 …全面書き換え」→ 縮約と課題管理定義への分離を反映）を書き換える。00-overview / 01-folder-structure-definition にも folder-structure の節構成に触れる記述があれば「§7 は早見表＋課題管理定義への参照」へ追従させる
-- [ ] **Step 8-3: 生成器仕様の数値更新**。05-template-sync-update L20-27 の manifest 逐語ブロックへ `docs/overview/issue-management.md` の 1 行を追加 / 01-provenance-notation-convention L46 の「現在 4 ファイル」→「現在 5 ファイル」 / 02-distribution-generator L77「計 25 ファイル」→「計 26 ファイル」・L80「（4）」→「（5）」 / 03-template-sync-integration L29 の列挙へ issue-management.md を追加し「現在 5 ファイル」、L31「全 7 ファイル分」→「全 8 ファイル分」、L72 の影響ファイル表へ issue-management.md の行を追加
-- [ ] **Step 8-4: 移設標準 spec の追従**。2026-08-13-handoff-bloat-control/01-relocation-standard.md L29 の未解決事項行へ、Task 5-1 と同旨のサイズ実測 1 句を反映する（スキルと spec のスナップショット一致を保つ）
-- [ ] **Step 8-5: record-process-norms-design の参照更新**。L41-43 の「`docs/overview/folder-structure.md` §7 / §7.3 / §7.4」への言及を「課題管理定義（`docs/overview/issue-management.md`）4. ライフサイクル / 8. 課題ファイルのフォーマット」へ書き換える
-- [ ] **Step 8-6: 検証** — Run:
+- [x] **Step 8-2: 分離の反映**。01-issue-management-structure の L5（構成説明）・L64（インデックスのリンク形式 → 昇格形 `system|flow/NNNN-<slug>/NNNN-<slug>.md` を併記）・L69（ひな形の参照文 → `../../overview/issue-management.md` へ）・L95（「§7 …全面書き換え」→ 縮約と課題管理定義への分離を反映）を書き換える。00-overview / 01-folder-structure-definition にも folder-structure の節構成に触れる記述があれば「§7 は早見表＋課題管理定義への参照」へ追従させる
+- [x] **Step 8-3: 生成器仕様の数値更新**。05-template-sync-update L20-27 の manifest 逐語ブロックへ `docs/overview/issue-management.md` の 1 行を追加 / 01-provenance-notation-convention L46 の「現在 4 ファイル」→「現在 5 ファイル」 / 02-distribution-generator L77「計 25 ファイル」→「計 26 ファイル」・L80「（4）」→「（5）」 / 03-template-sync-integration L29 の列挙へ issue-management.md を追加し「現在 5 ファイル」、L31「全 7 ファイル分」→「全 8 ファイル分」、L72 の影響ファイル表へ issue-management.md の行を追加
+- [x] **Step 8-4: 移設標準 spec の追従**。2026-08-13-handoff-bloat-control/01-relocation-standard.md L29 の未解決事項行へ、Task 5-1 と同旨のサイズ実測 1 句を反映する（スキルと spec のスナップショット一致を保つ）
+- [x] **Step 8-5: record-process-norms-design の参照更新**。L41-43 の「`docs/overview/folder-structure.md` §7 / §7.3 / §7.4」への言及を「課題管理定義（`docs/overview/issue-management.md`）4. ライフサイクル / 8. 課題ファイルのフォーマット」へ書き換える
+- [x] **Step 8-6: 検証** — Run:
   - `Get-ChildItem docs/current/specs -Recurse -Filter *.md | Select-String -Pattern '長期化・多観点化|多観点・長期|長期化したらフォルダ昇格|README\.md.{0,2}(とし|にする|とする)'`（期待: 0 件）
   - `Get-ChildItem docs/current/specs -Recurse -Filter *.md | Select-String -Pattern '現在 4 ファイル|計 25 ファイル|全 7 ファイル分'`（期待: 0 件）
 
@@ -384,11 +384,11 @@ CONTRIBUTING の 2 フックにはフォールバック句を付けない（本�
 **Files:**
 - Create/Modify（生成物）: `template/docs/overview/issue-management.md`、`template/docs/overview/folder-structure.md`、`template/docs/working/issues/README.md`、`dist/skills/`（decision-log / retrospective / session-handoff / worklog-extract）
 
-- [ ] **Step 9-1: 生成器を実行する** — Run: `./scripts/sync-template.ps1` と `./scripts/build-dist.ps1`（期待: いずれも終了コード 0。sync-template の出力は `Syncing 5 files + 3 empty indexes...` に変わる。記法規約違反があれば非ゼロで止まるので、違反を修正して再実行）
-- [ ] **Step 9-2: 両方を Check で実行する** — Run: `./scripts/sync-template.ps1 -Check` と `./scripts/build-dist.ps1 -Check`（期待: いずれも差分なし・終了コード 0）
-- [ ] **Step 9-3: 配布物の目視 5 点** — `dist/skills/` の変更 4 スキル・`template/docs/overview/issue-management.md`・`template/docs/overview/folder-structure.md`・`template/docs/working/issues/README.md` を読み、(1) 括弧内に識別子以外の語の同居、(2) 識別子を含む半角括弧、(3) 書式例の実在固有名、(4) 自己参照（「本リポジトリ」等）、(5) 除去後に文が壊れる箇所、の 5 点を確認する（機械判定が届かない型。CONTRIBUTING.md 参照）
-- [ ] **Step 9-4: 旧文言の残存ゼロ確認** — Run: `Get-ChildItem docs/overview, docs/current, skills, template, dist, CONTRIBUTING.md -Recurse -File -Include *.md | Select-String -Pattern '長期化・多観点化|多観点・長期|長期化したらフォルダ昇格|README\.md.{0,2}(とし|にする|とする)'`（期待: **2 件のみ**＝`docs/overview/issue-management.md` とその template 生成物の経過措置条項。「旧方式（README.md とする形）」は移行規定として意図された言及であり残存ではない。それ以外のヒットは 0 件であること。`docs/records/`・`docs/working/plans/` は ADR の Context・過去計画が旧文言を引用するため対象外）（実行時追記: 当初期待値 0 件は経過措置条項の追加を織り込んでいなかったため、実測に合わせて訂正した）
-- [ ] **Step 9-5: ソース・生成物・本計画を pathspec 付きで 1 コミットにまとめる** — Run:
+- [x] **Step 9-1: 生成器を実行する** — Run: `./scripts/sync-template.ps1` と `./scripts/build-dist.ps1`（期待: いずれも終了コード 0。sync-template の出力は `Syncing 5 files + 3 empty indexes...` に変わる。記法規約違反があれば非ゼロで止まるので、違反を修正して再実行）
+- [x] **Step 9-2: 両方を Check で実行する** — Run: `./scripts/sync-template.ps1 -Check` と `./scripts/build-dist.ps1 -Check`（期待: いずれも差分なし・終了コード 0）
+- [x] **Step 9-3: 配布物の目視 5 点** — `dist/skills/` の変更 4 スキル・`template/docs/overview/issue-management.md`・`template/docs/overview/folder-structure.md`・`template/docs/working/issues/README.md` を読み、(1) 括弧内に識別子以外の語の同居、(2) 識別子を含む半角括弧、(3) 書式例の実在固有名、(4) 自己参照（「本リポジトリ」等）、(5) 除去後に文が壊れる箇所、の 5 点を確認する（機械判定が届かない型。CONTRIBUTING.md 参照）
+- [x] **Step 9-4: 旧文言の残存ゼロ確認** — Run: `Get-ChildItem docs/overview, docs/current, skills, template, dist, CONTRIBUTING.md -Recurse -File -Include *.md | Select-String -Pattern '長期化・多観点化|多観点・長期|長期化したらフォルダ昇格|README\.md.{0,2}(とし|にする|とする)'`（期待: **2 件のみ**＝`docs/overview/issue-management.md` とその template 生成物の経過措置条項。「旧方式（README.md とする形）」は移行規定として意図された言及であり残存ではない。それ以外のヒットは 0 件であること。`docs/records/`・`docs/working/plans/` は ADR の Context・過去計画が旧文言を引用するため対象外）（実行時追記: 当初期待値 0 件は経過措置条項の追加を織り込んでいなかったため、実測に合わせて訂正した）
+- [x] **Step 9-5: ソース・生成物・本計画を pathspec 付きで 1 コミットにまとめる** — Run:
 
 ```powershell
 git status --short          # 意図外の untracked（inbox / conversation_log）を確認
@@ -407,9 +407,9 @@ git commit -m "feat: Issue 肥大化抑制の実装（課題管理定義の新�
 - Modify: `.claude-plugin/marketplace.json`（`"version": "0.1.4"` → `"0.1.5"`。ADR-0090 により両ファイル無条件）
 - 生成物: `dist/.claude-plugin/plugin.json`
 
-- [ ] **Step 10-1: 両ファイルの version を `0.1.5` へ更新する**
-- [ ] **Step 10-2: `./scripts/build-dist.ps1` を再実行し、`./scripts/build-dist.ps1 -Check` で差分なしを確認した上で反映を検証する** — Run: `Select-String -Path .claude-plugin/plugin.json, .claude-plugin/marketplace.json, dist/.claude-plugin/plugin.json -Pattern '0\.1\.5'`（期待: 3 件）
-- [ ] **Step 10-3: コミット** — Run:
+- [x] **Step 10-1: 両ファイルの version を `0.1.5` へ更新する**
+- [x] **Step 10-2: `./scripts/build-dist.ps1` を再実行し、`./scripts/build-dist.ps1 -Check` で差分なしを確認した上で反映を検証する** — Run: `Select-String -Path .claude-plugin/plugin.json, .claude-plugin/marketplace.json, dist/.claude-plugin/plugin.json -Pattern '0\.1\.5'`（期待: 3 件）
+- [x] **Step 10-3: コミット** — Run:
 
 ```powershell
 git commit -m "chore: plugin 0.1.5 へ bump（Issue 肥大化抑制のスキル配線を配布）" -- .claude-plugin/ dist/.claude-plugin/
@@ -421,9 +421,9 @@ push は自動では行わない（本リポジトリの運用）。区切りと
 
 ### Task 11: 完了検証と後続整理
 
-- [ ] **Step 11-1: フック配線の全数確認** — Run: `Get-ChildItem skills -Recurse -Filter SKILL.md | Select-String -Pattern '目安値超過ならフォルダ昇格|移設判定を実施'`（期待: decision-log 1 件以上・retrospective 1 件・session-handoff 1 件・worklog-extract 1 件）
-- [ ] **Step 11-2: 経過措置の確認** — 既存の**課題ファイル**（`docs/working/issues/system/`・`docs/working/issues/flow/` 配下）に変更が無いことを確認する（インデックス README.md の参照 1 行更新は Task 2-4 の意図した変更であり対象外。ADR-0096 の経過措置＝課題本体の遡及改修をしない、の検証）
-- [ ] **Step 11-3: ユーザーへ完了報告する**。報告に必ず含めるもの: (1) **新設した課題管理定義は template 配布（作成時 1 回コピー）のため、既存配布先には手動反映が必要**であること、(2) close のスキル配線は decision-log の 1 経路のみで、申し送り済み close・対処なし close は課題管理定義の close 条項が正であること（Step 3-4 で ADR-0096 に記録済み）、(3) 次工程は Accepted 昇格（サイクル全体整合検査を含む）・Issue-0088 close・retrospective であること
+- [x] **Step 11-1: フック配線の全数確認** — Run: `Get-ChildItem skills -Recurse -Filter SKILL.md | Select-String -Pattern '目安値超過ならフォルダ昇格|移設判定を実施'`（期待: decision-log 1 件以上・retrospective 1 件・session-handoff 1 件・worklog-extract 1 件）
+- [x] **Step 11-2: 経過措置の確認** — 既存の**課題ファイル**（`docs/working/issues/system/`・`docs/working/issues/flow/` 配下）に変更が無いことを確認する（インデックス README.md の参照 1 行更新は Task 2-4 の意図した変更であり対象外。ADR-0096 の経過措置＝課題本体の遡及改修をしない、の検証）
+- [x] **Step 11-3: ユーザーへ完了報告する**。報告に必ず含めるもの: (1) **新設した課題管理定義は template 配布（作成時 1 回コピー）のため、既存配布先には手動反映が必要**であること、(2) close のスキル配線は decision-log の 1 経路のみで、申し送り済み close・対処なし close は課題管理定義の close 条項が正であること（Step 3-4 で ADR-0096 に記録済み）、(3) 次工程は Accepted 昇格（サイクル全体整合検査を含む）・Issue-0088 close・retrospective であること
 
 ---
 

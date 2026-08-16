@@ -103,4 +103,9 @@
 | [0088](flow/0088-issue-and-other-artifacts-growth-control.md) | Issue など handoff 以外の成果物に、肥大化を抑制する機構がない | closed | 2026-08-15 |
 | [0089](flow/0089-designated-home-naming-index-rules-missing.md) | 指定席（議事録・インシデント報告等）のファイル命名・索引の規約が未定義 | open | 2026-08-15 |
 | [0090](flow/0090-remaining-growth-artifacts-untreated.md) | 棚卸しで確認した残りの成長型成果物（インデックス 3 種・plans 残置・worklog 台帳）に抑制機構がない | open | 2026-08-15 |
-| [0092](flow/0092-stochastic-deviation-premise-audit-of-procedures.md) | 「確率的逸脱は残る」前提でのガイドライン全体棚卸し（過剰手順の検出実績ベース監査）が未実施 | open | 2026-08-16 |
+| [0092](flow/0092-stochastic-deviation-premise-audit-of-procedures.md) | 「確率的逸脱は残る」前提でのガイドライン全体棚卸し（過剰手順の検出実績ベース監査）が未実施 | closed | 2026-08-16 |
+| [0093](flow/0093-integrate-22-duplicated-norm-records.md) | 監査で特定した二重定義 22 行の統合が未実施 | open | 2026-08-16 |
+| [0094](flow/0094-simplify-3-high-cost-zero-detection-records.md) | 欠落検出ゼロのまま高コストの記録様式 3 行の簡素化が未実施 | open | 2026-08-16 |
+| [0095](flow/0095-redesign-plan-expectation-check-a13.md) | 計画の検証期待値突合（A-13）は検出力が反証されており再設計が必要 | open | 2026-08-16 |
+| [0096](flow/0096-generalize-evaluability-brake-for-extensions.md) | 増設の歯止め（評価可能性の義務化・弱い形）の CONTRIBUTING への一般規範化が未実施 | open | 2026-08-16 |
+| [0097](flow/0097-hold-44-records-conditional-backlog.md) | 監査の保留（観測継続）44 行の条件付き backlog（次回棚卸しで再判定） | open | 2026-08-16 |

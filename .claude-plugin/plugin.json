@@ -1,7 +1,7 @@
 {
   "name": "ai-driven-dev-principles",
   "description": "AI駆動開発ガイドラインを実装するスキル群（start-work, decision-log, session-handoff, feature-block-design, retrospective ほか）。導入先プロジェクトの CLAUDE.md と組み合わせて使用する。",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": {
     "name": "taika-izumi"
   },

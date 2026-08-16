@@ -107,3 +107,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0099](0099-citation-consistency-via-existing-checkpoint-wording.md) | 引用元との突合（条件保存・主張の向き）は新工程を設けず既存検査観点の文言拡張で行い、残余リスクを受容する | Accepted | 2026-08-16 |
 | [0100](0100-one-shot-guideline-audit-with-two-track-judgment.md) | ガイドライン全体棚卸し（Issue-0092）は、常時発火規範の全数台帳と二トラック判定による一回限りの監査として実施する | Accepted | 2026-08-16 |
 | [0101](0101-audit-verdict-keep-integrate-hold-and-weak-brake.md) | 全数監査の判定を keep 72・統合 22・保留 44・簡素化 3・退役 0 で確定し、増設の歯止めは評価可能性の義務化（弱い形）とする | Accepted | 2026-08-16 |
+| [0102](0102-codify-evaluability-mandate-in-contributing.md) | 評価可能性の義務化（弱い形）は CONTRIBUTING「全シナリオ共通」新節と発火フックの配線で規範化する | Accepted | 2026-08-16 |

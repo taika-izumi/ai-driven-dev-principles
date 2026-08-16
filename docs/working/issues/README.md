@@ -107,5 +107,6 @@
 | [0093](flow/0093-integrate-22-duplicated-norm-records.md) | 監査で特定した二重定義 22 行の統合が未実施 | open | 2026-08-16 |
 | [0094](flow/0094-simplify-3-high-cost-zero-detection-records.md) | 欠落検出ゼロのまま高コストの記録様式 3 行の簡素化が未実施 | open | 2026-08-16 |
 | [0095](flow/0095-redesign-plan-expectation-check-a13.md) | 計画の検証期待値突合（A-13）は検出力が反証されており再設計が必要 | open | 2026-08-16 |
-| [0096](flow/0096-generalize-evaluability-brake-for-extensions.md) | 増設の歯止め（評価可能性の義務化・弱い形）の CONTRIBUTING への一般規範化が未実施 | open | 2026-08-16 |
+| [0096](flow/0096-generalize-evaluability-brake-for-extensions.md) | 増設の歯止め（評価可能性の義務化・弱い形）の CONTRIBUTING への一般規範化が未実施 | closed | 2026-08-16 |
 | [0097](flow/0097-hold-44-records-conditional-backlog.md) | 監査の保留（観測継続）44 行の条件付き backlog（次回棚卸しで再判定） | open | 2026-08-16 |
+| [0098](flow/0098-iterative-review-trigger-criteria.md) | 確定前レビューの反復（指摘反映後の再レビュー）の発動基準が未定義 | open | 2026-08-16 |

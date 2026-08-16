@@ -1412,7 +1412,7 @@ id 接頭辞は正本ファイル別: A=`CLAUDE.md` / B=`skills/start-work/SKILL
 - 対象・対象外: 対象
 - 規範の型: （後続タスクで記入）
 - 1 回あたりコスト: 4 観点の判定と、ADR / spec への点検ブロック（数行）の記録
-- 発火機会数（分母）: 13（期間: 2026-08-07（ADR-0079）〜2026-08-16。可測性: 近似（過剰適合点検の記録節を持つ文書数の和集合。ADR 側 10 件〈0080・0085・0091・0092・0093・0095〜0099〉と spec 側 3 件〈`2026-08-07-overfitting-check-for-extensions-design.md`＝ ADR-0079 の自己適用、`2026-08-07-distributed-artifact-generation/00-overview.md`＝ ADR-0081〜0083、`2026-08-13-handoff-bloat-control/00-overview.md`＝ ADR-0086〜0089〉で、両側が同一拡張を指す重複は目視で 0 件。同期間に作成された ADR は 22 件で、ADR-0079 は点検の定義元、ADR-0094〈L34〉と ADR-0100〈L88〉は適用対象外＝ゲート偽を明示しており計上しない。近似とする理由: 点検記録は ADR と spec の 2 経路に分散し、見出しを立てず本文へ書いた記録は捕捉できず、重複除去は目視確認に依存する）。計数: `{ grep -lE '^## 過剰適合点検' docs/records/decisions/0*.md; grep -rlE '^#+ 過剰適合点検' docs/current/specs/; } | sort -u | wc -l`）
+- 発火機会数（分母）: 13（期間: 2026-08-07（ADR-0079）〜2026-08-16。可測性: 近似（過剰適合点検の記録節を持つ文書数の和集合。ADR 側 10 件〈0080・0085・0091・0092・0093・0095〜0099〉と spec 側 3 件〈`2026-08-07-overfitting-check-for-extensions-design.md`＝ ADR-0079 の自己適用、`2026-08-07-distributed-artifact-generation/00-overview.md`＝ ADR-0081〜0083、`2026-08-13-handoff-bloat-control/00-overview.md`＝ ADR-0086〜0089 の拡張に加え、同節 L59 に ADR-0091 の再点検記録を含む〈計 2 発火機会〉〉。ADR-0091 は自前の点検ブロック（ADR ファイル L54〜）も持つため文書としては重複するが、当該 spec が 2 発火機会を担うため発火機会数は 13 で一致する。同期間に作成された ADR は 22 件で、ADR-0079 は点検の定義元、ADR-0094〈L34〉と ADR-0100〈L88〉は適用対象外＝ゲート偽を明示しており計上しない。近似とする理由: 点検記録は ADR と spec の 2 経路に分散し、見出しを立てず本文へ書いた記録は捕捉できず、重複除去は目視確認に依存する）。計数: `{ grep -lE '^## 過剰適合点検' docs/records/decisions/0*.md; grep -rlE '^#+ 過剰適合点検' docs/current/specs/; } | sort -u | wc -l`）
 - 検出実績: （後続タスクで記入）
 - 比または逸脱率: （後続タスクで記入）
 - 検出力実証: 未実施
@@ -2229,7 +2229,7 @@ id 接頭辞は正本ファイル別: A=`CLAUDE.md` / B=`skills/start-work/SKILL
 - 対象・対象外: 対象
 - 規範の型: （後続タスクで記入）
 - 1 回あたりコスト: 点検の実施と、拡張 spec / 拡張 ADR への記録ブロックの追加
-- 発火機会数（分母）: 13（期間: 2026-08-07（ADR-0079）〜2026-08-16。可測性: 近似（過剰適合点検の記録節を持つ文書数の和集合。ADR 側 10 件〈0080・0085・0091・0092・0093・0095〜0099〉と spec 側 3 件〈`2026-08-07-overfitting-check-for-extensions-design.md`＝ ADR-0079 の自己適用、`2026-08-07-distributed-artifact-generation/00-overview.md`＝ ADR-0081〜0083、`2026-08-13-handoff-bloat-control/00-overview.md`＝ ADR-0086〜0089〉で、両側が同一拡張を指す重複は目視で 0 件。同期間に作成された ADR は 22 件で、ADR-0079 は点検の定義元、ADR-0094〈L34〉と ADR-0100〈L88〉は適用対象外＝ゲート偽を明示しており計上しない。近似とする理由: 点検記録は ADR と spec の 2 経路に分散し、見出しを立てず本文へ書いた記録は捕捉できず、重複除去は目視確認に依存する）。計数: `{ grep -lE '^## 過剰適合点検' docs/records/decisions/0*.md; grep -rlE '^#+ 過剰適合点検' docs/current/specs/; } | sort -u | wc -l`）
+- 発火機会数（分母）: 13（期間: 2026-08-07（ADR-0079）〜2026-08-16。可測性: 近似（過剰適合点検の記録節を持つ文書数の和集合。ADR 側 10 件〈0080・0085・0091・0092・0093・0095〜0099〉と spec 側 3 件〈`2026-08-07-overfitting-check-for-extensions-design.md`＝ ADR-0079 の自己適用、`2026-08-07-distributed-artifact-generation/00-overview.md`＝ ADR-0081〜0083、`2026-08-13-handoff-bloat-control/00-overview.md`＝ ADR-0086〜0089 の拡張に加え、同節 L59 に ADR-0091 の再点検記録を含む〈計 2 発火機会〉〉。ADR-0091 は自前の点検ブロック（ADR ファイル L54〜）も持つため文書としては重複するが、当該 spec が 2 発火機会を担うため発火機会数は 13 で一致する。同期間に作成された ADR は 22 件で、ADR-0079 は点検の定義元、ADR-0094〈L34〉と ADR-0100〈L88〉は適用対象外＝ゲート偽を明示しており計上しない。近似とする理由: 点検記録は ADR と spec の 2 経路に分散し、見出しを立てず本文へ書いた記録は捕捉できず、重複除去は目視確認に依存する）。計数: `{ grep -lE '^## 過剰適合点検' docs/records/decisions/0*.md; grep -rlE '^#+ 過剰適合点検' docs/current/specs/; } | sort -u | wc -l`）
 - 検出実績: （後続タスクで記入）
 - 比または逸脱率: （後続タスクで記入）
 - 検出力実証: 未実施

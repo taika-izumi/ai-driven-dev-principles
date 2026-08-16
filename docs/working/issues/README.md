@@ -86,7 +86,7 @@
 | [0062](flow/0062-review-recommendation-ignores-artifact-safety-net.md) | 確定前レビューの次手提示が成果物の性質を問わず中立で、安全網の無い成果物でも非推奨側に倒れる | closed | 2026-08-07 |
 | [0063](flow/0063-plan-document-sync-policy-undefined.md) | 実装中に確定した文言を作業文書（plan）へ反映するかの規約が未定義 | open | 2026-08-07 |
 | [0065](flow/0065-task-scoped-review-misses-cross-document-paths.md) | タスク単位のレビューでは、複数文書にまたがる規範の「経路が閉じているか」を検出できない | closed | 2026-08-07 |
-| [0066](flow/0066-overfitting-check-misses-dropped-gates.md) | 過剰適合点検の観点 3 に、引用元の条件付き規範を無条件化する型を検出する手順がない | open | 2026-08-07 |
+| [0066](flow/0066-overfitting-check-misses-dropped-gates.md) | 過剰適合点検の観点 3 に、引用元の条件付き規範を無条件化する型を検出する手順がない | closed | 2026-08-07 |
 | [0073](flow/0073-plan-verification-expectation-goes-stale.md) | 計画の検証ステップの期待値が、実装中に判明した事実で陳腐化する | open | 2026-08-08 |
 | [0074](flow/0074-spec-snapshot-check-missing-before-adr-promotion.md) | 決定を Accepted へ昇格させる前に、仕様が実装のスナップショットかを検査する工程がない | closed | 2026-08-08 |
 | [0075](flow/0075-review-lacks-usability-check-for-normative-docs.md) | 規約・手順文書の「読者が実際に使えるか」を検査する観点が確定前レビューにない | open | 2026-08-08 |
@@ -98,7 +98,7 @@
 | [0082](flow/0082-choice-recommendation-spec-snapshot-stale.md) | 選択肢提示規範の spec が 3 世代前のツール選択規範のまま（スナップショット規約違反状態） | open | 2026-08-13 |
 | [0084](flow/0084-merge-mode-norm-not-wired-into-finishing-flow.md) | マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した | open | 2026-08-14 |
 | [0085](flow/0085-digest-field-extension-lacks-checklist.md) | 消化記録へフィールドを新設する拡張に、記録様式側の連動改定チェックリストが無い | open | 2026-08-15 |
-| [0086](flow/0086-adr-rationale-vs-cited-evidence-check.md) | 決定の見送り理由が、引用した実測と矛盾していないかを突合する工程がない | open | 2026-08-15 |
+| [0086](flow/0086-adr-rationale-vs-cited-evidence-check.md) | 決定の見送り理由が、引用した実測と矛盾していないかを突合する工程がない | closed | 2026-08-15 |
 | [0087](flow/0087-dispatch-table-growth-consolidation-trigger.md) | 条件発火表の行数増加に、統廃合を検討する契機が定義されていない | open | 2026-08-15 |
 | [0088](flow/0088-issue-and-other-artifacts-growth-control.md) | Issue など handoff 以外の成果物に、肥大化を抑制する機構がない | closed | 2026-08-15 |
 | [0089](flow/0089-designated-home-naming-index-rules-missing.md) | 指定席（議事録・インシデント報告等）のファイル命名・索引の規約が未定義 | open | 2026-08-15 |

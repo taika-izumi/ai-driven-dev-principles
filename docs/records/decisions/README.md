@@ -104,3 +104,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0096](0096-issue-folder-promotion-trigger-and-role-system.md) | Issue のフォルダ昇格は観測可能な条件で提案し、フォルダ内は 4 役割・番号接頭辞の固定体系とする | Accepted | 2026-08-15 |
 | [0097](0097-issue-granularity-one-problem-many-questions.md) | Issue の粒度は「1 Issue ＝ 1 問題」とし、複数の問いの内包を認める | Accepted | 2026-08-15 |
 | [0098](0098-norm-placement-behavior-in-skills-structure-in-docs.md) | 規範の記載先は「発火条件・手順はスキル、構造・命名・分量の定義はプロジェクト文書」で分け、境界をまたぐ複写を禁止する | Accepted | 2026-08-15 |
+| [0099](0099-citation-consistency-via-existing-checkpoint-wording.md) | 引用元との突合（条件保存・主張の向き）は新工程を設けず既存検査観点の文言拡張で行い、残余リスクを受容する | Proposed | 2026-08-16 |

@@ -2,8 +2,8 @@
 
 - **Branch**: feature/issue-0092-guideline-audit
 - **Last Updated**: 2026-08-16 20:55 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 監査完了（Task 1〜10 全完了・ADR-0100/0101 Accepted）。残りは master への --no-ff マージと retrospective
+- **Status**: completed
+- **Current Phase**: サイクル完了（master へ --no-ff マージ済み `cbda17c`・retrospective 実施済み `docs/records/retrospectives/system/2026-08-16-issue-0092-guideline-audit.md`）
 
 ## 作業の目的・背景
 

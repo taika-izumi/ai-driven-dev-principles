@@ -1,9 +1,9 @@
 # Handoff: Issue-0096 評価可能性の義務化の CONTRIBUTING 規範化
 
 - **Branch**: feature/issue-0096-evaluability-brake
-- **Last Updated**: 2026-08-17 01:30 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 課題対策/完了処理（実装・検証・Accepted 昇格・Issue close 済み。残りはマージ判断）
+- **Last Updated**: 2026-08-17 02:30 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了（master へ --no-ff マージ済み `edc70b1`・retrospective 実施済み）
 
 ## 作業の目的・背景
 

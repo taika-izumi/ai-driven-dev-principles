@@ -1,6 +1,6 @@
 # ADR-0100: ガイドライン全体棚卸し（Issue-0092）は、常時発火規範の全数台帳と二トラック判定による一回限りの監査として実施する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-16
 
 ## Context

@@ -103,3 +103,4 @@
 | [0088](flow/0088-issue-and-other-artifacts-growth-control.md) | Issue など handoff 以外の成果物に、肥大化を抑制する機構がない | closed | 2026-08-15 |
 | [0089](flow/0089-designated-home-naming-index-rules-missing.md) | 指定席（議事録・インシデント報告等）のファイル命名・索引の規約が未定義 | open | 2026-08-15 |
 | [0090](flow/0090-remaining-growth-artifacts-untreated.md) | 棚卸しで確認した残りの成長型成果物（インデックス 3 種・plans 残置・worklog 台帳）に抑制機構がない | open | 2026-08-15 |
+| [0092](flow/0092-stochastic-deviation-premise-audit-of-procedures.md) | 「確率的逸脱は残る」前提でのガイドライン全体棚卸し（過剰手順の検出実績ベース監査）が未実施 | open | 2026-08-16 |

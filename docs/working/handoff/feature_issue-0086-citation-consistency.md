@@ -1,9 +1,9 @@
 # Handoff: Issue-0086/0066 対策 引用突合工程の導入
 
 - **Branch**: feature/issue-0086-citation-consistency
-- **Last Updated**: 2026-08-16 12:30 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装完了・ADR-0099 Accepted 昇格済み（`207f2dc`）。残りは master への統合（--no-ff）と retrospective
+- **Last Updated**: 2026-08-16 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了（master へ --no-ff マージ済み `598b279`。retrospective 実施済み: `docs/records/retrospectives/system/2026-08-16-issue-0086-0066-citation-consistency.md`）
 
 ## 作業の目的・背景
 
@@ -22,13 +22,11 @@ Issue-0086（決定の見送り理由と引用実測の主張の向きを突合�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: サイクルの仕上げ
-  - 状態: 実装 4 タスク完了・全検証一致・ADR-0099 Accepted・Issue-0086/0066 close 済み（`207f2dc`）
-  - 残り: master への --no-ff マージ（ユーザー確認）→ retrospective → cycle-reset → 配布反映（`/plugin marketplace update`。0.1.6）の依頼
+（なし。完了）
 
 ## 未着手のタスク
 
-- [ ] master への統合と retrospective（マージ方式はユーザー確認。Issue-0084 の 5 サイクル目の手動適用になる点に留意）
+（なし。残る後始末は `master.md` の「次セッション開始時のアクション」参照）
 
 ## 既知のブロッカー・懸念
 

@@ -1,6 +1,6 @@
 # ADR-0102: 評価可能性の義務化（弱い形）は CONTRIBUTING「全シナリオ共通」新節と発火フックの配線で規範化する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-16
 
 ## Context

@@ -52,7 +52,7 @@
 - **Issue 運用の新規範が稼働中**（ADR-0095〜0098 の決定群）: 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須。正本は `docs/overview/issue-management.md`
 - **decision-log の昇格条件要約は、課題管理定義の改定時に同時更新が必要**（意図された配線。ADR-0098 の複写乖離型の監視点）
 - **未完の後始末（過去サイクル分）**: 改定スキル（decision-log）の本文と repo 実ファイルの突合、課題管理定義の既存配布先への手動コピーが未実施のままなら次セッションで
-- **リモート同期**: サイクル末の push はユーザー指示済み（本セッションで `be8d6bd` まで push 予定。完了後は未 push なし）
+- **リモート同期**: `3246e50`（サイクル末の retrospective コミット）まで push 済み（2026-08-17。ユーザー指示）。以降の未 push は本ハンドオフの同期更新コミットのみ（直後に push 済み）
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**
 - **中央ストアの現状**: 本 repo 79 件（〜`MakeAiInstructions-2026-08-17-06`）＋ LoopForAlpha 190 件 ＋ OrderAutomateSupporter 4 件。`projects.json` lastSeen 2026-08-17
@@ -69,7 +69,7 @@
 ## 次セッション開始時のアクション
 
 1. **最初に呼ぶスキル**: `start-work`（Phase 0 で本ハンドオフを read）
-2. **リモート同期**: `be8d6bd` まで push 済みのはず（本サイクル末にユーザー指示で push。未達なら最初に push）
+2. **リモート同期**: push 済み・未 push なし（マージ `be8d6bd`・retrospective `3246e50`・handoff 同期更新まで）
 3. **次サイクルの候補（着手はユーザー判断）**: 抽出課題は issues に起票済み（Issue-0100。着手はユーザー判断）。目安の優先順: **Issue-0084**（8 サイクル目の再発を実証済み）→ **Issue-0098**（反復レビュー基準。実測が十分蓄積）→ **Issue-0100**（小規模・実測済み）。軽量に畳むなら **Issue-0072**
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る

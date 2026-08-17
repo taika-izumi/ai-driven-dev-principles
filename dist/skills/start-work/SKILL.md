@@ -22,7 +22,7 @@ AIエージェントを活用した作業のフローを定義し、フロー通
 スキル冒頭で以下を確認する:
 
 1. superpowers プラグインの存在を確認する
-2. 主要スキル（brainstorming, writing-plans, executing-plans, subagent-driven-development, systematic-debugging, requesting-code-review, receiving-code-review, verification-before-completion）の利用可否を内部マッピング表に記録する
+2. 主要スキル（brainstorming, writing-plans, executing-plans, subagent-driven-development, systematic-debugging, requesting-code-review, receiving-code-review, verification-before-completion, finishing-a-development-branch）の利用可否を内部マッピング表に記録する
 3. 不足があればユーザーに報告する:
    「superpowers の <スキル名> が見つかりません。該当フェーズではインライン簡易フローへフォールバックします。」
 4. 本セッションで新規追加/改定した `ai-driven-dev-principles` スキルの availability は、AI 側の system-reminder（available-skills 一覧）または Skill ツール呼び出し可否で判定する（UI の `/skills` 表示には依存しない）。反映が確認できない場合はユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼する（AI からは実行不可）
@@ -61,6 +61,7 @@ AIエージェントを活用した作業のフローを定義し、フロー通
 | コードレビュー対応 | superpowers:receiving-code-review | インライン指摘整理→対応 |
 | コードレビュー依頼 | superpowers:requesting-code-review | インラインPR説明作成 |
 | 完了前検証 | superpowers:verification-before-completion | インラインチェックリスト確認 |
+| feature ブランチの完了処理（既定ブランチへの取り込み） | superpowers:finishing-a-development-branch（実行直前に下記「完了処理のマージ方式確認」を適用） | インラインで慣行確認＋マージ手順を案内 |
 | ガイドライン拡張 | extend-guidelines | （本プラグイン提供のスキル、フォールバック不要） |
 | inbox の整理 | organize-inbox | （本プラグイン提供のスキル、フォールバック不要） |
 | 調査・分析・PoC | アドホック | アドホック |
@@ -70,6 +71,20 @@ AIエージェントを活用した作業のフローを定義し、フロー通
 ユーザーに次手を確認する（推奨を提示するが強制しない。ユーザーの意図優先）。
 確定前レビュー（`pre-finalization-review`）は、下記「確定前レビューの提示規則」に従って提示する（実施の判断はユーザー）。
 選択されたスキルへ delegate する。
+
+### 完了処理のマージ方式確認
+
+feature ブランチを既定ブランチへ取り込む完了処理の実行直前に、以下の慣行判定を行い、判定結果に応じてマージ方式を確認する。**本節が慣行判定の正本である**（他スキルからは節の主題によるポインタで参照される。条件文の複写はしない）。
+
+**既定ブランチの解決**: まず `git config --get ai-dev.defaultbranch` を読み、値があり当該ブランチが実在すればそれを採用する。未設定なら `git symbolic-ref refs/remotes/origin/HEAD` で解決し、不能なら `git rev-parse --verify` で `master` / `main` の実在を確認する（一意に定まる場合のみ採用）。それでも不定ならユーザーへ確認する。結果は `git config ai-dev.defaultbranch` へ永続化し、以後の照会を省く。永続化値のブランチが実在しなくなっていたら値を破棄して再解決する。`ai-dev.` で始まる設定キーの書き込みは可逆かつ git の挙動に影響しないため低リスク（ログのみ）として扱う。
+
+**慣行判定（3 値: 慣行あり / マージコミットを残さない運用 / 未定義）**:
+
+1. 設定を見る。第一に `git config --get ai-dev.mergepractice`: 値が `merge-commit` なら**慣行あり**、`none` なら**残さない運用**、これら以外の値は解釈せずユーザーへ照会する。未設定なら `git config --get-all branch.<既定ブランチ>.mergeoptions` と `git config --get merge.ff` を見る: `--no-ff` / `false` を含めば**慣行あり**、`--ff-only` / `only` なら**残さない運用**、これら以外の値が設定されていれば解釈せずユーザーへ照会する
+2. 手順 1 がすべて未設定なら、per-cycle 振り返り記録（`docs/records/retrospectives/system/` 直下の `YYYY-MM-DD-*.md` に一致するファイルのみ。ファイル名降順で直近 5 件。5 件未満なら存在する全件）の Branch 行を読む。**まず除外行を落とし、残った有効行で判定する。** 除外行 = 「fast-forward」の記載を含む行・Branch 行の欠落・未知の方式値・選択肢が未削除の行・方式欄も merge SHA も持たない行。有効行の判定: 取り込み方式欄に「マージコミット」の行が 1 件でもあれば**慣行あり**。「squash」等マージコミットを残さない方式の行のみなら**残さない運用**。方式欄が無く merge SHA の記載のみの旧様式の行は、有効行がすべて旧様式の場合に限りマージコミット方式とみなす（新旧混在時は新様式の行のみで判定する）。有効行が 0 件なら**未定義**
+3. **未定義**の場合はユーザーへ 1 問で確認し、回答を肯定なら `merge-commit`、否定なら `none` として直ちに `git config ai-dev.mergepractice` へ書いて永続化する（照会は同一サイクルで決定経路を通じて 1 回。振り返り記録の方式欄への反映は当該サイクルの記録作成時に行う）
+
+**判定結果の適用**: **慣行あり**なら `--no-ff` を適用する。**未定義**ならマージコミットを残す方式（`--no-ff`）を推奨する（常時 `--no-ff` の無条件規範ではない）。**残さない運用**なら方式確認を行わず完了フローの既定に委ねる。慣行あり・または未定義でユーザーが `--no-ff` を選択したとき、branch 設定が未検出なら `git config branch.<既定ブランチ>.mergeoptions "--no-ff"` と `git config pull.ff true` の適用を当該サイクルから提案する（後者は、完了フローの手順が pull を含み、mergeoptions 単独では pull が余分なマージコミットを作ってサイクル境界の可読性を損なうための併設）。実行そのものの承認取得は横断的ラッパー Pre の pre-action-review 条項が担い、本節は方式の確認のみを担う（役割が異なり重複しない）。同一セッション内の同一完了処理につき確認は 1 回とする（マッピング表経由で確認済みなら Pre 条項経由の再確認は省略する）。
 
 ### 確定前レビューの提示規則
 
@@ -123,6 +138,7 @@ brainstorming の完了直後には提示しない（`feature-block-design` の�
 **Pre（実行前）:**
 - 不可逆操作・大規模変更の可能性があれば `pre-action-review` スキルを呼ぶ
 - サブエージェントへ作業を委譲する場合は `subagent-dispatch` スキルを呼び、委譲プロンプトの制約ブロック（A 群＋B 群判定行）を組み立てる
+- 完了処理〈既定ブランチへの取り込み〉を行うスキル・手順の実行直前は、Phase 2 の「完了処理のマージ方式確認」を適用する。本条項は冒頭の適用範囲文（「delegate する前後」）の例外として、delegate 済みスキルが内部で呼ぶ必須サブスキルの実行直前にも適用される（Post ラッパーの発火粒度は現行のまま変わらない）
 
 **Post（実行後）:**
 
@@ -149,7 +165,7 @@ brainstorming の完了直後には提示しない（`feature-block-design` の�
 
 ユーザーが「ここまで」「続きは別セッションで」と明示した時、または明らかなセッション終了サイン（PR作成完了、作業完了宣言など）を検出した時:
 
-1. 直近のサブプロジェクトが master へ merge 済みかを確認する
+1. 直近のサブプロジェクトが master へ merge 済みかを確認する（これは事後確認であり、マージ実行前の方式確認は Phase 2 の「完了処理のマージ方式確認」が担う）
    - merge 済みでまだ `docs/records/retrospectives/system/` に該当ファイルが無ければ、`retrospective` スキルの起動をユーザーに提案する（強制ではない。ユーザーが「次セッションで実施」を選んだ場合は handoff にその旨を明記する）
 2. 未コミットの ADR ドラフトがないか確認し、関連論点が収束済みのものはコミットする。Accepted 昇格漏れ・不採用確定分の Rejected 更新漏れの確認と合わせて行い、昇格する場合は `decision-log` の「承認の昇格」の手順（サイクル全体整合検査を含む）に従う
 3. `worklog-record` を呼ぶ。セッション切り替え直前の発火契機（節目かどうかを問わない）・記録ゲートの判定・発火結果の「Post ラッパー消化記録」への記載は同スキルが正である

@@ -112,3 +112,4 @@
 | [0098](flow/0098-iterative-review-trigger-criteria.md) | 確定前レビューの反復（指摘反映後の再レビュー）の発動基準が未定義 | open | 2026-08-16 |
 | [0099](flow/0099-overturned-5-duplicated-rows-conditional-backlog.md) | 統合を覆した 5 行の二重定義の存置（次回棚卸しで再判定する条件付き backlog） | open | 2026-08-17 |
 | [0100](flow/0100-wiring-line-volatile-number-ban-not-generalized.md) | 配線行に統合先の可変数値を書かない規律の恒久規範化が未実施 | open | 2026-08-17 |
+| [0101](flow/0101-start-work-spec-figure-drift.md) | start-work 旧設計仕様書の図示が現行 SKILL.md から乖離している | open | 2026-08-17 |

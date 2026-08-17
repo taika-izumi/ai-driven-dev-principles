@@ -1,9 +1,9 @@
 # Handoff: Issue-0084 マージ方式規範（--no-ff）の完了フロー配線
 
 - **Branch**: feature/issue-0084-wire-no-ff-merge
-- **Last Updated**: 2026-08-17 23:23 (Asia/Tokyo)
-- **Status**: ready-for-next-cycle
-- **Current Phase**: サイクル完了（retrospective・cycle-reset 済み）/ 次サイクル待ち
+- **Last Updated**: 2026-08-18 00:05 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了（master へ --no-ff マージ済み `6333928`・retrospective 実施済み）。次サイクル待ちの継続情報は `docs/working/handoff/master.md` へ移設（2026-08-18 正規化。経緯は Issue-0102）
 
 ## 作業の目的・背景
 
@@ -31,7 +31,7 @@
 ## 既知のブロッカー・懸念
 
 - Issue-0098 のファイルが約 11.4KB で目安 10KB を超過（本サイクルで実装側実測を追記）。フォルダ昇格はユーザー判断で Issue-0098 対策サイクル着手時に判断する（2026-08-17 確認済み・再提案不要）
-- インストール済みプラグインは 0.1.6 のまま。0.1.9 の反映にはユーザーによる `/plugin marketplace update ai-driven-dev-principles` が必要（AI からは実行不可）
+- ~~インストール済みプラグインは 0.1.6 のまま~~ → 解消済み（2026-08-17 深夜にユーザーが update 実施。0.1.9 インストール確認済み。旧セッションのコマンド索引の留意は `master.md` 参照）
 
 ## Post ラッパー消化記録
 

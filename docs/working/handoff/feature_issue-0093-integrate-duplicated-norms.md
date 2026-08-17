@@ -1,9 +1,9 @@
 # Handoff: Issue-0093/0094 対策（二重定義 22 行の統合と高コスト様式 3 行の簡素化）
 
 - **Branch**: feature/issue-0093-integrate-duplicated-norms
-- **Last Updated**: 2026-08-17 21:30 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 対策サイクル/実装完了（Task 1〜15 完了・完了基準 7/7 達成。master へのマージ判断待ち）
+- **Last Updated**: 2026-08-17 22:30 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了（master へ --no-ff マージ済み `be8d6bd`・retrospective 実施済み）
 
 ## 作業の目的・背景
 
@@ -25,13 +25,11 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: マージ判断（plan の実装は完了）
-  - 状態: Task 1〜15 すべて完了（最新 `397b4b6`。version 0.1.8。全タスク 2 段レビュー Approved・サイクル完了基準 7/7 達成を最終レビューで確認済み）。ADR-0103〜0105 Accepted、Issue-0093/0094/0060 close 済み（0060 はユーザー承認）
-  - 残り: master へのマージ（finishing-a-development-branch）→ マージ後に retrospective（統合・簡素化・注記・version bump 0.1.8）→ Task 14 サイクル全体整合検査（旧 spec 追従・open 課題引用 4 件の個別判定を含む）→ Task 15 Accepted 昇格・Issue-0093/0094 close・Issue-0060 の close 判定
+（なし。Task 1〜15 すべて完了・master へ --no-ff マージ済み `be8d6bd`・retrospective 実施済み。全タスク 2 段レビュー Approved・サイクル完了基準 7/7 達成）（統合・簡素化・注記・version bump 0.1.8）→ Task 14 サイクル全体整合検査（旧 spec 追従・open 課題引用 4 件の個別判定を含む）→ Task 15 Accepted 昇格・Issue-0093/0094 close・Issue-0060 の close 判定
 
 ## 未着手のタスク
 
-- [ ] master へのマージ（ユーザー判断）→ マージ後に retrospective
+（なし）
 
 ## 既知のブロッカー・懸念
 

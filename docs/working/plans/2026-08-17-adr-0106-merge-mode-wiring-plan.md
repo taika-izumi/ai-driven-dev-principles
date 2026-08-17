@@ -137,10 +137,10 @@ new_string:
 ```
    - 該当期間に追加・変更された ADR
    - 直近の per-cycle 振り返り記録（`system/` 直下。取り込み方式の慣行判定の入力）
-3. **取り込み方式の検証（fast-forward 検出）**: マージ方式の慣行判定を行う（判定手続きの正本は `start-work` の「完了処理のマージ方式確認」節。条件文はここに複写しない）。**慣行あり**の場合のみ以下を実施する。**未定義**なら判定を出さず慣行を 1 問確認するに留める（回答が「マージコミットを残す」なら当該サイクルから実施し、branch 設定が未検出なら設定適用を提案する）。**残さない運用**なら実施しない
-   - 判定: 対象 feature ブランチの先端 SHA が、まず `git merge-base --is-ancestor` で既定ブランチの祖先であることを確認する（祖先でなければ未マージまたは squash であり、fast-forward とは判定せず報告のみ）。祖先である場合、`git rev-list --parents <既定ブランチ>` を走査し、いずれかのマージコミットの第 2 親以降に現れなければ fast-forward と判定する。対象ブランチ名はユーザー入力を第一とする（fast-forward 時は merge コミットからの推定が機能しない）
-   - 先端 SHA の取得: ブランチが現存すれば `git rev-parse <ブランチ名>`。削除済みなら `git reflog show <既定ブランチ>` を新しい順に走査し、**ブランチ名で限定された 2 パターンのみ**を判定材料にする——`merge <ブランチ名>: … Fast-forward` の行はその SHA が先端（fast-forward 確定）、`merge <ブランチ名>: Merge made by` の行は fast-forward でないことが確定するため検証を終了する（この行の SHA はマージコミットであり先端ではない）。`pull` で始まる行（引数を含む形も）と `commit (merge):` の行は判定材料にしない。該当行が無ければ判定不能として報告する（`HEAD` や既定ブランチ先端で代用しない）。fast-forward 検出時の手順 2 の git log 範囲は分岐点 SHA から先端までを用いる
-   - fast-forward 検出時のやり直し提案: 次の 5 条件をすべて満たす場合に限り提案する——未 push / 既定ブランチへの追加コミットなし / feature 先端が参照可能 / 分岐点が既定ブランチの reflog から SHA として確定できる（当該 fast-forward エントリの直前のエントリの SHA を分岐点とする）/ 作業ツリーの追跡ファイルに未コミット変更が無いか、対象パス限定の `git stash push` で退避した（既定ブランチへの先行コミットは用いない）。手順: 分岐点 SHA を先に確定・提示し、以後は確定 SHA のみを使う（相対参照は再実行で元へ戻るため。`git merge-base` は fast-forward 後に先端を返すため用いない）。リスク段階の判定によらず本手順は承認必須とし、承認後に (1) `git branch <一時名> <先端 SHA>` で一時 ref を張る（名前は日付と先端短縮 SHA を含め、衝突時は既存を消さず別名を採る）、(2) 退避を実施し `git status --porcelain --untracked-files=no` の出力が空であることを確認する（空でなければ中止）、(3) `git reset --hard <分岐点 SHA>`、(4) `git merge --no-ff <一時 ref 名>`（コミットメッセージはプロジェクトの慣行に従う）、(5) 退避の復元と一時 ref の削除。以上を **Phase 0 の検証直後・Phase 1 の前に完了させる**（記録が先に既定ブランチへ載るとやり直し条件を自ら失効させ、Branch 行に書く SHA も確定しないため）
+3. **取り込み方式の検証（fast-forward 検出）**: マージ方式の慣行判定を行う（判定手続きと既定ブランチの解決手続きの正本は `start-work` の「完了処理のマージ方式確認」節。条件文はここに複写しない）。**慣行あり**の場合のみ以下を実施する。**未定義**なら判定を出さず慣行を 1 問確認するに留める（回答が「マージコミットを残す」なら当該サイクルから判定を実施し、branch 設定が未検出なら設定適用を提案する）。**残さない運用**なら実施しない
+   - 判定: 先端 SHA を次項の手続きで先に確定してから行う。次項の reflog 走査で fast-forward が確定した場合は本項の祖先確認・親走査は行わない。対象 feature ブランチの先端 SHA が、まず `git merge-base --is-ancestor` で既定ブランチの祖先であることを確認する（祖先でなければ未マージまたは squash であり、fast-forward とは判定せず報告のみ）。祖先である場合、`git rev-list --parents <既定ブランチ>` を走査し、いずれかのマージコミットの第 2 親以降に現れなければ fast-forward と判定する。対象ブランチ名はユーザー入力を第一とする（fast-forward 時は merge コミットからの推定が機能しない）
+   - 先端 SHA の取得: ブランチが現存すれば `git rev-parse <ブランチ名>`。削除済みなら `git reflog show <既定ブランチ>` を新しい順に走査し、**ブランチ名で限定された 2 パターンのみ**を判定材料にする——`merge <ブランチ名>: … Fast-forward` の行はその SHA が先端（fast-forward 確定）、`merge <ブランチ名>: Merge made by` の行は fast-forward でないことが確定するため検証を終了する（この行の SHA はマージコミットであり先端ではない）。`pull` で始まる行（引数を含む形も）と `commit (merge):` の行は判定材料にしない。該当行が無ければ判定不能として報告する（`HEAD` や既定ブランチ先端で代用しない）。reflog から得た短縮 SHA は `git rev-parse <短縮 SHA>^{commit}` で完全形へ正規化してから用いる。fast-forward 検出時の手順 2 の git log 範囲は分岐点 SHA から先端までを用いる
+   - fast-forward 検出時のやり直し提案: 次の 5 条件をすべて満たす場合に限り提案する——未 push / 既定ブランチへの追加コミットなし / feature 先端が参照可能 / 分岐点が既定ブランチの reflog から SHA として確定できる（当該 fast-forward エントリの直前のエントリの SHA を分岐点とする）/ 作業ツリーの追跡ファイルに未コミット変更が無いか、対象パス限定の `git stash push` で退避した（既定ブランチへの先行コミットは用いない）。条件 1・2 は機械判定する——未 push: 既定ブランチのリモート追跡 ref が存在する場合、`git merge-base --is-ancestor <先端 SHA> <リモート追跡 ref>` が偽であること（追跡 ref が無ければユーザーへ確認する）。追加コミットなし: `git rev-parse <既定ブランチ>` が先端 SHA と一致すること。手順: 分岐点 SHA を先に確定・提示し、以後は確定 SHA のみを使う（相対参照は再実行で元へ戻るため。`git merge-base` は fast-forward 後に先端を返すため用いない）。リスク段階の判定によらず本手順は承認必須とし、承認後に (1) `git branch <一時名> <先端 SHA>` で一時 ref を張る（名前は日付と先端短縮 SHA を含め、衝突時は既存を消さず別名を採る）、(2) 退避を実施し `git status --porcelain --untracked-files=no` の出力が空であることを確認する（空でなければ中止）、(3) `git reset --hard <分岐点 SHA>`、(4) `git merge --no-ff <一時 ref 名>`（コミットメッセージはプロジェクトの慣行に従う）、(5) 退避の復元と一時 ref の削除。以上を **Phase 0 の検証直後・Phase 1 の前に完了させる**（記録が先に既定ブランチへ載るとやり直し条件を自ら失効させ、Branch 行に書く SHA も確定しないため）
    - 5 条件を満たさない場合はやり直しを提案せず、記録の Branch 行へ取り込み方式 fast-forward（先端 SHA）を明記する扱いをユーザーへ提示するに留める
 4. 既存 `docs/records/retrospectives/` に同一トピックの既存ファイルが無いことを確認する。あれば中止し、扱いをユーザーに確認する
 ```
@@ -171,7 +171,7 @@ new_string:
 - [ ] **Step 2-6: 検証**
 
 Run: `grep -n "取り込み方式の検証" skills/retrospective/SKILL.md && grep -c "merge-base --is-ancestor" skills/retrospective/SKILL.md`
-Expected: Phase 0 に見出しが 1 箇所、`--is-ancestor` が 1 箇所
+Expected: Phase 0 に見出しが 1 箇所、`--is-ancestor` が 2 箇所（判定箇条 1＋未 push 機械判定 1。レビュー指摘反映で条件 1 の機械判定が追加されたため）
 Run: `grep -n -- "--no-ff" skills/retrospective/SKILL.md`
 Expected: やり直し手順 (4) の 1 箇所のみ（「いつ使うか」から消えていること）
 

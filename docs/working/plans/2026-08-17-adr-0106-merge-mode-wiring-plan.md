@@ -189,7 +189,7 @@ old_string:
 new_string:
 ```
 - **Branch**: feature/<name>（取り込み方式: マージコミット <merge-commit-sha>）
-  <!-- 取り込み方式は「マージコミット / squash / fast-forward」から該当する 1 つだけを書く（選択肢の列挙を残さない）。fast-forward の場合は「fast-forward〈先端 <sha>〉」と書く -->
+  <!-- 取り込み方式は「マージコミット / squash / fast-forward」から該当する 1 つだけを書く（選択肢の列挙を残さない）。fast-forward の場合は「fast-forward〈先端 <sha>〉」と書く。記入後はこのコメント行を削除する -->
 ```
 
 - [ ] **Step 3-2: 検証**

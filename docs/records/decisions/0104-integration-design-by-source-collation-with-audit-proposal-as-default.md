@@ -1,6 +1,6 @@
 # ADR-0104: 統合仕様は監査の統合先案を既定とし、正本読み合わせで重複側固有の条件を写像してから確定する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-17
 
 ## Context

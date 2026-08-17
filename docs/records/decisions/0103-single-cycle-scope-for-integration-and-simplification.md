@@ -1,6 +1,6 @@
 # ADR-0103: Issue-0093 の統合 22 行（全 13 クラスタ）と Issue-0094 の簡素化 3 行を単一サイクルで実施する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-17
 
 ## Context

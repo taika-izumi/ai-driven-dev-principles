@@ -1,9 +1,9 @@
 # Handoff: Issue-0084 マージ方式規範（--no-ff）の完了フロー配線
 
 - **Branch**: feature/issue-0084-wire-no-ff-merge
-- **Last Updated**: 2026-08-18 02:10 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張/plan 確定済み（設計 ADR-0106 `44ec363`・写像チェック済み）。次は実装（実行方式の選択から）
+- **Last Updated**: 2026-08-17 21:21 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: ガイドライン拡張/実装中（subagent-driven-development。Task 1 完了・Task 2 実装中）
 
 ## 作業の目的・背景
 
@@ -20,12 +20,22 @@ Issue-0084 の対策サイクル。retrospective スキルは「feature ブラ�
 
 - [x] 対策の設計・ADR-0106 起票（Proposed・`44ec363`。設計文書兼用型。2026-08-17 完了）
 - [x] 確定前レビュー: 3 観点フル 5 巡＋差分再確認 1 巡（レビュアー claude-opus-5。最終巡 24/24 解消・新矛盾 0）
+- [x] plan Task 1: start-work 予防配線（2026-08-17 完了。品質レビューで ADR-0106 継承の欠落 2 件を検出し、ADR・SKILL・plan の 3 ファイル同期補正＋差分再確認済み）
+- [x] plan Task 2: retrospective 検出配線（2026-08-17 完了。品質レビューで継承ギャップ 2 件＋写像欠落等 2 件を検出し 3 ファイル同期補足＋差分再確認済み。plan Step 2-6 期待値も追随更新）
+- [x] plan Task 3: template 方式欄改定（2026-08-17 完了。品質レビュー指摘＝記入指示コメントの自己削除指示欠落を 1 句追加で解消＋差分再確認済み。ADR 変更なし）
+- [x] plan Task 4: 現行仕様書の同期（2026-08-17 完了・`4ac30d8`。spec 準拠✅・品質✅ Approved。Minor 4 件は要約形の設計意図内として据え置き）
+- [x] plan Task 5: 関連記録更新（2026-08-17 完了・`126791e`＋レビュー反映 `469acc1`。Issue-0101↔0008 相互参照を追加。ADR-0056 注記の時制指摘は一過性として受容＝Task 10 着地が条件）
+- [x] plan Task 6: 本リポジトリ git 設定（2026-08-17 完了。mergeoptions=--no-ff / pull.ff=true を適用・読み直し確認）
+- [x] plan Task 7: version bump 0.1.8→0.1.9（2026-08-17 完了。plugin.json/marketplace.json の 2 行のみ・コントローラー diff 検分で確認。コミットは Task 10）
+- [x] plan Task 8: 配布物生成と執行点検査（2026-08-17 完了。build-dist/-Check×2 とも exit 0・目視 5 型で違反なし＝(1)〜(5) 半角括弧は既存 (a)〜(c) 前例と同型で適合裁定・BOM なし確認済み）
+- [x] plan Task 9: スモーク検証（2026-08-17 完了。13 項目全合格。結果は plan 末尾に記録。実リポジトリ無傷をコントローラーが独立比較で確認）
+- [x] plan Task 10: skills＋dist＋version 同一コミット `082e1fb`＋ADR-0106 最終突合（2026-08-17 完了。18 箇条＋同期 4 件すべて対応・漏れ 0・-Check×2 exit 0）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: plan の実装（`docs/working/plans/2026-08-17-adr-0106-merge-mode-wiring-plan.md`・全 10 タスク）
-  - 状態: plan 確定済み（写像チェック 30 要件・欠落 0。指摘 3＋所見 2 を反映済み）。実行方式の選択待ち
-  - 残り: Task 1〜10（skills 2 件＋template 改定・spec 同期・記録更新・git config・version bump・配布 4 手順・スモーク 11 状態）
+- [ ] **現在の作業**: 完了処理（master への取り込み）と retrospective
+  - 状態: plan 全 10 タスク完了・ADR-0106 Accepted 昇格・Issue-0084 close 済み（`aac79a0`）。マージ実行の確認待ち
+  - 残り: `--no-ff` マージ（慣行判定=慣行あり: branch.master.mergeoptions 検出済み）→ retrospective → cycle-reset → finalize
 
 ## 未着手のタスク
 
@@ -46,6 +56,16 @@ Issue-0084 の対策サイクル。retrospective スキルは「feature ブラ�
 - 2026-08-17 ADR-0106 設計確定・spec 確定点 (c) 通過: ADR=0106 / worklog=`MakeAiInstructions-2026-08-17-07` / review=フル実施（claude-opus-5。3 観点×5 巡＋差分再確認 1 巡）
 - 2026-08-17 実装 plan 作成・plan 確定点 通過: ADR=なし（ADR-0106 への追従のみで新規決定なし） / worklog=棄却（写像脱落 3 件は独立レビューの想定内で delta なし） / review=差分再確認（写像チェック 1 観点・claude-opus-5。推奨判定は偽・30 要件中欠落 0）
 - 2026-08-17 セッション終了（実装着手前に区切り）: ADR=なし（新規決定なし） / worklog=棄却（plan 確定点以降はレビュー指摘反映のみで delta なし）
+- 2026-08-17 plan Task 1 完了（start-work 予防配線）: ADR=なし（ADR-0106 の欠落補正 2 件のみで新規決定なし。補正は ADR 本文へ反映） / worklog=棄却（検出・修正とも既存の 2 段レビュー実施内で AI 挙動の delta なし）
+- 2026-08-17 plan Task 2 完了（retrospective 検出配線）: ADR=なし（ADR-0106 の継承ギャップ補足のみで新規決定なし） / worklog=棄却（既知 Issue-0073 の再実例＝plan 期待値の陳腐化で、既存レビュー工程内で捕捉・delta なし）
+- 2026-08-17 plan Task 3 完了（template 方式欄改定）: ADR=なし（ADR-0106 の意図内の 1 句追加のみ） / worklog=棄却（既存の 2 段レビュー実施内で捕捉・delta なし）
+- 2026-08-17 plan Task 4 完了（現行仕様書の同期・`4ac30d8`）: ADR=なし（写像同期のみ） / worklog=棄却（指摘 Minor のみで delta なし）
+- 2026-08-17 plan Task 5 完了（関連記録更新・`126791e`＋`469acc1`）: ADR=なし（記録更新のみ） / worklog=棄却（相互参照漏れは既存レビュー工程内で捕捉・delta なし）
+- 2026-08-17 plan Task 6 完了（git 設定適用）: ADR=なし（ADR-0106 決定 3 の実施のみ） / worklog=棄却（機械的適用で delta なし）
+- 2026-08-17 plan Task 7 完了（version bump）: ADR=なし（機械的更新のみ） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 8 完了（配布物生成・執行点検査）: ADR=なし（生成のみ） / worklog=棄却（既存の執行点手順内で delta なし）
+- 2026-08-17 plan Task 9 完了（スモーク 13/13）: ADR=なし（検証のみ） / worklog=棄却（plan 規定の検証で delta なし。squash 出力の Fast-forward 語の落とし穴は plan 特記事項へ記録済み）
+- 2026-08-17 plan Task 10 完了・実装完了・ADR-0106 Accepted 昇格（`082e1fb`・`aac79a0`）: ADR=0106（昇格・Issue-0084 close） / worklog=棄却（既存の昇格手順内で delta なし） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 

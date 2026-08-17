@@ -81,7 +81,7 @@
 | [0056](flow/0056-plan-verification-commands-never-executed-before-finalization.md) | 計画に書いた検証コマンドが「実行可能か」を確定前に誰も確かめていない | open | 2026-08-07 |
 | [0057](flow/0057-subagent-report-identifiers-relayed-without-verification.md) | サブエージェントの完了報告に含まれる識別子を検証せず後続へ転記する経路がある | open | 2026-08-07 |
 | [0059](flow/0059-adr-0065-gate-not-wired-into-worklog-skillify.md) | ADR-0065 の適用条件設計ゲートが worklog-skillify に配線されていない | open | 2026-08-07 |
-| [0060](flow/0060-claude-md-decision-triggers-missing-guideline-change.md) | CLAUDE.md の意思決定即時記録トリガーに「ガイドライン・ルールの追加・変更」が無い | open | 2026-08-07 |
+| [0060](flow/0060-claude-md-decision-triggers-missing-guideline-change.md) | CLAUDE.md の意思決定即時記録トリガーに「ガイドライン・ルールの追加・変更」が無い | closed | 2026-08-07 |
 | [0061](flow/0061-skill-revision-scenario-steps-assume-new-creation.md) | 「Skillを新規作成・改定するとき」シナリオの手順・チェックリストが新規作成前提のまま | open | 2026-08-07 |
 | [0062](flow/0062-review-recommendation-ignores-artifact-safety-net.md) | 確定前レビューの次手提示が成果物の性質を問わず中立で、安全網の無い成果物でも非推奨側に倒れる | closed | 2026-08-07 |
 | [0063](flow/0063-plan-document-sync-policy-undefined.md) | 実装中に確定した文言を作業文書（plan）へ反映するかの規約が未定義 | open | 2026-08-07 |
@@ -104,9 +104,10 @@
 | [0089](flow/0089-designated-home-naming-index-rules-missing.md) | 指定席（議事録・インシデント報告等）のファイル命名・索引の規約が未定義 | open | 2026-08-15 |
 | [0090](flow/0090-remaining-growth-artifacts-untreated.md) | 棚卸しで確認した残りの成長型成果物（インデックス 3 種・plans 残置・worklog 台帳）に抑制機構がない | open | 2026-08-15 |
 | [0092](flow/0092-stochastic-deviation-premise-audit-of-procedures.md) | 「確率的逸脱は残る」前提でのガイドライン全体棚卸し（過剰手順の検出実績ベース監査）が未実施 | closed | 2026-08-16 |
-| [0093](flow/0093-integrate-22-duplicated-norm-records.md) | 監査で特定した二重定義 22 行の統合が未実施 | open | 2026-08-16 |
-| [0094](flow/0094-simplify-3-high-cost-zero-detection-records.md) | 欠落検出ゼロのまま高コストの記録様式 3 行の簡素化が未実施 | open | 2026-08-16 |
+| [0093](flow/0093-integrate-22-duplicated-norm-records.md) | 監査で特定した二重定義 22 行の統合が未実施 | closed | 2026-08-16 |
+| [0094](flow/0094-simplify-3-high-cost-zero-detection-records.md) | 欠落検出ゼロのまま高コストの記録様式 3 行の簡素化が未実施 | closed | 2026-08-16 |
 | [0095](flow/0095-redesign-plan-expectation-check-a13.md) | 計画の検証期待値突合（A-13）は検出力が反証されており再設計が必要 | open | 2026-08-16 |
 | [0096](flow/0096-generalize-evaluability-brake-for-extensions.md) | 増設の歯止め（評価可能性の義務化・弱い形）の CONTRIBUTING への一般規範化が未実施 | closed | 2026-08-16 |
 | [0097](flow/0097-hold-44-records-conditional-backlog.md) | 監査の保留（観測継続）44 行の条件付き backlog（次回棚卸しで再判定） | open | 2026-08-16 |
 | [0098](flow/0098-iterative-review-trigger-criteria.md) | 確定前レビューの反復（指摘反映後の再レビュー）の発動基準が未定義 | open | 2026-08-16 |
+| [0099](flow/0099-overturned-5-duplicated-rows-conditional-backlog.md) | 統合を覆した 5 行の二重定義の存置（次回棚卸しで再判定する条件付き backlog） | open | 2026-08-17 |

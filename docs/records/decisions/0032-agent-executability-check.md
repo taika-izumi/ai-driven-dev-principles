@@ -25,3 +25,4 @@ ADR-0029 の起草時、撤去基準を「事象が発生しないモデルの�
 - 良い影響: 実行不能な規範の混入防止が起草プロセスに組み込まれ、ユーザーレビューは最後の防衛線（一次防衛ではなく）になる。
 - 留意点: チェックは起草者の自己確認であり、確実な防止を保証するものではない。ユーザーレビューを置き換えない。
 - 留意点: skills/ の変更はプラグイン更新（`/plugin marketplace update ai-driven-dev-principles`）まで利用者に反映されない。`CONTRIBUTING.md` は template.manifest 対象外のため同期作業は不要。
+- **部分修正（ADR-0105）**: CONTRIBUTING「ADRを記録するとき」の実行可能性条項は decision-log への参照に置換された（条項本体は decision-log 側で現役）

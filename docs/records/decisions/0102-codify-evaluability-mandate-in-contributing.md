@@ -65,6 +65,7 @@ CONTRIBUTING.md の「全シナリオ共通: 過剰適合の点検」の直後�
 - 実装の同期対象: CONTRIBUTING.md（新節・チェックリスト 7 行・CLAUDE.md 更新手順 1 箇所・記述規律 1 行・点検執行点の前方参照 1 文）/ `skills/decision-log/SKILL.md`（ポインタ）/ `skills/extend-guidelines/SKILL.md`（手順 5 の 1 文）/ ADR-0101 Context の誤記修正（92→95）。CONTRIBUTING への節挿入により監査台帳 `ledger.md` の CONTRIBUTING 行番号参照 11 レコード（E-03〜E-13）と E-14 の総行数記載（506 行）が実体とずれるが、台帳は不変規約（ADR-0101 決定 5）により修正せず、次回棚卸しは節見出しと id の grep で引き直す（Issue-0097 の読み出し方法と整合）
 - 改訂記録: Accepted 昇格後、確定前レビュー第 2〜4 巡の指摘を反映して Context・Decision 2・3 と点検ブロックを改訂した（2026-08-16。再点検実施済み。第 4 巡で Critical / Major 0 の収束判定。反復レビューの発動基準は Issue-0098 で扱う）
 - 本 ADR の Accepted 昇格（実装完了・検証後）をもって Issue-0096 を close する（結論に本 ADR と ADR-0101 を記載）
+- **部分修正（ADR-0105）**: extend-guidelines 手順 5 の評価可能性確認の記載は CONTRIBUTING 共通節への配線に置換され、CONTRIBUTING「ADRを記録するとき」記述規律の文脈語が追従修正された（要件本体は「新設の評価可能性」節で現役）
 
 ## 過剰適合点検（ADR-0079）
 

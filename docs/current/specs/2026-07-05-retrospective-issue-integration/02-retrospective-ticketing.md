@@ -14,7 +14,7 @@ retrospective スキルが抽出・分類した課題を、その場で全件 `d
 
 Phase 2（ドラフト保存）の手順に、課題の分類確定後の起票ステップを追加する:
 
-1. 課題ごとに、インデックス `docs/working/issues/README.md` 全体の最大番号+1 で採番する
+1. 課題ごとに採番する（採番・起票の定義は課題管理定義 `docs/overview/issue-management.md`「3. 起票・採番・粒度」が正。スキル側はこれを参照する）
 2. 分類に応じて `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open）
    - 課題内容は**要約のみ**。事象/原因/影響の詳細は振り返りファイルを正とし、「起票元」フィールドに `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載する
 3. インデックスの対応セクションに1行追加する

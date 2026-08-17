@@ -108,3 +108,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0100](0100-one-shot-guideline-audit-with-two-track-judgment.md) | ガイドライン全体棚卸し（Issue-0092）は、常時発火規範の全数台帳と二トラック判定による一回限りの監査として実施する | Accepted | 2026-08-16 |
 | [0101](0101-audit-verdict-keep-integrate-hold-and-weak-brake.md) | 全数監査の判定を keep 72・統合 22・保留 44・簡素化 3・退役 0 で確定し、増設の歯止めは評価可能性の義務化（弱い形）とする | Accepted | 2026-08-16 |
 | [0102](0102-codify-evaluability-mandate-in-contributing.md) | 評価可能性の義務化（弱い形）は CONTRIBUTING「全シナリオ共通」新節と発火フックの配線で規範化する | Accepted | 2026-08-16 |
+| [0103](0103-single-cycle-scope-for-integration-and-simplification.md) | Issue-0093 の統合 22 行（全 13 クラスタ）と Issue-0094 の簡素化 3 行を単一サイクルで実施する | Accepted | 2026-08-17 |
+| [0104](0104-integration-design-by-source-collation-with-audit-proposal-as-default.md) | 統合仕様は監査の統合先案を既定とし、正本読み合わせで重複側固有の条件を写像してから確定する | Accepted | 2026-08-17 |
+| [0105](0105-integration-design-wiring-two-commons-and-simplification.md) | 統合 22 行は配線化（共通規範の新設は見送り、7 行は統合先案を覆し現状維持）で、簡素化 3 行は手順の束ね直しと起票手順の参照化で実装する | Accepted | 2026-08-17 |

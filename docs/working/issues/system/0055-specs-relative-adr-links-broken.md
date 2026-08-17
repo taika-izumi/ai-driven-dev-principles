@@ -3,7 +3,7 @@
 - **Status**: open
 - **Opened**: 2026-08-07
 - **起票元**: `retrospectives/system/2026-08-07-rename-to-ai-driven-dev-guideline.md` 課題#1
-- **関連**: 原則1（追跡可能性）、`CLAUDE.md`「仕様書は現時点のシステム全容が分かるスナップショットとして維持する」、ADR-0077（外部参照は安定識別子で書く）
+- **関連**: 原則1（追跡可能性）、`docs/overview/folder-structure.md`「7. 仕様書の運用規約」の「仕様書は現時点のシステム全容が分かるスナップショットとして維持する」規約、ADR-0077（外部参照は安定識別子で書く）
 
 ## 課題内容
 

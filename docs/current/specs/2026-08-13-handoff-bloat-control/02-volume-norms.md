@@ -17,7 +17,7 @@
 本節（cycle-reset の扱い）に由来する session-handoff 側の変更は次の 2 点のみ（サイズトリガー由来の変更は §1、移設まわりの変更は `01-relocation-standard.md` が定める）:
 
 1. cycle-reset 手順 2（申し送りの現役性点検）の**前段に移設判定を追加**する（教訓型の申し送りを、落とす前に対応表で移設する。`01-relocation-standard.md` §2 (c)）
-2. 「本サイクル」の定義を「現 feature ブランチの作業単位（cycle-reset まで）」から「**前回 cycle-reset から次の cycle-reset までの作業単位**」へ改める（master 直接開発では feature ブランチが存在せず保持範囲が定義不能になるため。`skills/session-handoff/SKILL.md` と `skills/start-work/SKILL.md` の該当文言を同語彙へ揃える）
+2. 「本サイクル」の定義を「現 feature ブランチの作業単位（cycle-reset まで）」から「**前回 cycle-reset から次の cycle-reset までの作業単位**」へ改める（master 直接開発では feature ブランチが存在せず保持範囲が定義不能になるため。定義の正本は `skills/session-handoff/SKILL.md` の「「本サイクル」の定義」節にあり、`start-work` と `decision-log` は同節を参照する（各所で再定義しない））
 
 ## 3. 節別の記載規範（ADR-0088）
 

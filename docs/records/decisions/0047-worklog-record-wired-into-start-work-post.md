@@ -24,3 +24,4 @@ ADR-0044 および spec で worklog-record（スキル1）は「handoff マイ�
 - **良い影響**: 全プロジェクトで記録が確実に溜まる（多プロジェクト捕捉が start-work 経由で「無料」で得られる）。session-handoff update と対称の配線で理解しやすい
 - **コスト・留意**: start-work skill を編集するためプラグイン更新が必要（skills/ は template 非同期）。全プロジェクトのマイルストーンで worklog-record のゲート判定が走る（ゲートが大半を弾くため実記録は少量）。start-work の Post 手順が1ステップ増える
 - 本決定は start-work（既存スキル）の挙動変更を伴う。実装完了・検証後に Accepted へ昇格する（ADR-0019）
+- **部分修正（ADR-0105）**: start-work Post 項目 3 の記録ゲート・契機のインライン記述は worklog-record への参照に置換された（配線自体は現役）

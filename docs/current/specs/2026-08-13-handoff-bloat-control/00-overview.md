@@ -26,8 +26,8 @@ ADR-0089 に従う: 情報分類と配置先の定義（What/Where）の正本�
 
 | ファイル | 変更内容 | 配布 |
 |---|---|---|
-| `skills/session-handoff/SKILL.md` | (a) フォーマット節へ節別規範（ADR-0088 の 7 項目） (b) 独立手順「移設」の新設（ADR-0086 決定 2） (c) read へサイズ実測（存在確認の直後）＋超過時提案＋受諾時の移設実行 (d) update へ消化記録の内容限定と分岐 (e) finalize の手順再構成（7 段: 実測→update 同様の更新→移設→基準付き圧縮→次アクション→Status→コミット。コミット対象に移設先の正本ファイルを含める） (f) finalize「圧縮しないもの」規定へ「保護は移設で正本を外へ作るまでの暫定」の文言追加 (g) cycle-reset 手順 2（申し送り現役性点検）の前段に移設判定を追加し、同 add 手順の対象へ移設で作成・更新した正本ファイルを追加 (h) 「本サイクル」定義を「前回 cycle-reset から次の cycle-reset までの作業単位」へ（ブランチ非依存化） | プラグイン（dist/。記法規約の執行点 4 手順を適用） |
-| `skills/start-work/SKILL.md` | 「本サイクル」定義文言の同語彙化（上記 (h) と同じ 1 文のみ） | プラグイン（dist/） |
+| `skills/session-handoff/SKILL.md` | (a) フォーマット節へ節別規範（ADR-0088 の 7 項目） (b) 独立手順「移設」の新設（ADR-0086 決定 2） (c) read へサイズ実測（存在確認の直後）＋超過時提案＋受諾時の移設実行 (d) update へ消化記録の内容限定と分岐 (e) finalize の手順再構成（7 段: 実測→update 同様の更新→移設→基準付き圧縮→次アクション→Status→コミット。コミット対象に移設先の正本ファイルを含める） (f) finalize「圧縮しないもの」規定へ「保護は移設で正本を外へ作るまでの暫定」の文言追加 (g) cycle-reset 手順 2（申し送り現役性点検）の前段に移設判定を追加し、同 add 手順の対象へ移設で作成・更新した正本ファイルを追加 (h) 「本サイクル」定義を「前回 cycle-reset から次の cycle-reset までの作業単位」とする（ブランチ非依存化。現行は独立節「「本サイクル」の定義」が正本で、`start-work`・`decision-log` から参照される） | プラグイン（dist/。記法規約の執行点 4 手順を適用） |
+| `skills/start-work/SKILL.md` | 「本サイクル」の定義は session-handoff の定義節への参照とする（再定義しない） | プラグイン（dist/） |
 | `docs/overview/folder-structure.md` | 配置表の既存行「技術調査・検証メモ」を「技術調査・検証メモ、セッション跨ぎに再利用する教訓・作業知見」へ拡張 | template（sync-template 実行） |
 | `docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md` | 本設計と矛盾する記述をスナップショット規約に従い書き換え: (i)「数値ゲート（行数閾値等）は設けない」（サイズトリガー新設と矛盾） (ii) finalize 手順構成（移設工程が入り 7 段になる） (iii) cycle-reset の申し送り現役性点検（前段に移設判定が入る） (iv)「`skills/start-work/SKILL.md` → 変更なし」（「本サイクル」文言変更が入る） (v)「template 対象ファイル → 変更なし。sync-template の実行は不要」（folder-structure 変更が入り矛盾） (vi) 変更 3 節の「圧縮しないもの」規定（保護の暫定化と矛盾するため暫定注記を追記）。なお「cycle-reset は retrospective 経由でのみ発動する」は撤回後も真のため書き換え対象ではない | なし |
 | `docs/records/decisions/0075-…` | Consequences へ部分修正の注記（保護規定は移設とセット運用へ） | なし |

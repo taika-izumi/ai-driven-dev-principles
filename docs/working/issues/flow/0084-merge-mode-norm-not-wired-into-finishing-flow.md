@@ -1,7 +1,8 @@
 # Issue-0084: マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-14
+- **Closed**: 2026-08-17
 - **起票元**: retrospectives/flow/2026-08-14-handoff-bloat-control.md 課題#1
 - **関連**: `skills/retrospective/SKILL.md`「いつ使うか」、`superpowers:finishing-a-development-branch`
 
@@ -23,4 +24,4 @@ retrospective スキルは「feature ブランチを master へ `--no-ff` マー
 
 ## 結論
 
-（open）
+ADR-0106（Accepted・2026-08-17）で対策を確定・実装した。予防（`start-work` Phase 2 の完了処理行と「完了処理のマージ方式確認」節・横断的ラッパー Pre 条項）と検出（`retrospective` Phase 0 の取り込み方式検証・fast-forward やり直し手順・template の取り込み方式欄）の 2 層を配布スキルへ配線し、本リポジトリには `branch.master.mergeoptions "--no-ff"` と `pull.ff true` を設定した（plugin 0.1.9・`082e1fb`）。スモーク検証 13 項目全合格。フォルダ未昇格のため close 時移設判定は非該当。

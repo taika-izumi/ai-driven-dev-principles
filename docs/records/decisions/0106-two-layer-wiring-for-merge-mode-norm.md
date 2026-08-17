@@ -1,6 +1,6 @@
 # ADR-0106: マージコミットを残す規範の再発防止は予防・検出の 2 層配線とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-17
 
 ## Context

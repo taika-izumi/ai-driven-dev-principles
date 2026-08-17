@@ -392,7 +392,7 @@ scratchpad 配下に一時 git リポジトリを作成して実施する。実�
 
 - [ ] **Step 9-3: 結果の記録**
 
-スモーク結果（6＋5 状態の合否一覧）をこの plan ファイルの末尾へ追記する。
+スモーク結果（6＋5 状態＋レビュー由来 2 プローブの合否一覧）をこの plan ファイルの末尾へ追記する。
 
 ### Task 10: skills＋dist＋version の同一コミットと最終突合
 
@@ -418,11 +418,43 @@ Expected: 両方 exit 0（コミット後の再確認）
 
 ## 完了基準（サイクル全体）
 
-1. Task 1〜10 の全 Step 完了（スモーク 11 状態すべて合格）
+1. Task 1〜10 の全 Step 完了（スモーク 13 項目＝11 状態＋レビュー由来 2 プローブすべて合格）
 2. `git config --get-all branch.master.mergeoptions` = `--no-ff`、`git config --get pull.ff` = `true`
 3. `dist/` と `.claude-plugin/` の version が 0.1.9 で一致
 4. ADR-0106 Accepted 昇格（サイクル全体整合検査つき）と Issue-0084 close（結論に ADR-0106・インデックス更新）は plan 外の通常フロー（Post ラッパー）で実施
 
 ## スモーク検証結果（Task 9-3 で追記）
 
-（未実施）
+- **実施日**: 2026-08-17
+- **実施環境（隔離した一時リポジトリ）**:
+  - Step 9-1 用: `C:\Users\d12an\AppData\Local\Temp\claude\D--Dev-002-AiDev-MakeAiInstructions\6daedd45-092b-4beb-9173-03aa587020fc\scratchpad\task9-smoke\repo91`
+  - Step 9-2 用: `C:\Users\d12an\AppData\Local\Temp\claude\D--Dev-002-AiDev-MakeAiInstructions\6daedd45-092b-4beb-9173-03aa587020fc\scratchpad\task9-smoke\repo92`（リモート追跡 ref 再現用の bare リモート `remote92.git` を併設）
+  - git 2.45.2.windows.1 / 全 git 操作は `git -C <一時リポジトリ絶対パス>`、`--global` 不使用
+- **評価対象の文言**: `skills/start-work/SKILL.md`「完了処理のマージ方式確認」節、`skills/retrospective/SKILL.md` Phase 0 手順 3（いずれも作業ツリー版）
+- **母数**: 13 項目（Step 9-1 の 6 構成＋Step 9-2 の 5 状態＋追加プローブ 2）／**合格 13・不合格 0**
+
+| # | 項目 | 期待 | 実測 | 合否 |
+|---|---|---|---|---|
+| 1 | 9-1 (1) マージコミット行あり | 慣行あり | 有効行にマージコミット行 1 件 → 慣行あり | 合格 |
+| 2 | 9-1 (2) squash 行のみ | 残さない運用 | 有効行が squash のみ → 残さない運用 | 合格 |
+| 3 | 9-1 (3) fast-forward 行のみ | 未定義 | 全行が除外行 → 有効行 0 件 → 未定義 | 合格 |
+| 4 | 9-1 (4) 旧様式（merge SHA のみ）のみ | 慣行あり | 有効行がすべて旧様式 → マージコミット方式とみなす → 慣行あり | 合格 |
+| 5 | 9-1 (5) 新旧混在（7 件配置） | 新様式の行のみで判定 | 直近 5 件の窓が機能（窓外のマージコミット 2 件は不参加）／除外行 1 件を落とし、新様式の squash 2 行で判定 → 残さない運用 | 合格 |
+| 6 | 9-1 (6) 0 件（`YYYY-MM-DD-*.md` 非該当ファイルのみ） | 未定義 →確認 1 問 → 永続化 → 短絡 | 該当 0 件 → 未定義 → 肯定回答を仮定し `git config ai-dev.mergepractice merge-commit` を書き込み → 再評価で手順 1 が `merge-commit` を読んで慣行ありに確定し、手順 2・3 へ進まない（再質問なし） | 合格 |
+| 7 | 9-2 状態 1 ff マージ | fast-forward 判定 | `rev-parse` で先端確定 → `merge-base --is-ancestor` 真 → `rev-list --parents master` の第 2 親以降に先端が現れず → fast-forward 判定。条件 1（未 push: 追跡 ref に対する祖先判定が偽）・条件 2（`rev-parse master` と先端一致）を機械判定で確認。やり直しを承認省略の dry-run で完走（一時 ref → 対象パス限定 stash push → `status --porcelain -uno` 空確認 → `reset --hard <分岐点 SHA>` → `merge --no-ff` → stash pop → 一時 ref 削除）。分岐点は reflog の ff エントリ直前エントリから確定。再判定で第 2 親として検出され fast-forward 解消 | 合格 |
+| 8 | 9-2 状態 2 `--no-ff` マージ | fast-forward でない | 祖先判定真・第 2 親として検出 → fast-forward ではない | 合格 |
+| 9 | 9-2 状態 3 競合解決マージ | `commit (merge):` を判定材料にせず正しく判定 | reflog に `commit (merge): …` のみが残る（`merge <名>:` 行は生成されない）。ブランチ現存のため `rev-parse` 経路で先端を取得し、第 2 親として検出 → fast-forward ではない | 合格 |
+| 10 | 9-2 状態 4 squash | 未マージまたは squash（ff と判定しない） | `merge-base --is-ancestor` 偽 → 未マージまたは squash として報告のみ | 合格 |
+| 11 | 9-2 状態 5 ブランチ削除済み ff | reflog から先端取得し fast-forward 判定 | ブランチ削除後 `rev-parse` 不能 → reflog をブランチ名で限定して `merge feature/ff2: … Fast-forward` を取得 → 短縮 SHA を `rev-parse <短縮>^{commit}` で正規化 → 削除前の先端と一致。規定どおり祖先確認・親走査は実施せず fast-forward 確定 | 合格 |
+| 12 | P1 語彙外の値（`yes`） | 解釈せずユーザーへ照会 | `merge-commit` / `none` のいずれにも該当せず、第 3 の分岐「これら以外の値は解釈せずユーザーへ照会する」に落ちる。どの分岐にも入らない行き止まりは無い | 合格 |
+| 13 | P2 既定ブランチ解決 | 設定済みなら短絡／実在しなければ破棄して再解決 | `ai-dev.defaultbranch=master`（実在）→ 実在確認のみで採用し `symbolic-ref` 以降を実行しない。`trunk`（不在）→ 値を破棄 → `symbolic-ref refs/remotes/origin/HEAD` が不能（bare リモートに origin/HEAD 未設定）→ `rev-parse --verify` で master 実在・main 不在の一意判定 → master を採用し永続化 | 合格 |
+
+**特記事項:**
+
+- **発動ゲートの 3 値分岐**（項目 7〜11 の前提として個別確認）: `ai-dev.mergepractice=none` → 手順 1 で残さない運用となり検出配線は発動しない。未設定（`branch.master.mergeoptions` / `merge.ff` も全スコープ未設定、振り返り記録ディレクトリ不在）→ 有効行 0 件 → 未定義 → fast-forward 判定を出さず慣行の 1 問確認に留まる。いずれも文言どおりに分岐した
+- **判定不能の報告**: 削除済み `feature/sq1` について reflog をブランチ名で限定走査したところ該当 2 パターンの行が無く、「判定不能として報告」へ落ちた（`HEAD` や既定ブランチ先端で代用しない規定が機能）
+- `git merge --squash` の**コマンド出力には "Fast-forward" の語が含まれる**が、規定の判定手続き（祖先判定）は出力テキストを読まないため誤判定に至らない。出力の語ではなく祖先関係で判定する設計が有効に働いている
+- squash マージと競合解決マージは既定ブランチの reflog に `merge <ブランチ名>:` 行を残さない（それぞれ `commit:` / `commit (merge):`）。したがってブランチ削除後は fast-forward と誤判定されず判定不能へ落ちる
+- **承認要件**は dry-run で検証できないため実装文言の目視で確認した。`skills/retrospective/SKILL.md` Phase 0 手順 3 の第 3 箇条に「リスク段階の判定によらず本手順は承認必須とし、承認後に (1) …」の記載があることを確認（本スモークでは承認ステップを省いた dry-run として実行）
+- 未 push 判定はユーザー確認への分岐ではなく、bare リモートを併設して**リモート追跡 ref が存在する経路**で確認した
+- 実リポジトリへの書き込みは本節の追記 1 箇所のみ。git 状態を変える操作（init / commit / merge / reset / stash / branch / config）はすべて一時リポジトリ内で実行した

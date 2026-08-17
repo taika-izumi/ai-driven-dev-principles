@@ -73,7 +73,7 @@
 ### Phase 2: 記録保存と起票（メイン実行）
 
 1. `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`（メイン記録）と、フロー課題があれば `flow/YYYY-MM-DD-<topic>.md` を書き出す（ADR-0021。テンプレートは §4）
-2. 起票対象の課題を全件 `docs/working/issues/system|flow/NNNN-<slug>.md` へ起票し、インデックスへ行追加する（ADR-0028。採番は両セクション通し連番）
+2. 起票対象の課題を全件 `docs/working/issues/system|flow/NNNN-<slug>.md` へ起票し、インデックスへ行追加する（ADR-0028。採番・起票・インデックス追記の定義は課題管理定義 `docs/overview/issue-management.md`「3. 起票・採番・粒度」が正）
 3. ADR-0031 の追記（再発・進展）を実施する
 4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**
 5. ユーザーへ提示し確認を得る

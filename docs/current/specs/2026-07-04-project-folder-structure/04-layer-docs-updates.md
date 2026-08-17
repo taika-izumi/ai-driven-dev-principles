@@ -16,11 +16,9 @@
 ### CLAUDE.md
 
 - 「ドキュメント運用」セクションを書き換え:
-  - ドキュメントの配置は `docs/overview/folder-structure.md` の分類基準（5分類）に従う旨を追加
+  - ドキュメントの配置と文書運用は `docs/overview/folder-structure.md` の分類基準（5分類）・配置判断基準・仕様書の運用規約に従う旨を記載（仕様書運用の 4 箇条〈スナップショット規約・書き換え更新・「なぜは ADR に、今どうなっているかは仕様書に」・ディレクトリ分割形式のパス `docs/current/specs/YYYY-MM-DD-<topic>/`〉の正本は同文書「7. 仕様書の運用規約」）
   - 配置に迷った場合は `docs/inbox/` に置き、organize-inbox スキルで処理する旨を追加
-  - 仕様書パスの記述を `docs/current/specs/YYYY-MM-DD-<topic>/` に更新
-  - スナップショット規約・「なぜは ADR に、今どうなっているかは仕様書に」の既存規範は維持
-- 「検証」セクション内の retrospective 出力パスを `docs/records/retrospectives/system|flow/` に更新
+- 「検証」セクションの retrospective 起動箇条は起動を課す配線のみとする（出力先・スコープ・課題分類の定義は `retrospective` スキルが正）
 - superpowers スキル（writing-plans 等）のデフォルト出力パスを上書きする指示を追加: 実装計画は `docs/working/plans/`、設計文書はプロジェクトの仕様書規約（`docs/current/specs/`）に従う
 - プロジェクト固有の参照を含めない（template 対象の制約。フォルダパスはガイドライン自体の規約なので可）
 

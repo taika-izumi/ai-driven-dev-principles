@@ -139,7 +139,7 @@ ADRは「下した決定」だけを記録する。仕様検討の議論中に�
 
 ### 起票
 
-1. 未決事項を検出したら `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open）。分類は、対象システム固有の課題なら `system/`、開発の進め方・スキル・原則・ガイドラインに関する課題なら `flow/`（議論由来の未決事項は大半が `system/`）。連番はインデックス `docs/working/issues/README.md` 全体（両セクション）の最大番号+1。フォーマットは課題管理定義（標準: `docs/overview/issue-management.md`）を参照
+1. 未決事項を検出したら `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open）。分類は、対象システム固有の課題なら `system/`、開発の進め方・スキル・原則・ガイドラインに関する課題なら `flow/`（議論由来の未決事項は大半が `system/`）。採番・フォーマットは課題管理定義（標準: `docs/overview/issue-management.md`）の起票・採番の定義を参照（定義が見つからない場合は、インデックス `docs/working/issues/README.md` 全体（両セクション）の最大番号+1 で採番することを既定として提案し、その旨をユーザーへ報告する）
 2. インデックス `docs/working/issues/README.md` の対応セクションに1行追加する
 
 ### ライフサイクル

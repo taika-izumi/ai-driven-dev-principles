@@ -80,11 +80,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 ### Phase 2: 記録保存と起票（メイン実行）
 
 1. `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`（メイン記録。テンプレートは `skills/retrospective/template.md`）と、起票したフロー課題があれば `flow/YYYY-MM-DD-<topic>.md`（`skills/retrospective/flow-template.md`）を書き出す（ADR-0021。両フォルダで同名。フォルダ・ファイルはオンデマンド作成）
-2. 起票対象の課題を**全件** `docs/working/issues/` へ起票する（ADR-0028）:
-   1. インデックス `docs/working/issues/README.md` 全体（両セクション）の最大番号+1 で採番する
-   2. `docs/working/issues/system|flow/NNNN-<slug>.md` を起票する（Status: open。課題内容は要約のみとし、「起票元」に `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載）
-   3. インデックスの対応セクションに1行追加する
-   4. 振り返りファイル側の各課題項目に「**起票**: Issue-NNNN」行を記載する
+2. 起票対象の課題を**全件** `docs/working/issues/` へ起票する（ADR-0028）。採番・起票ファイルの作成・インデックスへの行追加は課題管理定義（標準: `docs/overview/issue-management.md`）の起票・採番の定義に従う。課題内容は要約のみとし、「起票元」に `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載する（定義が見つからない場合は、インデックス `docs/working/issues/README.md` 全体の最大番号+1 で採番し、`docs/working/issues/system|flow/NNNN-<slug>.md` へ要約＋起票元参照で起票してインデックスへ 1 行追加することを既定として提案し、その旨をユーザーへ報告する）。起票後、振り返りファイル側の各課題項目に「**起票**: Issue-NNNN」行を記載する
 3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する（ADR-0031）。追記後にファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）
 4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**
 5. ユーザーへ提示し確認を得る

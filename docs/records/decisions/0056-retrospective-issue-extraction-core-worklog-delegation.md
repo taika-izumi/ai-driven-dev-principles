@@ -51,6 +51,7 @@ worklog パイプライン導入（ADR-0044〜0047）以前に設計された `r
 - 過去の retrospective ファイル（7 セクション形式・簡易形式）は ADR-0011 の上書き禁止規約に従い改変しない。新形式は本決定以降に作成するファイルから適用する。
 - 波及更新: `skills/retrospective/SKILL.md` / `template.md` / `flow-template.md` / `docs/records/retrospectives/README.md` / `skills/start-work/SKILL.md`（マッピング表の文言）/ `CLAUDE.md`（検証節の retrospective 記述）。CLAUDE.md を変更する場合は `scripts/sync-template.ps1` の実行が必要。
 - Issue-0035 は本決定＋実装で close 見込み。Issue-0021 は解消方向の再評価対象となる。
+- **部分修正（ADR-0106）**: メイン記録テンプレートの Branch 欄は「merge済み: <sha>」から取り込み方式の明示欄（マージコミット / squash / fast-forward）へ改定された。最小サイクル文脈の骨格は現役のため、Status は Accepted のまま維持する
 
 ## Related
 

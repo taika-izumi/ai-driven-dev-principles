@@ -96,7 +96,7 @@
 | [0080](flow/0080-digest-record-line-length-unbounded.md) | 消化記録の「1 行」に長さ・内容の規範がなく、正本と詳細を重複記載して肥大する | closed | 2026-08-13 |
 | [0081](flow/0081-handoff-free-sections-volume-norm-missing.md) | handoff の自由記述部の記載量を制御する規範がない（タイトル・次アクション・抜粋・圧縮記録） | closed | 2026-08-13 |
 | [0082](flow/0082-choice-recommendation-spec-snapshot-stale.md) | 選択肢提示規範の spec が 3 世代前のツール選択規範のまま（スナップショット規約違反状態） | open | 2026-08-13 |
-| [0084](flow/0084-merge-mode-norm-not-wired-into-finishing-flow.md) | マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した | open | 2026-08-14 |
+| [0084](flow/0084-merge-mode-norm-not-wired-into-finishing-flow.md) | マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した | closed | 2026-08-14 |
 | [0085](flow/0085-digest-field-extension-lacks-checklist.md) | 消化記録へフィールドを新設する拡張に、記録様式側の連動改定チェックリストが無い | open | 2026-08-15 |
 | [0086](flow/0086-adr-rationale-vs-cited-evidence-check.md) | 決定の見送り理由が、引用した実測と矛盾していないかを突合する工程がない | closed | 2026-08-15 |
 | [0087](flow/0087-dispatch-table-growth-consolidation-trigger.md) | 条件発火表の行数増加に、統廃合を検討する契機が定義されていない | open | 2026-08-15 |
@@ -112,3 +112,4 @@
 | [0098](flow/0098-iterative-review-trigger-criteria.md) | 確定前レビューの反復（指摘反映後の再レビュー）の発動基準が未定義 | open | 2026-08-16 |
 | [0099](flow/0099-overturned-5-duplicated-rows-conditional-backlog.md) | 統合を覆した 5 行の二重定義の存置（次回棚卸しで再判定する条件付き backlog） | open | 2026-08-17 |
 | [0100](flow/0100-wiring-line-volatile-number-ban-not-generalized.md) | 配線行に統合先の可変数値を書かない規律の恒久規範化が未実施 | open | 2026-08-17 |
+| [0101](flow/0101-start-work-spec-figure-drift.md) | start-work 旧設計仕様書の図示が現行 SKILL.md から乖離している | open | 2026-08-17 |

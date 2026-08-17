@@ -14,7 +14,7 @@ description: "サブプロジェクト1サイクル完了直後（feature ブラ
 
 ## いつ使うか
 
-サブプロジェクトの feature ブランチを master へ `--no-ff` マージし、対応 handoff を completed 状態へ遷移させる**直前**。`start-work` Phase 2 マッピング表の「サブプロジェクト完了直後の振り返り」行から推奨される。
+サブプロジェクトの feature ブランチを master へ取り込み（マージコミットを残す運用の場合はマージコミットを残す方式で取り込み）、対応 handoff を completed 状態へ遷移させる**直前**。`start-work` Phase 2 マッピング表の「サブプロジェクト完了直後の振り返り」行から推奨される。
 
 実行は **手動トリガー**のみ。merge 検知などの自動起動は導入していない（ADR-0010）。形式は単一で、開始時の形式選択（完全版 / 簡易版）は設けない（ADR-0056）。
 
@@ -52,7 +52,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 
 - 意思決定の即時記録（継続適用）のルール（ADR-0006）は本スキル中も常時適用される。ただし retrospective 内では対策の採否を決めないため、retrospective 起因の ADR 起票は発生しない
 - 出力ファイルは時系列追記型（ADR-0011）に従い、一度書いたら原則上書き禁止（typo 修正のみ例外）
-- スキル内ではコミットしない。コミットはユーザーまたは通常フローに委ねる
+- スキル内ではコミットしない。コミットはユーザーまたは通常フローに委ねる。例外: Phase 0 の fast-forward 検出時のやり直し（当該サイクルの完了処理の訂正）に限り、ユーザー承認のうえ再マージのコミットを作成してよい
 
 ## 手順
 
@@ -65,7 +65,13 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
    - 該当ブランチの merge コミット範囲の `git log --oneline`
    - `docs/working/handoff/master.md` 現行版
    - 該当期間に追加・変更された ADR
-3. 既存 `docs/records/retrospectives/` に同一トピックの既存ファイルが無いことを確認する。あれば中止し、扱いをユーザーに確認する
+   - 直近の per-cycle 振り返り記録（`system/` 直下。取り込み方式の慣行判定の入力）
+3. **取り込み方式の検証（fast-forward 検出）**: マージ方式の慣行判定を行う（判定手続きと既定ブランチの解決手続きの正本は `start-work` の「完了処理のマージ方式確認」節。条件文はここに複写しない）。**慣行あり**の場合のみ以下を実施する。**未定義**なら判定を出さず慣行を 1 問確認するに留める（回答が「マージコミットを残す」なら当該サイクルから判定を実施し、branch 設定が未検出なら設定適用を提案する）。**残さない運用**なら実施しない
+   - 判定: 先端 SHA を次項の手続きで先に確定してから行う。次項の reflog 走査で fast-forward が確定した場合は本項の祖先確認・親走査は行わない。対象 feature ブランチの先端 SHA が、まず `git merge-base --is-ancestor` で既定ブランチの祖先であることを確認する（祖先でなければ未マージまたは squash であり、fast-forward とは判定せず報告のみ）。祖先である場合、`git rev-list --parents <既定ブランチ>` を走査し、いずれかのマージコミットの第 2 親以降に現れなければ fast-forward と判定する。対象ブランチ名はユーザー入力を第一とする（fast-forward 時は merge コミットからの推定が機能しない）
+   - 先端 SHA の取得: ブランチが現存すれば `git rev-parse <ブランチ名>`。削除済みなら `git reflog show <既定ブランチ>` を新しい順に走査し、**ブランチ名で限定された 2 パターンのみ**を判定材料にする——`merge <ブランチ名>: … Fast-forward` の行はその SHA が先端（fast-forward 確定）、`merge <ブランチ名>: Merge made by` の行は fast-forward でないことが確定するため検証を終了する（この行の SHA はマージコミットであり先端ではない）。`pull` で始まる行（引数を含む形も）と `commit (merge):` の行は判定材料にしない。該当行が無ければ判定不能として報告する（`HEAD` や既定ブランチ先端で代用しない）。reflog から得た短縮 SHA は `git rev-parse <短縮 SHA>^{commit}` で完全形へ正規化してから用いる。fast-forward 検出時の手順 2 の git log 範囲は分岐点 SHA から先端までを用いる
+   - fast-forward 検出時のやり直し提案: 次の 5 条件をすべて満たす場合に限り提案する——未 push / 既定ブランチへの追加コミットなし / feature 先端が参照可能 / 分岐点が既定ブランチの reflog から SHA として確定できる（当該 fast-forward エントリの直前のエントリの SHA を分岐点とする）/ 作業ツリーの追跡ファイルに未コミット変更が無いか、対象パス限定の `git stash push` で退避した（既定ブランチへの先行コミットは用いない）。条件 1・2 は機械判定する——未 push: 既定ブランチのリモート追跡 ref が存在する場合、`git merge-base --is-ancestor <先端 SHA> <リモート追跡 ref>` が偽であること（追跡 ref が無ければユーザーへ確認する）。追加コミットなし: `git rev-parse <既定ブランチ>` が先端 SHA と一致すること。手順: 分岐点 SHA を先に確定・提示し、以後は確定 SHA のみを使う（相対参照は再実行で元へ戻るため。`git merge-base` は fast-forward 後に先端を返すため用いない）。リスク段階の判定によらず本手順は承認必須とし、承認後に (1) `git branch <一時名> <先端 SHA>` で一時 ref を張る（名前は日付と先端短縮 SHA を含め、衝突時は既存を消さず別名を採る）、(2) 退避を実施し `git status --porcelain --untracked-files=no` の出力が空であることを確認する（空でなければ中止）、(3) `git reset --hard <分岐点 SHA>`、(4) `git merge --no-ff <一時 ref 名>`（コミットメッセージはプロジェクトの慣行に従う）、(5) 退避の復元と一時 ref の削除。以上を **Phase 0 の検証直後・Phase 1 の前に完了させる**（記録が先に既定ブランチへ載るとやり直し条件を自ら失効させ、Branch 行に書く SHA も確定しないため）
+   - 5 条件を満たさない場合はやり直しを提案せず、記録の Branch 行へ取り込み方式 fast-forward（先端 SHA）を明記する扱いをユーザーへ提示するに留める
+4. 既存 `docs/records/retrospectives/` に同一トピックの既存ファイルが無いことを確認する。あれば中止し、扱いをユーザーに確認する
 
 ### Phase 1: 課題案の一括提示（メイン実行）
 
@@ -82,7 +88,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 1. `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`（メイン記録。テンプレートは `skills/retrospective/template.md`）と、起票したフロー課題があれば `flow/YYYY-MM-DD-<topic>.md`（`skills/retrospective/flow-template.md`）を書き出す（ADR-0021。両フォルダで同名。フォルダ・ファイルはオンデマンド作成）
 2. 起票対象の課題を**全件** `docs/working/issues/` へ起票する（ADR-0028）。採番・起票ファイルの作成・インデックスへの行追加は課題管理定義（標準: `docs/overview/issue-management.md`）の起票・採番の定義に従う。課題内容は要約のみとし、「起票元」に `retrospectives/system|flow/YYYY-MM-DD-<topic>.md 課題#N` を記載する（定義が見つからない場合は、インデックス `docs/working/issues/README.md` 全体の最大番号+1 で採番し、`docs/working/issues/system|flow/NNNN-<slug>.md` へ要約＋起票元参照で起票してインデックスへ 1 行追加することを既定として提案し、その旨をユーザーへ報告する）。起票後、振り返りファイル側の各課題項目に「**起票**: Issue-NNNN」行を記載する
 3. 既存 open 課題の再発・進展の「検討状況」追記（`YYYY-MM-DD: 事象の要約`）を実施する（ADR-0031）。追記後にファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）
-4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**
+4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**。Branch 列は per-cycle 記録の Branch 行と同形（取り込み方式の明記を含む）で書く
 5. ユーザーへ提示し確認を得る
 
 ### Phase 3: 仕上げ（メイン実行）
@@ -130,5 +136,6 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 - ADR-0028: 振り返り課題の全件起票と issues の system/flow フォルダ分割
 - ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
 - ADR-0010: 振り返りフェーズ導入
+- ADR-0106: 取り込み方式の慣行判定・fast-forward 検出とやり直し・完了フローへの 2 層配線
 - ADR-0011: 保管規約（時系列追記型）
 - 関連スキル: start-work, decision-log, session-handoff, worklog-record, worklog-extract

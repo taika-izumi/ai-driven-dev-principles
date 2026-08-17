@@ -57,8 +57,9 @@
 ### Phase 0: 前提収集（メイン実行）
 
 1. 対象サブプロジェクト名・feature ブランチ名・対応 plan/spec パスをユーザーから受け取る（merge コミットから推定する場合は必ずユーザー確認）
-2. 対応 plan / spec / merge コミット範囲の git log / handoff 現行版 / 期間中に追加・変更された ADR を読み込む
-3. `docs/records/retrospectives/` に同一トピックの既存ファイルが無いことを確認する
+2. 対応 plan / spec / merge コミット範囲の git log / handoff 現行版 / 期間中に追加・変更された ADR / 直近の per-cycle 振り返り記録（慣行判定の入力）を読み込む
+3. 取り込み方式の検証（fast-forward 検出。ADR-0106）: 慣行判定（正本は start-work「完了処理のマージ方式確認」）で慣行ありの場合のみ、feature 先端の祖先判定＋親走査で fast-forward を検出する。検出時、5 条件（未 push / 追加コミットなし / 先端参照可 / 分岐点確定可 / 作業ツリー退避済み）を満たす場合に限り、承認必須でやり直し（一時 ref → 退避確認 → reset → `--no-ff` 再マージ → 復元）を Phase 1 の前に完了させる。満たさない場合は Branch 行へ fast-forward を明記する代替記録を提示するに留める
+4. `docs/records/retrospectives/` に同一トピックの既存ファイルが無いことを確認する
 
 ### Phase 1: 課題案の一括提示（メイン実行）
 
@@ -75,7 +76,7 @@
 1. `docs/records/retrospectives/system/YYYY-MM-DD-<topic>.md`（メイン記録）と、フロー課題があれば `flow/YYYY-MM-DD-<topic>.md` を書き出す（ADR-0021。テンプレートは §4）
 2. 起票対象の課題を全件 `docs/working/issues/system|flow/NNNN-<slug>.md` へ起票し、インデックスへ行追加する（ADR-0028。採番・起票・インデックス追記の定義は課題管理定義 `docs/overview/issue-management.md`「3. 起票・採番・粒度」が正）
 3. ADR-0031 の追記（再発・進展）を実施する
-4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**
+4. **`docs/records/retrospectives/README.md` の一覧へ行追加する（省略不可）**。Branch 列は per-cycle 記録の Branch 行と同形（取り込み方式の明記を含む）で書く
 5. ユーザーへ提示し確認を得る
 
 ### Phase 3: 仕上げ（メイン実行）
@@ -91,7 +92,7 @@
    本工程は、Post ラッパーに完全に入らなかった場合（消化記録の行そのものが無い）を回収する唯一の経路である。書かれなかったものは即時には検出できないため、外形的に必ず残る `git log` との事後突合で拾う設計になっている
 3. `session-handoff` の cycle-reset 操作を呼ぶ（剪定・書き換えの手順は session-handoff 側の定義に従う。ADR-0075）。「次セッション開始時のアクション」に起票済み issue 番号を記載し、Status を `in_progress` から `ready-for-next-cycle` へ遷移する（ADR-0076）
 
-コミットはスキル内では行わない（ユーザーまたは通常フローに委ねる）。
+コミットはスキル内では行わない（ユーザーまたは通常フローに委ねる）。例外: Phase 0 の fast-forward 検出時のやり直し（完了処理の訂正）に限り、ユーザー承認のうえ再マージのコミットを作成してよい（ADR-0106）。
 
 ## 4. 出力ファイル仕様
 
@@ -101,7 +102,7 @@
 # Retrospective: <サブプロジェクト名>
 
 - **Subject**: <正式名>
-- **Branch**: feature/<name>（merge済み: <sha>）
+- **Branch**: feature/<name>（取り込み方式: マージコミット <sha>）
 - **Period**: <開始日> 〜 <完了日>
 - **Plan**: docs/working/plans/<...>
 - **Spec**: docs/current/specs/<...>

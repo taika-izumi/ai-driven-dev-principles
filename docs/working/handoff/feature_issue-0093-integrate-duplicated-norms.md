@@ -1,9 +1,9 @@
 # Handoff: Issue-0093/0094 対策（二重定義 22 行の統合と高コスト様式 3 行の簡素化）
 
 - **Branch**: feature/issue-0093-integrate-duplicated-norms
-- **Last Updated**: 2026-08-17 13:42 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 対策サイクル/実装（plan 確定点通過・plan コミット済み。次セッションで Task 1 から実装開始）
+- **Last Updated**: 2026-08-17 21:30 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 対策サイクル/実装完了（Task 1〜15 完了・完了基準 7/7 達成。master へのマージ判断待ち）
 
 ## 作業の目的・背景
 
@@ -25,13 +25,13 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: plan の実装（Task 1〜15）
-  - 状態: plan 確定・コミット済み（`d38f46b`）。実装は未着手。実装方式（subagent-driven / インライン）は未選択
-  - 残り: Task 1〜13（統合・簡素化・注記・version bump 0.1.8）→ Task 14 サイクル全体整合検査（旧 spec 追従・open 課題引用 4 件の個別判定を含む）→ Task 15 Accepted 昇格・Issue-0093/0094 close・Issue-0060 の close 判定
+- [ ] **現在の作業**: マージ判断（plan の実装は完了）
+  - 状態: Task 1〜15 すべて完了（最新 `397b4b6`。version 0.1.8。全タスク 2 段レビュー Approved・サイクル完了基準 7/7 達成を最終レビューで確認済み）。ADR-0103〜0105 Accepted、Issue-0093/0094/0060 close 済み（0060 はユーザー承認）
+  - 残り: master へのマージ（finishing-a-development-branch）→ マージ後に retrospective（統合・簡素化・注記・version bump 0.1.8）→ Task 14 サイクル全体整合検査（旧 spec 追従・open 課題引用 4 件の個別判定を含む）→ Task 15 Accepted 昇格・Issue-0093/0094 close・Issue-0060 の close 判定
 
 ## 未着手のタスク
 
-- [ ] 実装完了時: サイクル全体整合検査（旧 spec 追従の判定を含む）、Issue-0060 の close 判定（いずれも plan Task 14・15 に組込済み）
+- [ ] master へのマージ（ユーザー判断）→ マージ後に retrospective
 
 ## 既知のブロッカー・懸念
 
@@ -45,6 +45,21 @@
 - 2026-08-17 セッション終了処理: ADR=なし（設計確定後の新規決定なし） / worklog=棄却（`-04` 記録以降の delta なし）
 - 2026-08-17 plan 作成完了・plan 確定点 通過: ADR=なし（ADR-0105 の写像のみ） / worklog=棄却（delta なし。反復実測は Issue-0098 へ一次記録） / review=フル実施（claude-opus-5。3 観点＋差分確認の 2 巡で C/M ゼロ収束。実測は Issue-0098）
 - 2026-08-17 セッション終了処理（実装開始前の区切り）: ADR=なし（plan 確定以降の新規決定なし） / worklog=棄却（plan 確定点以降の delta なし）
+- 2026-08-17 plan Task 1 完了（K2/E-09。`970db7d`＋`79ab66e`）: ADR=なし（計画の写像。品質レビュー指摘 1 件〈配線行へ「承認の昇格」節参照追加〉の反映のみ） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 2 完了（K2/K6。`38fa6fa`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 2 件は計画文言維持で見送り〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 3 完了（K1。`367d32d`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 2 件は現状正確で修正不要判定〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 4 完了（K8。`64d1597`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 3 件はスコープ外・修正不要判定〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 5 完了（K5/K7/K18。`90666fe`）: ADR=なし（計画の写像。品質 Important 1 件〈「中規模以上」定義孤立〉は Task 6 が当該行を計画どおり削除するため Task 6 のレビューで解消確認） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 6 完了（K9。`bae659f`＋`193eb0f`）: ADR=なし（計画の写像。品質 Important 1 件〈節 7「中規模以上」へ feature-block-design しきい値定義への配線句追加〉の反映のみ） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 7 完了（K10。`8c07eba`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 3 件は既存慣行・範囲外で修正不要判定〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 8 完了（K12。`9885da8`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 3 件は持ち越し文言・範囲外で修正不要判定〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 9 完了（C-11。`a326fe4`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 2 件: spec 旧番号残存は Task 14 で追従予定〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 10 完了（D-11。`e62fd71`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 2 件は既存ドリフト。spec 2026-04-25 の旧番号は Task 14 対象〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 11 完了（I-17。`c1f408d`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 4 件は語句レベル・次回改修時統一で足りる判定〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 12 完了（部分修正注記 21 ADR。`75084aa`）: ADR=なし（計画の写像。レビュー指摘なし〈Minor 1 件は前サイクルの ADR-0068 注記漏れ由来・虚偽なしで修正不要判定〉） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 13 完了（version 0.1.8＋総ざらい。`1c1ec72`＋`a04fb5a`）: ADR=なし（計画の写像。総ざらい指摘 1 件〈extend-guidelines の件数参照〉は配線行規律に沿い件数除去で反映） / worklog=棄却（delta なし）
+- 2026-08-17 plan Task 14 完了（サイクル全体整合検査。`55ea0d9`＋`98985b9`＋`89d5b7d`）: ADR=なし（検査・追従のみ） / worklog=棄却（delta なし） / cyclecheck=実施（修正: 55ea0d9, 98985b9。既存ドリフト 4 件は Issue-0008 へ記録し据え置き）
+- 2026-08-17 plan Task 15 完了・ADR-0103〜0105 Accepted 昇格・Issue-0093/0094/0060 close（`bffc3ce`＋`397b4b6`）: ADR=なし（既定 ADR の昇格のみ） / worklog=棄却（delta なし） / cyclecheck=実施（Task 14 行で実施済み。重複実施なし・粒度点検は 3 ADR とも分割不要）
 
 ## 次セッション開始時のアクション
 

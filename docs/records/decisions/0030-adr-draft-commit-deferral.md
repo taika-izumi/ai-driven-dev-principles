@@ -34,3 +34,4 @@
 - 良い影響: brainstorming 中の連鎖的な決定でも、コミット中断・書き直しの手戻りが規範レベルで防止される。「作成は即時・コミットと承認は収束後」という一貫したモデルになる。
 - 留意点: コミット漏れのリスクが生じる。ADR-0019 の昇格漏れ対策と同様に、`start-work` Phase 2 Post とセッション終了処理で未コミットドラフトの確認を促すことで補う。
 - 留意点: `CLAUDE.md` は template.manifest 対象のため変更後に `scripts/sync-template.ps1` の実行が必要。skills/ の変更はプラグイン更新（`/plugin marketplace update ai-driven-dev-principles`）まで利用者に反映されない。
+- **部分修正（ADR-0105）**: 決定 4 の反映先（CLAUDE.md 即時記録節・start-work 冒頭ブロック）のコミット遅延の定義列挙は decision-log への参照に置換された（コミット遅延の規範本体は decision-log 側で現役）

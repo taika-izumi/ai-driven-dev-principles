@@ -41,3 +41,4 @@ Issue-0037 の対策検討にあたり、中央ストアと git 履歴を実測�
 - **コスト・留意**: handoff のフォーマットが1欄増える。`skills/session-handoff/` `skills/start-work/` `skills/retrospective/` の3スキルを改定するためプラグイン更新が必要（ADR-0055）。事後突合は記録が末尾に寄るため delta の鮮度が落ちる（`context` や `procedure` の解像度低下、ADR-0053 の記録単位からの逸脱）。この鮮度低下は前段が機能する限り例外的に留まる想定である
 - 発火の強制手段（フック等）は本決定の対象外とした。必要性を認めた時点で別途決定する
 - 本決定は既存3スキルの挙動変更を伴う。実装完了・検証後に Accepted へ昇格する（ADR-0019）
+- **部分修正（ADR-0105）**: start-work Post 前文・worklog-record 側の消化記録の記録対象・様式の記述は session-handoff への参照に置換された（記録義務・棄却明示の規範は session-handoff 側で現役）

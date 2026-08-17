@@ -34,6 +34,7 @@
 - **良い影響**: issues が唯一の課題一覧（single source of truth）になり、振り返り由来の課題にも open/closed ライフサイクルが適用される。起票漏れが構造的に発生しない。分類がファイルツリーとインデックスの両方から一目で判別できる。抽出（retrospectives/system|flow）と追跡（issues/system|flow）が同じ2分類軸で対称になる。
 - **コスト・悪い影響**: retrospective 実行時の作業が増える（課題件数分の issue ファイル作成＋インデックス行追加）。既存課題（Issue-0001）のフォルダ移動と、未起票バックログ（2026-07-05 振り返りの6件等）の移行起票が必要。全課題を通した時系列の一覧はインデックス2セクションを跨いで見る必要がある。分類を変える場合はファイル移動＋インデックス修正になる。
 - 波及更新: `skills/retrospective/SKILL.md` / `flow-template.md` / `template.md`、`docs/overview/folder-structure.md` §7（フォルダ構成・課題フォーマット・インデックス形式）、`docs/records/retrospectives/README.md`、`CONTRIBUTING.md`（未決事項・課題シナリオ / 課題対策シナリオ）、`skills/decision-log/SKILL.md`（未決事項の起票手順のパス）。template 対象は `scripts/sync-template.ps1` で同期する。
+- **部分修正（ADR-0105）**: retrospective Phase 2 の起票サブ手順（採番・起票・インデックス行追加）は課題管理定義への参照に置換された
 
 ## Related
 

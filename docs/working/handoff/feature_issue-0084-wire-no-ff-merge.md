@@ -33,9 +33,9 @@ Issue-0084 の対策サイクル。retrospective スキルは「feature ブラ�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 完了処理（master への取り込み）と retrospective
-  - 状態: plan 全 10 タスク完了・ADR-0106 Accepted 昇格・Issue-0084 close 済み（`aac79a0`）。マージ実行の確認待ち
-  - 残り: `--no-ff` マージ（慣行判定=慣行あり: branch.master.mergeoptions 検出済み）→ retrospective → cycle-reset → finalize
+- [ ] **現在の作業**: retrospective 完了・cycle-reset 前
+  - 状態: master へ `--no-ff` マージ済み（`6333928`・新配線の初適用で ff なし確認）。retrospective 記録作成・Issue-0098/0073 進展追記・インデックス行追加まで完了
+  - 残り: cycle-reset → finalize → push（ユーザー確認）
 
 ## 未着手のタスク
 
@@ -66,6 +66,7 @@ Issue-0084 の対策サイクル。retrospective スキルは「feature ブラ�
 - 2026-08-17 plan Task 8 完了（配布物生成・執行点検査）: ADR=なし（生成のみ） / worklog=棄却（既存の執行点手順内で delta なし）
 - 2026-08-17 plan Task 9 完了（スモーク 13/13）: ADR=なし（検証のみ） / worklog=棄却（plan 規定の検証で delta なし。squash 出力の Fast-forward 語の落とし穴は plan 特記事項へ記録済み）
 - 2026-08-17 plan Task 10 完了・実装完了・ADR-0106 Accepted 昇格（`082e1fb`・`aac79a0`）: ADR=0106（昇格・Issue-0084 close） / worklog=棄却（既存の昇格手順内で delta なし） / cyclecheck=実施（指摘なし）
+- 2026-08-17 master マージ（`6333928`）・retrospective 完了: ADR=なし（retrospective は採否を決めない） / worklog=棄却（総ざらい突合 13 マイルストーン未消化 0・新規 delta なし）
 
 ## 次セッション開始時のアクション
 

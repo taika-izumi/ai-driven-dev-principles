@@ -52,7 +52,7 @@
 - **Issue 運用の規範が稼働中**（ADR-0095〜0098）: 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須。正本は `docs/overview/issue-management.md`
 - **decision-log の昇格条件要約は、課題管理定義の改定時に同時更新が必要**（意図された配線。ADR-0098 の複写乖離型の監視点）
 - **未完の後始末（過去サイクル分）**: 改定スキル（decision-log）の本文と repo 実ファイルの突合、課題管理定義の既存配布先への手動コピーが未実施のままなら次セッションで
-- **リモート同期**: 本サイクル分（`67f1304`〜cycle-reset コミット）は未 push（push はユーザー確認後）
+- **リモート同期**: `efc66fe`（cycle-reset）まで push 済み（2026-08-18・ユーザー指示）。未 push はリモート同期状態の本更新コミットのみ（直後に push）
 - **プラグイン実体は 0.1.9 のまま**。0.1.10 の反映には `/plugin marketplace update ai-driven-dev-principles`（AI からは実行不可）とセッション再起動（索引再構築）が必要
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**
@@ -73,7 +73,7 @@
 ## 次セッション開始時のアクション
 
 1. **最初に実行**: `/plugin marketplace update ai-driven-dev-principles` ＋ セッション再起動（プラグイン索引を 0.1.10 で再構築）→ `start-work`（Phase 0 で本ハンドオフを read）
-2. **リモート同期**: 本サイクル分が未 push なら push の要否をユーザーへ確認
+2. **リモート同期**: push 済み・未 push なし（`efc66fe` とその同期更新コミットまで）
 3. **次サイクルの候補（着手はユーザー判断）**: 抽出した課題は issues に起票済み（Issue-0103〜0106。着手はユーザー判断）。目安の優先順は「未着手のタスク」参照
 4. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る

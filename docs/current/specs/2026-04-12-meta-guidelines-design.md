@@ -195,6 +195,7 @@ ADR作成・ステータス変更時にインデックスも必ず更新する�
 
 - 判断の撤回・差し替え時: Status を Deprecated / Superseded に変更し理由を追記
 - 重大な結果（Consequence）が判明したとき: Consequences セクションに追記
+- Accepted 昇格後に決定内容を変えない本文改訂が生じたとき: Consequences へ改訂記録を 1 行追記し、Status は Accepted のまま維持する（ADR-0108。決定内容を変える改訂は新 ADR＋Superseded の既存経路）
 
 #### 漏れ防止
 

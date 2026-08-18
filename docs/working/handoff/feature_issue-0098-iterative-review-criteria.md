@@ -1,9 +1,9 @@
 # Handoff: Issue-0098 確定前レビュー反復の発動基準設計
 
 - **Branch**: feature/issue-0098-iterative-review-criteria
-- **Last Updated**: 2026-08-18 13:34 (Asia/Tokyo)
+- **Last Updated**: 2026-08-18 14:37 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/spec 確定点 (c) 通過（ADR-0107/0108 確定・コミット済み）。次は writing-plans（実装 plan 作成）
+- **Current Phase**: ガイドライン拡張/実装（plan 確定済み・subagent-driven で Task 1〜8 を実行）
 
 ## 作業の目的・背景
 
@@ -11,6 +11,7 @@ Issue-0098（確定前レビューの反復〈指摘反映後の再レビュー�
 
 ## 関連ドキュメント
 
+- Plan: `docs/working/plans/2026-08-18-issue-0098-adr-0107-0108-implementation.md`（Task 1〜8。実装の作業指示の正本）
 - 課題正本: `docs/working/issues/flow/0098-iterative-review-trigger-criteria/0098-iterative-review-trigger-criteria.md`
 - 実測の一次記録: 同フォルダ `0098-log.md`（末尾行に本サイクル 9 巡の巡実測。確定時に最終巡数へ更新）
 - ADR: `docs/records/decisions/0107-iterative-review-recommendation-by-revision-nature.md` / `0108-accepted-adr-revision-status-handling.md`（Proposed・コミット済み。決定インデックス行も同コミット）
@@ -30,9 +31,10 @@ Issue-0098（確定前レビューの反復〈指摘反映後の再レビュー�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装 plan の作成（superpowers:writing-plans）
-  - 状態: 未着手（spec 確定点 (c) 通過直後）
-  - 残り: ADR-0107/0108 の実装対象を plan 化（start-work / pre-finalization-review / session-handoff の 3 スキル＋decision-log 改定・spec 3 件同期・部分修正注記 5 系統＋明確化注記 1 件・執行点 4 手順＋version bump）→ 実装 → Issue-0098 close
+- [ ] **現在の作業**: plan の実装（superpowers:subagent-driven-development・タスクごとに実装サブエージェント＋2 段レビュー）
+  - 状態: Task 1 から未着手。plan は写像チェック 1 巡（90 要件全数対応付け）＋指摘 17 件反映済みで確定
+  - 残り: Task 1〜4（スキル 4 件改定）→ Task 5（注記 5＋1）→ Task 6（spec 4 件同期）→ Task 7（執行点＋v0.1.10）→ Task 8（横断検証・Issue-0098 close）
+  - 留意: 実装時レビューの委譲プロンプトへ 0098-log 末尾の委譲済み精度型 2 件を参照させる
 
 ## 未着手のタスク
 
@@ -54,12 +56,13 @@ Issue-0098（確定前レビューの反復〈指摘反映後の再レビュー�
 - 2026-08-18 第 11 巡フル・指摘 19 件反映: ADR=なし（ADR-0107 本文の改訂として記録・独立論点なし） / worklog=棄却（ADR-0107 に記録済み・delta なし）
 - 2026-08-18 第 12 巡フル・第 5 次設計縮小適用: ADR=なし（ADR-0107 本文の改訂〈Considered Alternatives 追記含む〉として記録） / worklog=棄却（ADR-0107 に記録済み・delta なし）
 - 2026-08-18 spec 確定点 (c) 通過（ADR-0107/0108 確定・コミット）: ADR=0107/0108（Proposed 維持） / worklog=棄却（正本〈ADR・0098-log〉に記録済み・delta なし） / review=フル実施（claude-opus-5・12 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・提示後確定（実質収束せず））
+- 2026-08-18 実装 plan 作成・plan 確定点 通過: ADR=なし（写像 plan・新規決定なし。ADR-0107 の誤記 1 件〈決定 1 (5) 実装先〉を同時修正） / worklog=棄却（期待値と編集内容の矛盾は Issue-0095 の既知型・delta なし） / review=差分再確認（claude-opus-5・1 巡・提示後確定（実質収束せず））
 
 ## 次セッション開始時のアクション
 
-1. **最初に確認**: 本 handoff →「進行中のタスク」→ ADR-0107 の Consequences「実装対象」（実装の正本）と ADR-0108 の実装対象
-2. **最初に実行**: superpowers:writing-plans で実装 plan を作成（出力先は `docs/working/plans/`）。plan 確定点では確定前レビューの提示規則に従う
-3. **留意点**: 配布対象ソース（skills/）変更のため執行点 4 手順＋version bump（現行 0.1.9）。実装時レビューの委譲プロンプトへ 0098-log 末尾の委譲済み精度型 2 件を参照させる。inbox 残置はユーザー手動移動予定（git add で巻き込まない・Issue-0020）
+1. **最初に確認**: 本 handoff →「進行中のタスク」→ Plan（`docs/working/plans/2026-08-18-issue-0098-adr-0107-0108-implementation.md`）の未完了 Task
+2. **最初に実行**: superpowers:subagent-driven-development で plan の次の未完了 Task から実装を再開
+3. **留意点**: 執行点 4 手順＋version bump は Task 7 に集約済み（先にやらない）。実装時レビューの委譲プロンプトへ 0098-log 末尾の委譲済み精度型 2 件を参照させる。inbox 残置はユーザー手動移動予定（git add で巻き込まない・Issue-0020）
 
 ## 重要な意思決定の履歴
 

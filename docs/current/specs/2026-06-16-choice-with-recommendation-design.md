@@ -1,8 +1,8 @@
 # 設計: ユーザーへの質問・意思決定要求時に選択肢と推奨を提示する規範
 
 - **日付**: 2026-06-16
-- **関連ADR**: ADR-0024
-- **対象**: Layer 1 `docs/principles.md`、Layer 2 `CLAUDE.md`
+- **関連ADR**: ADR-0024（ADR-0109 でツール選択条項を改定）
+- **対象**: Layer 1 `docs/overview/principles.md`、Layer 2 `CLAUDE.md`
 
 ## 目的
 
@@ -23,13 +23,13 @@ AIエージェントがユーザーに質問・意思決定を求めるとき、
 
 ### ツールの扱い
 
-- 構造化された質問ツール（Copilot CLI の `ask_user`、Claude Code の `AskUserQuestion` 等）が利用できる場合はそれを使う。
-- 利用できない場合はテキストで選択肢を列挙する。
-- 規範は「振る舞い（選択肢＋推奨を出す）」を主、「ツール」を従として記述し、特定ツール名に依存させない。
+- 質問・意思決定要求はすべてテキストのみのターンで行い、説明に続けて番号付き選択肢を提示する。
+- 構造化された質問ツール（Copilot CLI の `ask_user`、Claude Code の `AskUserQuestion` 等）は、モデル・ツール・環境設定を問わず使用しない（ADR-0109）。
+- 規範は「振る舞い（選択肢＋推奨を出す）」を主として記述し、特定ツール名に依存させない。
 
 ## 変更内容
 
-### 1. Layer 1 `docs/principles.md`
+### 1. Layer 1 `docs/overview/principles.md`
 
 原則4「重要局面での人間の関与」の箇条書きに、以下の一文を追加する（既存の「設計上の重要な分岐点（アプローチの選択など）でも人間の判断を仰ぐ」の直後に置く）:
 
@@ -45,13 +45,13 @@ AIエージェントがユーザーに質問・意思決定を求めるとき、
 ### ユーザーへの質問と意思決定要求
 
 - ユーザーに質問する、または意思決定を求めるときは、原則として選択肢を提示し、推奨する選択肢を「（推奨）」として先頭に置き、推奨理由を一言添えること
-- 構造化された質問ツール（GitHub Copilot CLI の ask_user、Claude Code の AskUserQuestion 等）が利用できる場合はそれを使い、無ければテキストで選択肢を列挙すること
+- 質問・意思決定要求はすべてテキストのみのターンで行い、説明に続けて番号付き選択肢を提示すること。構造化された質問ツール（GitHub Copilot CLI の ask_user、Claude Code の AskUserQuestion 等）は、モデル・ツール・環境設定を問わず使用しないこと
 - 本質的に自由記述が必要な質問（目的・背景の説明を求める等、選択肢を自然に列挙できないもの）に限り、例外として自由記述を許すこと
 ```
 
 ### 3. テンプレート同期
 
-`docs/principles.md` と `CLAUDE.md` は `template.manifest` の同期対象。変更後に `scripts/sync-template.ps1` を実行し、`template/` 配下へ反映する。
+`docs/overview/principles.md` と `CLAUDE.md` は `template.manifest` の同期対象。変更後に `scripts/sync-template.ps1` を実行し、`template/` 配下へ反映する。
 
 ## 非対象（YAGNI）
 
@@ -61,7 +61,7 @@ AIエージェントがユーザーに質問・意思決定を求めるとき、
 
 ## 検証
 
-- `docs/principles.md` 原則4 に一文が追加され、ツール名を含まないこと。
+- `docs/overview/principles.md` 原則4 に一文が追加され、ツール名を含まないこと。
 - `CLAUDE.md` に新サブセクションが追加され、スコープ・推奨形式・ツール扱い・例外条項が記述されていること。
-- `scripts/sync-template.ps1` 実行後、`template/CLAUDE.md` と `template/docs/principles.md` がルートと一致すること（冪等性確認）。
+- `scripts/sync-template.ps1` 実行後、`template/CLAUDE.md` と `template/docs/overview/principles.md` がルートと一致すること（冪等性確認）。
 - 生きたファイルに矛盾・重複が無いこと。

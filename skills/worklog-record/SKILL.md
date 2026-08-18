@@ -66,7 +66,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 ## エントリ例
 
 ```jsonl
-{"v":2,"id":"X-2026-07-17-01","date":"2026-07-17","project":"X","model":"claude-fable-5","scope":"general-candidate","title":"AskUserQuestion 前に環境変数を確認","context":"start-work Phase 1 で構造化質問ツールを使う前に、誤操作防止設定の運用チェックを実行","procedure":["Bash: echo $CLAUDE_CODE_DISABLE_MOUSE_CLICKS","値が 1 であることを確認してから AskUserQuestion 発行"],"corrections":["構造化質問ツール使用前に環境変数の値を確認すること"],"applied_rules":["ADR-NNNN"]}
+{"v":2,"id":"X-2026-07-17-01","date":"2026-07-17","project":"X","model":"claude-fable-5","scope":"general-candidate","title":"生成物の同期を確認してからコミット","context":"配布物の生成元ファイルを変更した後、生成スクリプトの実行を忘れてコミットしかけた","procedure":["生成元を変更したら生成スクリプトを実行する","git status で生成物の差分がステージ済みか確認してからコミットする"],"corrections":["生成元と生成物は同じコミットに含めること"],"applied_rules":["ADR-NNNN"]}
 ```
 
 ## ストア仕様

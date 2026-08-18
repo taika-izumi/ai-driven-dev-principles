@@ -114,3 +114,4 @@
 | [0100](flow/0100-wiring-line-volatile-number-ban-not-generalized.md) | 配線行に統合先の可変数値を書かない規律の恒久規範化が未実施 | open | 2026-08-17 |
 | [0101](flow/0101-start-work-spec-figure-drift.md) | start-work 旧設計仕様書の図示が現行 SKILL.md から乖離している | open | 2026-08-17 |
 | [0102](flow/0102-cycle-reset-handoff-target-ambiguous-after-merge.md) | マージ後の cycle-reset の適用先 handoff が暗黙で、マージ先ブランチの handoff が陳腐化する | open | 2026-08-18 |
+| [0103](flow/0103-iteration-cost-budget-guideline-missing.md) | 確定前レビュー反復に確定点あたりのコスト・巡数の目安（予算基準）が無い | open | 2026-08-18 |

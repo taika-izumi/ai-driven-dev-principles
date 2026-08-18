@@ -115,3 +115,6 @@
 | [0101](flow/0101-start-work-spec-figure-drift.md) | start-work 旧設計仕様書の図示が現行 SKILL.md から乖離している | open | 2026-08-17 |
 | [0102](flow/0102-cycle-reset-handoff-target-ambiguous-after-merge.md) | マージ後の cycle-reset の適用先 handoff が暗黙で、マージ先ブランチの handoff が陳腐化する | open | 2026-08-18 |
 | [0103](flow/0103-iteration-cost-budget-guideline-missing.md) | 確定前レビュー反復に確定点あたりのコスト・巡数の目安（予算基準）が無い | open | 2026-08-18 |
+| [0104](flow/0104-provenance-strip-grammar-breakage-not-machine-detected.md) | 識別子除去後の文法破綻（R1-a 型）を機械検出できない | open | 2026-08-18 |
+| [0105](flow/0105-skill-md-size-growth-no-norm.md) | SKILL.md のサイズ・分割規範が無い | open | 2026-08-18 |
+| [0106](flow/0106-review-snapshot-area-no-naming-cleanup-rules.md) | 改訂前退避領域の命名規約・掃除規定が無い | open | 2026-08-18 |

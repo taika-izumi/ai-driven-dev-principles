@@ -1,6 +1,6 @@
 # ADR-0108: Accepted 昇格後の ADR 本文改訂は決定内容の変更有無でステータス運用を分ける
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-18
 
 ## Context

@@ -1,6 +1,6 @@
 # ADR-0107: 指摘反映後の再レビューは改訂の性質で推奨を切り替え、収束は指摘の分類で判定する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-18
 
 ## Context

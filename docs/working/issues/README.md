@@ -109,8 +109,9 @@
 | [0095](flow/0095-redesign-plan-expectation-check-a13.md) | 計画の検証期待値突合（A-13）は検出力が反証されており再設計が必要 | open | 2026-08-16 |
 | [0096](flow/0096-generalize-evaluability-brake-for-extensions.md) | 増設の歯止め（評価可能性の義務化・弱い形）の CONTRIBUTING への一般規範化が未実施 | closed | 2026-08-16 |
 | [0097](flow/0097-hold-44-records-conditional-backlog.md) | 監査の保留（観測継続）44 行の条件付き backlog（次回棚卸しで再判定） | open | 2026-08-16 |
-| [0098](flow/0098-iterative-review-trigger-criteria.md) | 確定前レビューの反復（指摘反映後の再レビュー）の発動基準が未定義 | open | 2026-08-16 |
+| [0098](flow/0098-iterative-review-trigger-criteria/0098-iterative-review-trigger-criteria.md) | 確定前レビューの反復（指摘反映後の再レビュー）の発動基準が未定義 | closed | 2026-08-16 |
 | [0099](flow/0099-overturned-5-duplicated-rows-conditional-backlog.md) | 統合を覆した 5 行の二重定義の存置（次回棚卸しで再判定する条件付き backlog） | open | 2026-08-17 |
 | [0100](flow/0100-wiring-line-volatile-number-ban-not-generalized.md) | 配線行に統合先の可変数値を書かない規律の恒久規範化が未実施 | open | 2026-08-17 |
 | [0101](flow/0101-start-work-spec-figure-drift.md) | start-work 旧設計仕様書の図示が現行 SKILL.md から乖離している | open | 2026-08-17 |
 | [0102](flow/0102-cycle-reset-handoff-target-ambiguous-after-merge.md) | マージ後の cycle-reset の適用先 handoff が暗黙で、マージ先ブランチの handoff が陳腐化する | open | 2026-08-18 |
+| [0103](flow/0103-iteration-cost-budget-guideline-missing.md) | 確定前レビュー反復に確定点あたりのコスト・巡数の目安（予算基準）が無い | open | 2026-08-18 |

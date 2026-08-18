@@ -112,3 +112,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0104](0104-integration-design-by-source-collation-with-audit-proposal-as-default.md) | 統合仕様は監査の統合先案を既定とし、正本読み合わせで重複側固有の条件を写像してから確定する | Accepted | 2026-08-17 |
 | [0105](0105-integration-design-wiring-two-commons-and-simplification.md) | 統合 22 行は配線化（共通規範の新設は見送り、7 行は統合先案を覆し現状維持）で、簡素化 3 行は手順の束ね直しと起票手順の参照化で実装する | Accepted | 2026-08-17 |
 | [0106](0106-two-layer-wiring-for-merge-mode-norm.md) | マージコミットを残す規範の再発防止は予防・検出の 2 層配線とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する | Accepted | 2026-08-17 |
+| [0107](0107-iterative-review-recommendation-by-revision-nature.md) | 指摘反映後の再レビューは改訂の性質で推奨を切り替え、収束は指摘の分類で判定する | Accepted | 2026-08-18 |
+| [0108](0108-accepted-adr-revision-status-handling.md) | Accepted 昇格後の ADR 本文改訂は決定内容の変更有無でステータス運用を分ける | Accepted | 2026-08-18 |

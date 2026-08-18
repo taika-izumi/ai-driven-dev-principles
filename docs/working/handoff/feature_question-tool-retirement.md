@@ -1,9 +1,9 @@
 # Handoff: 構造化質問ツールの全面廃止とクリック操作再有効化
 
 - **Branch**: feature/question-tool-retirement
-- **Last Updated**: 2026-08-18 22:15 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装完了・ADR-0109 Accepted。完了処理（master への取り込み）待ち
+- **Last Updated**: 2026-08-18 22:45 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了（master へ --no-ff 取り込み済み。マージコミット `c95d231`・retrospective 実施済み）
 
 ## 作業の目的・背景
 

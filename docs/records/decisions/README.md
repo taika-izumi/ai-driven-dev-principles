@@ -114,4 +114,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0106](0106-two-layer-wiring-for-merge-mode-norm.md) | マージコミットを残す規範の再発防止は予防・検出の 2 層配線とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する | Accepted | 2026-08-17 |
 | [0107](0107-iterative-review-recommendation-by-revision-nature.md) | 指摘反映後の再レビューは改訂の性質で推奨を切り替え、収束は指摘の分類で判定する | Accepted | 2026-08-18 |
 | [0108](0108-accepted-adr-revision-status-handling.md) | Accepted 昇格後の ADR 本文改訂は決定内容の変更有無でステータス運用を分ける | Accepted | 2026-08-18 |
-| [0109](0109-retire-structured-question-tool-unconditionally.md) | 構造化質問ツールを全ツール・全モデルで廃止しテキスト選択肢に一本化、クリック操作を再有効化する | Proposed | 2026-08-18 |
+| [0109](0109-retire-structured-question-tool-unconditionally.md) | 構造化質問ツールを全ツール・全モデルで廃止しテキスト選択肢に一本化、クリック操作を再有効化する | Accepted | 2026-08-18 |

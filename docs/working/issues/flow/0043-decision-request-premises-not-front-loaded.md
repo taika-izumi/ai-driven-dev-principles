@@ -3,7 +3,7 @@
 - **Status**: open
 - **Opened**: 2026-08-05
 - **起票元**: `worklog-extract` 走査（2026-08-05、2回目）候補3。走査対象 118 件中 8 件が該当し、**大型クラスタで唯一 `corrections` が `friction` を上回る**
-- **関連**: `CLAUDE.md`「ユーザーへの質問と意思決定要求」節、ADR-0024、ADR-0036（クリック誤操作の防止設定）、ADR-0035（質問ツールのタイムアウト）、`ai-driven-dev-principles:pre-action-review`（リスク提示のみで選択肢の作り方は扱わない）、原則4（人間の関与）
+- **関連**: `CLAUDE.md`「ユーザーへの質問と意思決定要求」節、ADR-0024、ADR-0109（質問ツール全面廃止・テキスト一本化。旧 ADR-0036/0035 の関連条項は撤去・置換済み）、`ai-driven-dev-principles:pre-action-review`（リスク提示のみで選択肢の作り方は扱わない）、原則4（人間の関与）
 
 ## 課題内容
 

@@ -41,7 +41,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0033](0033-sync-template-lf-output.md) | sync-template.ps1 の生成ファイルは LF 改行で書き出す | Accepted | 2026-07-05 |
 | [0034](0034-plan-verification-edit-consistency-check.md) | 実装計画の検証ステップ期待値と編集内容の整合を確認する規範を追加 | Accepted | 2026-07-05 |
 | [0035](0035-question-tool-timeout-stop-norm.md) | 構造化質問ツールのタイムアウト時は一律で停止・待機する規範を追加 | Accepted | 2026-07-05 |
-| [0036](0036-selection-ui-env-setting-and-text-fallback.md) | 選択UI誤操作対策は環境側の誤操作防止設定とテキスト提示フォールバック規範の両輪とする | Accepted | 2026-07-05 |
+| [0036](0036-selection-ui-env-setting-and-text-fallback.md) | 選択UI誤操作対策は環境側の誤操作防止設定とテキスト提示フォールバック規範の両輪とする | Superseded by ADR-0109 | 2026-07-05 |
 | [0037](0037-gitattributes-eol-normalization.md) | .gitattributes で改行正規化を git 側に固定し、template へは配布しない | Accepted | 2026-07-05 |
 | [0038](0038-read-back-verification-norm.md) | ツール適用結果はリスク比例で実体の読み直しにより独立確認する規範を追加 | Accepted | 2026-07-05 |
 | [0039](0039-environment-solution-survey-first.md) | 課題対策手順に環境・ツール設定による構造的解決の先行調査ステップを追加する | Accepted | 2026-07-05 |
@@ -90,7 +90,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0082](0082-distribute-generated-artifact-not-source.md) | 保守者向けの根拠注記はソースに残し、注記を除去した生成物を配布する | Accepted | 2026-08-07 |
 | [0083](0083-provenance-notation-convention-enforced-by-generator.md) | 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる | Accepted | 2026-08-07 |
 | [0084](0084-convention-scope-exceeds-machine-check-scope.md) | 記法規約の適用範囲は機械判定の範囲より広く取り、差分は書き手が守る | Accepted | 2026-08-08 |
-| [0085](0085-no-structured-question-tool-on-affected-models.md) | 事象確認済みモデルでは構造化質問ツールを使用せず、テキストの番号付き選択肢に一本化する | Accepted | 2026-08-13 |
+| [0085](0085-no-structured-question-tool-on-affected-models.md) | 事象確認済みモデルでは構造化質問ツールを使用せず、テキストの番号付き選択肢に一本化する | Superseded by ADR-0109 | 2026-08-13 |
 | [0086](0086-handoff-canonical-relocation-standard.md) | handoff に溜まる情報の正本置き場を種類別対応表で定め、移設を独立手順として組み込む | Accepted | 2026-08-13 |
 | [0087](0087-handoff-pruning-trigger-system.md) | handoff の剪定・移設はサイズ実測トリガーで発火させる | Accepted | 2026-08-13 |
 | [0088](0088-handoff-section-volume-norms.md) | handoff の節別記載規範を定める（内容限定・字数目安・列挙外の節への既定規則・圧縮記録の残置禁止） | Accepted | 2026-08-13 |
@@ -114,3 +114,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0106](0106-two-layer-wiring-for-merge-mode-norm.md) | マージコミットを残す規範の再発防止は予防・検出の 2 層配線とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する | Accepted | 2026-08-17 |
 | [0107](0107-iterative-review-recommendation-by-revision-nature.md) | 指摘反映後の再レビューは改訂の性質で推奨を切り替え、収束は指摘の分類で判定する | Accepted | 2026-08-18 |
 | [0108](0108-accepted-adr-revision-status-handling.md) | Accepted 昇格後の ADR 本文改訂は決定内容の変更有無でステータス運用を分ける | Accepted | 2026-08-18 |
+| [0109](0109-retire-structured-question-tool-unconditionally.md) | 構造化質問ツールを全ツール・全モデルで廃止しテキスト選択肢に一本化、クリック操作を再有効化する | Accepted | 2026-08-18 |

@@ -61,7 +61,7 @@
 - **検証用プラグイン `ai-driven-dev-principles-probe` の記録が残っている**（実体なし。片付けはユーザースコープのアンインストール）
 - **inbox 残置 3 件＋ conversation_log.md はユーザーが手動移動予定**。organize-inbox 提案は不要。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - **docs 配下へ新規ファイルを作らせる委譲では、Write ガードの迂回手段（Python 経由）を指示に明示**（worklog `MakeAiInstructions-2026-08-16-05`）
-- `CLAUDE_CODE_DISABLE_MOUSE_CLICKS=1` は確認済みだが、事象確認済みモデル（Fable 5）では構造化質問ツール自体を使用しない（ADR-0085）
+- 構造化質問ツールは全ツール・全モデルで廃止（ADR-0109）。質問はテキストの番号付き選択肢のみ。`CLAUDE_CODE_DISABLE_MOUSE_CLICKS` は撤去済み（クリック操作は再有効化）
 - ADR-0023 の留意（継続): GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
 
 ## Post ラッパー消化記録

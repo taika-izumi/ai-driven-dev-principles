@@ -1,9 +1,9 @@
 # Handoff: 構造化質問ツールの全面廃止とクリック操作再有効化
 
 - **Branch**: feature/question-tool-retirement
-- **Last Updated**: 2026-08-18 21:40 (Asia/Tokyo)
+- **Last Updated**: 2026-08-18 22:15 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/plan 確定（レビュー見送り）→ 実装
+- **Current Phase**: 実装完了・ADR-0109 Accepted。完了処理（master への取り込み）待ち
 
 ## 作業の目的・背景
 
@@ -23,18 +23,13 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: plan の実装（`docs/working/plans/2026-08-18-question-tool-retirement.md`・全 10 タスク）
-  - 状態: plan 確定済み（確定前レビューは見送り）。実装未着手
-  - 残り: Task 1〜10 の順次実行（Task 8 の環境変数削除は実行前サマリー提示・Task 10 で Accepted 昇格＋サイクル全体整合検査）
+- [ ] **現在の作業**: feature ブランチの完了処理（master への取り込み）
+  - 状態: plan 全 10 タスク完了・全検証期待値どおり・ADR-0109 Accepted（`b1d7f1e`）
+  - 残り: マージ方式確認 → master へ取り込み → retrospective → プラグイン 0.1.11 の反映（`/plugin marketplace update`＋セッション再起動、AI からは実行不可）
 
 ## 未着手のタスク
 
-- [ ] CLAUDE.md「ユーザーへの質問と意思決定要求」節を 3 箇条へ置換（ADR-0109 Decision 1）
-- [ ] skills 2 件・CONTRIBUTING 2 箇所・spec 2 件の追従（Decision 3・6。Issue-0082 close 含む）
-- [ ] 環境・メモリの撤回: `~/.claude/settings.json`・`.claude/settings.local.json`・メモリ 2 ファイル（Decision 4）
-- [ ] 旧 ADR の整理: 0036/0085 Superseded・0035 部分修正・0024 注記（Decision 5）
-- [ ] 執行点 4 手順（sync-template / build-dist / -Check 両方 / dist・template 同一コミット）＋ version bump 0.1.11（3 箇所）＋配布物目視
-- [ ] 実装完了時: ADR-0109 Accepted 昇格（サイクル全体整合検査必須・マイルストーン名に `Accepted 昇格`）
+- [ ] クリック操作再有効化の実効確認（次セッション起動後にユーザーがコピペ可否を確認。エージェントからは観測不能）
 
 ## 既知のブロッカー・懸念
 
@@ -45,6 +40,7 @@
 
 - 2026-08-18 ADR-0109 ドラフト確定・コミット・spec 確定点 (c): ADR=0109 / worklog=`MakeAiInstructions-2026-08-18-02` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・提示後確定（実質収束せず））
 - 2026-08-18 実装 plan 確定・plan 確定点: ADR=なし（ADR-0109 の写像で新規決定なし） / worklog=棄却（期待値突合は既存規範〈CLAUDE.md 検証節〉の実施で新規 delta なし） / review=見送り
+- 2026-08-18 plan 全 10 タスク実装完了・ADR-0109 Accepted 昇格: ADR=0109 / worklog=`MakeAiInstructions-2026-08-18-03` / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 

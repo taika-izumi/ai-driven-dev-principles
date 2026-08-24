@@ -1,8 +1,8 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 (Asia/Tokyo)
-- **Status**: in_progress
+- **Last Updated**: 2026-08-25 23:55 (Asia/Tokyo)
+- **Status**: paused
 - **Current Phase**: ガイドライン拡張/spec 確定済み・writing-plans 待ち
 
 ## 作業の目的・背景
@@ -27,6 +27,7 @@
 - [x] spec 作成: `docs/current/specs/2026-08-25-codex-support-design.md`（未コミット・過剰適合点検ブロック含む）（2026-08-25）
 - [x] ADR-0111/0112 ドラフトコミット（`29b88cc`・Proposed）（2026-08-25 完了）
 - [x] 確定前レビュー（spec 確定点 (b)）: フル巡 2＋差分確認巡 1＋機械検証 1・指摘 53 件全採用・補助実測 6 件・設計縮小 1 件（分割コミット機構の除去）・実質収束で確定（2026-08-25 完了）
+- [x] Issue-0107 起票（反復レビュー推奨の乖離記録。フォルダ昇格形態・乖離事例 3＋一般観察 1 を検討経緯ログへ）（2026-08-25 完了）
 
 ## 進行中のタスク
 
@@ -47,18 +48,21 @@
 - Copilot CLI は AGENTS.md/CLAUDE.md を両方読む（同一内容なら重複除去）。別内容にすると二重読み込みが再発する（ADR-0023 の懸念の再来）
 - ~~superpowers の Codex 可用性~~ → 実機検証で解消（superpowers 6.3.0 導入成功・インストールは残置＝実運用状態。Codex CLI 0.149.0-alpha.4.3）
 - 配布物生成の既知の落とし穴（ADR-0082/0084 の型・Issue-0104）。執行点 4 手順＋配布物目視を省略しない
+- 改訂前退避 `~/.ai-dev-review-snapshots/2026-08-25-codex-support/`（round1/round2）が残置。掃除規定は Issue-0106（当面手動判断）
+- 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 3 事例＋一般観察を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
 
 ## Post ラッパー消化記録
 
 - 2026-08-25 スコープ決定・ADR-0110 Accepted 昇格（`74e495f`）: ADR=0110 / worklog=棄却（delta なし） / cyclecheck=非該当（実装前昇格）
 - 2026-08-25 設計承認・ADR-0111/0112 ドラフトコミット（`29b88cc`）: ADR=0111/0112（Proposed） / worklog=棄却（唯一の friction は codex サブコマンド乖離で自律解決・spec 正本に記録済み）
 - 2026-08-25 spec 確定点 (b) 通過・spec 確定: ADR=なし（改訂は Proposed 0111/0112 へ反映済み） / worklog=`MakeAiInstructions-2026-08-25-01` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
+- 2026-08-25 Issue-0107 起票（推奨乖離の記録）: ADR=なし（記録のみ・対策設計は次サイクル以降のユーザー判断） / worklog=棄却（正本は Issue-0107 の検討経緯ログ）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ・ADR-0110 ドラフト
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ brainstorming 再開
-3. 留意点: master 直接作業禁止。配布対象ソース変更時は執行点 4 手順
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/current/specs/2026-08-25-codex-support-design.md`（確定済み spec。影響一覧・検証 1〜10 が実装の入力）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:writing-plans`（spec を入力に plan 作成。出力先は `docs/working/plans/`）。plan 確定点で確定前レビューを提示すること
+3. 留意点: 実装は生成器改修（ADR-0112 の設計に従う）→ AGENTS.md 切替（1 コミット・コミット前に作業ツリーで `codex debug prompt-input`＋`claude -p` 再実測）→ 中立化 → 執行点 4 手順＋配布物目視 → version 0.1.12。ADR-0111/0112 の Accepted 昇格とADR-0023 部分修正注記は実装完了後。検証 6・7・10 はユーザー確認事項
 
 ## 重要な意思決定の履歴
 

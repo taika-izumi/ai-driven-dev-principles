@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 23:10 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張/実装完了（plan Task 1〜12 到達・ユーザー確認事項と完了処理が残り）
+- **Last Updated**: 2026-08-25 23:30 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: master へ取り込み済み（マージコミット `a9bc086`・push 済み）。以後の作業は master の handoff が担う
 
 ## 作業の目的・背景
 
@@ -66,7 +66,7 @@
 - [ ] Task 12: ADR-0111/0112/0113/0114 の Accepted 昇格（サイクル全体整合検査を含む）
 - [ ] **検証 6（ユーザー確認・マージ＋push 後）**: Claude Code で `/plugin marketplace update ai-driven-dev-principles` 後、Copilot CLI で `copilot plugin update ai-driven-dev-principles` 後に、それぞれ 13 スキルが認識されること。登録が GitHub 経由のため push 前は旧版が降りてくるだけで判定できない（Issue-0109）
 - [x] **検証 7 の Claude Code 側: 通過**（2026-08-25。新セッションの `/context` が `CLAUDE.md: 14 tokens` ＋ `AGENTS.md: 2.8k tokens` を表示。旧セッションは `CLAUDE.md: 2.7k` のみで対照が成立）
-- [ ] **検証 7 の Copilot CLI 側（ユーザー確認）**: AGENTS.md ＋ポインタ CLAUDE.md の同居で指示が読み込まれること。Copilot CLI が利用不能なら「未確認」と明記し完了条件外とする
+- [x] **検証 7 の Copilot CLI 側: 未確認**（2026-08-25。ユーザーが Copilot CLI を未契約のため実行不能。spec の規定「Copilot CLI が利用不能な場合は『未確認』と明記し完了条件外とする」に従い完了条件外として確定）
 - [ ] **検証 10（ユーザー確認）**: リリース後に `codex plugin marketplace add taika-izumi/ai-driven-dev-principles` で native manifest が解決されること
 - [ ] feature ブランチの完了処理（master への取り込み）→ retrospective
 

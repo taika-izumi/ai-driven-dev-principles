@@ -118,3 +118,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0110](0110-full-scope-codex-support.md) | Codex 対応はフル対応（Layer 2 + Layer 3 + 周辺文書の中立化）を単一サイクルのスコープとする | Accepted | 2026-08-25 |
 | [0111](0111-agents-md-as-layer2-source-of-truth.md) | Layer 2 は AGENTS.md を正本とし、CLAUDE.md は @AGENTS.md インポートの 1 行に置き換える | Proposed | 2026-08-25 |
 | [0112](0112-codex-native-marketplace-generated.md) | Codex 向け配信は ネイティブの .agents/plugins/marketplace.json と .codex-plugin/plugin.json を生成器導出で追加する | Proposed | 2026-08-25 |
+| [0113](0113-json-input-guards-consolidated-into-codex-generation-task.md) | 生成器の JSON 入力異常に対する診断強化は、Codex 生成物の入力ガードと同じコミットへ統合する | Proposed | 2026-08-25 |

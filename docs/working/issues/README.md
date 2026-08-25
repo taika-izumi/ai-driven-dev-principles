@@ -31,6 +31,7 @@
 | [0083](system/0083-session-handoff-doc-clarity-review-leftovers.md) | session-handoff スキル文書にレビュー残の解釈揺れ箇所 5 点が残っている | closed | 2026-08-14 |
 | [0077](system/0077-distribution-artifact-layout-inconsistent.md) | 2 つの配布物の置き場が非対称で、`dist` の名前が実態（プラグインルート）と合っていない | open | 2026-08-08 |
 | [0091](system/0091-completed-migration-spec-stale-after-split.md) | 完了済み移行 spec のひな形パス言及が課題管理定義の分離後と乖離している | open | 2026-08-15 |
+| [0108](system/0108-build-dist-review-deferred-findings-backlog.md) | build-dist.ps1 のコード品質レビューで採用を見送った指摘 4 群が未対応（条件付き backlog） | open | 2026-08-25 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

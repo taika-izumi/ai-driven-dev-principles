@@ -556,7 +556,9 @@ pwsh -NoProfile scripts/build-dist.ps1 && test -f .agents/plugins/marketplace.js
 
 - [ ] **Step 13: 正本の異常入力でガードが働くことを確認する**
 
-`.claude-plugin/marketplace.json` を一時的に書き換えて 3 通りを確かめ、いずれも診断を出して非ゼロ終了することを確認する。各確認のあと `git checkout -- .claude-plugin/marketplace.json` で復元する。
+`.claude-plugin/` の正本を一時的に書き換えて 7 通りを確かめ、いずれも診断を出して非ゼロ終了することを確認する。各確認のあと `git checkout -- <書き換えたファイル>` で復元する。
+
+（4・5 は ADR-0113 により追加＝Task 1 のコード品質レビューで検出した診断品質の穴を本タスクで塞いだことの検証。6・7 は ADR-0113 の追加決定により追加＝Task 2 のコード品質レビューで検出した型・欠損ガードの非対称を塞いだことの検証で、書き換え対象は `.claude-plugin/plugin.json` を含む。）
 
 1. `plugins[0].source` を文字列 `"./dist"` からオブジェクト `{"source":"github","repo":"taika-izumi/ai-driven-dev-principles"}` へ変える
 
@@ -574,7 +576,23 @@ pwsh -NoProfile scripts/build-dist.ps1; echo "exit=$?"
 
 期待: `[build-dist] plugin name is missing or empty in .claude-plugin/marketplace.json plugins[0]` と `exit=1`。
 
-3 通りとも復元後、`pwsh -NoProfile scripts/build-dist.ps1 -Check` が `[build-dist] Up to date.` と `exit=0` を返すことを確認する。
+4. `plugins` キーを丸ごと削除する（`{"name": "ai-driven-dev-principles"}` のみにする）
+
+期待: `[build-dist] no plugins found in .claude-plugin/marketplace.json` と `exit=1`。**ADR-0113 の差分 2 を入れる前は、`@($null)` が 1 回反復するため実在しない `plugins[0] () = ` の「version 不一致」として報告されていた。**
+
+5. JSON として不正にする（例: 末尾の `}` を削る）
+
+期待: `[build-dist] invalid JSON: .claude-plugin/marketplace.json (...)` の形の 1 行と `exit=1`。**ADR-0113 の差分 1 を入れる前は、`[build-dist]` 接頭辞のない ParserError の生スタックが出ていた。**
+
+6. `.claude-plugin/plugin.json` の `description` をオブジェクトへ変える
+
+期待: `[build-dist] description must be a non-empty string: .claude-plugin/plugin.json (PSCustomObject)` と `[build-dist] Aborted. Generated artifacts were not modified.`、`exit=1`。**ADR-0113 の追加決定を入れる前は、`"description": "@{ja=説明; en=desc}"` という壊れた値を無診断で出荷して `exit=0` を返し、`-Check` も自己一致で通り続けていた。**
+
+7. `.claude-plugin/plugin.json` から `name` キーを削除する／`.claude-plugin/marketplace.json` から `name` キーを削除する
+
+期待: それぞれ `[build-dist] name must be a non-empty string: .claude-plugin/plugin.json (missing)` / `... .claude-plugin/marketplace.json (missing)` と `exit=1`。
+
+7 通りとも復元後、`pwsh -NoProfile scripts/build-dist.ps1 -Check` が `[build-dist] Up to date.` と `exit=0` を返すことを確認する。各ケースで `dist/` とルート生成物が書き換わっていないことをハッシュで確認する。
 
 - [ ] **Step 14: コミットする**
 

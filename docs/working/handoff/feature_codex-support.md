@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 13:40 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 14:25 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 2 完了）
+- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 3 完了）
 
 ## 作業の目的・背景
 
@@ -38,13 +38,14 @@
 - [x] plan Task 1 完了: build-dist に version 一致検査を追加（`29bc6ff`。仕様適合レビュー ✅ 要求 12/12）（2026-08-25 完了）
 - [x] plan Task 2 完了: Codex 向け 2 生成物の導出生成（`1f24a02`。仕様適合 ✅ 18/18・コード品質 ✅ 承認）（2026-08-25 完了）
 - [x] Issue-0108 起票: レビューで採用を見送った指摘 4 群の受け皿（2026-08-25 完了）
+- [x] plan Task 3 完了: Layer 2 を AGENTS.md 正本へ切替（`13d4106`。仕様適合 ✅ 38/38・コード品質 ✅ 承認）（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 3 から続行）
-  - 状態: Task 1・2 完了。計画からの逸脱は ADR-0113 の 6 点のみで、仕様適合レビューが逸脱ゼロを確認済み
-  - 残り: Task 3〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113 Accepted 昇格・ADR-0023 部分修正注記
-  - Task 3 は実機再実測を伴うため委譲せずインラインで扱う（AGENTS.md 作成・CLAUDE.md ポインタ化・template.manifest 追加・計測対象切替・`template/` 再生成を 1 コミット。コミット前に作業ツリー上で Codex / Claude Code を再実測）
+- [ ] **現在の作業**: 実装（plan の Task 4 から続行）
+  - 状態: Task 1〜3 完了。Layer 2 の切替は Codex（`codex debug prompt-input`）と Claude Code（`claude -p`）の両方でコミット前に実機再実測済み
+  - 残り: Task 4〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113 Accepted 昇格・ADR-0023 部分修正注記
+  - Task 11 も実機操作を伴うため委譲せずインラインで扱う
   - 計画は本サイクルで 2 度更新済み（Step 13 を 3 → 7 ケース。ADR-0113 由来）
 
 ## 未着手のタスク
@@ -64,6 +65,7 @@
 - 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 6 事例＋一般観察 2 件を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
 - ~~Task 1 のコミット `29bc6ff` 単体では JSON 入力異常の診断に一時的な間隙が残る~~ → Task 2（`1f24a02`）で解消
 - `scripts/build-dist.ps1` にはレビューで採用を見送った指摘 4 群が残る（Issue-0108）。いずれも Task 11 の検証範囲外であり、捕捉されない前提で扱うこと
+- `scripts/check-claude-md-size.ps1` 35 行目の警告文が案内する CONTRIBUTING 見出し「AGENTS.md を棚卸しするとき」は未作成（Task 7 で改題）。計画が「既知の中間不整合（許容）」とした箇所。Task 7 の着地時に解消を確認すること
 
 ## Post ラッパー消化記録
 
@@ -75,6 +77,7 @@
 - 2026-08-25 セッション終了処理（Issue-0107 へ plan 確定点の乖離事例 3 件＋一般観察 1 件を追記）: ADR=なし（記録のみ・対策設計は次サイクル以降のユーザー判断） / worklog=`MakeAiInstructions-2026-08-25-03`
 - 2026-08-25 plan Task 1 完了（build-dist の version 一致検査・`29bc6ff`）: ADR=0113（Proposed・レビュー指摘の反映先） / worklog=`MakeAiInstructions-2026-08-25-04`・`-05`
 - 2026-08-25 plan Task 2 完了（Codex 向け 2 生成物の導出・`1f24a02`。Issue-0108 起票）: ADR=0113（追加決定を追記・Proposed） / worklog=`MakeAiInstructions-2026-08-25-06`〜`-08`
+- 2026-08-25 plan Task 3 完了（Layer 2 を AGENTS.md 正本へ切替・`13d4106`）: ADR=なし（決定は ADR-0111 の枠内。昇格は Task 12） / worklog=`MakeAiInstructions-2026-08-25-09`
 
 ## 次セッション開始時のアクション
 

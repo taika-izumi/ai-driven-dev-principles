@@ -108,6 +108,9 @@
 - 2026-08-25 plan Task 10 完了（ADR-0023 部分修正注記・`ec4b994`＋`2201ef3`）: ADR=0023（部分修正注記のみ。decision-log の改訂記録規定は対象外） / worklog=`MakeAiInstructions-2026-08-25-18`
 - 2026-08-25 plan Task 11 完了（検証 1〜5・8・9 全件通過・`6a61dfe`）: ADR=なし（検証のみ。計画の欠陥是正は新規の決定ではない） / worklog=`MakeAiInstructions-2026-08-25-19`・`-20`
 - 2026-08-25 plan Task 12 完了・ADR-0111/0112/0113/0114 Accepted 昇格: ADR=0111/0112/0113/0114 / worklog=`MakeAiInstructions-2026-08-25-21` / cyclecheck=実施（修正: 設計 spec へ不正 JSON 停止・必須文字列ガード・書き込み側フォールバックの 3 件を書き戻し）
+- 2026-08-25 セッション終了処理・master へマージ（`a9bc086`）と push: ADR=なし（完了処理。決定なし） / worklog=`MakeAiInstructions-2026-08-25-22`・`-23`
+- 2026-08-25 検証 6・7・10 の消化（ユーザー確認事項の完了）: ADR=0112（Accepted 済み本文の改訂記録つき・未実測→実測済み） / worklog=棄却（delta なし。実測の記録のみ）
+- 2026-08-25 retrospective 実施（Issue-0110 起票・Issue-0073 へ追記）: ADR=なし（retrospective は対策の採否を決めないため起票なし） / worklog=`MakeAiInstructions-2026-08-25-24`
 
 ## 次セッション開始時のアクション
 

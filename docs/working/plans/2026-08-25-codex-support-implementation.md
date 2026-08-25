@@ -2212,8 +2212,8 @@ grep -rnE "\((ADR|Issue)-[0-9]{4}" dist/ template/
 
 次の 3 件は本セッションで完結しない。結果を handoff の「既知のブロッカー・懸念」または「未着手のタスク」へ書き出す。
 
-- **検証 6**（既存 2 ツールの Layer 3 退行確認）: Claude Code で `/plugin marketplace update ai-driven-dev-principles` 後、Copilot CLI で `copilot plugin update ai-driven-dev-principles` 後に、それぞれ 13 スキルが認識されること
-- **検証 7**（既存 2 ツールの Layer 2 退行確認）: Claude Code の `/context` で `CLAUDE.md` 経由の `@AGENTS.md` 展開を最終確認。Copilot CLI で AGENTS.md ＋ポインタ CLAUDE.md の同居で指示が読み込まれること。Copilot CLI が利用不能な場合は「未確認」と明記し完了条件外とする
+- **検証 6**（既存 2 ツールの Layer 3 退行確認）: Claude Code で `/plugin marketplace update ai-driven-dev-principles` 後、Copilot CLI で `copilot plugin update ai-driven-dev-principles` 後に、それぞれ 13 スキルが認識されること。**マーケットプレイス登録が GitHub 経由のため、master へマージして push した後でないと実行できない**（`marketplace update` は `origin/master` を fetch する。2026-08-25 実測）。マージ前に退行を潰せない構造は Issue-0109
+- **検証 7**（既存 2 ツールの Layer 2 退行確認）: Claude Code の `/context` で `CLAUDE.md` 経由の `@AGENTS.md` 展開を最終確認。**Layer 2 は作業ツリーから直接読まれるため push もマージも不要で、feature ブランチのまま新セッションを起動すれば実行できる**。Copilot CLI で AGENTS.md ＋ポインタ CLAUDE.md の同居で指示が読み込まれること。Copilot CLI が利用不能な場合は「未確認」と明記し完了条件外とする
 - **検証 10**（GitHub 経由の native 登録）: リリース後に `codex plugin marketplace add taika-izumi/ai-driven-dev-principles` で native manifest が解決されること
 
 - [ ] **Step 9: 検証で修正が生じた場合のみコミットする**

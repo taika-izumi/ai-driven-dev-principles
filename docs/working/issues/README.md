@@ -120,3 +120,4 @@
 | [0105](flow/0105-skill-md-size-growth-no-norm.md) | SKILL.md のサイズ・分割規範が無い | open | 2026-08-18 |
 | [0106](flow/0106-review-snapshot-area-no-naming-cleanup-rules.md) | 改訂前退避領域の命名規約・掃除規定が無い | open | 2026-08-18 |
 | [0107](flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md) | 反復レビューの推奨規範が状況要素を無視して推奨を決める（推奨と実選択の乖離記録） | open | 2026-08-25 |
+| [0109](flow/0109-layer3-regression-check-only-after-merge.md) | Layer 3 の退行確認が、マージ・push 後にしか実行できない | open | 2026-08-25 |

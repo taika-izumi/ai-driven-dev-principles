@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 19:00 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 20:15 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 8 完了）
+- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 9 完了）
 
 ## 作業の目的・背景
 
@@ -45,13 +45,14 @@
 - [x] plan Task 6 完了: README に Codex インストール節と移行手順を追加（`57f5cec`。仕様適合 ✅ 12/12・品質 ✅ 承認）（2026-08-25 完了）
 - [x] plan Task 7 完了: CONTRIBUTING を AGENTS.md 正本と新生成物構成へ追随（`dcb2e81`。21 箇所→4 箇所、Task 3 の中間不整合を解消。歴史的記述の是正 `5be9a90`）（2026-08-25 完了）
 - [x] plan Task 8 完了: version 0.1.12 へ bump・description を AGENTS.md 基準へ（`a9e3432`。仕様適合 ✅ 8/8・品質 ✅ 承認）（2026-08-25 完了）
+- [x] plan Task 9 完了: 仕様スナップショット 10 ファイルを同期（`5f84c65`。仕様適合 ✅ 47/47・品質 ✅ 承認）（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 9 から続行）
-  - 状態: Task 1〜8 完了。Task 9 の順序制約（Task 2/3/4/7 の後）を満たしており着手可能
-  - 残り: Task 9〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113/0114 Accepted 昇格・ADR-0023 部分修正注記
-  - Task 9 では、対象外と判断した spec（`CLAUDE.md` 参照を持つが本サイクルが直接触らないもの）の**母数を実施時に数え直す**こと（計画 1895 行）。Task 12 で母数つき 1 行を handoff へ残す
+- [ ] **現在の作業**: 実装（plan の Task 10 から続行）
+  - 状態: Task 1〜9 完了。Task 10（ADR-0023 部分修正注記）→ Task 11（検証・実機操作のためインライン）→ Task 12（ADR 昇格・handoff 更新）が残り
+  - **Task 12 で handoff へ残す母数は 15**（`CLAUDE.md` 参照を持つが本サイクルが直接触らない spec。実装者とレビュアーが独立に数え直して一致。総数 19 − 同期対象で参照が残る 4）
+  - Task 11 では検証 1〜5・8・9 を実施し、6・7・10 はユーザー確認事項として引き継ぐ
   - Task 7 では `check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しの改題（既知の中間不整合の解消）を確認すること
   - Task 11 も実機操作を伴うため委譲せずインラインで扱う
   - 計画は本サイクルで複数回更新済み（Task 2 Step 13 を 3 → 7 ケース／Task 4 の Step 2〜6・8・前文／Task 5・9・11 の旧表現同期）
@@ -78,6 +79,7 @@
 - README の Codex 節で `codex plugin marketplace list` / `plugin remove` / `marketplace upgrade` は実測記録が無い。Task 11 で確認し、通れば README の実測範囲の記述を強められる
 - ~~`check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しが未作成~~ → Task 7（`dcb2e81`）で改題し解消
 - Task 7 の見出し改題により `docs/working/issues/flow/0018-claude-md-norm-growth-monitoring.md` の 7・16 行が旧見出し名を指すようになった。issues は spec 検証 9 の網羅性チェック対象（生きたファイル 8 種）に含まれずスコープ外。次サイクルで追随を判断すること
+- `docs/current/specs/2026-08-07-distributed-artifact-generation/03-template-sync-integration.md:70,74` の識別子数（128/121/7/116）が振り返り記録の追記で時間経過により乖離（現在は約 210/13）。本サイクル起因でなく同期基準の対象外。「継続的に陳腐化する実測値を仕様書へどう書くか」は振り返りの課題候補
 
 ## Post ラッパー消化記録
 
@@ -95,10 +97,11 @@
 - 2026-08-25 plan Task 6 完了（README の 3 ツール化・`57f5cec`）: ADR=なし（逸脱は上流正本との整合であり新規の決定ではない） / worklog=`MakeAiInstructions-2026-08-25-14`
 - 2026-08-25 plan Task 7 完了（CONTRIBUTING の追随・`dcb2e81`＋`5be9a90`）: ADR=なし（計画どおり。歴史的記述の是正は事実誤りの訂正） / worklog=`MakeAiInstructions-2026-08-25-15`
 - 2026-08-25 plan Task 8 完了（version 0.1.12 bump・`a9e3432`）: ADR=なし（決定は ADR-0090/0111 の枠内） / worklog=`MakeAiInstructions-2026-08-25-16`
+- 2026-08-25 plan Task 9 完了（仕様スナップショット同期・`5f84c65`）: ADR=なし（計画どおり。出力例の数値是正は実測との整合） / worklog=`MakeAiInstructions-2026-08-25-17`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 9 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 10 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
 2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 11 は実機操作を伴うため委譲せずインラインで扱う）
 3. 留意点: 行番号は本計画未適用時が基準のため位置決めは引用テキストで行うこと。Task 9 は Task 2/3/4/7 の後、Task 11 は 1〜10 の後、Task 12 は 11 の後。検証 6・7・10 はユーザー確認事項として引き継ぐ
 

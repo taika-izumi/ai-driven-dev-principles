@@ -8,8 +8,12 @@
 #   docs/working/issues/README.md
 #
 # ADR-0016 により、skills/ 関連エントリは template から除外している
-# （スキル本体は GitHub Copilot CLI / Claude Code プラグイン ai-driven-dev-principles から提供されるため）
+# （スキル本体は GitHub Copilot CLI / Claude Code / OpenAI Codex プラグイン ai-driven-dev-principles から提供されるため）
+#
+# AGENTS.md が Layer 2 の内容正本であり、CLAUDE.md は @AGENTS.md インポートの
+# ポインタ 1 行である（ADR-0111）。両方を同期対象に含める
 
+AGENTS.md
 CLAUDE.md
 docs/overview/principles.md
 docs/overview/folder-structure.md

@@ -232,5 +232,5 @@ foreach ($f in (Get-ChildItem -Path $templateDir -Recurse -File)) {
 }
 if ($leak -gt 0) { Write-Host "[sync-template] Self-check failed: $leak identifier(s) remain in template/."; exit 1 }
 
-# CLAUDE.md 規模計測（ADR-0040。警告のみで同期はブロックしない）
+# AGENTS.md 規模計測（ADR-0040。警告のみで同期はブロックしない）
 & (Join-Path $PSScriptRoot "check-claude-md-size.ps1")

@@ -1,6 +1,6 @@
 # ADR-0112: Codex 向け配信は ネイティブの .agents/plugins/marketplace.json と .codex-plugin/plugin.json を生成器導出で追加する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-25
 
 ## Context

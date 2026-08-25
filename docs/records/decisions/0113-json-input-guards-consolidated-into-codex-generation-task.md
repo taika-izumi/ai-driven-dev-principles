@@ -1,6 +1,6 @@
 # ADR-0113: 生成器の JSON 入力異常に対する診断強化は、Codex 生成物の入力ガードと同じコミットへ統合する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-25
 
 ## Context

@@ -1,6 +1,6 @@
 # ADR-0114: Layer 2 参照の中立化は、探索対象の明示・書き込み先の二段フォールバック・ツール列挙の開放で仕上げる
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-25
 
 ## Context

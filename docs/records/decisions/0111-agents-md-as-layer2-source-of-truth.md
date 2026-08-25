@@ -1,6 +1,6 @@
 # ADR-0111: Layer 2 は AGENTS.md を正本とし、CLAUDE.md は @AGENTS.md インポートの 1 行に置き換える
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-25
 
 ## Context

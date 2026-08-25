@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 21:40 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 22:20 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 11 完了）
+- **Current Phase**: ガイドライン拡張/実装完了（plan Task 1〜12 到達・ユーザー確認事項と完了処理が残り）
 
 ## 作業の目的・背景
 
@@ -16,8 +16,7 @@
 - Spec: `docs/current/specs/2026-08-25-codex-support-design.md`（確定済み）
 - Plan: `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み・12 タスク / 90 ステップ）
 - ADR-0110: スコープ決定（Accepted）
-- ADR-0113: コード品質レビュー指摘の反映先と採用基準（Proposed。Task 11 通過後に昇格）
-- ADR-0114: Layer 2 参照の中立化の仕上げ（Proposed。Task 11 通過後に昇格）
+- ADR-0111/0112/0113/0114: いずれも Accepted（2026-08-25 昇格）
 - Issue-0108: 採用を見送った指摘 4 群の受け皿（open）
 - ADR-0023: 先例（Copilot CLI → Claude Code 併対応。Layer 2 一本化。部分改訂の見込み）
 - 先例 spec: `docs/current/specs/2026-06-16-claude-code-support-design.md`
@@ -48,13 +47,14 @@
 - [x] plan Task 9 完了: 仕様スナップショット 10 ファイルを同期（`5f84c65`。仕様適合 ✅ 47/47・品質 ✅ 承認）（2026-08-25 完了）
 - [x] plan Task 10 完了: ADR-0023 へ部分修正注記（`ec4b994`＋指示対象の明示 `2201ef3`。Status は Accepted 維持）（2026-08-25 完了）
 - [x] plan Task 11 完了: 検証 1〜5・8・9 をすべて実施し全件通過。配布物の目視 5 項目（2 巡目）も通過。成果物側の修正なし。計画の欠陥 2 件を是正（`6a61dfe`）（2026-08-25 完了）
+- [x] plan Task 12 完了: サイクル全体整合検査（5 観点）を実施し spec の追従漏れ 3 件を是正。ADR-0111/0112/0113/0114 を Accepted へ昇格（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 12 のみ）
-  - 状態: Task 1〜11 完了。検証 1〜5・8・9 は全件通過し、成果物側の修正は発生しなかった
-  - 残り: Task 12（ADR-0111/0112/0113/0114 の Accepted 昇格＋サイクル全体整合検査＋handoff 更新）
-  - **Task 12 で handoff へ残す母数は 15**（`CLAUDE.md` 参照を持つが本サイクルが直接触らない spec）
+- [ ] **現在の作業**: ユーザー確認事項の消化と完了処理
+  - 状態: plan の Task 1〜12 をすべて完了。実装・検証・ADR 昇格まで到達した
+  - 残り: 検証 6・7・10（ユーザー確認事項。下記「未着手のタスク」）→ feature ブランチの完了処理（master への取り込み）→ retrospective
+  - 完了処理では start-work「完了処理のマージ方式確認」を適用すること（慣行判定 → `--no-ff` の要否）
   - **Task 12 で handoff へ残す母数は 15**（`CLAUDE.md` 参照を持つが本サイクルが直接触らない spec。実装者とレビュアーが独立に数え直して一致。総数 19 − 同期対象で参照が残る 4）
   - Task 11 では検証 1〜5・8・9 を実施し、6・7・10 はユーザー確認事項として引き継ぐ
   - Task 7 では `check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しの改題（既知の中間不整合の解消）を確認すること
@@ -76,6 +76,7 @@
 - ~~superpowers の Codex 可用性~~ → 実機検証で解消（superpowers 6.3.0 導入成功・インストールは残置＝実運用状態。Codex CLI 0.149.0-alpha.4.3）
 - 配布物生成の既知の落とし穴（ADR-0082/0084 の型・Issue-0104）。執行点 4 手順＋配布物目視を省略しない
 - 改訂前退避 `~/.ai-dev-review-snapshots/2026-08-25-codex-support/`（round1/round2＋plan-round1〜4）が残置。掃除規定は Issue-0106（当面手動判断）
+- `docs/current/specs/` 配下に、本サイクルが直接触らない `CLAUDE.md` 参照を持つ spec が **15 ファイル**残る（代表例は `2026-08-07-overfitting-check-for-extensions-design.md:53`。いずれも本サイクルの変更が直接無効化する記述ではないため同期していない。実装者とレビュアーが独立に数え直して一致）
 - Codex へ本プラグインをローカル登録・インストール済み（検証 2・3・4 のため。`0.1.12`・実運用状態として残置）。取り消すなら `codex plugin remove ai-driven-dev-principles` と `codex plugin marketplace remove ai-driven-dev-principles`
 - 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 6 事例＋一般観察 2 件を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
 - ~~Task 1 のコミット `29bc6ff` 単体では JSON 入力異常の診断に一時的な間隙が残る~~ → Task 2（`1f24a02`）で解消
@@ -106,6 +107,7 @@
 - 2026-08-25 plan Task 9 完了（仕様スナップショット同期・`5f84c65`）: ADR=なし（計画どおり。出力例の数値是正は実測との整合） / worklog=`MakeAiInstructions-2026-08-25-17`
 - 2026-08-25 plan Task 10 完了（ADR-0023 部分修正注記・`ec4b994`＋`2201ef3`）: ADR=0023（部分修正注記のみ。decision-log の改訂記録規定は対象外） / worklog=`MakeAiInstructions-2026-08-25-18`
 - 2026-08-25 plan Task 11 完了（検証 1〜5・8・9 全件通過・`6a61dfe`）: ADR=なし（検証のみ。計画の欠陥是正は新規の決定ではない） / worklog=`MakeAiInstructions-2026-08-25-19`・`-20`
+- 2026-08-25 plan Task 12 完了・ADR-0111/0112/0113/0114 Accepted 昇格: ADR=0111/0112/0113/0114 / worklog=`MakeAiInstructions-2026-08-25-21` / cyclecheck=実施（修正: 設計 spec へ不正 JSON 停止・必須文字列ガード・書き込み側フォールバックの 3 件を書き戻し）
 
 ## 次セッション開始時のアクション
 

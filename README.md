@@ -4,7 +4,7 @@ AI駆動開発ガイドライン — AIエージェントと協働して開発�
 
 ## 概要
 
-このリポジトリは、AIエージェントとの協働開発において有用な普遍的原則（AI駆動開発ガイドライン）と、それを GitHub Copilot CLI / Claude Code で実践するための仕組みを提供する。
+このリポジトリは、AIエージェントとの協働開発において有用な普遍的原則（AI駆動開発ガイドライン）と、それを GitHub Copilot CLI / Claude Code / OpenAI Codex で実践するための仕組みを提供する。
 
 対象とする「システム」には、通常のソフトウェア（Webアプリ、API、CLIなど）だけでなく、AIエージェントによる情報収集・分析・意思決定を含むワークフロー型システムも含む。
 
@@ -15,7 +15,7 @@ AI駆動開発ガイドライン — AIエージェントと協働して開発�
 | レイヤー | ファイル | 役割 |
 |----------|----------|------|
 | Layer 1 | [`docs/overview/principles.md`](docs/overview/principles.md) | ツール非依存の AI駆動開発ガイドライン原則集 |
-| Layer 2 | [`CLAUDE.md`](CLAUDE.md) | エージェント向け行動指示（GitHub Copilot CLI / Claude Code 共通） |
+| Layer 2 | [`AGENTS.md`](AGENTS.md) | エージェント向け行動指示（GitHub Copilot CLI / Claude Code / OpenAI Codex 共通）。[`CLAUDE.md`](CLAUDE.md) は `@AGENTS.md` インポートのポインタ |
 | Layer 3 | [`skills/`](skills/) | ワークフローを実装するスキル群 |
 
 ドキュメントの配置規範（情報の5分類体系）は [`docs/overview/folder-structure.md`](docs/overview/folder-structure.md) で定義される（ADR-0025）。
@@ -120,24 +120,80 @@ Claude Code 上で以下を実行する:
 
 `skills/` を編集した場合は `/plugin marketplace update ai-driven-dev-principles` で反映する。
 
-> **Layer 2 について**: GitHub Copilot CLI と Claude Code はいずれもリポジトリルートの `CLAUDE.md` を行動指示として読み込む。本リポジトリの Layer 2 はこの単一ファイルに統一されている（ADR-0023）。
+## Codex へのインストール
+
+OpenAI Codex（Codex CLI / ChatGPT デスクトップアプリ同梱ランタイム）でも同じスキル群をプラグインとして利用できる。本リポジトリには Codex ネイティブのマーケットプレイス定義（`.agents/plugins/marketplace.json`）とプラグインマニフェスト（`dist/.codex-plugin/plugin.json`）が含まれる。いずれも `scripts/build-dist.ps1` の生成物であり、手編集しないこと。
+
+以下は Codex CLI 0.149.0-alpha.4.3（2026-08-25 確認）での手順である。インストールのサブコマンドは公式ドキュメントに記載のある `plugin install` ではなく `plugin add` である（実装がドキュメントに先行している）。
+
+### A. GitHub 経由でインストール
+
+```sh
+codex plugin marketplace add taika-izumi/ai-driven-dev-principles
+codex plugin add ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+> **未実測**: 本リポジトリの Codex ネイティブ構成を GitHub 経由で解決する経路は未実測である（コマンド体系はローカルパス登録と同一で、GitHub 経由の登録自体は legacy 構成のプラグインで実測している）。ローカルパスからの登録（下記 B）は本リポジトリと同一レイアウトの構成で実測済み。なお本リポジトリは private であり、private リポジトリでの GitHub source 経由 install は CLI 側の認証フローに依存する。動作しない場合は方式 B（ローカル clone）にフォールバックすること。
+
+### B. ローカルパスからインストール（開発時）
+
+本リポジトリを clone 済みのマシンでは、ローカルパスをマーケットプレイスとして登録できる:
+
+```sh
+codex plugin marketplace add <このリポジトリの絶対パス>
+codex plugin add ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+### 更新
+
+GitHub 経由で登録している場合は、スナップショットを更新してから再インストールする:
+
+```sh
+codex plugin marketplace upgrade ai-driven-dev-principles
+codex plugin add ai-driven-dev-principles@ai-driven-dev-principles
+```
+
+ローカルパス登録の場合は `marketplace upgrade`（Git 登録のスナップショット更新用）の対象外のため、`codex plugin add` の再実行だけで反映される。登録の確認は `codex plugin marketplace list`、インストール済みプラグインの削除は `codex plugin remove ai-driven-dev-principles`。
+
+### superpowers の導入
+
+本ガイドラインのスキルは superpowers のスキル（brainstorming / writing-plans など）へ委譲する。Codex でも次の手順で導入できる（superpowers 6.3.0 で確認）:
+
+```sh
+codex plugin marketplace add obra/superpowers-marketplace
+codex plugin add superpowers@superpowers-marketplace
+```
+
+> **注意**: 本リポジトリは `.claude-plugin/marketplace.json`（Claude Code / Copilot CLI 用）と `.agents/plugins/marketplace.json`（Codex 用）を併置している。Codex は両者が同居する場合ネイティブ側を優先し legacy 側を無視するため、二重登録は起きない（2026-08-25 実測）。
+
+> **Layer 2 について**: Layer 2 の**内容の正本**はリポジトリルートの `AGENTS.md` である（ADR-0111）。Codex と GitHub Copilot CLI は `AGENTS.md` を直接読み、Claude Code は `CLAUDE.md` に置いた `@AGENTS.md` インポート 1 行を経由して同じ内容を読む。内容を持つファイルは 1 つであり、`CLAUDE.md` はツール到達経路にすぎない。
 
 ## 新しいプロジェクトでの使い方
 
 ### 前提条件
 
-新規プロジェクトで本ガイドラインを使うには、GitHub Copilot CLI / Claude Code プラグイン `ai-driven-dev-principles` をインストールしておく必要がある（ADR-0016）。スキル群（`start-work`, `decision-log` 等）はプラグイン経由でのみツールに認識されるため、template をコピーしただけでは機能しない。
+新規プロジェクトで本ガイドラインを使うには、GitHub Copilot CLI / Claude Code / OpenAI Codex のいずれかにプラグイン `ai-driven-dev-principles` をインストールしておく必要がある（ADR-0016）。スキル群（`start-work`, `decision-log` 等）はプラグイン経由でのみツールに認識されるため、template をコピーしただけでは機能しない。
 
 ### 手順
 
-1. **このリポジトリをプラグインとして 1 度インストール**（上記「Copilot CLI へのインストール」または「Claude Code へのインストール」節を参照）
+1. **このリポジトリをプラグインとして 1 度インストール**（上記「Copilot CLI へのインストール」「Claude Code へのインストール」「Codex へのインストール」のうち、利用するツールの節を参照）
 2. `template/` フォルダの中身を新プロジェクトのルートにコピーする
-3. `CLAUDE.md` にプロジェクト固有の指示を追記する
+3. `AGENTS.md` にプロジェクト固有の指示を追記する（`CLAUDE.md` は `@AGENTS.md` の 1 行のままにする）
 
 ### 注意
 
 - コピー先プロジェクトには `skills/` ディレクトリは含まれない（ADR-0016）。スキル定義の参照や改善提案は本リポジトリ（中央管理）で行うこと
-- スキルのバージョンアップは `/plugin update` でプラグインを更新すれば全プロジェクトに反映される
+- スキルのバージョンアップは、利用ツールのプラグイン更新コマンド（Claude Code は `/plugin marketplace update`、Copilot CLI は `copilot plugin update`、Codex は `codex plugin marketplace upgrade` ＋ `codex plugin add`）を実行すれば全プロジェクトに反映される
+
+## 既存プロジェクトを AGENTS.md 構成へ移行する
+
+以前の template をコピーしたプロジェクトは、Layer 2 の内容を `CLAUDE.md` に持っている。新しい template をそのまま再コピーすると `CLAUDE.md` が `@AGENTS.md` の 1 行で上書きされ、そこへ書き足していたプロジェクト固有の指示が消える。**必ず次の順序で移行すること。**
+
+1. **現 `CLAUDE.md` の内容を `AGENTS.md` へ退避する**: 共通部（ガイドライン本体）は新しい `template/AGENTS.md` で置き換えてよいが、プロジェクト固有の追記は `AGENTS.md` 側へ移し替える
+2. **`CLAUDE.md` をポインタ 1 行にする**: 内容を `@AGENTS.md` の 1 行だけにする（`template/CLAUDE.md` をコピーしてもよい）
+3. **確認する**: 利用ツールを起動し、Layer 2 の指示が読み込まれていること（Claude Code なら `/context`、Codex なら `codex debug prompt-input`）を確かめる
+
+手順 1 を飛ばして手順 2 から始めると固有指示が失われる。復旧は git 履歴からになる。
 
 ## 成長サイクル
 

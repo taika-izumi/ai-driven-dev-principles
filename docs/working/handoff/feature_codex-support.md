@@ -68,7 +68,7 @@
 - [x] **検証 6 の Copilot CLI 側: 未確認**（ユーザーが同ツールを未契約のため実行不能。検証 7 と同じ扱いで完了条件外）
 - [x] **検証 7 の Claude Code 側: 通過**（2026-08-25。新セッションの `/context` が `CLAUDE.md: 14 tokens` ＋ `AGENTS.md: 2.8k tokens` を表示。旧セッションは `CLAUDE.md: 2.7k` のみで対照が成立）
 - [x] **検証 7 の Copilot CLI 側: 未確認**（2026-08-25。ユーザーが Copilot CLI を未契約のため実行不能。spec の規定「Copilot CLI が利用不能な場合は『未確認』と明記し完了条件外とする」に従い完了条件外として確定）
-- [ ] **検証 10（ユーザー確認）**: リリース後に `codex plugin marketplace add taika-izumi/ai-driven-dev-principles` で native manifest が解決されること
+- [x] **検証 10: 通過**（2026-08-25。push 後に GitHub 経由で登録し、`codex plugin list` の解決先が `…\.agents\plugins\marketplace.json`〈legacy ではない〉・`installed, enabled 0.1.12` を実測。ADR-0112 の「未実測」記述と README の注記を実測済みへ更新した）
 - [ ] feature ブランチの完了処理（master への取り込み）→ retrospective
 
 ## 既知のブロッカー・懸念

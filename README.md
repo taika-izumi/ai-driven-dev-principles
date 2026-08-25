@@ -133,7 +133,7 @@ codex plugin marketplace add taika-izumi/ai-driven-dev-principles
 codex plugin add ai-driven-dev-principles@ai-driven-dev-principles
 ```
 
-> **未実測**: 本リポジトリの Codex ネイティブ構成を GitHub 経由で解決する経路は未実測である（コマンド体系はローカルパス登録と同一で、GitHub 経由の登録自体は legacy 構成のプラグインで実測している）。ローカルパスからの登録（下記 B）は本リポジトリと同一レイアウトの構成で実測済み。なお本リポジトリは private であり、private リポジトリでの GitHub source 経由 install は CLI 側の認証フローに依存する。動作しない場合は方式 B（ローカル clone）にフォールバックすること。
+> **実測済み**: 本リポジトリの Codex ネイティブ構成を GitHub 経由で解決する経路は 2026-08-25 に実測した（`codex plugin marketplace add taika-izumi/ai-driven-dev-principles` → `codex plugin list` が `…\.agents\plugins\marketplace.json` を解決先として表示 → `codex plugin add` が `installed, enabled 0.1.12`）。ローカルパスからの登録（下記 B）も同日に実測済み。なお本リポジトリは private であり、private リポジトリでの GitHub source 経由 install は CLI 側の認証フローに依存する。動作しない場合は方式 B（ローカル clone）にフォールバックすること。
 
 ### B. ローカルパスからインストール（開発時）
 

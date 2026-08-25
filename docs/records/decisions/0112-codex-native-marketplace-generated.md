@@ -39,5 +39,6 @@ Codex 対応（スコープは ADR-0110）で、Layer 3（スキル群のプラ�
 - native/legacy 同居時は native が優先されるため（実測）、既存の Claude Code / Copilot CLI 経路（legacy 側）と Codex 経路（native 側）が干渉しない
 - マーケットプレイス定義・プラグインマニフェストの正本は従来どおり `.claude-plugin/` の 2 ファイルのみ。Codex 向けファイルは生成物であり手編集しない
 - `build-dist.ps1` の責務が「dist 生成」から「複数出力先の生成物生成＋version 一致検査」へ広がる（生成器 spec のスナップショット同期が必要）
-- GitHub 経由の marketplace 登録（`codex plugin marketplace add owner/repo`）は legacy 構成の superpowers で実測済み。native 構成の GitHub 経由登録は未実測であり、確認は設計 spec の検証 10（ユーザー確認事項として handoff へ引き継ぐ）が担う
+- GitHub 経由の marketplace 登録（`codex plugin marketplace add owner/repo`）は legacy 構成の superpowers で実測済み。**native 構成の GitHub 経由登録も 2026-08-25 に実測した**（設計 spec の検証 10。`codex plugin list` の解決先が `.agents/plugins/marketplace.json` であること・`installed, enabled 0.1.12` を確認）
+- 改訂記録（検証 10 の実測反映）: Consequences の未実測記述を実測済みへ更新・2026-08-25。Status は Accepted のまま維持
 - スキル一覧の初期予算（コンテキスト窓の 2%、不明時 8,000 文字）は全スキルの name + description に適用されるため、実装検証では superpowers 併用状態の全体列挙で警告が出ないことを確認する（自プラグイン単独では dist 側 13 スキルの `description` 値のみ〈囲み引用符を除く〉の合計が 2,069 文字・name を加えても約 2,272 文字〈2026-08-25 実測〉で予算 8,000 文字に対し余裕がある）

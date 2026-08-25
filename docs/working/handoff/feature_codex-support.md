@@ -1,7 +1,7 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 22:45 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 23:10 (Asia/Tokyo)
 - **Status**: paused
 - **Current Phase**: ガイドライン拡張/実装完了（plan Task 1〜12 到達・ユーザー確認事項と完了処理が残り）
 
@@ -65,7 +65,8 @@
 
 - [ ] Task 12: ADR-0111/0112/0113/0114 の Accepted 昇格（サイクル全体整合検査を含む）
 - [ ] **検証 6（ユーザー確認・マージ＋push 後）**: Claude Code で `/plugin marketplace update ai-driven-dev-principles` 後、Copilot CLI で `copilot plugin update ai-driven-dev-principles` 後に、それぞれ 13 スキルが認識されること。登録が GitHub 経由のため push 前は旧版が降りてくるだけで判定できない（Issue-0109）
-- [ ] **検証 7（ユーザー確認・マージ前に実行可）**: Claude Code の `/context` で `CLAUDE.md` 経由の `@AGENTS.md` 展開を最終確認（Layer 2 は作業ツリーから直接読まれるため push 不要）。Copilot CLI で AGENTS.md ＋ポインタ CLAUDE.md の同居で指示が読み込まれること。Copilot CLI が利用不能なら「未確認」と明記し完了条件外とする
+- [x] **検証 7 の Claude Code 側: 通過**（2026-08-25。新セッションの `/context` が `CLAUDE.md: 14 tokens` ＋ `AGENTS.md: 2.8k tokens` を表示。旧セッションは `CLAUDE.md: 2.7k` のみで対照が成立）
+- [ ] **検証 7 の Copilot CLI 側（ユーザー確認）**: AGENTS.md ＋ポインタ CLAUDE.md の同居で指示が読み込まれること。Copilot CLI が利用不能なら「未確認」と明記し完了条件外とする
 - [ ] **検証 10（ユーザー確認）**: リリース後に `codex plugin marketplace add taika-izumi/ai-driven-dev-principles` で native manifest が解決されること
 - [ ] feature ブランチの完了処理（master への取り込み）→ retrospective
 
@@ -77,7 +78,7 @@
 - `docs/current/specs/` 配下に、本サイクルが直接触らない `CLAUDE.md` 参照を持つ spec が **15 ファイル**残る（代表例は `2026-08-07-overfitting-check-for-extensions-design.md:53`。いずれも本サイクルの変更が直接無効化する記述ではないため同期していない。実装者とレビュアーが独立に数え直して一致）
 - Codex へ本プラグインをローカル登録・インストール済み（検証 2・3・4 のため。`0.1.12`・実運用状態として残置）。取り消すなら `codex plugin remove ai-driven-dev-principles` と `codex plugin marketplace remove ai-driven-dev-principles`
 - Layer 3 の退行確認がマージ・push 後にしか実行できない（Issue-0109）。本サイクルは現状追認で進め、spec の検証 6 へ実行タイミングの前提を追記した
-- Claude Code の登録済みプラグインに、マーケットプレイス定義から消えた `ai-driven-dev-principles-probe` が残っており `marketplace update` が 1 件失敗していた（2026-08-25 にユーザーが uninstall して解消。本サイクルとは無関係の既存状態）
+- ~~Claude Code に `ai-driven-dev-principles-probe` の残骸があり `marketplace update` が 1 件失敗~~ → 2026-08-25 にユーザーが uninstall して解消（本サイクルとは無関係の既存状態）。新セッションのスキル一覧から消え、本体 13 スキルは 0.1.11 で正常認識を確認
 - 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 6 事例＋一般観察 2 件を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
 - `scripts/build-dist.ps1` にはレビューで採用を見送った指摘 4 群が残る（Issue-0108）。いずれも Task 11 の検証範囲外であり、捕捉されない前提で扱うこと
 - `scripts/check-claude-md-size.ps1` 35 行目の警告文が案内する CONTRIBUTING 見出し「AGENTS.md を棚卸しするとき」は未作成（Task 7 で改題）。計画が「既知の中間不整合（許容）」とした箇所。Task 7 の着地時に解消を確認すること

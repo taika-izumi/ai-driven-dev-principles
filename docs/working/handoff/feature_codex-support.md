@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 20:15 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 20:50 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 9 完了）
+- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 10 完了）
 
 ## 作業の目的・背景
 
@@ -46,11 +46,12 @@
 - [x] plan Task 7 完了: CONTRIBUTING を AGENTS.md 正本と新生成物構成へ追随（`dcb2e81`。21 箇所→4 箇所、Task 3 の中間不整合を解消。歴史的記述の是正 `5be9a90`）（2026-08-25 完了）
 - [x] plan Task 8 完了: version 0.1.12 へ bump・description を AGENTS.md 基準へ（`a9e3432`。仕様適合 ✅ 8/8・品質 ✅ 承認）（2026-08-25 完了）
 - [x] plan Task 9 完了: 仕様スナップショット 10 ファイルを同期（`5f84c65`。仕様適合 ✅ 47/47・品質 ✅ 承認）（2026-08-25 完了）
+- [x] plan Task 10 完了: ADR-0023 へ部分修正注記（`ec4b994`＋指示対象の明示 `2201ef3`。Status は Accepted 維持）（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 10 から続行）
-  - 状態: Task 1〜9 完了。Task 10（ADR-0023 部分修正注記）→ Task 11（検証・実機操作のためインライン）→ Task 12（ADR 昇格・handoff 更新）が残り
+- [ ] **現在の作業**: 実装（plan の Task 11 から続行）
+  - 状態: Task 1〜10 完了。残るのは Task 11（検証・実機操作のためインライン）と Task 12（ADR 昇格・handoff 更新）
   - **Task 12 で handoff へ残す母数は 15**（`CLAUDE.md` 参照を持つが本サイクルが直接触らない spec。実装者とレビュアーが独立に数え直して一致。総数 19 − 同期対象で参照が残る 4）
   - Task 11 では検証 1〜5・8・9 を実施し、6・7・10 はユーザー確認事項として引き継ぐ
   - Task 7 では `check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しの改題（既知の中間不整合の解消）を確認すること
@@ -98,10 +99,11 @@
 - 2026-08-25 plan Task 7 完了（CONTRIBUTING の追随・`dcb2e81`＋`5be9a90`）: ADR=なし（計画どおり。歴史的記述の是正は事実誤りの訂正） / worklog=`MakeAiInstructions-2026-08-25-15`
 - 2026-08-25 plan Task 8 完了（version 0.1.12 bump・`a9e3432`）: ADR=なし（決定は ADR-0090/0111 の枠内） / worklog=`MakeAiInstructions-2026-08-25-16`
 - 2026-08-25 plan Task 9 完了（仕様スナップショット同期・`5f84c65`）: ADR=なし（計画どおり。出力例の数値是正は実測との整合） / worklog=`MakeAiInstructions-2026-08-25-17`
+- 2026-08-25 plan Task 10 完了（ADR-0023 部分修正注記・`ec4b994`＋`2201ef3`）: ADR=0023（部分修正注記のみ。decision-log の改訂記録規定は対象外） / worklog=`MakeAiInstructions-2026-08-25-18`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 10 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 11 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
 2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 11 は実機操作を伴うため委譲せずインラインで扱う）
 3. 留意点: 行番号は本計画未適用時が基準のため位置決めは引用テキストで行うこと。Task 9 は Task 2/3/4/7 の後、Task 11 は 1〜10 の後、Task 12 は 11 の後。検証 6・7・10 はユーザー確認事項として引き継ぐ
 

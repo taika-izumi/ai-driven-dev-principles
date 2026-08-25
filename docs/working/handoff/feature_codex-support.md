@@ -1,8 +1,8 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 09:36 (Asia/Tokyo)
-- **Status**: in_progress
+- **Last Updated**: 2026-08-25 09:52 (Asia/Tokyo)
+- **Status**: paused
 - **Current Phase**: ガイドライン拡張/plan 確定済み・実装待ち
 
 ## 作業の目的・背景
@@ -54,8 +54,7 @@
 - ~~superpowers の Codex 可用性~~ → 実機検証で解消（superpowers 6.3.0 導入成功・インストールは残置＝実運用状態。Codex CLI 0.149.0-alpha.4.3）
 - 配布物生成の既知の落とし穴（ADR-0082/0084 の型・Issue-0104）。執行点 4 手順＋配布物目視を省略しない
 - 改訂前退避 `~/.ai-dev-review-snapshots/2026-08-25-codex-support/`（round1/round2＋plan-round1〜4）が残置。掃除規定は Issue-0106（当面手動判断）
-- plan 確定点の反復で、第 3 巡の改訂前退避を取り忘れた。隔離コピーからハッシュ一致を確認して `plan-round3` を復元済み（規定は `pre-finalization-review`「反復の実施」の改訂前退避）
-- 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 3 事例＋一般観察を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
+- 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 6 事例＋一般観察 2 件を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
 
 ## Post ラッパー消化記録
 
@@ -64,11 +63,12 @@
 - 2026-08-25 spec 確定点 (b) 通過・spec 確定: ADR=なし（改訂は Proposed 0111/0112 へ反映済み） / worklog=`MakeAiInstructions-2026-08-25-01` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-08-25 Issue-0107 起票（推奨乖離の記録）: ADR=なし（記録のみ・対策設計は次サイクル以降のユーザー判断） / worklog=棄却（正本は Issue-0107 の検討経緯ログ）
 - 2026-08-25 plan 確定点 通過・実装計画確定: ADR=なし（改訂は Proposed 0111/0112 の枠内。spec への反映は plan Task 9 Step 13） / worklog=`MakeAiInstructions-2026-08-25-02` / review=フル実施（claude-opus-5・2 巡）＋機械検証（1 回）＋差分再確認（claude-opus-5・2 巡）＋機械検証（1 回・提示後確定（実質収束せず））
+- 2026-08-25 セッション終了処理（Issue-0107 へ plan 確定点の乖離事例 3 件＋一般観察 1 件を追記）: ADR=なし（記録のみ・対策設計は次サイクル以降のユーザー判断） / worklog=`MakeAiInstructions-2026-08-25-03`
 
 ## 次セッション開始時のアクション
 
 1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 1 から順に実行する）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` または `superpowers:executing-plans`（実行方式は未選択のためユーザーへ確認する）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ 実行方式をユーザーへ確認（`superpowers:subagent-driven-development` を推奨として提示。ただし Task 3 と Task 11 は実機操作を伴うため委譲せずインラインで扱う。代替は `superpowers:executing-plans`）
 3. 留意点: plan 冒頭の「タスク間の順序制約」を先に読むこと（Task 2 は Task 1 依存・行番号は本計画未適用時が基準・Task 3 は 1 コミットでコミット前に実機再実測・Task 9 は Task 2/3/4/7 の後）。検証 6・7・10 はユーザー確認事項として引き継ぐ
 
 ## 重要な意思決定の履歴

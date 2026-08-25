@@ -1,6 +1,6 @@
 ---
 name: extend-guidelines
-description: "ガイドラインの拡張（原則追加・Skillの新規作成/改定・CLAUDE.md更新）を行う際のゲートウェイ。CONTRIBUTING.mdを読み込み、brainstormingへ接続する。"
+description: "ガイドラインの拡張（原則追加・Skillの新規作成/改定・AGENTS.md更新）を行う際のゲートウェイ。CONTRIBUTING.mdを読み込み、brainstormingへ接続する。"
 ---
 
 # extend-guidelines
@@ -21,7 +21,7 @@ AI駆動開発ガイドラインの拡張作業を自動的にガイドするゲ
 ユーザーに「何を拡張したいか」を確認する。以下の選択肢を提示すること:
 
 - 原則を追加・変更したい
-- CLAUDE.md を更新したい
+- AGENTS.md を更新したい
 - 新しいSkillを作成したい
 - 既存のSkillを改定したい
 

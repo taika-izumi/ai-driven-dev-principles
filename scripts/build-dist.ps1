@@ -15,6 +15,8 @@ $distDir = Join-Path $repoRoot 'dist'
 $utf8    = New-Object System.Text.UTF8Encoding($false)
 $pluginJsonPath = Join-Path $repoRoot '.claude-plugin/plugin.json'
 $pluginRel = '.claude-plugin/plugin.json'
+$marketplaceJsonPath = Join-Path $repoRoot '.claude-plugin/marketplace.json'
+$marketplaceRel = '.claude-plugin/marketplace.json'
 
 # 相対パス算出のヘルパ（M-3: 同じ算出式が複数箇所に重複していたのを1本化）
 function Get-RepoRelativePath {
@@ -22,9 +24,48 @@ function Get-RepoRelativePath {
     return ($FullName.Substring($repoRoot.Length + 1) -replace '\\', '/')
 }
 
+# JSON の欠損プロパティを Set-StrictMode の例外ではなく $null で受ける（例外スタックを
+# 生で出さず接頭辞つきの診断で止めるため）
+function Get-JsonProperty {
+    param($Object, [string]$Name)
+    if ($null -ne $Object -and $Object.PSObject.Properties[$Name]) { return $Object.$Name }
+    return $null
+}
+
 # plugin.json が無い状態で .NET の例外スタックを生で出さないよう、先に固有メッセージで止める（M-6）
 if (-not (Test-Path $pluginJsonPath)) {
     Write-Host "[build-dist] plugin.json not found: $pluginJsonPath"
+    exit 1
+}
+
+if (-not (Test-Path $marketplaceJsonPath)) {
+    Write-Host "[build-dist] marketplace.json not found: $marketplaceJsonPath"
+    exit 1
+}
+
+# 0. version 一致検査。正本が 2 ファイルに分かれて version を二重保持しているため、
+#    規約判定より前・両モード共通で突合する。-Check でも走らせないと執行点手順 2 の
+#    ゲートにならない（ADR-0112）。
+$pluginObj = [System.IO.File]::ReadAllText($pluginJsonPath) | ConvertFrom-Json
+$marketplaceObj = [System.IO.File]::ReadAllText($marketplaceJsonPath) | ConvertFrom-Json
+$srcVersion = Get-JsonProperty $pluginObj 'version'
+if ($null -eq $srcVersion) {
+    Write-Host "[build-dist] version not found in $pluginRel"
+    exit 1
+}
+$versionMismatch = 0
+$pluginIndex = 0
+foreach ($p in @(Get-JsonProperty $marketplaceObj 'plugins')) {
+    $pv = Get-JsonProperty $p 'version'
+    if ($pv -ne $srcVersion) {
+        $pn = Get-JsonProperty $p 'name'
+        Write-Host "  ! version mismatch: $marketplaceRel plugins[$pluginIndex] ($pn) = $pv, $pluginRel = $srcVersion"
+        $versionMismatch++
+    }
+    $pluginIndex++
+}
+if ($versionMismatch -gt 0) {
+    Write-Host "[build-dist] Aborted. $versionMismatch version mismatch(es). Generated artifacts were not modified."
     exit 1
 }
 

@@ -887,7 +887,7 @@ manifest 追加・計測対象切替・template 再生成を 1 コミットに�
 参照は 2 種類に分ける。
 
 - **二段フォールバック型（7 箇所）**: プロジェクト側の調整値を読む参照。プラグイン（全配布先へ即時反映）と template（手動同期）の反映時期がずれるため、AGENTS.md に調整値が無い移行途中のプロジェクトで CLAUDE.md 側の値を読み飛ばさないようにする。**ファイルの有無ではなく調整値の記載の有無で探索する**
-- **AGENTS.md 化（11 箇所）**: Layer 2 ファイルそのものを指す参照。単純に名前を差し替える
+- **AGENTS.md 化（11 箇所）**: Layer 2 ファイルそのものを指す参照。単純に名前を差し替える。ただしこのうち 1 箇所（`skills/worklog-skillify/SKILL.md` のスコープ 3 分岐表）は Layer 2 への**書き込み**点であり、ADR-0114 により二段フォールバックを添える
 
 - [ ] **Step 1: 現状の件数を実測しておく**
 
@@ -900,7 +900,7 @@ grep -rn "\.claude/skills" skills/ | wc -l
 
 - [ ] **Step 2: 二段フォールバック型 6 箇所を書き換える（同一文言）**
 
-次の 6 箇所は、いずれも `プロジェクトの CLAUDE.md に調整値があればそれを優先` という同一の句を含む。この句を `プロジェクトの AGENTS.md（記載が無ければ CLAUDE.md）に調整値があればそれを優先` へ置き換える（`優先する` と語尾が続く箇所は語尾を保つ）。
+次の 6 箇所は、いずれも `プロジェクトの CLAUDE.md に調整値があればそれを優先` という同一の句を含む。この句を `プロジェクトの AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）に調整値があればそれを優先` へ置き換える（ADR-0114 により「当該調整値の」を含む形へ改めた。目的語の前方参照を避け、ファイルの不在との読み違いを塞ぐ）（`優先する` と語尾が続く箇所は語尾を保つ）。
 
 - `skills/decision-log/SKILL.md:158`
 - `skills/retrospective/SKILL.md:90`
@@ -910,7 +910,7 @@ grep -rn "\.claude/skills" skills/ | wc -l
 - `skills/worklog-extract/SKILL.md:37`
 
 ```bash
-grep -c "プロジェクトの AGENTS.md（記載が無ければ CLAUDE.md）に調整値があればそれを優先" -r skills/ | grep -v ":0"
+grep -c "プロジェクトの AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）に調整値があればそれを優先" -r skills/ | grep -v ":0"
 ```
 
 期待: **4 行**が列挙され、件数の合計が 6 になる（`grep -c` はファイル 1 件につき 1 行を返すため、6 箇所を含む 4 ファイル分の行が出る）。具体的には `skills/decision-log/SKILL.md:1` / `skills/retrospective/SKILL.md:1` / `skills/session-handoff/SKILL.md:3` / `skills/worklog-extract/SKILL.md:1`。
@@ -926,7 +926,7 @@ grep -c "プロジェクトの AGENTS.md（記載が無ければ CLAUDE.md）に
 を次に置き換える（この箇所は「読む」ではなく「書く」指示のため、二段フォールバックを読み側の但し書きとして添える）:
 
 ```
-字数はすべて全角換算の**デフォルト値**である。プロジェクトが調整する場合は自プロジェクトの AGENTS.md に調整値を明記し、調整値を優先する（移行途中で AGENTS.md に調整値の記載が無い場合は CLAUDE.md の調整値を読む）。
+字数はすべて全角換算の**デフォルト値**である。プロジェクトが調整する場合は自プロジェクトの AGENTS.md に調整値を明記し、調整値を優先する（AGENTS.md に調整値の記載が無い場合は CLAUDE.md の調整値を読む）。
 ```
 
 - [ ] **Step 4: AGENTS.md 化 11 箇所を書き換える**
@@ -992,7 +992,7 @@ description: "ガイドラインの拡張（原則追加・Skillの新規作成/
 →
 
 ```
-| **固有ルールでスキル化不要** | そのプロジェクトの `AGENTS.md` に追記 |
+| **固有ルールでスキル化不要** | そのプロジェクトの `AGENTS.md` に追記（`AGENTS.md` が無いプロジェクトでは `CLAUDE.md` に追記する） |
 ```
 
 `skills/worklog-skillify/SKILL.md:43`（同一行に 2 箇所）: `CLAUDE.md 追記へ振り分ける場合` → `AGENTS.md 追記へ振り分ける場合`、`配信元の CLAUDE.md は template 経由で配布されるため` → `配信元の AGENTS.md は template 経由で配布されるため`。
@@ -1022,7 +1022,7 @@ description: "ガイドラインの拡張（原則追加・Skillの新規作成/
 →
 
 ```
-5. **既存スキル重複排除**: superpowers ＋ ai-driven-dev-principles ＋ プロジェクトローカル（利用ツールのスキル配置先。Claude Code は `.claude/skills/`、Codex は `.agents/skills/`）の description と突合し、既存済みは除外（あいまい層）
+5. **既存スキル重複排除**: superpowers ＋ ai-driven-dev-principles ＋ プロジェクトローカル（利用ツールのスキル配置先。Claude Code は `.claude/skills/`、Codex は `.agents/skills/` など）の description と突合し、既存済みは除外（あいまい層）
 ```
 
 `skills/worklog-skillify/SKILL.md:25`
@@ -1034,7 +1034,7 @@ description: "ガイドラインの拡張（原則追加・Skillの新規作成/
 →
 
 ```
-1. この場のプロジェクトローカルスキル（利用ツールのスキル配置先。Claude Code は `.claude/skills/`、Codex は `.agents/skills/`）として作成する
+1. この場のプロジェクトローカルスキル（利用ツールのスキル配置先。Claude Code は `.claude/skills/`、Codex は `.agents/skills/` など）として作成する
 ```
 
 `skills/worklog-skillify/SKILL.md:36`（表のセル）
@@ -1046,13 +1046,13 @@ description: "ガイドラインの拡張（原則追加・Skillの新規作成/
 →
 
 ```
-| **プロジェクト固有だが価値あり** | そのプロジェクトのローカルスキル（Claude Code は `.claude/skills/<name>/`、Codex は `.agents/skills/<name>/`） |
+| **プロジェクト固有だが価値あり** | そのプロジェクトのローカルスキル（利用ツールのスキル配置先。Claude Code は `.claude/skills/<name>/`、Codex は `.agents/skills/<name>/` など） |
 ```
 
 - [ ] **Step 6: 書き換え結果を実測で確認する**
 
 ```bash
-grep -rn "CLAUDE\.md" skills/ | grep -v "記載が無ければ CLAUDE.md" | grep -v "CLAUDE.md の調整値を読む"
+grep -rn "CLAUDE\.md" skills/ | grep -v "当該調整値の記載が無ければ CLAUDE.md" | grep -v "CLAUDE.md の調整値を読む" | grep -v 'CLAUDE.md` に追記する'
 ```
 
 期待: 出力が空（Layer 2 を素で指す `CLAUDE.md` が skills 配下に残っていない）。
@@ -1061,7 +1061,7 @@ grep -rn "CLAUDE\.md" skills/ | grep -v "記載が無ければ CLAUDE.md" | grep
 grep -o "AGENTS\.md" -r skills/ | wc -l
 ```
 
-期待: `19`（二段フォールバック 7 箇所のうち Step 3 の 1 箇所だけが `AGENTS.md` を 2 回含むため 8、AGENTS.md 化が 11）。
+期待: `20`（二段フォールバック 7 箇所のうち Step 3 の 1 箇所だけが `AGENTS.md` を 2 回含むため 8、AGENTS.md 化が 11、うち書き込み先 1 箇所が ADR-0114 により `AGENTS.md` を 2 回含むため +1）。
 
 - [ ] **Step 7: dist を再生成して規約適合を確認する**
 
@@ -1105,11 +1105,17 @@ git add skills dist && git commit -m "chore: skills の Layer 2 参照と ロー
 
 ```
 Layer 2 を指す参照 18 箇所のうち、プロジェクト側の調整値を読む 7 箇所は
-「AGENTS.md（記載が無ければ CLAUDE.md）」の二段フォールバックにする（ADR-0111）。
-プラグインの即時反映と template の手動同期で反映時期がずれるため、記載の有無で
-探索しないと移行途中のプロジェクトが壊れる。残る 11 箇所は AGENTS.md へ差し替える。
+「AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）」の二段フォールバックにする
+（ADR-0111）。プラグインの即時反映と template の手動同期で反映時期がずれるため、
+当該調整値の記載の有無で探索しないと移行途中のプロジェクトが壊れる。残る 11 箇所は
+AGENTS.md へ差し替える。
 
 ローカルスキルの配置先 3 箇所は Claude Code / Codex の併記へ改める。
+
+コード品質レビューを受けて、探索対象を「当該調整値の記載」と明示し、唯一の Layer 2
+書き込み点にも同じ二段フォールバックを適用し、ツール配置先の列挙を開いた（ADR-0114）。
+未移行プロジェクトで新規 AGENTS.md へ書くと Claude Code がインポート行の無いまま
+読まず、規範が無言で不発になる経路を塞ぐ。
 ```
 
 ---
@@ -1132,7 +1138,7 @@ Layer 2 を指す参照 18 箇所のうち、プロジェクト側の調整値�
 を次に置き換える:
 
 ```
-目安値 **10KB**（単位は 1KB = 1000 バイト。プロジェクトの AGENTS.md（記載が無ければ CLAUDE.md）に調整値があればそれを優先）を超えていたらフォルダ昇格を提案する
+目安値 **10KB**（単位は 1KB = 1000 バイト。プロジェクトの AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）に調整値があればそれを優先）を超えていたらフォルダ昇格を提案する
 ```
 
 - [ ] **Step 2: folder-structure.md の参照元名を差し替える**
@@ -1892,7 +1898,7 @@ dist/
 
 Task 4 が `skills/` の正本テキストを書き換えるため、それを逐語ないし準逐語で写している次の spec も現状と食い違う。Step 9〜11 と同じ基準（本サイクルの変更が直接無効化する記述）に該当するため同期する。
 
-`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md:29` の `プロジェクトの CLAUDE.md に調整値があればそれを優先` を、Task 4 Step 2 と同じ `プロジェクトの AGENTS.md（記載が無ければ CLAUDE.md）に調整値があればそれを優先` へ。
+`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md:29` の `プロジェクトの CLAUDE.md に調整値があればそれを優先` を、Task 4 Step 2 と同じ `プロジェクトの AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）に調整値があればそれを優先` へ。
 
 `docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md:3`
 
@@ -1903,13 +1909,13 @@ Task 4 が `skills/` の正本テキストを書き換えるため、それを�
 →（Task 4 Step 3 の書き込み側の表現に合わせる）
 
 ```
-数値はすべて**デフォルト値**である。プロジェクトが調整する場合は自プロジェクトの AGENTS.md に調整値を明記し、スキルはそれを優先する（移行途中で AGENTS.md に調整値の記載が無い場合は CLAUDE.md の調整値を読む）。字数は全角換算の文字数。
+数値はすべて**デフォルト値**である。プロジェクトが調整する場合は自プロジェクトの AGENTS.md に調整値を明記し、スキルはそれを優先する（AGENTS.md に調整値の記載が無い場合は CLAUDE.md の調整値を読む）。字数は全角換算の文字数。
 ```
 
 `docs/current/specs/2026-07-17-worklog-skill-pipeline/04-skill3-skillify.md` の 4 箇所を、Task 4 Step 4・Step 5 と同じ扱いにする。
 
-- 17 行目: `プロジェクトローカルスキル `.claude/skills/`／CLAUDE.md 追記` → `プロジェクトローカルスキル（Claude Code は `.claude/skills/`、Codex は `.agents/skills/`）／AGENTS.md 追記`
-- 27 行目: `そのプロジェクトのローカルスキル（`.claude/skills/`）` → `そのプロジェクトのローカルスキル（Claude Code は `.claude/skills/`、Codex は `.agents/skills/`）`
+- 17 行目: `プロジェクトローカルスキル `.claude/skills/`／CLAUDE.md 追記` → `プロジェクトローカルスキル（利用ツールのスキル配置先。Claude Code は `.claude/skills/`、Codex は `.agents/skills/` など）／AGENTS.md 追記`
+- 27 行目: `そのプロジェクトのローカルスキル（`.claude/skills/`）` → `そのプロジェクトのローカルスキル（利用ツールのスキル配置先。Claude Code は `.claude/skills/`、Codex は `.agents/skills/` など）`
 - 28 行目: `そのプロジェクトの CLAUDE.md` → `そのプロジェクトの AGENTS.md`
 - 30 行目: `本 repo で実行し CLAUDE.md 追記へ振り分ける場合` → `本 repo で実行し AGENTS.md 追記へ振り分ける場合`
 
@@ -2180,7 +2186,7 @@ grep -rn "Copilot CLI / Claude Code\|Copilot CLI または Claude Code\|Copilot 
 
 CONTRIBUTING「機械判定が届かない領域」の 5 項目を、生成後の `dist/skills/` と `template/` に対して実施する。**これは 2 巡目にあたる独立工程である**（1 巡目は Task 4 Step 7 と Task 8 Step 3 のコミット前目視）。同節が「目視は 1 回で終わらせず、生成後の配布物を読む工程を別に置くこと」と定めているのは、1 巡目が取り逃がす実測があるためである。
 
-**ここでは差分ではなく配布物そのものを通読する**（同節の実測は「配布物を通読するレビューで検出された」ことを根拠にしている）。対象は 1 巡目が覆った Task 4・Task 8 の差分に加え、1 巡目のコミット前目視を置いていない Task 2（`dist/.codex-plugin/plugin.json` の新設）・Task 3（`template/AGENTS.md` の新設）・Task 5（`template/docs/overview/issue-management.md` への入れ子全角括弧の追加）の生成結果も含める。とくに Task 5 が加える `（プロジェクトの AGENTS.md（記載が無ければ CLAUDE.md）に調整値があればそれを優先）` は、目視 5 項目の 1 番目（括弧内に識別子以外の語が同居した行）の検査対象にあたる。
+**ここでは差分ではなく配布物そのものを通読する**（同節の実測は「配布物を通読するレビューで検出された」ことを根拠にしている）。対象は 1 巡目が覆った Task 4・Task 8 の差分に加え、1 巡目のコミット前目視を置いていない Task 2（`dist/.codex-plugin/plugin.json` の新設）・Task 3（`template/AGENTS.md` の新設）・Task 5（`template/docs/overview/issue-management.md` への入れ子全角括弧の追加）の生成結果も含める。とくに Task 5 が加える `（プロジェクトの AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）に調整値があればそれを優先）` は、目視 5 項目の 1 番目（括弧内に識別子以外の語が同居した行）の検査対象にあたる。
 
 ```bash
 git diff master...HEAD --stat -- dist template

@@ -119,3 +119,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0111](0111-agents-md-as-layer2-source-of-truth.md) | Layer 2 は AGENTS.md を正本とし、CLAUDE.md は @AGENTS.md インポートの 1 行に置き換える | Proposed | 2026-08-25 |
 | [0112](0112-codex-native-marketplace-generated.md) | Codex 向け配信は ネイティブの .agents/plugins/marketplace.json と .codex-plugin/plugin.json を生成器導出で追加する | Proposed | 2026-08-25 |
 | [0113](0113-json-input-guards-consolidated-into-codex-generation-task.md) | 生成器の JSON 入力異常に対する診断強化は、Codex 生成物の入力ガードと同じコミットへ統合する | Proposed | 2026-08-25 |
+| [0114](0114-layer2-reference-neutralization-finish.md) | Layer 2 参照の中立化は、探索対象の明示・書き込み先の二段フォールバック・ツール列挙の開放で仕上げる | Proposed | 2026-08-25 |

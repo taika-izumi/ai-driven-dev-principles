@@ -1,13 +1,13 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 14:25 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 16:10 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 3 完了）
+- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 4 完了）
 
 ## 作業の目的・背景
 
-本ガイドライン（Layer 1 原則 / Layer 2 CLAUDE.md / Layer 3 skills）は GitHub Copilot CLI / Claude Code 前提で整備されてきた。これを OpenAI Codex（Codex CLI）でも利用可能にする。スコープはフル対応（Layer 2 の AGENTS.md 経路 + Layer 3 の Codex 向けプラグイン配信 + README/CONTRIBUTING/スキル本文の中立化）で確定（ADR-0110 Proposed）。
+本ガイドライン（Layer 1 原則 / Layer 2 行動指示 / Layer 3 skills）は GitHub Copilot CLI / Claude Code 前提で整備されてきた。これを OpenAI Codex（Codex CLI）でも利用可能にする。スコープはフル対応（Layer 2 の AGENTS.md 経路 + Layer 3 の Codex 向けプラグイン配信 + README/CONTRIBUTING/スキル本文の中立化）で確定（ADR-0110 Accepted）。
 
 2026-08-25 の公式ドキュメント調査で確認済み: Codex のスキル機構（`.agents/skills`、SKILL.md 同形）、一覧予算は description のみに適用、marketplace 探索先に `.claude-plugin/marketplace.json`（legacy 互換）、プラグインマニフェストは `.codex-plugin/plugin.json`、Codex は AGENTS.md を読み CLAUDE.md は読まない。
 
@@ -17,6 +17,7 @@
 - Plan: `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み・12 タスク / 90 ステップ）
 - ADR-0110: スコープ決定（Accepted）
 - ADR-0113: コード品質レビュー指摘の反映先と採用基準（Proposed。Task 11 通過後に昇格）
+- ADR-0114: Layer 2 参照の中立化の仕上げ（Proposed。Task 11 通過後に昇格）
 - Issue-0108: 採用を見送った指摘 4 群の受け皿（open）
 - ADR-0023: 先例（Copilot CLI → Claude Code 併対応。Layer 2 一本化。部分改訂の見込み）
 - 先例 spec: `docs/current/specs/2026-06-16-claude-code-support-design.md`
@@ -39,14 +40,16 @@
 - [x] plan Task 2 完了: Codex 向け 2 生成物の導出生成（`1f24a02`。仕様適合 ✅ 18/18・コード品質 ✅ 承認）（2026-08-25 完了）
 - [x] Issue-0108 起票: レビューで採用を見送った指摘 4 群の受け皿（2026-08-25 完了）
 - [x] plan Task 3 完了: Layer 2 を AGENTS.md 正本へ切替（`13d4106`。仕様適合 ✅ 38/38・コード品質 ✅ 承認）（2026-08-25 完了）
+- [x] plan Task 4 完了: skills の Layer 2 参照とローカルスキルパスを中立化（`7b71c5d`。仕様適合 ✅ 46/46＋11/11・ADR-0114 の 4 点を反映）（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 4 から続行）
-  - 状態: Task 1〜3 完了。Layer 2 の切替は Codex（`codex debug prompt-input`）と Claude Code（`claude -p`）の両方でコミット前に実機再実測済み
-  - 残り: Task 4〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113 Accepted 昇格・ADR-0023 部分修正注記
+- [ ] **現在の作業**: 実装（plan の Task 5 から続行）
+  - 状態: Task 1〜4 完了。計画からの逸脱は ADR-0113（6 点）と ADR-0114（4 点）に限られ、いずれも仕様適合レビューが逸脱ゼロを確認済み
+  - 残り: Task 5〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113/0114 Accepted 昇格・ADR-0023 部分修正注記
+  - **Task 5 は ADR-0114 の 4 点を先に適用した形で実装する**（8 番目の二段フォールバック箇所 `docs/overview/issue-management.md:44` を含む。計画 Task 5 Step 1 は同期済み）
   - Task 11 も実機操作を伴うため委譲せずインラインで扱う
-  - 計画は本サイクルで 2 度更新済み（Step 13 を 3 → 7 ケース。ADR-0113 由来）
+  - 計画は本サイクルで複数回更新済み（Task 2 Step 13 を 3 → 7 ケース／Task 4 の Step 2〜6・8・前文／Task 5・9・11 の旧表現同期）
 
 ## 未着手のタスク
 
@@ -66,6 +69,7 @@
 - ~~Task 1 のコミット `29bc6ff` 単体では JSON 入力異常の診断に一時的な間隙が残る~~ → Task 2（`1f24a02`）で解消
 - `scripts/build-dist.ps1` にはレビューで採用を見送った指摘 4 群が残る（Issue-0108）。いずれも Task 11 の検証範囲外であり、捕捉されない前提で扱うこと
 - `scripts/check-claude-md-size.ps1` 35 行目の警告文が案内する CONTRIBUTING 見出し「AGENTS.md を棚卸しするとき」は未作成（Task 7 で改題）。計画が「既知の中間不整合（許容）」とした箇所。Task 7 の着地時に解消を確認すること
+- 未移行プロジェクトを検知して移行を促す機構は本サイクルでは設けない（ADR-0114 で受容）。移行の契機は Task 6 が新設する README の移行手順のみ
 
 ## Post ラッパー消化記録
 
@@ -78,14 +82,16 @@
 - 2026-08-25 plan Task 1 完了（build-dist の version 一致検査・`29bc6ff`）: ADR=0113（Proposed・レビュー指摘の反映先） / worklog=`MakeAiInstructions-2026-08-25-04`・`-05`
 - 2026-08-25 plan Task 2 完了（Codex 向け 2 生成物の導出・`1f24a02`。Issue-0108 起票）: ADR=0113（追加決定を追記・Proposed） / worklog=`MakeAiInstructions-2026-08-25-06`〜`-08`
 - 2026-08-25 plan Task 3 完了（Layer 2 を AGENTS.md 正本へ切替・`13d4106`）: ADR=なし（決定は ADR-0111 の枠内。昇格は Task 12） / worklog=`MakeAiInstructions-2026-08-25-09`
+- 2026-08-25 plan Task 4 完了（skills の中立化・`7b71c5d`）: ADR=0114（Proposed・受容残余まで記録） / worklog=`MakeAiInstructions-2026-08-25-10`〜`-12`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 3 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 3 と Task 11 は実機操作を伴うため委譲せずインラインで扱う）
-3. 留意点: plan 冒頭の「タスク間の順序制約」を先に読むこと（Task 2 は Task 1 依存・行番号は本計画未適用時が基準・Task 3 は 1 コミットでコミット前に実機再実測・Task 9 は Task 2/3/4/7 の後）。検証 6・7・10 はユーザー確認事項として引き継ぐ
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 5 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 11 は実機操作を伴うため委譲せずインラインで扱う）
+3. 留意点: 行番号は本計画未適用時が基準のため位置決めは引用テキストで行うこと。Task 9 は Task 2/3/4/7 の後、Task 11 は 1〜10 の後、Task 12 は 11 の後。検証 6・7・10 はユーザー確認事項として引き継ぐ
 
 ## 重要な意思決定の履歴
 
 - ADR-0110: Codex 対応はフル対応を単一サイクルのスコープとする（2026-08-25 Accepted）
 - ADR-0113: 生成器の JSON 入力異常に対する診断強化は、Codex 生成物の入力ガードと同じコミットへ統合する（2026-08-25 Proposed）
+- ADR-0114: Layer 2 参照の中立化は、探索対象の明示・書き込み先の二段フォールバック・ツール列挙の開放で仕上げる（2026-08-25 Proposed）

@@ -2086,10 +2086,10 @@ ai-driven-dev-principles@ai-driven-dev-principles  installed, enabled  0.1.12   
 
 ```powershell
 $cache = Join-Path $env:USERPROFILE ".codex\plugins\cache\ai-driven-dev-principles"
-(Get-ChildItem (Join-Path $cache "*\*\skills") -Directory).Count
+(Get-ChildItem (Join-Path $cache "*\*\skills\*") -Directory).Count
 ```
 
-期待: `13`。
+期待: `13`。**末尾のワイルドカードを落として `"*\*\skills"` としてはならない**——それは `skills` ディレクトリ自体を数えるため必ず `1` を返し、スキル本数の裏取りにならない（2026-08-25 実測）。
 
 - [ ] **Step 3: 検証 4 — スキル一覧が警告なく全件列挙されること**
 
@@ -2149,14 +2149,15 @@ grep -rn "CLAUDE\.md" $LIVE
 
 **除外フィルタを付けてはならない**。`grep -rn` は出力行の先頭にファイルパスを付けるため、`grep -v "check-claude-md-size"` も `grep -v "check-claude-md-size\.ps1"` も**同じく `scripts/check-claude-md-size.ps1` の全行を落とす**（落とす主体はメッセージ接頭辞ではなくパス接頭辞であり、両形式の挙動は同一）。まさに Task 3 Step 6 が書き換える 20・35 行目の漏れがそこで盲点になる（この 2 行は通常実行で発火しないため、他のどの検証でも捕捉されない）。そして除外はそもそも不要である——検索語 `CLAUDE\.md` は大文字小文字を区別し、小文字ハイフン表記のスクリプト名 `check-claude-md-size.ps1` には一致しないため、除外が無くても偽陽性は 1 件も出ない。この形にすることで Task 3 Step 6 の確認と二重に効く。
 
-期待: **20 行**が出力され、そのすべてが次の**意図的な言及**に収まること。それ以外が出たら該当箇所を修正して追加コミットする。
+期待: **21 行**が出力され、そのすべてが次の**意図的な言及**に収まること（当初の見積りは 20 行だったが、ADR-0114 が `skills/worklog-skillify/SKILL.md:37` へ書き込み側の二段フォールバックを追加したため 1 行増えた）。それ以外が出たら該当箇所を修正して追加コミットする。
 
 | 分類 | 行数 | 箇所 |
 |---|---|---|
 | ポインタである旨の説明 | 3 | README の Layer 2 表・Layer 2 注記、CONTRIBUTING の Layer 2 行 |
 | 既存プロジェクト移行手順の節 | 3 | README |
 | 「新しいプロジェクトでの使い方」手順 3 | 1 | README（`CLAUDE.md` は `@AGENTS.md` の 1 行のままにする、の部分） |
-| 二段フォールバック表現 | 8 | skills 7 箇所（`session-handoff` が 4——113・163・180・219 行目。うち 113 行目は Step 3 の書き込み側の但し書き）・`docs/overview/issue-management.md` 1 箇所 |
+| 二段フォールバック表現（読み側） | 8 | skills 7 箇所（`session-handoff` が 4——113・163・180・219 行目。うち 113 行目は Step 3 の書き込み側の但し書き）・`docs/overview/issue-management.md` 1 箇所 |
+| 二段フォールバック表現（書き込み側。ADR-0114） | 1 | `skills/worklog-skillify/SKILL.md:37` |
 | sync-template 実行条件の列挙 | 3 | CONTRIBUTING |
 | template.manifest のエントリとコメント | 2 | `template.manifest` |
 

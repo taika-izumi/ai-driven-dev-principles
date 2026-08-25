@@ -43,6 +43,8 @@
 
 ## Consequences
 
+- **部分修正（ADR-0111）**: Decision 1「Layer 2 ファイルは1つに統一する」は「Layer 2 の**内容の正本**は1つに統一する」へ改められた（物理ファイルはツール到達経路として複数置いてよく、内容を持つのは正本のみ）。Copilot CLI の二重読み込みを避ける目的は、ポインタ 1 行しか余分に読ませないことで達成される。あわせて Decision 7「AGENTS.md は Claude Code がネイティブに読まないため採用しない」の不採用理由は、`CLAUDE.md` 内の `@path` インポートが公式サポートされていることの確認により失効し、採用へ転換した。この転換により Considered Alternatives 案 2（AGENTS.md 単一ソース＋`@AGENTS.md` インポート）の否定評価も前提失効により覆っている。本 ADR 以降の Layer 2 の内容正本はルート `AGENTS.md` である
+
 ### 良い影響
 
 - Copilot CLI と Claude Code の双方で、追加の変換・生成工程なしに同一の Layer 2 指示が機能する。

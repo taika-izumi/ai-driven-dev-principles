@@ -12,7 +12,7 @@
 | レイヤー | ファイル | 役割 |
 |----------|----------|------|
 | Layer 1 | `docs/overview/principles.md` | ツール非依存の普遍的原則 |
-| Layer 2 | `CLAUDE.md` | エージェント向け行動指示（GitHub Copilot CLI / Claude Code 共通） |
+| Layer 2 | `AGENTS.md` | エージェント向け行動指示（GitHub Copilot CLI / Claude Code / OpenAI Codex 共通）。`CLAUDE.md` は `@AGENTS.md` インポートのポインタ 1 行 |
 | Layer 3 | `skills/` | 自動化されたワークフロー |
 
 核心的な設計原則:
@@ -33,7 +33,7 @@
 
 ### 適用対象
 
-規範・手順・観点を追加または強化する拡張のすべて（原則の追加・変更、CLAUDE.md の規範追加、スキルの新規作成・改定）。「強化」とは、拘束的な文（「〜すること」「〜しないこと」「必須」「禁止」等）の新規追加、または既存規範の適用条件の拡大を指す。規範のレイヤー間移設（例: 棚卸しの「退避」で CLAUDE.md からスキルへ移す）も移設先への追加として対象に含む。誤記修正・表現の圧縮・参照の張り替えなど、規範の内容を変えない変更は対象外。
+規範・手順・観点を追加または強化する拡張のすべて（原則の追加・変更、AGENTS.md の規範追加、スキルの新規作成・改定）。「強化」とは、拘束的な文（「〜すること」「〜しないこと」「必須」「禁止」等）の新規追加、または既存規範の適用条件の拡大を指す。規範のレイヤー間移設（例: 棚卸しの「退避」で AGENTS.md からスキルへ移す）も移設先への追加として対象に含む。誤記修正・表現の圧縮・参照の張り替えなど、規範の内容を変えない変更は対象外。
 
 ### 点検の観点
 
@@ -51,7 +51,7 @@
 過剰適合の芽が見つかった場合、以下の型で汎用性を回復する:
 
 - **適用例への降格**: 拘束的規範ではなく「発火条件に紐づく適用例」として記載し、出所（プロジェクト・根拠 id）を明記する（ADR-0073 の型）
-- **観測可能な発動条件でゲート**: 前提が成立する場合に限り適用されるよう、エージェントが観測できる発動条件を付ける。モデル依存の規範は事象確認済みモデルを列挙し、未確認モデルには適用しない（ADR-0032 の型。過去の実例: CLAUDE.md の旧・構造化質問ツール規範〈事象確認済みモデルの列挙。規範ごと ADR-0109 で撤回済み〉。CLAUDE.md への規範追加では「CLAUDE.md を更新するとき」手順のゲート必須と同一の要求である）
+- **観測可能な発動条件でゲート**: 前提が成立する場合に限り適用されるよう、エージェントが観測できる発動条件を付ける。モデル依存の規範は事象確認済みモデルを列挙し、未確認モデルには適用しない（ADR-0032 の型。過去の実例: AGENTS.md の旧・構造化質問ツール規範〈事象確認済みモデルの列挙。規範ごと ADR-0109 で撤回済み〉。AGENTS.md への規範追加では「AGENTS.md を更新するとき」手順のゲート必須と同一の要求である）
 - **根拠と世代＋退役経路**: 根拠エントリ id と観測されたモデル世代を添え、前提が消えたときに退役させる経路を定義する（ADR-0073 の型）
 - **規範化の見送り・適用範囲の降格・撤回**: 汎用側に便益が無ければ汎用規範として書かない。観測記録（worklog / issue）に留める、配布範囲をプロジェクト固有側へ降格する（`worklog-skillify` のスコープ降格を含む）、既存の固定条項を撤回する（ADR-0073 の型）
 
@@ -191,9 +191,9 @@
 
 配布対象ソースを変更したら、コミット前に次を行う。
 
-1. **変更した側の生成器を実行する**: `skills/` を変更したなら `scripts/build-dist.ps1`、`template.manifest` 記載ファイル・空インデックス生成対象を変更したなら `scripts/sync-template.ps1`（両方を変更したなら両方）。規約違反があれば非ゼロ終了する
-2. **両者を `-Check` で実行する**: それぞれ自分の出力先しか見ない（`build-dist.ps1` は `dist/`、`sync-template.ps1` は `template/`）。取りこぼさないよう変更範囲によらず両方を回す
-3. **生成された `dist/` と `template/` を同じコミットに含める**: どちらも git 管理下にあり、ソースだけコミットすると次の `-Check` が落ちる状態を作り込む
+1. **変更した側の生成器を実行する**: `skills/` または `.claude-plugin/plugin.json` / `.claude-plugin/marketplace.json` を変更したなら `scripts/build-dist.ps1`、`template.manifest` 記載ファイル・空インデックス生成対象を変更したなら `scripts/sync-template.ps1`（両方を変更したなら両方）。規約違反、または 2 つの `.claude-plugin/` ファイル間の version 不一致があれば非ゼロ終了する
+2. **両者を `-Check` で実行する**: それぞれ自分の出力先しか見ない（`build-dist.ps1` は `dist/` とルートの `.agents/plugins/marketplace.json`、`sync-template.ps1` は `template/`）。取りこぼさないよう変更範囲によらず両方を回す
+3. **生成された `dist/`・`template/`・`.agents/plugins/marketplace.json` を同じコミットに含める**: いずれも git 管理下にあり、ソースだけコミットすると次の `-Check` が落ちる状態を作り込む
 4. **上表の 5 つを配布物で目視する**
 
 **コミット前フックは無い。** この実行は書き手の責任で行う（機械的なゲートがあるわけではない）。
@@ -228,17 +228,17 @@
 - 新設（規範・手順・観点）を含む場合、評価可能性の記載要件を満たしたか（「全シナリオ共通: 新設の評価可能性」/ ADR-0102）
 - 配布対象ソースの記法規約に適合しているか（「全シナリオ共通: 配布対象ソースの記法規約」の執行点 4 手順を実施したか。ADR-0083）
 
-## シナリオ: CLAUDE.md を更新するとき
+## シナリオ: AGENTS.md を更新するとき
 
 ### レイヤー対応規則
 
 - Layer 2はLayer 1の原則を **エージェント向けの行動指示に変換したもの** である
-- 各原則 → `CLAUDE.md` の対応セクションへ1:1でマッピングされている
+- 各原則 → `AGENTS.md` の対応セクションへ1:1でマッピングされている
 - 新しい原則を追加した場合、対応するセクションの追加を検討する
 
 ### 判定基準
 
-以下に該当するものを `CLAUDE.md` に記述する:
+以下に該当するものを `AGENTS.md` に記述する:
 
 - セッション横断で **常に** 適用したい行動規範
 - エージェント共通の設定（言語、応答スタイル等）
@@ -246,14 +246,14 @@
 
 ### 手順（規範を追加するときの事前判定）
 
-CLAUDE.md は常時指示として最も高価な置き場所である（毎セッション読み込まれ、template 経由で配布先全プロジェクトへ波及する）。規範の追加を検討し始めた時点で、以下の事前判定を行う（ADR-0040）:
+AGENTS.md は常時指示として最も高価な置き場所である（毎セッション読み込まれ、template 経由で配布先全プロジェクトへ波及する）。規範の追加を検討し始めた時点で、以下の事前判定を行う（ADR-0040）:
 
 1. **実測**: `scripts/check-claude-md-size.ps1` を単体実行して現在値（バイト数・箇条書き件数）を確認し、追加する規範の概算サイズと合わせて数字で把握する（感覚論で議論しない）
 2. **放置リスク評価**: その規範が防ぐ失敗の性質を評価する。「静かに壊れて発見が遅れ、修復コストが高い」失敗なら常時指示の候補。「人間レビューや後続工程で必ず顕在化する」失敗なら常時指示には置かない
-3. **配置先の優先順位検討**: ① 環境・ツール設定による構造的解決（ADR-0039）→ ② Layer 3 スキル（特定状況でのみ必要な場合）→ ③ 発生箇所の手順書（CONTRIBUTING.md 等）→ ④ CLAUDE.md（最後の選択肢）の順に検討する
-4. **ゲート必須**: CLAUDE.md に置く場合は、観測可能な発動条件でゲートする（ADR-0032。無条件の「常に〜せよ」型を避ける）
+3. **配置先の優先順位検討**: ① 環境・ツール設定による構造的解決（ADR-0039）→ ② Layer 3 スキル（特定状況でのみ必要な場合）→ ③ 発生箇所の手順書（CONTRIBUTING.md 等）→ ④ AGENTS.md（最後の選択肢）の順に検討する
+4. **ゲート必須**: AGENTS.md に置く場合は、観測可能な発動条件でゲートする（ADR-0032。無条件の「常に〜せよ」型を避ける）
 5. **点検必須**: 過剰適合の点検を実施し、点検ブロックを記録する（「全シナリオ共通: 過剰適合の点検」/ ADR-0079。是正パターン「観測可能な発動条件でゲート」は前項のゲート必須と同一の要求）。新設を含む場合は評価可能性の記載要件も確認する（「全シナリオ共通: 新設の評価可能性」/ ADR-0102）
-6. **追加後の確認**: 追加後に `scripts/sync-template.ps1` を実行する（計測が自動で走る。閾値超過の警告が出たら「CLAUDE.md を棚卸しするとき」の実施を検討する）
+6. **追加後の確認**: 追加後に `scripts/sync-template.ps1` を実行する（計測が自動で走る。閾値超過の警告が出たら「AGENTS.md を棚卸しするとき」の実施を検討する）
 
 ### 注意事項
 
@@ -262,11 +262,11 @@ CLAUDE.md は常時指示として最も高価な置き場所である（毎セ�
 - 記述言語は日本語で統一する（plugin注入部分は除く）
 - 規範の適用条件・撤去基準は、エージェントが観測・実行できる事実で書くこと（ADR-0032）
 
-## シナリオ: CLAUDE.md を棚卸しするとき
+## シナリオ: AGENTS.md を棚卸しするとき
 
 ### 背景
 
-CLAUDE.md の規範は課題対策のたびに増える一方になりやすい。累積した常時指示は、今の作業に無関係な指示への注意配分とコンテキスト消費を通じて配布先全プロジェクトへ波及するため、減らす側のフローとして棚卸しを行う（ADR-0040、Issue-0018）。
+AGENTS.md の規範は課題対策のたびに増える一方になりやすい。累積した常時指示は、今の作業に無関係な指示への注意配分とコンテキスト消費を通じて配布先全プロジェクトへ波及するため、減らす側のフローとして棚卸しを行う（ADR-0040、Issue-0018）。
 
 ### 発動条件
 
@@ -276,7 +276,7 @@ CLAUDE.md の規範は課題対策のたびに増える一方になりやすい�
 ### 手順
 
 1. `scripts/check-claude-md-size.ps1` を単体実行し、現在値を確認する
-2. CLAUDE.md の箇条を1件ずつ、導入元の ADR（`docs/records/decisions/README.md` から特定する）と突合し、以下の4分類で判定する:
+2. AGENTS.md の箇条を1件ずつ、導入元の ADR（`docs/records/decisions/README.md` から特定する）と突合し、以下の4分類で判定する:
    - **構造的置換**: 環境・ツール設定・自動検査で塞げるようになった → 置換して削除する（ADR-0039 の事後適用。例: 改行規範を .gitattributes へ置き換えた ADR-0037）
    - **失効**: 発動条件のモデル・ツール・状況が変わり、もう発動しない → 削除する
    - **退避**: 常時適用ではなく特定状況でのみ必要と分かった → Layer 3（スキル）へ移動する
@@ -301,7 +301,7 @@ CLAUDE.md の規範は課題対策のたびに増える一方になりやすい�
 
 ### Skill化の判定
 
-| 観点 | CLAUDE.md に書く | Skill にする |
+| 観点 | AGENTS.md に書く | Skill にする |
 |------|-------------------------------|-------------|
 | 複雑さ | 数行で表現できる | 手順・分岐・テンプレートがある |
 | 発動条件 | 常時適用 | 特定の状況でのみ必要 |
@@ -319,7 +319,7 @@ CLAUDE.md の規範は課題対策のたびに増える一方になりやすい�
 
 ### チェックリスト
 
-- `CLAUDE.md` の記述で十分ではないか（YAGNI確認）
+- `AGENTS.md` の記述で十分ではないか（YAGNI確認）
 - Skill名が動作を端的に表しているか
 - YAML frontmatter（`name`, `description`）が正しいか
 - 対応する原則への参照があるか
@@ -399,7 +399,7 @@ ADR インデックス全体のステータス正確性を確認する保険的�
 1. ADRを作成して変更理由を記録する（規範・手順・観点を追加または強化する変更では必須。それ以外は重要な変更の場合）
 2. `skills/start-work/SKILL.md` を更新する
 3. 横断関心を追加する場合、対応する補助スキル（例: `decision-log`, `session-handoff`, `pre-action-review`）の整合を確認する
-4. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
+4. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `AGENTS.md` / `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
 
 ### チェックリスト
 
@@ -432,7 +432,7 @@ ADR インデックス全体のステータス正確性を確認する保険的�
 1. ADRを作成して変更理由を記録する（規範・手順・観点を追加または強化する変更では必須。それ以外は重要な変更の場合）
 2. `skills/feature-block-design/SKILL.md` を更新する
 3. brainstorming / writing-plans / start-work との責務重複を確認する
-4. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
+4. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `AGENTS.md` / `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
 
 ### チェックリスト
 
@@ -470,7 +470,7 @@ ADR インデックス全体のステータス正確性を確認する保険的�
 3. テンプレート構造を変えた場合は `skills/retrospective/template.md` / `skills/retrospective/flow-template.md` を同期する
 4. `start-work` の Phase 2 マッピング表 / セッション終了処理との整合を確認する
 5. `docs/records/retrospectives/README.md`（template対象）の運用規約との整合を確認する
-6. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
+6. **`scripts/sync-template.ps1` は実行しない**（`skills/` は ADR-0016 により template 対象外）。同一サイクルで `AGENTS.md` / `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/inbox/README.md` のいずれか、または空インデックス生成対象（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）を変更した場合のみ実行する
 
 ### チェックリスト
 

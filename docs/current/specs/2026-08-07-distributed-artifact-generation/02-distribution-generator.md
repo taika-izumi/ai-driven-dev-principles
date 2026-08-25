@@ -7,7 +7,7 @@
 
 ## 責務
 
-配布対象ソースを走査し、記法規約（ブロック 01）への適合を判定する。適合していれば出所識別子を除去した配布物を生成し、違反していれば違反箇所と違反した規約 ID を出力して非ゼロ終了する。生成物がソースから再生成した結果と一致するかも判定する。
+配布対象ソースを走査し、記法規約（ブロック 01）への適合を判定する。適合していれば出所識別子を除去した配布物を生成し、違反していれば違反箇所と違反した規約 ID を出力して非ゼロ終了する。生成物がソースから再生成した結果と一致するかも判定する。あわせてプラグイン定義の正本 2 ファイル（`.claude-plugin/plugin.json` / `.claude-plugin/marketplace.json`）の version 一致を検査し、Codex 向けマニフェスト 2 生成物を正本から導出する。
 
 ## インターフェース
 
@@ -17,8 +17,8 @@ scripts/build-dist.ps1 [-Check]
 
 | モード | 動作 | 終了コード |
 |---|---|---|
-| 既定（引数なし） | 規約を判定し、適合していれば `dist/` を再生成する | 0 = 生成成功 / 1 = 規約違反（`dist/` は変更しない） |
-| `-Check` | 規約を判定し、ソースから再生成した内容と既存 `dist/` を比較する。書き込みはしない | 0 = 一致 / 1 = 規約違反または不一致 |
+| 既定（引数なし） | version 一致と規約を判定し、適合していれば `dist/` とルート生成物を再生成する | 0 = 生成成功 / 1 = version 不一致・規約違反・正本 JSON の不正（生成物は変更しない） |
+| `-Check` | version 一致と規約を判定し、ソースから再生成した内容と既存の生成物を比較する。書き込みはしない | 0 = 一致 / 1 = version 不一致・規約違反・正本 JSON の不正・生成物との不一致 |
 
 `-Check` の一致判定は次の 4 条件をすべて満たすこととする。
 
@@ -26,6 +26,12 @@ scripts/build-dist.ps1 [-Check]
 2. `dist/` にソース由来でないファイルが存在しない（ソース側の削除・改名の取りこぼしを検出するため）
 3. `dist/` の各ファイルに UTF-8 BOM が付いていない（LF 正規化で改行差が吸収されても、BOM の混入は差異として検出する。ADR-0033）
 4. 再生成した内容に残存識別子（`Get-ProvenanceLeak`）が 1 件も無い（`dist/` とソースの双方が同じ漏れを含む場合に、突合だけでは `Up to date.` になってしまうのを防ぐ。CI が `-Check` のみを回す運用でも「配布物に実在を指す出所識別子 0 件」を担保する）
+
+上記 4 条件は `dist/` に対する判定である。**ルート直下の生成物（`.agents/plugins/marketplace.json`）は既知パスのホワイトリストに対するファイル単位の判定**とし、条件 1（内容一致）・条件 3（BOM の不在）・条件 4（残存識別子）のみを適用する。**条件 2（余分なファイルの不在）はルート側に適用しない**——リポジトリルートを出力先ルートとして走査すると生成物以外の全ファイルが陳腐化と判定され、wipe に含めれば不可逆な削除事故になるため。
+
+また通常実行・`-Check` の**両モードの冒頭（規約判定より前）**で、`.claude-plugin/plugin.json` の `version` と `.claude-plugin/marketplace.json` の `plugins[].version`（全件）の一致を検査し、不一致なら非ゼロ終了する。version は 2 ファイルに二重保持されており、`-Check` 側でも走らせないと CONTRIBUTING「執行点」手順 2 のゲートにならない。
+
+Codex 向けマーケットプレイスの生成は `plugins[].source` が**文字列パスであること**を前提とする。オブジェクト形式（`{"source":"github", …}`）は未対応であり、暗黙の文字列変換で壊れた `path` を持つ構文的に妥当な JSON が出力され `-Check` も自己一致で通ってしまうため、生成時に型を判定して非ゼロ終了する。`plugins` が 0 件のとき、`plugins[].name` が空のときも同様に停止する。
 
 ### 共有ライブラリのインターフェース
 
@@ -50,14 +56,14 @@ scripts/build-dist.ps1 [-Check]
 ```
 [build-dist] Scanning 18 source files...
 [build-dist] Convention violations: 0
-  ✓ skills/start-work/SKILL.md (21 identifiers removed)
-  ✓ skills/session-handoff/SKILL.md (17 identifiers removed)
+  ✓ skills/start-work/SKILL.md (28 identifiers removed)
+  ✓ skills/session-handoff/SKILL.md (34 identifiers removed)
   ...
-[build-dist] Generating dist/ ...
-[build-dist] Done. 19 files written to dist/.
+[build-dist] Generating dist/ and root artifacts ...
+[build-dist] Done. 20 files written to dist/, 1 to repository root.
 ```
 
-`✓` 行（ファイル別の除去数）は生成内容の組み立て時に出力するため、`Generating` 行より前に並び、書き込みを行わない `-Check` でも表示される。`Done.` の件数は `plugin.json` を含む書き出しファイルの総数である。
+`✓` 行（ファイル別の除去数）は生成内容の組み立て時に出力するため、`Generating` 行より前に並び、書き込みを行わない `-Check` でも表示される。`Done.` の件数は 2 系統に分けて出す。`dist/` 側は `.claude-plugin/plugin.json` と `.codex-plugin/plugin.json` を含む書き出しファイルの総数、ルート側はホワイトリストの生成物件数である。
 
 規約違反時（各違反は「位置と規約 ID」の行と「違反行の内容」の行の 2 行で出力する。規約 ID の定義はブロック 01 を参照）:
 
@@ -67,17 +73,19 @@ scripts/build-dist.ps1 [-Check]
       - 出力ファイルは ADR-0011（時系列追記型）に従い、一度書いたら原則上書き禁止
   ! skills/worklog-record/SKILL.md:69  R4
       {"v":2,"id":"MakeAiInstructions-2026-07-17-01",…}
-[build-dist] Aborted. dist/ was not modified.
+[build-dist] Aborted. Generated artifacts were not modified.
 ```
 
 ## サブ機能 / 内部構成
 
 ### 1. 走査対象の決定
 
-配布対象ソースは計 26 ファイルで、走査は生成器ごとに分担する。
+配布対象ソースは計 27 ファイルで、走査は生成器ごとに分担する。
 
 - `scripts/build-dist.ps1`（本ブロック）: `skills/` 配下の全ファイル（18）
-- `scripts/sync-template.ps1`（ブロック 03）: `template.manifest` に記載されたファイル（5）と空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容）
+- `scripts/sync-template.ps1`（ブロック 03）: `template.manifest` に記載されたファイル（6）と空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容）
+
+このほか `build-dist.ps1` は `.claude-plugin/plugin.json` と `.claude-plugin/marketplace.json` を読むが、これらは走査対象ではなく**生成の入力（正本）**である。
 
 ### 2. 判定に用いる正規表現
 
@@ -125,7 +133,7 @@ scripts/build-dist.ps1 [-Check]
 
 変換は**冪等**であること。出力をもう一度変換に通して内容が変わる場合、区切りの残骸が残っている。
 
-### 5. `dist/` の構成と書き出し
+### 5. 生成物の構成と書き出し
 
 `dist/` は生成のたびに完全削除して作り直す（冪等性・クリーン性）。**したがって `dist/` 配下のすべてのファイルを生成器が書き出す責務を負う。**
 
@@ -133,8 +141,16 @@ scripts/build-dist.ps1 [-Check]
 |---|---|
 | `dist/skills/**` | `skills/**` を変換したもの |
 | `dist/.claude-plugin/plugin.json` | リポジトリ直下の `.claude-plugin/plugin.json` を LF へ正規化して複写する |
+| `dist/.codex-plugin/plugin.json` | 同 `plugin.json` から `name` / `version` / `description` / `author` を複写し、`skills` は `./skills/` 固定、`interface` は `displayName` と `category` の 2 キーのみを生成器内の固定マッピングで付与する |
+| `.agents/plugins/marketplace.json`（リポジトリルート） | `.claude-plugin/marketplace.json` から `name` と `plugins[].name` を複写し、`source` を `{"source":"local","path":"<正本の source>"}` へ変換、`interface.displayName` / `policy.installation` / `policy.authentication` / `category` を生成器内の固定マッピングで付与する |
 
 `plugin.json` を生成器の責務に含めないと、2 回目の実行でプラグイン定義が失われ、`/plugin marketplace update` 時に全スキルが消える。
+
+`dist/` は生成のたびに完全削除して作り直すが、**ルート直下の生成物は wipe の対象にしない**（ホワイトリストのパスをファイル単位で上書きする）。リポジトリルートの削除は不可逆事故になるため。
+
+Codex 向けマニフェストの `interface` は資産参照キー（`composerIcon` / `logo` / `screenshots` など）を生成しない。`dist/` に実体が無く、必須である根拠も無いため最小構成とする。
+
+JSON は `ConvertTo-Json` ではなくテンプレート組み立てで出力する（整形規則と非 ASCII のエスケープが PowerShell のバージョンで変わり、`-Check` が環境依存で落ちるのを避けるため）。
 
 `plugin.json` は変換せず複写のみのため、書き込み前の検査には規約判定（`Test-ProvenanceConvention`）ではなく残存識別子検査（`Get-ProvenanceLeak`）を用いる（規約判定は全角括弧内の識別子を「除去対象」として通すが、変換されない複写物では「後で除去される」が成り立たないため。この検査により種別 1〜5 のいずれが混入しても `dist/` を書き換える前に停止する）。欠損している場合は例外スタックではなく `[build-dist]` 接頭辞の診断を出して非ゼロ終了する。
 
@@ -145,6 +161,8 @@ scripts/build-dist.ps1 [-Check]
 生成後、`dist/` 配下に**実在を指す出所識別子**が 1 件も残っていないことを確認する。残っていれば変換規則の欠陥として非ゼロ終了する。検査対象は種別 1〜4 に加えて**種別 5（`（出所[:：]…）`）を含む**（種別 5 は `Get-IdentifierMatch` の走査対象外のため、明示的に検査しないと漏れが exit=0 で出荷される）。
 
 **検査は判定と同じ適用範囲・同じプレースホルダ判別を用いる**（`.py` / `.ps1` はコメント行のみ、中立名の種別 4 は対象外）。この限定が無いと、配布物に含まれる `dist/skills/worklog-extract/scripts/check-store-health.py` のテストフィクスチャ（コード行の `X-2026-01-01-01` 等）を検出して必ず非ゼロ終了する。検査の実装は共有ライブラリの `Get-ProvenanceLeak` に集約し、生成器側でフェンス追跡や適用範囲判定を再実装しない（重複実装は片方だけ直したときに乖離する）。
+
+**ディレクトリ走査を伴う自己検査は `dist/` に限定する。** ルート直下の生成物に対しては、書き込み前に生成内容（メモリ上の文字列）へ `Get-ProvenanceLeak` を掛けるファイル単位の検査を行う。ルートを再帰走査すると配布物ではないリポジトリ内の全ファイルが検査対象になってしまうため。
 
 ## このブロック固有の制約・前提
 

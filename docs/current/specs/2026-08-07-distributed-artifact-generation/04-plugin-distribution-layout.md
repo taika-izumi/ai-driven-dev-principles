@@ -31,14 +31,16 @@
 採用した構造 A の配置。
 
 ```
-skills/                           開発用ソース（人が編集する。識別子あり）
+skills/                             開発用ソース（人が編集する。識別子あり）
 dist/
-  .claude-plugin/plugin.json      生成物（リポジトリ直下から複写）
-  skills/                         生成物（識別子なし）
-.claude-plugin/marketplace.json   本番エントリの source を "./dist" にする
+  .claude-plugin/plugin.json        生成物（リポジトリ直下から複写）
+  .codex-plugin/plugin.json         生成物（同 plugin.json から導出）
+  skills/                           生成物（識別子なし）
+.claude-plugin/marketplace.json     正本。本番エントリの source を "./dist" にする
+.agents/plugins/marketplace.json    生成物（上記 marketplace.json から導出。Codex 用）
 ```
 
-配布物が `dist/` に限られ、`docs/` や `CONTRIBUTING.md` は配布先へ複製されない。
+配布先へ複製されるのは `dist/` に限られ、`docs/` や `CONTRIBUTING.md` は配布先へ複製されない。ルートの `.agents/plugins/marketplace.json` はマーケットプレイス登録側が読む定義であり、配布物には含まれない。
 
 構造 A は「マーケットプレイスの `source` にサブディレクトリを指定できる」という前提の上に立つ。設計時は未検証だったが、2026-08-07 の実機検証で**成立を確認した**（下記「成立性の検証」）。
 
@@ -85,7 +87,7 @@ skills/                           生成物（識別子なし。プラグイン�
 
 判定条件は観測可能な事実（スキルが起動するか、ベースディレクトリがどこか）で書かれている（ADR-0032）。
 
-**本番エントリを最小構成で上書きしてはならない理由**: `CLAUDE.md` は当該プラグインのスキル群を作業の前提条件として宣言している。本番エントリを最小構成に差し替えると、`start-work` / `decision-log` / `session-handoff` を含む 17 本が当セッションから失われる。供給はセッション冒頭または直近の update 時点のスナップショットで固定されるため（Issue-0044）、復旧にはユーザーによる再 update が必要で、エージェントからは実行できない。
+**本番エントリを最小構成で上書きしてはならない理由**: `AGENTS.md` は当該プラグインのスキル群を作業の前提条件として宣言している。本番エントリを最小構成に差し替えると、`start-work` / `decision-log` / `session-handoff` を含む 13 本が当セッションから失われる。供給はセッション冒頭または直近の update 時点のスナップショットで固定されるため（Issue-0044）、復旧にはユーザーによる再 update が必要で、エージェントからは実行できない。
 
 ## 本リポジトリ自身への影響
 

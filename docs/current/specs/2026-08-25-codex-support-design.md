@@ -51,9 +51,10 @@
   - `.agents/plugins/marketplace.json`（ルート）: 実測済みレイアウト（`source: {"source":"local","path":"./dist"}`・パス解決はリポジトリルート基準）。`interface.displayName`・`policy.installation`・`policy.authentication`・`category` は生成器内の固定マッピングで付与
   - `dist/.codex-plugin/plugin.json`: `name` / `version` / `description` / `author` は正本 plugin.json から複写、**`skills` は `"./skills/"` 固定、`interface` は `displayName`・`category` の 2 キーのみを生成器内の固定マッピングで付与**し、それ以外の interface キー（`composerIcon` / `logo` / `screenshots` / `shortDescription` ほか）は生成しない（資産参照キーは dist に実体が無く、その他は必須である根拠が無いため最小構成とする）
 - 通常実行・`-Check` の**両モードの冒頭（規約判定より前）**で、正本 `.claude-plugin/plugin.json` の `version` と `.claude-plugin/marketplace.json` の `plugins[].version`（全件）の一致を検査し、不一致なら非ゼロ終了する（従来から二重保持で無検査だった乖離点を生成器導入と同時に塞ぐ。`-Check` モードでも走らせないと執行点手順 2 のゲートにならない）
+- あわせて正本 `.claude-plugin/marketplace.json` の `plugins[].source` が文字列であること・`plugins` が 1 件以上あること・`plugins[].name` が空でないことを生成時に検査し、いずれも満たさなければ非ゼロ終了する（オブジェクト形式の `source` は暗黙の文字列変換で壊れた `path` を持つ構文的に妥当な JSON を生み、`-Check` も自己一致で通ってしまうため）
 - 生成物はいずれも git 管理し、`-Check` の検査対象に加える。手編集しない（正本は `.claude-plugin/` の 2 ファイルのみ）
 - **プラグイン version を patch bump する（0.1.11 → 0.1.12）**: 本サイクルは dist の内容を改定するため ADR-0090 の bump 必須条件に該当する
-- 生成器の正本仕様のスナップショット同期: `docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md`（`-Check` 4 条件・dist 構成表・出力例・責務・走査対象の実数 26→27 / 5→6）と `03-template-sync-integration.md`（template.manifest「変更しない」注記の撤回・同期対象 5→6 ファイル・全 8→9 ファイル・影響表の CLAUDE.md 行・check-claude-md-size 呼び出し）を書き換えで更新する
+- 生成器の正本仕様のスナップショット同期: `docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md`（`-Check` 4 条件・dist 構成表・出力例・責務・走査対象の実数 26→27 / 5→6）と `03-template-sync-integration.md`（template.manifest「変更しない」注記の撤回・同期対象 5→6 ファイル・全 8→9 ファイル・影響表の CLAUDE.md 行・check-claude-md-size 呼び出し）を書き換えで更新する。あわせて同ディレクトリの `00-overview.md`（スコープ外リストの `template/CLAUDE.md` 参照）・`01-provenance-notation-convention.md`（配布対象ソース件数 5→6・シナリオ配線表）・`04-plugin-distribution-layout.md`（配布構造図・プラグイン宣言元・スキル本数）、および skills の正本テキストを逐語ないし準逐語で写している `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md`・`02-volume-norms.md` と `docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md`・`04-skill3-skillify.md` も、同じ基準（本サイクルの変更が直接無効化する記述であること）で同期する
 
 ### 3. superpowers 依存 — 実測により解消
 
@@ -72,7 +73,7 @@
 
 | ファイル | 操作 |
 |---|---|
-| `AGENTS.md`（新規・ルート） | 作成（旧 CLAUDE.md 内容＋前提条件節の 3 ツール化。ポインタ化と同一コミット・コミット前に作業ツリーで再実測） |
+| `AGENTS.md`（新規・ルート） | 作成（旧 CLAUDE.md 内容＋前提条件節の 3 ツール化＋構造化質問ツール例示の中立化。ポインタ化と同一コミット・コミット前に作業ツリーで再実測） |
 | `CLAUDE.md` | `@AGENTS.md` の 1 行へ置換（AGENTS.md 作成と同一コミット） |
 | `README.md` | 「Codex へのインストール」節の新設（`add` 系コマンド・確認日とバージョン明記・更新手順を含む）、既存プロジェクト移行手順の独立節、概要（7 行目）・Layer 2 表（18 行目）・Layer 2 注記ブロック（123 行目）・「新しいプロジェクトでの使い方」の 3 ツール化 |
 | `CONTRIBUTING.md` | 設計思想の Layer 2 行 / 執行点手順 1 の発火条件へ `.claude-plugin/` 2 ファイルを追加・手順 2 の「自分の出力先しか見ない」記述と手順 3 の生成物リストを新出力先へ追随 / シナリオ見出し 2 本（「CLAUDE.md を更新するとき」「CLAUDE.md を棚卸しするとき」）と本文の AGENTS.md 化 / sync-template 実行条件の列挙 3 箇所（start-work・feature-block-design・retrospective の各シナリオ内）へ AGENTS.md 追加 / Skill 化判定表（304 行目）・Skill シナリオのチェックリスト（322 行目）・「過剰適合の点検」適用対象定義（36 行目）・是正パターンのゲート規範（54 行目）の CLAUDE.md 言及の追随 |
@@ -82,7 +83,7 @@
 | `scripts/build-dist.ps1` | 出力先一般化＋2 生成物の導出＋version 一致検査 |
 | `scripts/check-claude-md-size.ps1` | 計測対象を AGENTS.md へ切替（ハードコード 5 箇所） |
 | `scripts/sync-template.ps1` | check-claude-md-size 呼び出し部（235 行目付近）のコメント・文言の追随 |
-| `docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md` / `03-template-sync-integration.md` | スナップショット書き換え更新 |
+| `docs/current/specs/2026-08-07-distributed-artifact-generation/00-overview.md` / `01-provenance-notation-convention.md` / `02-distribution-generator.md` / `03-template-sync-integration.md` / `04-plugin-distribution-layout.md`、`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` / `02-volume-norms.md`、`docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md` / `04-skill3-skillify.md` | スナップショット書き換え更新 |
 | `docs/overview/issue-management.md`（44 行目） | 調整値参照の二段フォールバック化 |
 | `docs/overview/folder-structure.md`（80 行目） | 参照元名の AGENTS.md 化（参照元の宣言であり調整値探索ではないため二段フォールバックにしない） |
 | `skills/` 配下 | CLAUDE.md 参照 18 箇所/9 ファイルの二段フォールバック化ないし AGENTS.md 化、`.claude/skills/` パス参照 3 箇所（worklog-extract / worklog-skillify）のツール中立化（置換後は各ツールのスキル配置先の併記〈Claude Code `.claude/skills/`・Codex `.agents/skills/` 等〉とする）。モデル ID・判定マーカーは変更しない |

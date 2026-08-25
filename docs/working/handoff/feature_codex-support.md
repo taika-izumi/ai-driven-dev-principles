@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 20:50 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 21:40 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 10 完了）
+- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 11 完了）
 
 ## 作業の目的・背景
 
@@ -47,11 +47,14 @@
 - [x] plan Task 8 完了: version 0.1.12 へ bump・description を AGENTS.md 基準へ（`a9e3432`。仕様適合 ✅ 8/8・品質 ✅ 承認）（2026-08-25 完了）
 - [x] plan Task 9 完了: 仕様スナップショット 10 ファイルを同期（`5f84c65`。仕様適合 ✅ 47/47・品質 ✅ 承認）（2026-08-25 完了）
 - [x] plan Task 10 完了: ADR-0023 へ部分修正注記（`ec4b994`＋指示対象の明示 `2201ef3`。Status は Accepted 維持）（2026-08-25 完了）
+- [x] plan Task 11 完了: 検証 1〜5・8・9 をすべて実施し全件通過。配布物の目視 5 項目（2 巡目）も通過。成果物側の修正なし。計画の欠陥 2 件を是正（`6a61dfe`）（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 11 から続行）
-  - 状態: Task 1〜10 完了。残るのは Task 11（検証・実機操作のためインライン）と Task 12（ADR 昇格・handoff 更新）
+- [ ] **現在の作業**: 実装（plan の Task 12 のみ）
+  - 状態: Task 1〜11 完了。検証 1〜5・8・9 は全件通過し、成果物側の修正は発生しなかった
+  - 残り: Task 12（ADR-0111/0112/0113/0114 の Accepted 昇格＋サイクル全体整合検査＋handoff 更新）
+  - **Task 12 で handoff へ残す母数は 15**（`CLAUDE.md` 参照を持つが本サイクルが直接触らない spec）
   - **Task 12 で handoff へ残す母数は 15**（`CLAUDE.md` 参照を持つが本サイクルが直接触らない spec。実装者とレビュアーが独立に数え直して一致。総数 19 − 同期対象で参照が残る 4）
   - Task 11 では検証 1〜5・8・9 を実施し、6・7・10 はユーザー確認事項として引き継ぐ
   - Task 7 では `check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しの改題（既知の中間不整合の解消）を確認すること
@@ -60,10 +63,11 @@
 
 ## 未着手のタスク
 
-- [ ] Layer 2 設計・実装（AGENTS.md 経路）
-- [ ] Layer 3 設計・実装（.codex-plugin 生成・marketplace.json の Codex 対応）
-- [ ] README（Codex インストール節）・CONTRIBUTING・スキル本文の中立化
-- [ ] 過剰適合点検・確定前レビュー提示・執行点 4 手順
+- [ ] Task 12: ADR-0111/0112/0113/0114 の Accepted 昇格（サイクル全体整合検査を含む）
+- [ ] **検証 6（ユーザー確認）**: Claude Code で `/plugin marketplace update ai-driven-dev-principles` 後、Copilot CLI で `copilot plugin update ai-driven-dev-principles` 後に、それぞれ 13 スキルが認識されること
+- [ ] **検証 7（ユーザー確認）**: Claude Code の `/context` で `CLAUDE.md` 経由の `@AGENTS.md` 展開を最終確認。Copilot CLI で AGENTS.md ＋ポインタ CLAUDE.md の同居で指示が読み込まれること。Copilot CLI が利用不能なら「未確認」と明記し完了条件外とする
+- [ ] **検証 10（ユーザー確認）**: リリース後に `codex plugin marketplace add taika-izumi/ai-driven-dev-principles` で native manifest が解決されること
+- [ ] feature ブランチの完了処理（master への取り込み）→ retrospective
 
 ## 既知のブロッカー・懸念
 
@@ -72,6 +76,7 @@
 - ~~superpowers の Codex 可用性~~ → 実機検証で解消（superpowers 6.3.0 導入成功・インストールは残置＝実運用状態。Codex CLI 0.149.0-alpha.4.3）
 - 配布物生成の既知の落とし穴（ADR-0082/0084 の型・Issue-0104）。執行点 4 手順＋配布物目視を省略しない
 - 改訂前退避 `~/.ai-dev-review-snapshots/2026-08-25-codex-support/`（round1/round2＋plan-round1〜4）が残置。掃除規定は Issue-0106（当面手動判断）
+- Codex へ本プラグインをローカル登録・インストール済み（検証 2・3・4 のため。`0.1.12`・実運用状態として残置）。取り消すなら `codex plugin remove ai-driven-dev-principles` と `codex plugin marketplace remove ai-driven-dev-principles`
 - 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 6 事例＋一般観察 2 件を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
 - ~~Task 1 のコミット `29bc6ff` 単体では JSON 入力異常の診断に一時的な間隙が残る~~ → Task 2（`1f24a02`）で解消
 - `scripts/build-dist.ps1` にはレビューで採用を見送った指摘 4 群が残る（Issue-0108）。いずれも Task 11 の検証範囲外であり、捕捉されない前提で扱うこと
@@ -100,10 +105,11 @@
 - 2026-08-25 plan Task 8 完了（version 0.1.12 bump・`a9e3432`）: ADR=なし（決定は ADR-0090/0111 の枠内） / worklog=`MakeAiInstructions-2026-08-25-16`
 - 2026-08-25 plan Task 9 完了（仕様スナップショット同期・`5f84c65`）: ADR=なし（計画どおり。出力例の数値是正は実測との整合） / worklog=`MakeAiInstructions-2026-08-25-17`
 - 2026-08-25 plan Task 10 完了（ADR-0023 部分修正注記・`ec4b994`＋`2201ef3`）: ADR=0023（部分修正注記のみ。decision-log の改訂記録規定は対象外） / worklog=`MakeAiInstructions-2026-08-25-18`
+- 2026-08-25 plan Task 11 完了（検証 1〜5・8・9 全件通過・`6a61dfe`）: ADR=なし（検証のみ。計画の欠陥是正は新規の決定ではない） / worklog=`MakeAiInstructions-2026-08-25-19`・`-20`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 11 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 12 のみ残っている）
 2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 11 は実機操作を伴うため委譲せずインラインで扱う）
 3. 留意点: 行番号は本計画未適用時が基準のため位置決めは引用テキストで行うこと。Task 9 は Task 2/3/4/7 の後、Task 11 は 1〜10 の後、Task 12 は 11 の後。検証 6・7・10 はユーザー確認事項として引き継ぐ
 

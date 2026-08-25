@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 16:10 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 16:45 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 4 完了）
+- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 5 完了）
 
 ## 作業の目的・背景
 
@@ -41,13 +41,14 @@
 - [x] Issue-0108 起票: レビューで採用を見送った指摘 4 群の受け皿（2026-08-25 完了）
 - [x] plan Task 3 完了: Layer 2 を AGENTS.md 正本へ切替（`13d4106`。仕様適合 ✅ 38/38・コード品質 ✅ 承認）（2026-08-25 完了）
 - [x] plan Task 4 完了: skills の Layer 2 参照とローカルスキルパスを中立化（`7b71c5d`。仕様適合 ✅ 46/46＋11/11・ADR-0114 の 4 点を反映）（2026-08-25 完了）
+- [x] plan Task 5 完了: docs/overview の 2 箇所を中立化（`bc51327`。仕様適合 ✅ 16/16・品質 ✅ 承認）（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 5 から続行）
-  - 状態: Task 1〜4 完了。計画からの逸脱は ADR-0113（6 点）と ADR-0114（4 点）に限られ、いずれも仕様適合レビューが逸脱ゼロを確認済み
-  - 残り: Task 5〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113/0114 Accepted 昇格・ADR-0023 部分修正注記
-  - **Task 5 は ADR-0114 の 4 点を先に適用した形で実装する**（8 番目の二段フォールバック箇所 `docs/overview/issue-management.md:44` を含む。計画 Task 5 Step 1 は同期済み）
+- [ ] **現在の作業**: 実装（plan の Task 6 から続行）
+  - 状態: Task 1〜5 完了。Layer 2 参照の中立化（skills 21 箇所＋docs/overview 2 箇所）は完了し、二段フォールバック句は全 8 箇所で同一表現に揃っている
+  - 残り: Task 6〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113/0114 Accepted 昇格・ADR-0023 部分修正注記
+  - Task 7 では `check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しの改題（既知の中間不整合の解消）を確認すること
   - Task 11 も実機操作を伴うため委譲せずインラインで扱う
   - 計画は本サイクルで複数回更新済み（Task 2 Step 13 を 3 → 7 ケース／Task 4 の Step 2〜6・8・前文／Task 5・9・11 の旧表現同期）
 
@@ -83,10 +84,11 @@
 - 2026-08-25 plan Task 2 完了（Codex 向け 2 生成物の導出・`1f24a02`。Issue-0108 起票）: ADR=0113（追加決定を追記・Proposed） / worklog=`MakeAiInstructions-2026-08-25-06`〜`-08`
 - 2026-08-25 plan Task 3 完了（Layer 2 を AGENTS.md 正本へ切替・`13d4106`）: ADR=なし（決定は ADR-0111 の枠内。昇格は Task 12） / worklog=`MakeAiInstructions-2026-08-25-09`
 - 2026-08-25 plan Task 4 完了（skills の中立化・`7b71c5d`）: ADR=0114（Proposed・受容残余まで記録） / worklog=`MakeAiInstructions-2026-08-25-10`〜`-12`
+- 2026-08-25 plan Task 5 完了（docs/overview の中立化・`bc51327`）: ADR=なし（決定は ADR-0111/0114 の枠内） / worklog=`MakeAiInstructions-2026-08-25-13`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 5 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 6 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
 2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 11 は実機操作を伴うため委譲せずインラインで扱う）
 3. 留意点: 行番号は本計画未適用時が基準のため位置決めは引用テキストで行うこと。Task 9 は Task 2/3/4/7 の後、Task 11 は 1〜10 の後、Task 12 は 11 の後。検証 6・7・10 はユーザー確認事項として引き継ぐ
 

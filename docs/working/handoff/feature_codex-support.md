@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 23:55 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張/spec 確定済み・writing-plans 待ち
+- **Last Updated**: 2026-08-25 09:36 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: ガイドライン拡張/plan 確定済み・実装待ち
 
 ## 作業の目的・背景
 
@@ -13,6 +13,8 @@
 
 ## 関連ドキュメント
 
+- Spec: `docs/current/specs/2026-08-25-codex-support-design.md`（確定済み）
+- Plan: `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み・12 タスク / 90 ステップ）
 - ADR-0110: スコープ決定（Accepted）
 - ADR-0023: 先例（Copilot CLI → Claude Code 併対応。Layer 2 一本化。部分改訂の見込み）
 - 先例 spec: `docs/current/specs/2026-06-16-claude-code-support-design.md`
@@ -28,12 +30,15 @@
 - [x] ADR-0111/0112 ドラフトコミット（`29b88cc`・Proposed）（2026-08-25 完了）
 - [x] 確定前レビュー（spec 確定点 (b)）: フル巡 2＋差分確認巡 1＋機械検証 1・指摘 53 件全採用・補助実測 6 件・設計縮小 1 件（分割コミット機構の除去）・実質収束で確定（2026-08-25 完了）
 - [x] Issue-0107 起票（反復レビュー推奨の乖離記録。フォルダ昇格形態・乖離事例 3＋一般観察 1 を検討経緯ログへ）（2026-08-25 完了）
+- [x] writing-plans: 実装計画作成（`docs/working/plans/2026-08-25-codex-support-implementation.md`。12 タスク / 90 ステップ）（2026-08-25 完了）
+- [x] 確定前レビュー（plan 確定点）: フル巡 2＋機械検証 1＋差分確認巡 2＋機械検証 1・指摘 44 件全採用・提示後確定（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: writing-plans（実装計画の作成）
-  - 状態: 未着手。spec 確定直後
-  - 残り: plan 作成 → plan 確定点（確定前レビュー提示）→ 実装（生成器改修・AGENTS.md 切替・中立化・検証 1〜5/8/9）→ ADR-0111/0112 Accepted 昇格
+- [ ] **現在の作業**: 実装（plan の Task 1 から順に実行）
+  - 状態: plan 確定済み・未着手。確定前レビューの反復は終了済み（`review=` は消化記録行が正本）
+  - 残り: Task 1〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112 Accepted 昇格・ADR-0023 部分修正注記
+  - 実行方式（subagent-driven-development / executing-plans）は未選択
 
 ## 未着手のタスク
 
@@ -48,7 +53,8 @@
 - Copilot CLI は AGENTS.md/CLAUDE.md を両方読む（同一内容なら重複除去）。別内容にすると二重読み込みが再発する（ADR-0023 の懸念の再来）
 - ~~superpowers の Codex 可用性~~ → 実機検証で解消（superpowers 6.3.0 導入成功・インストールは残置＝実運用状態。Codex CLI 0.149.0-alpha.4.3）
 - 配布物生成の既知の落とし穴（ADR-0082/0084 の型・Issue-0104）。執行点 4 手順＋配布物目視を省略しない
-- 改訂前退避 `~/.ai-dev-review-snapshots/2026-08-25-codex-support/`（round1/round2）が残置。掃除規定は Issue-0106（当面手動判断）
+- 改訂前退避 `~/.ai-dev-review-snapshots/2026-08-25-codex-support/`（round1/round2＋plan-round1〜4）が残置。掃除規定は Issue-0106（当面手動判断）
+- plan 確定点の反復で、第 3 巡の改訂前退避を取り忘れた。隔離コピーからハッシュ一致を確認して `plan-round3` を復元済み（規定は `pre-finalization-review`「反復の実施」の改訂前退避）
 - 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 3 事例＋一般観察を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
 
 ## Post ラッパー消化記録
@@ -57,12 +63,13 @@
 - 2026-08-25 設計承認・ADR-0111/0112 ドラフトコミット（`29b88cc`）: ADR=0111/0112（Proposed） / worklog=棄却（唯一の friction は codex サブコマンド乖離で自律解決・spec 正本に記録済み）
 - 2026-08-25 spec 確定点 (b) 通過・spec 確定: ADR=なし（改訂は Proposed 0111/0112 へ反映済み） / worklog=`MakeAiInstructions-2026-08-25-01` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-08-25 Issue-0107 起票（推奨乖離の記録）: ADR=なし（記録のみ・対策設計は次サイクル以降のユーザー判断） / worklog=棄却（正本は Issue-0107 の検討経緯ログ）
+- 2026-08-25 plan 確定点 通過・実装計画確定: ADR=なし（改訂は Proposed 0111/0112 の枠内。spec への反映は plan Task 9 Step 13） / worklog=`MakeAiInstructions-2026-08-25-02` / review=フル実施（claude-opus-5・2 巡）＋機械検証（1 回）＋差分再確認（claude-opus-5・2 巡）＋機械検証（1 回・提示後確定（実質収束せず））
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/current/specs/2026-08-25-codex-support-design.md`（確定済み spec。影響一覧・検証 1〜10 が実装の入力）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:writing-plans`（spec を入力に plan 作成。出力先は `docs/working/plans/`）。plan 確定点で確定前レビューを提示すること
-3. 留意点: 実装は生成器改修（ADR-0112 の設計に従う）→ AGENTS.md 切替（1 コミット・コミット前に作業ツリーで `codex debug prompt-input`＋`claude -p` 再実測）→ 中立化 → 執行点 4 手順＋配布物目視 → version 0.1.12。ADR-0111/0112 の Accepted 昇格とADR-0023 部分修正注記は実装完了後。検証 6・7・10 はユーザー確認事項
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 1 から順に実行する）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` または `superpowers:executing-plans`（実行方式は未選択のためユーザーへ確認する）
+3. 留意点: plan 冒頭の「タスク間の順序制約」を先に読むこと（Task 2 は Task 1 依存・行番号は本計画未適用時が基準・Task 3 は 1 コミットでコミット前に実機再実測・Task 9 は Task 2/3/4/7 の後）。検証 6・7・10 はユーザー確認事項として引き継ぐ
 
 ## 重要な意思決定の履歴
 

@@ -1,9 +1,9 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 17:30 (Asia/Tokyo)
+- **Last Updated**: 2026-08-25 18:05 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 6 完了）
+- **Current Phase**: ガイドライン拡張/実装（subagent-driven-development・plan Task 7 完了）
 
 ## 作業の目的・背景
 
@@ -43,12 +43,14 @@
 - [x] plan Task 4 完了: skills の Layer 2 参照とローカルスキルパスを中立化（`7b71c5d`。仕様適合 ✅ 46/46＋11/11・ADR-0114 の 4 点を反映）（2026-08-25 完了）
 - [x] plan Task 5 完了: docs/overview の 2 箇所を中立化（`bc51327`。仕様適合 ✅ 16/16・品質 ✅ 承認）（2026-08-25 完了）
 - [x] plan Task 6 完了: README に Codex インストール節と移行手順を追加（`57f5cec`。仕様適合 ✅ 12/12・品質 ✅ 承認）（2026-08-25 完了）
+- [x] plan Task 7 完了: CONTRIBUTING を AGENTS.md 正本と新生成物構成へ追随（`dcb2e81`。21 箇所→4 箇所、Task 3 の中間不整合を解消）（2026-08-25 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 7 から続行）
-  - 状態: Task 1〜6 完了。README の Codex 節では、GitHub 経由の native 解決が未実測である旨と private リポジトリの認証フォールバックを明記した（計画からの意図的逸脱。上流正本との整合）
-  - 残り: Task 7〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113/0114 Accepted 昇格・ADR-0023 部分修正注記
+- [ ] **現在の作業**: 実装（plan の Task 8 から続行）
+  - 状態: Task 1〜7 完了。Layer 2 の中立化は skills・docs/overview・README・CONTRIBUTING まで完了
+  - 残り: Task 8〜12 を順に実行 → 検証 1〜5・8・9 → ADR-0111/0112/0113/0114 Accepted 昇格・ADR-0023 部分修正注記
+  - Task 9 は Task 2/3/4/7 の後という順序制約を満たした（着手可能）
   - Task 7 では `check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しの改題（既知の中間不整合の解消）を確認すること
   - Task 11 も実機操作を伴うため委譲せずインラインで扱う
   - 計画は本サイクルで複数回更新済み（Task 2 Step 13 を 3 → 7 ケース／Task 4 の Step 2〜6・8・前文／Task 5・9・11 の旧表現同期）
@@ -73,6 +75,8 @@
 - `scripts/check-claude-md-size.ps1` 35 行目の警告文が案内する CONTRIBUTING 見出し「AGENTS.md を棚卸しするとき」は未作成（Task 7 で改題）。計画が「既知の中間不整合（許容）」とした箇所。Task 7 の着地時に解消を確認すること
 - 未移行プロジェクトを検知して移行を促す機構は本サイクルでは設けない（ADR-0114 で受容）。移行の契機は README の移行手順のみ（Task 6 で新設済み）
 - README の Codex 節で `codex plugin marketplace list` / `plugin remove` / `marketplace upgrade` は実測記録が無い。Task 11 で確認し、通れば README の実測範囲の記述を強められる
+- ~~`check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しが未作成~~ → Task 7（`dcb2e81`）で改題し解消
+- Task 7 の見出し改題により `docs/working/issues/flow/0018-claude-md-norm-growth-monitoring.md` の 7・16 行が旧見出し名を指すようになった。issues は spec 検証 9 の網羅性チェック対象（生きたファイル 8 種）に含まれずスコープ外。次サイクルで追随を判断すること
 
 ## Post ラッパー消化記録
 
@@ -88,10 +92,11 @@
 - 2026-08-25 plan Task 4 完了（skills の中立化・`7b71c5d`）: ADR=0114（Proposed・受容残余まで記録） / worklog=`MakeAiInstructions-2026-08-25-10`〜`-12`
 - 2026-08-25 plan Task 5 完了（docs/overview の中立化・`bc51327`）: ADR=なし（決定は ADR-0111/0114 の枠内） / worklog=`MakeAiInstructions-2026-08-25-13`
 - 2026-08-25 plan Task 6 完了（README の 3 ツール化・`57f5cec`）: ADR=なし（逸脱は上流正本との整合であり新規の決定ではない） / worklog=`MakeAiInstructions-2026-08-25-14`
+- 2026-08-25 plan Task 7 完了（CONTRIBUTING の追随・`dcb2e81`）: ADR=なし（計画どおり・逸脱なし） / worklog=`MakeAiInstructions-2026-08-25-15`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 7 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 8 から順に実行する。冒頭「タスク間の順序制約」を先に読む）
 2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 11 は実機操作を伴うため委譲せずインラインで扱う）
 3. 留意点: 行番号は本計画未適用時が基準のため位置決めは引用テキストで行うこと。Task 9 は Task 2/3/4/7 の後、Task 11 は 1〜10 の後、Task 12 は 11 の後。検証 6・7・10 はユーザー確認事項として引き継ぐ
 

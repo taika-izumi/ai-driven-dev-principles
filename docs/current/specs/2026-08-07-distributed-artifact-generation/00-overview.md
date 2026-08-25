@@ -125,7 +125,7 @@ ADR-0068 は本リポジトリ内の記述について `<repo>#` 修飾を定め
 
 ## スコープ外（YAGNI）
 
-- **`template/CLAUDE.md` のプラグイン名 `ai-driven-dev-principles` とインストール元リポジトリ `taika-izumi/ai-driven-dev-principles`** — 配布先が環境を準備するために必要な情報であり、本リポジトリ固有であること自体が正しい（ADR-0081）
+- **`template/AGENTS.md` のプラグイン名 `ai-driven-dev-principles` とインストール元リポジトリ `taika-izumi/ai-driven-dev-principles`** — 配布先が環境を準備するために必要な情報であり、本リポジトリ固有であること自体が正しい（ADR-0081）
 - **書式例・プレースホルダ** — `ADR-NNNN` / `Issue-NNNN` / `<repo>#Issue-NNNN` のように実在を指さない表記、および中立名を使ったサンプル値。配布先が使う型そのものであるため保持する（ADR-0081）
 - **`docs/` 配下の参照** — 配布対象ではない。プラグインキャッシュへ物理的に複製されるが、スキルとしてロードされず配布先の作業指示にならない（ADR-0081）
 - **空インデックス生成で除去される行** — `sync-template.ps1` が `docs/records/retrospectives/README.md` 等のデータ行を落とすため、配布物に届かない（ADR-0081）

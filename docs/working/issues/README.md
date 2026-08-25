@@ -31,6 +31,7 @@
 | [0083](system/0083-session-handoff-doc-clarity-review-leftovers.md) | session-handoff スキル文書にレビュー残の解釈揺れ箇所 5 点が残っている | closed | 2026-08-14 |
 | [0077](system/0077-distribution-artifact-layout-inconsistent.md) | 2 つの配布物の置き場が非対称で、`dist` の名前が実態（プラグインルート）と合っていない | open | 2026-08-08 |
 | [0091](system/0091-completed-migration-spec-stale-after-split.md) | 完了済み移行 spec のひな形パス言及が課題管理定義の分離後と乖離している | open | 2026-08-15 |
+| [0108](system/0108-build-dist-review-deferred-findings-backlog.md) | build-dist.ps1 のコード品質レビューで採用を見送った指摘 4 群が未対応（条件付き backlog） | open | 2026-08-25 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 
@@ -118,3 +119,5 @@
 | [0104](flow/0104-provenance-strip-grammar-breakage-not-machine-detected.md) | 識別子除去後の文法破綻（R1-a 型）を機械検出できない | open | 2026-08-18 |
 | [0105](flow/0105-skill-md-size-growth-no-norm.md) | SKILL.md のサイズ・分割規範が無い | open | 2026-08-18 |
 | [0106](flow/0106-review-snapshot-area-no-naming-cleanup-rules.md) | 改訂前退避領域の命名規約・掃除規定が無い | open | 2026-08-18 |
+| [0107](flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md) | 反復レビューの推奨規範が状況要素を無視して推奨を決める（推奨と実選択の乖離記録） | open | 2026-08-25 |
+| [0109](flow/0109-layer3-regression-check-only-after-merge.md) | Layer 3 の退行確認が、マージ・push 後にしか実行できない | open | 2026-08-25 |

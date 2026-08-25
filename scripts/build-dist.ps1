@@ -15,6 +15,8 @@ $distDir = Join-Path $repoRoot 'dist'
 $utf8    = New-Object System.Text.UTF8Encoding($false)
 $pluginJsonPath = Join-Path $repoRoot '.claude-plugin/plugin.json'
 $pluginRel = '.claude-plugin/plugin.json'
+$marketplaceJsonPath = Join-Path $repoRoot '.claude-plugin/marketplace.json'
+$marketplaceRel = '.claude-plugin/marketplace.json'
 
 # 相対パス算出のヘルパ（M-3: 同じ算出式が複数箇所に重複していたのを1本化）
 function Get-RepoRelativePath {
@@ -22,9 +24,179 @@ function Get-RepoRelativePath {
     return ($FullName.Substring($repoRoot.Length + 1) -replace '\\', '/')
 }
 
+# JSON の欠損プロパティを Set-StrictMode の例外ではなく $null で受ける（例外スタックを
+# 生で出さず接頭辞つきの診断で止めるため）
+function Get-JsonProperty {
+    param($Object, [string]$Name)
+    if ($null -ne $Object -and $Object.PSObject.Properties[$Name]) { return $Object.$Name }
+    return $null
+}
+
+# 不正な JSON で .NET の例外スタックを生で出さず、接頭辞つきの診断で止める（M-6 と同じ方針）。
+function ConvertFrom-JsonText {
+    param([string]$Text, [string]$Rel)
+    try { return $Text | ConvertFrom-Json }
+    catch {
+        Write-Host "[build-dist] invalid JSON: $Rel ($($_.Exception.Message))"
+        exit 1
+    }
+}
+
+# 正本 JSON から必須の文字列値を取り出す唯一の経路。ConvertTo-JsonStringValue の
+# [string] パラメータは object を "@{...}"、$null を空文字へ黙って変換するため、
+# 素通りさせると構文的に妥当な JSON へ壊れた値が埋まる。-Check は生成器出力との
+# 自己突合であり、壊れた値は恒久的に自己一致してしまう（ADR-0113）。
+function Get-RequiredJsonString {
+    param($Object, [string]$Name, [string]$Rel, [string]$Label)
+    $v = Get-JsonProperty $Object $Name
+    if ($null -eq $v -or $v -isnot [string] -or [string]::IsNullOrWhiteSpace($v)) {
+        $what = if ($null -eq $v) { 'missing' } elseif ($v -isnot [string]) { $v.GetType().Name } else { 'empty' }
+        Write-Host "[build-dist] $Label must be a non-empty string: $Rel ($what)"
+        Write-Host '[build-dist] Aborted. Generated artifacts were not modified.'
+        exit 1
+    }
+    return $v
+}
+
+# Codex 向け生成物の固定マッピング。正本 JSON に対応キーが無いため生成器内で与える。
+# 値は Codex ネイティブ marketplace の実例に合わせている（確認日 2026-08-25 /
+# codex-cli 0.149.0-alpha.4.3）。
+$codexDisplayName          = 'AI-Driven Dev Principles'
+$codexCategory             = 'Developer Tools'
+$codexInstallationPolicy   = 'AVAILABLE'
+$codexAuthenticationPolicy = 'ON_INSTALL'
+$codexSkillsPath           = './skills/'
+
+# 生成物を PowerShell のバージョン差（ConvertTo-Json の整形・非 ASCII エスケープの違い）へ
+# 依存させないため、JSON はテンプレート組み立てで出力する。
+function ConvertTo-JsonStringValue {
+    param([string]$Value)
+    $s = $Value -replace '\\', '\\'
+    $s = $s -replace '"', '\"'
+    $s = $s -replace "`r", '\r'
+    $s = $s -replace "`n", '\n'
+    $s = $s -replace "`t", '\t'
+    return $s
+}
+
+function New-CodexMarketplaceContent {
+    param($Source)
+    $plugins = @(Get-JsonProperty $Source 'plugins')
+    if ($plugins.Count -eq 0) {
+        Write-Host "[build-dist] no plugins found in $marketplaceRel"
+        exit 1
+    }
+    $entries = New-Object System.Collections.Generic.List[string]
+    foreach ($p in $plugins) {
+        $rawName = Get-JsonProperty $p 'name'
+        $rawPath = Get-JsonProperty $p 'source'
+        # 正本の source が object 形式（github 等）だと、暗黙の文字列変換で
+        # "@{source=github; repo=o/r}" が path へ埋まり、構文的に妥当な JSON になるため
+        # -Check も自己一致で通ってしまう。検出したら黙認せず停止する（ADR-0054）。
+        if ([string]::IsNullOrWhiteSpace($rawName)) {
+            Write-Host "[build-dist] plugin name is missing or empty in $marketplaceRel plugins[$($entries.Count)]"
+            exit 1
+        }
+        if ($null -eq $rawPath -or $rawPath -isnot [string]) {
+            $srcType = if ($null -eq $rawPath) { 'missing' } else { $rawPath.GetType().Name }
+            Write-Host "[build-dist] plugin source must be a string path for the Codex marketplace: $marketplaceRel plugins[$($entries.Count)].source is $srcType"
+            exit 1
+        }
+        $pName = ConvertTo-JsonStringValue $rawName
+        $pPath = ConvertTo-JsonStringValue $rawPath
+        $entries.Add(@"
+    {
+      "name": "$pName",
+      "source": {
+        "source": "local",
+        "path": "$pPath"
+      },
+      "policy": {
+        "installation": "$codexInstallationPolicy",
+        "authentication": "$codexAuthenticationPolicy"
+      },
+      "category": "$codexCategory"
+    }
+"@)
+    }
+    $mpName = ConvertTo-JsonStringValue (Get-RequiredJsonString $Source 'name' $marketplaceRel 'name')
+    $body = $entries -join ",`n"
+    return @"
+{
+  "name": "$mpName",
+  "interface": {
+    "displayName": "$codexDisplayName"
+  },
+  "plugins": [
+$body
+  ]
+}
+"@
+}
+
+function New-CodexPluginContent {
+    param($Source)
+    $pName    = ConvertTo-JsonStringValue (Get-RequiredJsonString $Source 'name' $pluginRel 'name')
+    $pVersion = ConvertTo-JsonStringValue (Get-RequiredJsonString $Source 'version' $pluginRel 'version')
+    $pDesc    = ConvertTo-JsonStringValue (Get-RequiredJsonString $Source 'description' $pluginRel 'description')
+    $pAuthor  = ConvertTo-JsonStringValue (Get-RequiredJsonString (Get-JsonProperty $Source 'author') 'name' $pluginRel 'author.name')
+    return @"
+{
+  "name": "$pName",
+  "version": "$pVersion",
+  "description": "$pDesc",
+  "author": {
+    "name": "$pAuthor"
+  },
+  "skills": "$codexSkillsPath",
+  "interface": {
+    "displayName": "$codexDisplayName",
+    "category": "$codexCategory"
+  }
+}
+"@
+}
+
 # plugin.json が無い状態で .NET の例外スタックを生で出さないよう、先に固有メッセージで止める（M-6）
 if (-not (Test-Path $pluginJsonPath)) {
     Write-Host "[build-dist] plugin.json not found: $pluginJsonPath"
+    exit 1
+}
+
+if (-not (Test-Path $marketplaceJsonPath)) {
+    Write-Host "[build-dist] marketplace.json not found: $marketplaceJsonPath"
+    exit 1
+}
+
+# 0. version 一致検査。正本が 2 ファイルに分かれて version を二重保持しているため、
+#    規約判定より前・両モード共通で突合する。-Check でも走らせないと執行点手順 2 の
+#    ゲートにならない（ADR-0112）。
+$pluginRawText = [System.IO.File]::ReadAllText($pluginJsonPath)
+$pluginObj = ConvertFrom-JsonText -Text $pluginRawText -Rel $pluginRel
+$marketplaceObj = ConvertFrom-JsonText -Text ([System.IO.File]::ReadAllText($marketplaceJsonPath)) -Rel $marketplaceRel
+$srcVersion = Get-JsonProperty $pluginObj 'version'
+if ($null -eq $srcVersion) {
+    Write-Host "[build-dist] version not found in $pluginRel"
+    exit 1
+}
+$marketplacePlugins = Get-JsonProperty $marketplaceObj 'plugins'
+if ($null -eq $marketplacePlugins -or @($marketplacePlugins).Count -eq 0) {
+    Write-Host "[build-dist] no plugins found in $marketplaceRel"
+    exit 1
+}
+$versionMismatch = 0
+$marketplacePluginIndex = 0
+foreach ($p in @($marketplacePlugins)) {
+    $pv = Get-JsonProperty $p 'version'
+    if ($pv -ne $srcVersion) {
+        $pn = Get-JsonProperty $p 'name'
+        Write-Host "  ! version mismatch: $marketplaceRel plugins[$marketplacePluginIndex] ($pn) = $pv, $pluginRel = $srcVersion"
+        $versionMismatch++
+    }
+    $marketplacePluginIndex++
+}
+if ($versionMismatch -gt 0) {
+    Write-Host "[build-dist] Aborted. $versionMismatch version mismatch(es). Generated artifacts were not modified."
     exit 1
 }
 
@@ -62,7 +234,7 @@ foreach ($f in $sources) {
 # plugin.json は変換されない複写物であるため、括弧内の種別 1〜4 がこの判定では素通りし、
 # dist/ 全削除・書き出し後の自己検査まで検出が遅れて git 管理下の dist/ が汚れた状態で残る
 # 問題があった（実証済み）。「規約適合か」ではなく「識別子が残っているか」を問う必要がある。
-$pluginContent = ConvertTo-LfContent -Content ([System.IO.File]::ReadAllText($pluginJsonPath))
+$pluginContent = ConvertTo-LfContent -Content $pluginRawText
 $pluginLeaks = Get-ProvenanceLeak -Content $pluginContent -Path $pluginRel
 $generated["dist/$pluginRel"] = $pluginContent
 
@@ -78,8 +250,32 @@ if ($pluginLeaks.Count -gt 0) {
         Write-Host "  ! identifier in ${pluginRel}:$($lk.Line)  $($lk.Text)"
     }
 }
-if ($allViolations.Count -gt 0 -or $pluginLeaks.Count -gt 0) {
-    Write-Host '[build-dist] Aborted. dist/ was not modified.'
+
+# Codex 向けの 2 生成物。dist/ 配下のものは既存の wipe・stale 検出・自己検査が
+# そのまま覆う。ルート直下のものは $rootGenerated で別に扱う（ADR-0112）。
+$generated["dist/.codex-plugin/plugin.json"] =
+    (ConvertTo-LfContent -Content (New-CodexPluginContent -Source $pluginObj)) + "`n"
+
+$rootGenerated = [ordered]@{}
+$rootGenerated['.agents/plugins/marketplace.json'] =
+    (ConvertTo-LfContent -Content (New-CodexMarketplaceContent -Source $marketplaceObj)) + "`n"
+
+# ルート生成物にも書き込み前の残存識別子検査を掛ける。ファイル単位の検査であり、
+# ディレクトリ走査は伴わない。
+$rootLeaks = New-Object System.Collections.Generic.List[object]
+foreach ($rk in $rootGenerated.Keys) {
+    foreach ($lk in (Get-ProvenanceLeak -Content $rootGenerated[$rk] -Path $rk)) {
+        $rootLeaks.Add([pscustomobject]@{ Path=$rk; Line=$lk.Line; Text=$lk.Text })
+    }
+}
+
+if ($rootLeaks.Count -gt 0) {
+    foreach ($lk in $rootLeaks) {
+        Write-Host "  ! identifier in $($lk.Path):$($lk.Line)  $($lk.Text)"
+    }
+}
+if ($allViolations.Count -gt 0 -or $pluginLeaks.Count -gt 0 -or $rootLeaks.Count -gt 0) {
+    Write-Host '[build-dist] Aborted. Generated artifacts were not modified.'
     exit 1
 }
 
@@ -114,6 +310,19 @@ if ($Check) {
         if (-not $generated.Contains($k)) { Write-Host "  ! stale file in dist/: $k"; $diff++ }
     }
     foreach ($rel in $bomFiles) { Write-Host "  ! BOM found: $rel"; $diff++ }
+    # ルート直下の生成物は既知パスのホワイトリストに対するファイル単位の突合とする。
+    # 「余分なファイルの不在」条件は適用しない（リポジトリルートを走査すると
+    # 生成物以外の全ファイルが陳腐化と判定されるため）。
+    foreach ($rk in $rootGenerated.Keys) {
+        $rfull = Join-Path $repoRoot $rk
+        if (-not (Test-Path $rfull)) { Write-Host "  ! missing: $rk"; $diff++; continue }
+        $rbytes = [System.IO.File]::ReadAllBytes($rfull)
+        if ($rbytes.Length -ge 3 -and $rbytes[0] -eq 0xEF -and $rbytes[1] -eq 0xBB -and $rbytes[2] -eq 0xBF) {
+            Write-Host "  ! BOM found: $rk"; $diff++
+        }
+        $ractual = ConvertTo-LfContent -Content ([System.IO.File]::ReadAllText($rfull))
+        if ($ractual -ne $rootGenerated[$rk]) { Write-Host "  ! content differs: $rk"; $diff++ }
+    }
     # Rec 1: 突合だけでは「ソースと dist/ が両方漏れを含む」場合に一致してしまい exit=0 を返す。
     # -Check は書き込みを行わないため、既定モードの書き出し後自己検査（後段の Step 5）が走らない。
     # ここで再生成した内容（$generated）そのものへ残存識別子検査を掛け、-Check 単独実行でも
@@ -129,13 +338,21 @@ if ($Check) {
 }
 
 # 4. 書き出し（完全削除してから作り直す）
-Write-Host '[build-dist] Generating dist/ ...'
+Write-Host '[build-dist] Generating dist/ and root artifacts ...'
 if (Test-Path $distDir) { Remove-Item -Recurse -Force $distDir }
 foreach ($k in $generated.Keys) {
     $dest = Join-Path $repoRoot $k
     $destDir = Split-Path -Parent $dest
     if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
     [System.IO.File]::WriteAllText($dest, $generated[$k], $utf8)   # LF 固定・BOM なし（ADR-0033）
+}
+
+# ルート直下の生成物はホワイトリストのファイル単位で上書きする（wipe はしない）
+foreach ($rk in $rootGenerated.Keys) {
+    $rdest = Join-Path $repoRoot $rk
+    $rdestDir = Split-Path -Parent $rdest
+    if (-not (Test-Path $rdestDir)) { New-Item -ItemType Directory -Path $rdestDir -Force | Out-Null }
+    [System.IO.File]::WriteAllText($rdest, $rootGenerated[$rk], $utf8)
 }
 
 # 5. 自己検査（I-3/M-2: ライブラリの Get-ProvenanceLeak を使う。判定と同じ適用範囲・同じ
@@ -151,4 +368,4 @@ foreach ($f in (Get-ChildItem -Path $distDir -Recurse -File)) {
 }
 if ($leak -gt 0) { Write-Host "[build-dist] Self-check failed: $leak identifier(s) remain in dist/."; exit 1 }
 
-Write-Host "[build-dist] Done. $($generated.Count) files written to dist/."
+Write-Host "[build-dist] Done. $($generated.Count) files written to dist/, $($rootGenerated.Count) to repository root."

@@ -3,7 +3,7 @@
 ## 対象ファイル
 
 - `scripts/sync-template.ps1` — 判定・変換ステップと `-Check` モードを追加する
-- `template.manifest` — 変更しない（同期対象の定義は現状のまま）
+- `template.manifest` — `AGENTS.md` を同期対象に追加した（Layer 2 の内容正本が `AGENTS.md` へ移り、`CLAUDE.md` は `@AGENTS.md` インポートのポインタ 1 行になったため。ADR-0111）
 
 ## 責務
 
@@ -26,13 +26,13 @@ scripts/sync-template.ps1 [-Check]
 
 | ステップ | 処理 |
 |---|---|
-| 1 | `template.manifest` を読み、コメント行・空行を除いてファイル一覧を得る（現在 5 ファイル: `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/overview/issue-management.md` / `docs/inbox/README.md`） |
+| 1 | `template.manifest` を読み、コメント行・空行を除いてファイル一覧を得る（現在 6 ファイル: `AGENTS.md` / `CLAUDE.md` / `docs/overview/principles.md` / `docs/overview/folder-structure.md` / `docs/overview/issue-management.md` / `docs/inbox/README.md`） |
 | 2 | 空インデックス生成対象 3 ファイル（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）について、テーブルのデータ行と直後の引用ブロックを除去した内容をメモリ上で生成する |
-| 3 | ステップ 1・2 で得た**全 8 ファイル分の内容**へ `Test-ProvenanceConvention` を適用する。違反が 1 件でもあれば違反箇所と規約 ID を出力して非ゼロ終了する |
+| 3 | ステップ 1・2 で得た**全 9 ファイル分の内容**へ `Test-ProvenanceConvention` を適用する。違反が 1 件でもあれば違反箇所と規約 ID を出力して非ゼロ終了する |
 | 4 | `template/` を完全削除する |
 | 5 | 各内容へ `Remove-ProvenanceNotation` を適用し、`template/` 配下の対応するパスへ書き出す |
 | 6 | `template/` 配下に実在を指す出所識別子が 1 件も残っていないことを確認する（判定と同じ適用範囲・同じプレースホルダ判別を用いる）。残っていれば非ゼロ終了する |
-| 7 | `scripts/check-claude-md-size.ps1` を呼び、CLAUDE.md の規模を計測する（警告のみ。同期はブロックしない） |
+| 7 | `scripts/check-claude-md-size.ps1` を呼び、AGENTS.md の規模を計測する（警告のみ。同期はブロックしない） |
 
 **判定（ステップ 3）を削除（ステップ 4）より先に行う。** 順序が逆だと、規約違反で停止したときに `template/` が消えたまま残る。
 
@@ -70,7 +70,7 @@ scripts/sync-template.ps1 [-Check]
 | `docs/records/retrospectives/README.md` | 128（種別 1〜3 が 121、種別 4 が 7） | 12 | 0 |
 | `docs/records/decisions/README.md` | 多数 | 0 | 0 |
 | `docs/working/issues/README.md` | 多数 | 0 | 0 |
-| `CLAUDE.md` / `docs/overview/principles.md` / `docs/inbox/README.md` | 0 | （対象外） | 0 |
+| `AGENTS.md` / `CLAUDE.md` / `docs/overview/principles.md` / `docs/inbox/README.md` | 0 | （対象外） | 0 |
 
 `docs/records/retrospectives/README.md` のソース側 128 のうち 116 は一覧テーブルのデータ行にあり（種別 4 の 7 件はすべてここに含まれる）、空インデックス化で除去される。残る 12 が判定と変換の対象である。うち 1 行（21 行目）が R2 違反であり、ブロック 05 で先に是正する。
 
@@ -90,7 +90,7 @@ ADR-0027 の実現方法は、同期が内容を変えないことを前提に�
 
 - `template/` は git 管理下の生成物であり、この点は変更しない
 - 空インデックス生成ロジック（`New-EmptyIndexContent`）自体は変更しない。判定と変換はその出力に対して適用する
-- `check-claude-md-size.ps1` の呼び出しは末尾のまま維持する（警告のみで同期をブロックしない性質も変えない）
+- `check-claude-md-size.ps1` の呼び出しは末尾のまま維持する（警告のみで同期をブロックしない性質も変えない）。計測対象は `AGENTS.md` である（`CLAUDE.md` はポインタ 1 行であり、測り続けると規範肥大監視が無音化する）
 
 ## 関連 ADR
 

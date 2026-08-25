@@ -28,13 +28,13 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
    検査スクリプト自体を変更したときは `--self-test` を実行し、正の対照がすべて発火し負の対照が誤検出しないことを確認してから使うこと（検査が緑であることの意味を保つため）
 3. **クラスタ評価**: 横断再発回数・出所プロジェクト数・`friction` / `corrections` の重みを集計する。`model` フィールドにより「特定モデル固有の躓きか、全モデル共通か」を判断材料に加える（v1 行は model 不明として扱う）
 4. **scope 再判定**: ≥2プロジェクトで再発するクラスタは `general-candidate` へ格上げ、単一プロジェクト・ドメイン依存は `project-specific` に確定（record 時の暫定タグを最終確定）
-5. **既存スキル重複排除**: superpowers ＋ ai-driven-dev-principles ＋ プロジェクトローカル（`.claude/skills/`）の description と突合し、既存済みは除外（あいまい層）
+5. **既存スキル重複排除**: superpowers ＋ ai-driven-dev-principles ＋ プロジェクトローカル（利用ツールのスキル配置先。Claude Code は `.claude/skills/`、Codex は `.agents/skills/` など）の description と突合し、既存済みは除外（あいまい層）
 6. **deferred 再浮上判定**: 台帳の代表 id を含む現在のクラスタを当該 deferred クラスタとして再同定し、現クラスタ根拠数 > 台帳 `evidence_count` のときのみ再提示。増えていなければ除外
 7. **候補提示**: ランク付き候補リストを人間に提示。各候補に再発数・scope・重複有無・根拠エントリ参照を添える。頻度はハード閾値を置かずソフトな判断材料
 8. **人間採否 → 反映**:
    - **rejected / deferred** → 即 `processed.jsonl` へ追記（`deferred` は `evidence_count` に現クラスタ根拠数を記録）
    - **採用** → Issue 草案化（`general` はガイドライン配信元リポジトリの `docs/working/issues/`、`project-specific` は当該プロジェクトの Issue 置き場）＋`adopted` を即 `processed.jsonl` へ追記し、`worklog-skillify` へ受け渡す
-   - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）。既存 issue へ統合（追記）した場合はファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの CLAUDE.md に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）
+   - Issue 草案化時に、retrospective 由来の Issue バックログとの重複排除を行う（唯一の合流点）。既存 issue へ統合（追記）した場合はファイルサイズを実測し、目安値超過ならフォルダ昇格を提案する（条件・目安値は課題管理定義（標準: `docs/overview/issue-management.md`）を参照。定義が見つからない場合は目安 10KB（プロジェクトの AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）に調整値があればそれを優先）をデフォルトとして提案し、その旨をユーザーへ報告する）
 
 ## 出力
 

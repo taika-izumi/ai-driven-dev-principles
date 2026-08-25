@@ -43,7 +43,7 @@
 
 **配布対象ソース**にのみ適用する。判定は観測可能な 3 条件で行う。
 
-1. `template.manifest` に記載されているファイル（現在 5 ファイル）
+1. `template.manifest` に記載されているファイル（現在 6 ファイル）
 2. `skills/` 配下のファイル
 3. `sync-template.ps1` が空インデックスを生成する 3 ファイル（`docs/records/decisions/README.md` / `docs/records/retrospectives/README.md` / `docs/working/issues/README.md`）。**判定対象は空インデックス化後の内容とする**
 
@@ -158,7 +158,7 @@ R1〜R4 は識別子の位置の規約であり、生成器が機械的に判定
   | シナリオ | 編集する配布対象ソース |
   |---|---|
   | 原則を追加・変更するとき | `docs/overview/principles.md`（`template.manifest` 記載） |
-  | CLAUDE.md を棚卸しするとき | `CLAUDE.md`（manifest 記載）と、規範の退避先 `skills/` |
+  | AGENTS.md を棚卸しするとき | `AGENTS.md`（manifest 記載）と、規範の退避先 `skills/` |
   | Skillを新規作成・改定するとき | `skills/` 配下 |
   | ワークフロー起点スキル（start-work）を変更するとき | 同上 |
   | 機能ブロック駆動の設計スキル（feature-block-design）を変更するとき | 同上 |
@@ -166,7 +166,7 @@ R1〜R4 は識別子の位置の規約であり、生成器が機械的に判定
 
   **確認項目にどちらの生成器を回すかは書かない。** シナリオによっては両側のファイルを触るため、シナリオ単位で生成器を書き分けると正しく書けない（2026-08-08 のレビューで実測。「振り返りスキルを変更するとき」の手順は `template.manifest` 記載ファイルの確認を含み、「原則を追加・変更するとき」の手順は `skills/` への反映を含む）。確認項目は執行点の手順を参照する形にする。
 
-  「CLAUDE.md を更新するとき」はチェックリスト節を持たず、手順に `sync-template.ps1` の実行が既にあるため配線済みとみなす。
+  「AGENTS.md を更新するとき」はチェックリスト節を持たず、手順に `sync-template.ps1` の実行が既にあるため配線済みとみなす。
 
 `skills/extend-guidelines/SKILL.md` の手順 6（テンプレートの同期を案内する）を、配布物生成の案内へ拡張する。`skills/` を変更した場合も生成が必要になるため、現行の「テンプレート対象を変更した場合のみ `sync-template.ps1`」という案内では不足する。
 

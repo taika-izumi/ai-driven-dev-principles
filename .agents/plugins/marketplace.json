@@ -1,0 +1,20 @@
+{
+  "name": "ai-driven-dev-principles",
+  "interface": {
+    "displayName": "AI-Driven Dev Principles"
+  },
+  "plugins": [
+    {
+      "name": "ai-driven-dev-principles",
+      "source": {
+        "source": "local",
+        "path": "./dist"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

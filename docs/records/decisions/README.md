@@ -115,3 +115,8 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0107](0107-iterative-review-recommendation-by-revision-nature.md) | 指摘反映後の再レビューは改訂の性質で推奨を切り替え、収束は指摘の分類で判定する | Accepted | 2026-08-18 |
 | [0108](0108-accepted-adr-revision-status-handling.md) | Accepted 昇格後の ADR 本文改訂は決定内容の変更有無でステータス運用を分ける | Accepted | 2026-08-18 |
 | [0109](0109-retire-structured-question-tool-unconditionally.md) | 構造化質問ツールを全ツール・全モデルで廃止しテキスト選択肢に一本化、クリック操作を再有効化する | Accepted | 2026-08-18 |
+| [0110](0110-full-scope-codex-support.md) | Codex 対応はフル対応（Layer 2 + Layer 3 + 周辺文書の中立化）を単一サイクルのスコープとする | Accepted | 2026-08-25 |
+| [0111](0111-agents-md-as-layer2-source-of-truth.md) | Layer 2 は AGENTS.md を正本とし、CLAUDE.md は @AGENTS.md インポートの 1 行に置き換える | Accepted | 2026-08-25 |
+| [0112](0112-codex-native-marketplace-generated.md) | Codex 向け配信は ネイティブの .agents/plugins/marketplace.json と .codex-plugin/plugin.json を生成器導出で追加する | Accepted | 2026-08-25 |
+| [0113](0113-json-input-guards-consolidated-into-codex-generation-task.md) | 生成器の JSON 入力異常に対する診断強化は、Codex 生成物の入力ガードと同じコミットへ統合する | Accepted | 2026-08-25 |
+| [0114](0114-layer2-reference-neutralization-finish.md) | Layer 2 参照の中立化は、探索対象の明示・書き込み先の二段フォールバック・ツール列挙の開放で仕上げる | Accepted | 2026-08-25 |

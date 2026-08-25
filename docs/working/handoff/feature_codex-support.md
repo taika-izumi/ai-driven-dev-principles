@@ -1,8 +1,8 @@
 # Handoff: Codex（OpenAI Codex CLI）対応
 
 - **Branch**: feature/codex-support
-- **Last Updated**: 2026-08-25 22:20 (Asia/Tokyo)
-- **Status**: in_progress
+- **Last Updated**: 2026-08-25 22:45 (Asia/Tokyo)
+- **Status**: paused
 - **Current Phase**: ガイドライン拡張/実装完了（plan Task 1〜12 到達・ユーザー確認事項と完了処理が残り）
 
 ## 作業の目的・背景
@@ -71,20 +71,16 @@
 
 ## 既知のブロッカー・懸念
 
-- ~~Claude Code の `@AGENTS.md` インポート挙動~~ → 公式ドキュメントで確認済み（公式推奨パターン。実機の `/context` 確認は実装後の検証 5 に残置）
 - Copilot CLI は AGENTS.md/CLAUDE.md を両方読む（同一内容なら重複除去）。別内容にすると二重読み込みが再発する（ADR-0023 の懸念の再来）
-- ~~superpowers の Codex 可用性~~ → 実機検証で解消（superpowers 6.3.0 導入成功・インストールは残置＝実運用状態。Codex CLI 0.149.0-alpha.4.3）
 - 配布物生成の既知の落とし穴（ADR-0082/0084 の型・Issue-0104）。執行点 4 手順＋配布物目視を省略しない
 - 改訂前退避 `~/.ai-dev-review-snapshots/2026-08-25-codex-support/`（round1/round2＋plan-round1〜4）が残置。掃除規定は Issue-0106（当面手動判断）
 - `docs/current/specs/` 配下に、本サイクルが直接触らない `CLAUDE.md` 参照を持つ spec が **15 ファイル**残る（代表例は `2026-08-07-overfitting-check-for-extensions-design.md:53`。いずれも本サイクルの変更が直接無効化する記述ではないため同期していない。実装者とレビュアーが独立に数え直して一致）
 - Codex へ本プラグインをローカル登録・インストール済み（検証 2・3・4 のため。`0.1.12`・実運用状態として残置）。取り消すなら `codex plugin remove ai-driven-dev-principles` と `codex plugin marketplace remove ai-driven-dev-principles`
 - 反復レビューの推奨乖離の記録は Issue-0107（本サイクルで 6 事例＋一般観察 2 件を記録済み。LoopForAlpha#Issue-0109 の移譲は未着手）
-- ~~Task 1 のコミット `29bc6ff` 単体では JSON 入力異常の診断に一時的な間隙が残る~~ → Task 2（`1f24a02`）で解消
 - `scripts/build-dist.ps1` にはレビューで採用を見送った指摘 4 群が残る（Issue-0108）。いずれも Task 11 の検証範囲外であり、捕捉されない前提で扱うこと
 - `scripts/check-claude-md-size.ps1` 35 行目の警告文が案内する CONTRIBUTING 見出し「AGENTS.md を棚卸しするとき」は未作成（Task 7 で改題）。計画が「既知の中間不整合（許容）」とした箇所。Task 7 の着地時に解消を確認すること
 - 未移行プロジェクトを検知して移行を促す機構は本サイクルでは設けない（ADR-0114 で受容）。移行の契機は README の移行手順のみ（Task 6 で新設済み）
 - README の Codex 節で `codex plugin marketplace list` / `plugin remove` / `marketplace upgrade` は実測記録が無い。Task 11 で確認し、通れば README の実測範囲の記述を強められる
-- ~~`check-claude-md-size.ps1` の警告文が案内する CONTRIBUTING 見出しが未作成~~ → Task 7（`dcb2e81`）で改題し解消
 - Task 7 の見出し改題により `docs/working/issues/flow/0018-claude-md-norm-growth-monitoring.md` の 7・16 行が旧見出し名を指すようになった。issues は spec 検証 9 の網羅性チェック対象（生きたファイル 8 種）に含まれずスコープ外。次サイクルで追随を判断すること
 - `docs/current/specs/2026-08-07-distributed-artifact-generation/03-template-sync-integration.md:70,74` の識別子数（128/121/7/116）が振り返り記録の追記で時間経過により乖離（現在は約 210/13）。本サイクル起因でなく同期基準の対象外。「継続的に陳腐化する実測値を仕様書へどう書くか」は振り返りの課題候補
 
@@ -111,9 +107,9 @@
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-25-codex-support-implementation.md`（確定済み plan。Task 12 のみ残っている）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:subagent-driven-development` を継続（Task 11 は実機操作を伴うため委譲せずインラインで扱う）
-3. 留意点: 行番号は本計画未適用時が基準のため位置決めは引用テキストで行うこと。Task 9 は Task 2/3/4/7 の後、Task 11 は 1〜10 の後、Task 12 は 11 の後。検証 6・7・10 はユーザー確認事項として引き継ぐ
+1. 最初に確認すべきファイル: 本ハンドオフの「未着手のタスク」（検証 6・7・10 の手順）→ `docs/current/specs/2026-08-25-codex-support-design.md` の「検証」節（6・7・10 の原文）。plan は Task 1〜12 すべて完了済みで再読不要
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ 検証 6・7 を実施（`/plugin marketplace update ai-driven-dev-principles` と `/context` はユーザー操作。Copilot CLI 側も同様）→ 通れば `superpowers:finishing-a-development-branch` で master へ `--no-ff` マージ → `retrospective`
+3. 留意点: 検証 6・7 は**ツールを再起動した新しいセッションでないと正確に測れない**（本セッションは起動時の旧 CLAUDE.md を保持していた）。マージ方式は `branch.master.mergeoptions = --no-ff` で慣行確定済み。retrospective では「既知のブロッカー・懸念」の未解決 3 件（README の未実測コマンド・Issue-0018 の旧見出し参照・spec の識別子数の陳腐化）を課題化の候補として棚卸しすること
 
 ## 重要な意思決定の履歴
 

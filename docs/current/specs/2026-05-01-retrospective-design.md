@@ -58,7 +58,7 @@
 
 1. 対象サブプロジェクト名・feature ブランチ名・対応 plan/spec パスをユーザーから受け取る（merge コミットから推定する場合は必ずユーザー確認）
 2. 対応 plan / spec / merge コミット範囲の git log / handoff 現行版 / 期間中に追加・変更された ADR / 直近の per-cycle 振り返り記録（慣行判定の入力）を読み込む
-3. 取り込み方式の検証（fast-forward 検出。ADR-0106）: 慣行判定（正本は start-work「完了処理のマージ方式確認」）で慣行ありの場合のみ、feature 先端の祖先判定＋親走査で fast-forward を検出する。検出時、5 条件（未 push / 追加コミットなし / 先端参照可 / 分岐点確定可 / 作業ツリー退避済み）を満たす場合に限り、承認必須でやり直し（一時 ref → 退避確認 → reset → `--no-ff` 再マージ → 復元）を Phase 1 の前に完了させる。満たさない場合は Branch 行へ fast-forward を明記する代替記録を提示するに留める
+3. 取り込み方式の検証（fast-forward 検出。ADR-0106）: 慣行判定（正本は `skills/start-work/references/merge-practice.md`）で慣行ありの場合のみ、feature 先端の祖先判定＋親走査で fast-forward を検出する。検出時、5 条件（未 push / 追加コミットなし / 先端参照可 / 分岐点確定可 / 作業ツリー退避済み）を満たす場合に限り、承認必須でやり直し（一時 ref → 退避確認 → reset → `--no-ff` 再マージ → 復元）を Phase 1 の前に完了させる。満たさない場合は Branch 行へ fast-forward を明記する代替記録を提示するに留める
 4. `docs/records/retrospectives/` に同一トピックの既存ファイルが無いことを確認する
 
 ### Phase 1: 課題案の一括提示（メイン実行）

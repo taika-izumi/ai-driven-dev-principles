@@ -1,9 +1,9 @@
 # Handoff: start-work スキルの責務過多の解消
 
 - **Branch**: feature/start-work-responsibility-split
-- **Last Updated**: 2026-08-28 03:55 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装計画確定済み（実装着手前）
+- **Last Updated**: 2026-08-28 04:15 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: ガイドライン拡張/実装中（plan Task 1 の途中で中断）
 
 ## 作業の目的・背景
 
@@ -29,9 +29,9 @@ start-work スキルが責務過多ではないかという指摘を受け、分
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 0〜10）
-  - 状態: 未着手。plan は v3 で確定（実質収束）
-  - 残り: plan `docs/working/plans/2026-08-28-start-work-responsibility-split-implementation.md` の Task 0〜10 を順に実行 → 執行点 4 手順・version 0.1.13 → 実装完了時に ADR-0115/0116 のサイクル全体整合検査（実装前昇格の後追い検査）
+- [ ] **現在の作業**: 実装（plan の Task 0〜10。executing-plans でインライン実行中）
+  - 状態: Task 0 完了（移設 2 節を `~/.ai-dev-review-snapshots/2026-08-28-start-work-responsibility-split/impl-base/` へ退避。4,270B / 16,771B で期待値一致・ベースライン grep 一致）。Task 1 は Step 1-1 完了＝`skills/start-work/references/merge-practice.md` 作成済み（**未追跡・未コミット**）。**Step 1-2（許容差分 2 箇所の置換: 「本節」→「本ファイル」・L87 相当の start-work 構造参照のファイル跨ぎ化）は未適用**
+  - 残り: plan の Task 1 Step 1-2 から再開 → Task 2〜10 → 実装完了時に ADR-0115/0116 のサイクル全体整合検査（実装前昇格の後追い検査）。実装中は skills/ をコミットしない（Task 10 で dist・version bump と同一コミット）
 
 ## 未着手のタスク
 
@@ -49,12 +49,13 @@ start-work スキルが責務過多ではないかという指摘を受け、分
 
 - 2026-08-28 spec 確定点 (b) 通過・設計確定・ADR-0115/0116 Accepted 昇格: ADR=0115/0116 / worklog=`MakeAiInstructions-2026-08-28-01` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束） / cyclecheck=非該当（実装前昇格）
 - 2026-08-28 plan 確定点 通過・実装計画確定: ADR=なし（新規決定なし。設計は ADR-0115/0116 で確定済み） / worklog=`MakeAiInstructions-2026-08-28-02` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
+- 2026-08-28 セッション終了（実装 Task 1 途中で中断）: ADR=なし（実装は計画の遂行のみ） / worklog=棄却（delta なし。実装 2 ステップは計画どおり）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本 handoff と `skills/start-work/SKILL.md`
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ 進行中タスクの再開ポイントへ
-3. 留意点: 分割設計は brainstorming 未完了。設計判断が出たら decision-log で即ドラフト
+1. 最初に確認すべきファイル: 本 handoff → plan `docs/working/plans/2026-08-28-start-work-responsibility-split-implementation.md`（Task 1 Step 1-2 から再開）。`skills/start-work/references/merge-practice.md` が未追跡で存在する（Step 1-1 済み・Step 1-2 未適用）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ 継続 Yes → superpowers:executing-plans で plan の Task 1 Step 1-2 から続行
+3. 留意点: 実装中は skills/ をコミットしない（Task 10 で version bump・dist 再生成と同一コミット。執行点 4 手順）。移設前の 2 節の原文は `~/.ai-dev-review-snapshots/2026-08-28-start-work-responsibility-split/impl-base/` に退避済み（喪失時は `git show HEAD:skills/start-work/SKILL.md`）。各編集は plan の「前」引用文と実体の一致を確認してから適用する
 
 ## 重要な意思決定の履歴
 

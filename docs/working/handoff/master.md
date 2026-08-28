@@ -55,7 +55,7 @@
 - **質問はテキストの番号付き選択肢のみ**（ADR-0109）。構造化質問ツールは全ツール・全モデルで使用しない
 - **確定前レビューの提示規則＋指摘反映後の反復規範**（ADR-0080/0107）・**サイクル全体整合検査**（ADR-0092/0099）・**新設の評価可能性**（ADR-0102）・**Accepted 後改訂の改訂記録規定**（ADR-0108）が稼働中。確定点で `review=`、Accepted 昇格で `cyclecheck=` を消化記録へ。**提示規則・反復・停止判定の正本は ADR-0116 により pre-finalization-review（提示操作）へ、マージ方式確認の正本は `skills/start-work/references/merge-practice.md` へ移設済み**（start-work は発火点ポインタのみ）
 - **Issue 運用の規範が稼働中**（ADR-0095〜0098): 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須
-- **リモート同期**: `a9bc086` まで push 済み。**`master` はローカルが 12 コミット ahead**（本サイクル一式＋前サイクルの記録分）。push はユーザー指示時。**Codex への配布は push＋marketplace update までは旧 0.1.12 のまま**（ローカルは 0.1.13）
+- **リモート同期**: `513cd0c` まで push 済み（origin と一致。2026-08-29 push）。**配布元 GitHub は 0.1.13**。各ツールのローカルキャッシュへの反映は利用側の更新コマンド実行が必要（README「スキルのバージョンアップ」参照。ユーザーが実行）
 - **inbox に未整理 3 件が滞留**: `docs/inbox/` の 3 ファイル（いずれも未追跡）。`docs/conversation_log.md` も未追跡のまま。**ユーザーが手動移動予定のため organize-inbox の提案は不要**。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。配布版は push まで 0.1.12）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
 - **Copilot CLI は未契約**のため、同ツール向けの検証（Layer 2・Layer 3 の退行確認）が恒久的に実行できない。3 ツール対応を謳う以上、片方が検証不能なまま続く

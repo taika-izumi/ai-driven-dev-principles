@@ -1,9 +1,9 @@
 # Handoff: start-work スキルの責務過多の解消
 
 - **Branch**: feature/start-work-responsibility-split
-- **Last Updated**: 2026-08-28 04:15 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張/実装中（plan Task 1 の途中で中断）
+- **Last Updated**: 2026-08-29 00:15 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: ガイドライン拡張/実装完了（feature ブランチの完了処理待ち）
 
 ## 作業の目的・背景
 
@@ -26,36 +26,40 @@ start-work スキルが責務過多ではないかという指摘を受け、分
 - [x] spec 作成・確定前レビュー第 1 巡（フル 3 観点・claude-opus-5・指摘 19 件中 18 採用 1 不採用）・改訂 v2 適用（2026-08-28）
 - [x] spec 確定（2026-08-28。v4・反復通算フル 2 巡＋差分確認 1 巡＋機械検証 1 回・実質収束。ADR-0115/0116 Accepted 昇格）
 - [x] 実装計画確定（2026-08-28。plan v3・反復通算フル 1 巡＋差分確認 1 巡＋機械検証 1 回・実質収束。ADR 全数走査 7 件・検証 4 本の期待値 21 箇所実測突合済み）
+- [x] 実装完了（2026-08-28。plan Task 0〜10 全完了。検証 3 種〈diff・残存 grep・重複 grep〉全通過。plugin 0.1.13・執行点 4 手順・目視 5 点済み。コミット 1d1b0cd / 7102cb3）
+- [x] サイズ・到達実測（2026-08-28。start-work 34,676B→14,456B・pre-finalization-review 30,394B・確定点到達セッション合計 44,850B・merge-practice.md 4,610B。start-work 新ポインタ表記どおり `references/merge-practice.md` の Read 解決・読了を 1 回確認＝パス解決の確認であり完了処理の発火経路の実走ではない）
+- [x] サイクル全体整合検査（2026-08-28。ADR-0115/0116 実装前昇格の後追い検査。指摘 2 件〈spec Status 追従漏れ・16,772B→16,771B〉修正: 41087d1）
+- [x] 実装の独立レビュー（2026-08-29。claude-opus-5・変更 32 ファイル全数走査。Critical 0・Important 1・Minor 5。採用 3 件反映: 8319204〈表記 2 件〉・6cbfa7e〈0067 除外確定の追補。ADR-0116 は改訂記録で対応〉。Minor 4〈merge-practice 導入文重複〉は plan 指定どおりの結果のため次サイクル送り）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（plan の Task 0〜10。executing-plans でインライン実行中）
-  - 状態: Task 0 完了（移設 2 節を `~/.ai-dev-review-snapshots/2026-08-28-start-work-responsibility-split/impl-base/` へ退避。4,270B / 16,771B で期待値一致・ベースライン grep 一致）。Task 1 は Step 1-1 完了＝`skills/start-work/references/merge-practice.md` 作成済み（**未追跡・未コミット**）。**Step 1-2（許容差分 2 箇所の置換: 「本節」→「本ファイル」・L87 相当の start-work 構造参照のファイル跨ぎ化）は未適用**
-  - 残り: plan の Task 1 Step 1-2 から再開 → Task 2〜10 → 実装完了時に ADR-0115/0116 のサイクル全体整合検査（実装前昇格の後追い検査）。実装中は skills/ をコミットしない（Task 10 で dist・version bump と同一コミット）
+- [ ] **現在の作業**: feature ブランチの完了処理（master への取り込み）
+  - 状態: 実装・検証・整合検査・独立レビュー（指摘反映込み）まで完了。ブランチ先端 6cbfa7e。未コミットは本 handoff と docs/inbox/ 3 件・docs/conversation_log.md（後 2 者は本サイクル外の未追跡ファイル）のみ
+  - 残り: superpowers:finishing-a-development-branch（実行直前に `skills/start-work/references/merge-practice.md` の慣行判定を適用）→ マージ後に retrospective → handoff finalize
 
 ## 未着手のタスク
 
-- [ ] 分割設計の確定（spec 確定点で確定前レビュー提示）
-- [ ] 実装計画の作成（plan 確定点で確定前レビュー提示）
-- [ ] 改修の実施（執行点 4 手順・plugin version bump 対象）
+- [ ] feature ブランチの完了処理（マージ方式確認 → master へ取り込み）
+- [ ] retrospective（master マージ後・finalize 前）
 
 ## 既知のブロッカー・懸念
 
-- 条文複写の禁止: 提示規則・マージ方式確認を移す場合は正本ごと移し、start-work 側はポインタのみにする（Issue-0093 の統合を再導入しない）
-- 参照配線の張り替え範囲: session-handoff・pre-finalization-review・decision-log・AGENTS.md が start-work の節を参照しており、移設時は全参照の更新が必要
-- 配布対象ソースに触れるため執行点 4 手順・plugin version bump（現行 0.1.12）・過剰適合点検＋新設の評価可能性が必須
+- docs/inbox/ に README 以外 3 件が滞留（organize-inbox 未実施。ユーザーは実装再開を優先）
+- 未追跡の docs/conversation_log.md が作業ツリーに残存（本サイクルの成果物ではない。コミットに巻き込まないこと）
 
 ## Post ラッパー消化記録
 
 - 2026-08-28 spec 確定点 (b) 通過・設計確定・ADR-0115/0116 Accepted 昇格: ADR=0115/0116 / worklog=`MakeAiInstructions-2026-08-28-01` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束） / cyclecheck=非該当（実装前昇格）
 - 2026-08-28 plan 確定点 通過・実装計画確定: ADR=なし（新規決定なし。設計は ADR-0115/0116 で確定済み） / worklog=`MakeAiInstructions-2026-08-28-02` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-08-28 セッション終了（実装 Task 1 途中で中断）: ADR=なし（実装は計画の遂行のみ） / worklog=棄却（delta なし。実装 2 ステップは計画どおり）
+- 2026-08-28 実装完了（plan Task 0〜10）＋サイクル全体整合検査: ADR=なし（計画の遂行のみ。検査指摘 2 件は追従修正） / worklog=棄却（delta なし。実装は計画どおり・検査指摘は既存検査工程が捕捉） / cyclecheck=実施（修正: 41087d1）
+- 2026-08-29 実装レビュー完了・指摘反映（8319204 / 6cbfa7e）: ADR=なし（追従修正のみ。ADR-0116 本文改訂は改訂記録規定で対応済み） / worklog=`MakeAiInstructions-2026-08-29-01`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本 handoff → plan `docs/working/plans/2026-08-28-start-work-responsibility-split-implementation.md`（Task 1 Step 1-2 から再開）。`skills/start-work/references/merge-practice.md` が未追跡で存在する（Step 1-1 済み・Step 1-2 未適用）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ 継続 Yes → superpowers:executing-plans で plan の Task 1 Step 1-2 から続行
-3. 留意点: 実装中は skills/ をコミットしない（Task 10 で version bump・dist 再生成と同一コミット。執行点 4 手順）。移設前の 2 節の原文は `~/.ai-dev-review-snapshots/2026-08-28-start-work-responsibility-split/impl-base/` に退避済み（喪失時は `git show HEAD:skills/start-work/SKILL.md`）。各編集は plan の「前」引用文と実体の一致を確認してから適用する
+1. 最初に確認すべきファイル: 本 handoff → `git log --oneline -4`（実装コミット 1d1b0cd / 7102cb3 / 41087d1 を確認）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ superpowers:finishing-a-development-branch で完了処理（実行直前に `skills/start-work/references/merge-practice.md` の慣行判定を適用）→ マージ後 retrospective
+3. 留意点: 未追跡の docs/inbox/ 3 件・docs/conversation_log.md をコミットに巻き込まない。マージ後の retrospective では本サイクルから取り込み方式欄の記録規約（ADR-0106）を適用する
 
 ## 重要な意思決定の履歴
 

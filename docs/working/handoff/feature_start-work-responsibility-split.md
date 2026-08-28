@@ -1,9 +1,9 @@
 # Handoff: start-work スキルの責務過多の解消
 
 - **Branch**: feature/start-work-responsibility-split
-- **Last Updated**: 2026-08-29 00:15 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装完了（feature ブランチの完了処理待ち）
+- **Last Updated**: 2026-08-28 23:35 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: サイクル完了（master へ --no-ff で取り込み済み。マージコミット `5c1ac0e`。retrospective 実施済み: `docs/records/retrospectives/system/2026-08-29-start-work-responsibility-split.md`）
 
 ## 作業の目的・背景
 
@@ -33,14 +33,11 @@ start-work スキルが責務過多ではないかという指摘を受け、分
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: feature ブランチの完了処理（master への取り込み）
-  - 状態: 実装・検証・整合検査・独立レビュー（指摘反映込み）まで完了。ブランチ先端 6cbfa7e。未コミットは本 handoff と docs/inbox/ 3 件・docs/conversation_log.md（後 2 者は本サイクル外の未追跡ファイル）のみ
-  - 残り: superpowers:finishing-a-development-branch（実行直前に `skills/start-work/references/merge-practice.md` の慣行判定を適用）→ マージ後に retrospective → handoff finalize
+（なし。サイクル完了。以後の作業状態は `docs/working/handoff/master.md` が正）
 
 ## 未着手のタスク
 
-- [ ] feature ブランチの完了処理（マージ方式確認 → master へ取り込み）
-- [ ] retrospective（master マージ後・finalize 前）
+（なし）
 
 ## 既知のブロッカー・懸念
 

@@ -120,3 +120,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0112](0112-codex-native-marketplace-generated.md) | Codex 向け配信は ネイティブの .agents/plugins/marketplace.json と .codex-plugin/plugin.json を生成器導出で追加する | Accepted | 2026-08-25 |
 | [0113](0113-json-input-guards-consolidated-into-codex-generation-task.md) | 生成器の JSON 入力異常に対する診断強化は、Codex 生成物の入力ガードと同じコミットへ統合する | Accepted | 2026-08-25 |
 | [0114](0114-layer2-reference-neutralization-finish.md) | Layer 2 参照の中立化は、探索対象の明示・書き込み先の二段フォールバック・ツール列挙の開放で仕上げる | Accepted | 2026-08-25 |
+| [0115](0115-focus-cycle-on-start-work-split-only.md) | start-work 責務過多の解消サイクルは分割の実施に集中し、SKILL.md サイズ・分割の一般規範は扱わない | Accepted | 2026-08-28 |
+| [0116](0116-relocate-start-work-domain-norms-by-ownership.md) | start-work のドメイン規範 2 節は責務帰属で移設し、提示規則は pre-finalization-review へ・マージ方式確認は references へ移す | Accepted | 2026-08-28 |

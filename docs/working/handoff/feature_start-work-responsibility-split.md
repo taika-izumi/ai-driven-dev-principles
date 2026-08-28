@@ -1,9 +1,9 @@
 # Handoff: start-work スキルの責務過多の解消
 
 - **Branch**: feature/start-work-responsibility-split
-- **Last Updated**: 2026-08-28 02:45 (Asia/Tokyo)
+- **Last Updated**: 2026-08-28 03:55 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/設計確定済み（writing-plans 着手前）
+- **Current Phase**: ガイドライン拡張/実装計画確定済み（実装着手前）
 
 ## 作業の目的・背景
 
@@ -25,12 +25,13 @@ start-work スキルが責務過多ではないかという指摘を受け、分
 - [x] brainstorming（設計 4 節をユーザー承認）・ADR-0115/0116 ドラフト作成（Proposed・未コミット）・feature-block-design 非該当判定（2026-08-28）
 - [x] spec 作成・確定前レビュー第 1 巡（フル 3 観点・claude-opus-5・指摘 19 件中 18 採用 1 不採用）・改訂 v2 適用（2026-08-28）
 - [x] spec 確定（2026-08-28。v4・反復通算フル 2 巡＋差分確認 1 巡＋機械検証 1 回・実質収束。ADR-0115/0116 Accepted 昇格）
+- [x] 実装計画確定（2026-08-28。plan v3・反復通算フル 1 巡＋差分確認 1 巡＋機械検証 1 回・実質収束。ADR 全数走査 7 件・検証 4 本の期待値 21 箇所実測突合済み）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の作成（superpowers:writing-plans）
-  - 状態: 未着手。設計は spec v4 で確定済み（実質収束）
-  - 残り: writing-plans で `docs/working/plans/` へ計画作成（部分修正注記対象 ADR の全数走査・検証 grep パターンと期待値の実測突合を含む）→ plan 確定点で確定前レビュー提示 → 実装 → 執行点 4 手順・version 0.1.13
+- [ ] **現在の作業**: 実装（plan の Task 0〜10）
+  - 状態: 未着手。plan は v3 で確定（実質収束）
+  - 残り: plan `docs/working/plans/2026-08-28-start-work-responsibility-split-implementation.md` の Task 0〜10 を順に実行 → 執行点 4 手順・version 0.1.13 → 実装完了時に ADR-0115/0116 のサイクル全体整合検査（実装前昇格の後追い検査）
 
 ## 未着手のタスク
 
@@ -47,6 +48,7 @@ start-work スキルが責務過多ではないかという指摘を受け、分
 ## Post ラッパー消化記録
 
 - 2026-08-28 spec 確定点 (b) 通過・設計確定・ADR-0115/0116 Accepted 昇格: ADR=0115/0116 / worklog=`MakeAiInstructions-2026-08-28-01` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束） / cyclecheck=非該当（実装前昇格）
+- 2026-08-28 plan 確定点 通過・実装計画確定: ADR=なし（新規決定なし。設計は ADR-0115/0116 で確定済み） / worklog=`MakeAiInstructions-2026-08-28-02` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 
 ## 次セッション開始時のアクション
 

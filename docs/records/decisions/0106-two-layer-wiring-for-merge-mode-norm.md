@@ -67,6 +67,7 @@ Issue-0084 の対策として次の 3 点を実施する。
 - 既発生分（2026-08-14 サイクルの ff。先端 `9259eec` の代替記録）は、振り返り記録の追記型規約（過去行の編集禁止）により是正せず残す。同行は「fast-forward」を明記しているため、慣行判定 (b) では中立の除外行として扱われる（判定は他の行と設定が担う）
 - 次サイクルの retrospective で、Issue-0084 対策の初回運用結果を「既存課題の再発・進展」に記録する
 - Issue-0084 は本 ADR の Accepted 昇格時に close する（Status を closed へ、結論に ADR-0106 を記載、課題インデックスの行も更新。フォルダ未昇格のため close 時移設判定は非該当）。同 issue 検討状況の faa9187 サイクル行の記載漏れは close 前の追記で補正する
+- **部分修正（ADR-0116）**: 慣行判定の正本所在（start-work Phase 2 の独立小節）は、ADR-0116 により skills/start-work/references/merge-practice.md へ移設された。2 層配線の決定自体は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

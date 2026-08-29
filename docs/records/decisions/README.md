@@ -122,3 +122,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0114](0114-layer2-reference-neutralization-finish.md) | Layer 2 参照の中立化は、探索対象の明示・書き込み先の二段フォールバック・ツール列挙の開放で仕上げる | Accepted | 2026-08-25 |
 | [0115](0115-focus-cycle-on-start-work-split-only.md) | start-work 責務過多の解消サイクルは分割の実施に集中し、SKILL.md サイズ・分割の一般規範は扱わない | Accepted | 2026-08-28 |
 | [0116](0116-relocate-start-work-domain-norms-by-ownership.md) | start-work のドメイン規範 2 節は責務帰属で移設し、提示規則は pre-finalization-review へ・マージ方式確認は references へ移す | Accepted | 2026-08-28 |
+| [0117](0117-premise-existence-viewpoint-and-premise-checks.md) | 確定前レビューに前提実在観点を新設し、指摘採否・提示・設計記述に前提と実在の検査を課す | Accepted | 2026-08-29 |

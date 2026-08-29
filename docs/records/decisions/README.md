@@ -123,3 +123,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0115](0115-focus-cycle-on-start-work-split-only.md) | start-work 責務過多の解消サイクルは分割の実施に集中し、SKILL.md サイズ・分割の一般規範は扱わない | Accepted | 2026-08-28 |
 | [0116](0116-relocate-start-work-domain-norms-by-ownership.md) | start-work のドメイン規範 2 節は責務帰属で移設し、提示規則は pre-finalization-review へ・マージ方式確認は references へ移す | Accepted | 2026-08-28 |
 | [0117](0117-premise-existence-viewpoint-and-premise-checks.md) | 確定前レビューに前提実在観点を新設し、指摘採否・提示・設計記述に前提と実在の検査を課す | Accepted | 2026-08-29 |
+| [0118](0118-bulk-reflux-of-lfa-review-flow-issues.md) | LoopForAlpha のレビュー関連 flow 課題 4 件を一括委譲し、Issue-0110 対策設計と同一サイクルで扱う | Proposed | 2026-08-30 |

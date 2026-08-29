@@ -2,8 +2,8 @@
 
 - **Branch**: feature/premise-existence-review
 - **Last Updated**: 2026-08-29 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張/実装 plan 確定済み・実装実行の方式選択待ちで中断
+- **Status**: in_progress
+- **Current Phase**: ガイドライン拡張/実装完了・ADR-0117 Accepted 昇格済み・マージ待ち
 
 ## 作業の目的・背景
 
@@ -22,18 +22,20 @@ LoopForAlpha の flow 課題（`LoopForAlpha#Issue-0125`）が実測した「検
 - [x] start-work Phase 0〜2・extend-guidelines・brainstorming（設計承認。2026-08-29）
 - [x] ADR-0117 ドラフト作成・インデックス追記（Proposed 据え置き。昇格は実装完了後）
 - [x] ADR-0117 の確定前レビュー反復（フル巡 2〈4 観点・claude-opus-5 各 4 体〉→ 設計縮小〈採否記録義務の撤回・delta 基準化〉→ 差分確認巡 1 → 精度修正 3 句で実質収束。改訂 r0→r4。退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-29-premise-existence-review-r0/`〜`-r3/`）
+- [x] plan Task 1〜10 の実装実行（インライン実行。検証 grep 13 本・両 -Check・配布物目視すべて合格。実装コミット `6cfa1b5`。2026-08-29 完了）
+- [x] worklog 台帳記入（`-01`〜`-03` = adopted→merged・`-04`/`-05` = deferred の計 8 行追記・検証済み）
+- [x] ADR-0117 Accepted 昇格（サイクル全体整合検査 指摘なし。昇格コミット `1c5e66f`。2026-08-29 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: plan の実装実行（`docs/working/plans/2026-08-29-premise-existence-review-implementation.md` の Task 1〜10）
-  - 状態: plan 確定・コミット済み（`f8f09e8`。フル巡 1〈2 体兼務〉＋差分確認巡 1・改訂 r0→r2・実質収束。退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-29-premise-existence-plan-r0/`・`-r1/`）。**実行方式の選択への回答待ちで中断**（提示済みの選択肢: 1. インライン実行〈superpowers:executing-plans。AI の推奨〉/ 2. サブエージェント駆動〈superpowers:subagent-driven-development〉）
-  - 残り: 実行方式の選択 → Task 1〜10 の実行 → 完了前検証 → ADR-0117 Accepted 昇格（サイクル全体整合検査・`Accepted 昇格` を名称に含むマイルストーン）→ マージ → retrospective
+- [ ] **現在の作業**: feature ブランチの完了処理（master への取り込み）
+  - 状態: 実装・検証・昇格まで完了。マージ方式の確認（`references/merge-practice.md`）と finishing-a-development-branch が未実施
+  - 残り: マージ → retrospective（マージ直後に起動。スコープ・出力先は同スキルが正）→ handoff cycle-reset
 
 ## 未着手のタスク
 
-- [ ] スキル 3 本の改修（実装対象の全列挙は ADR-0117 Consequences が正本）・ADR-0080/0107 部分修正注記・ADR-0067/0063 注記・現行 spec 3 件の同期・plugin 0.1.14・執行点 4 手順
-- [ ] worklog 台帳記入（merged × 3・deferred × 2）
-- [ ] ADR-0117 Accepted 昇格（サイクル全体整合検査）・マージ・retrospective
+- [ ] マージ（superpowers:finishing-a-development-branch。直前に start-work の `references/merge-practice.md` を読む）
+- [ ] retrospective（master マージ直後・handoff finalize 前）
 
 ## 既知のブロッカー・懸念
 
@@ -44,12 +46,13 @@ LoopForAlpha の flow 課題（`LoopForAlpha#Issue-0125`）が実測した「検
 - 2026-08-29 ADR-0117 設計確定・spec 確定点 (c): ADR=0117 / worklog=`MakeAiInstructions-2026-08-29-02` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
 - 2026-08-29 実装 plan 確定・plan 確定点: ADR=なし（設計は ADR-0117 で確定済み・plan はその写像） / worklog=`MakeAiInstructions-2026-08-29-03` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
 - 2026-08-29 セッション終了処理: ADR=なし（plan 確定以降の新規決定なし） / worklog=棄却（plan 確定以降の delta なし）
+- 2026-08-29 実装完了（plan Task 1〜10）・ADR-0117 Accepted 昇格: ADR=0117（昇格。新規決定なし） / worklog=棄却（delta なし・plan の忠実実行） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフと実装 plan `docs/working/plans/2026-08-29-premise-existence-review-implementation.md`（挿入文・アンカー・検証値は plan が自己完結。実装対象の正本は ADR-0117 Consequences）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ 実行方式の選択（「進行中のタスク」の 2 択。AI 推奨はインライン実行）→ plan Task 1 から実行
-3. 留意点: ADR-0117 は Proposed のまま（Accepted 昇格は実装完了・検証後。昇格マイルストーン名に `Accepted 昇格` を含めサイクル全体整合検査を実施）。配布対象ソース変更のため plan Task 7 の執行点 4 手順（0.1.14 bump・生成器・両 -Check・配布物目視）を省略しない。plan の検証 grep は期待値まで確定済みなので、失敗したら plan でなく編集結果を疑う
+1. 最初に確認すべきファイル: 本ハンドオフ（実装・昇格まで完了済み。残りはマージ → retrospective のみ）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ superpowers:finishing-a-development-branch（実行直前に start-work の `references/merge-practice.md` を読んでマージ方式を確認）
+3. 留意点: マージ直後に `retrospective` を起動する（AGENTS.md の検証節が起動を課す。handoff cycle-reset は retrospective の仕上げから呼ばれる）。worklog 台帳は記入済みのため再実行不要（スクリプトは冪等）
 
 ## 重要な意思決定の履歴
 

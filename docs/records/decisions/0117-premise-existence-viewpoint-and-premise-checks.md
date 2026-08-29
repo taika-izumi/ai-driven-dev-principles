@@ -1,6 +1,6 @@
 # ADR-0117: 確定前レビューに前提実在観点を新設し、指摘採否・提示・設計記述に前提と実在の検査を課す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-29
 
 ## Context

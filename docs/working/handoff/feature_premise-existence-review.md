@@ -3,7 +3,7 @@
 - **Branch**: feature/premise-existence-review
 - **Last Updated**: 2026-08-29 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/ADR-0117 設計確定（spec 確定点 (c) 通過）・writing-plans へ移行
+- **Current Phase**: ガイドライン拡張/実装 plan 確定（plan 確定点通過）・実装実行へ移行
 
 ## 作業の目的・背景
 
@@ -25,9 +25,9 @@ LoopForAlpha の flow 課題（`LoopForAlpha#Issue-0125`）が実測した「検
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装 plan 作成（superpowers:writing-plans。出力先 `docs/working/plans/`）
-  - 状態: 未着手（ADR-0117 確定直後）
-  - 残り: plan 作成 → plan 確定点で確定前レビュー提示 → 実装。レビュー不採用指摘（Decision 4 の受け取り時証跡新設・停止機構への機構的手当て・2 軸復活・-05 の merged 化）は plan の不採用一覧へ収載し実装時レビューへ引き継ぐ
+- [ ] **現在の作業**: plan の実装実行（`docs/working/plans/2026-08-29-premise-existence-review-implementation.md` の Task 1〜10）
+  - 状態: plan 確定済み（フル巡 1〈2 体兼務〉＋差分確認巡 1・改訂 r0→r2・実質収束。退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-29-premise-existence-plan-r0/`・`-r1/`）。実行方式の選択待ち
+  - 残り: Task 1〜10 の実行 → 完了前検証 → ADR-0117 Accepted 昇格（サイクル全体整合検査・`Accepted 昇格` を名称に含むマイルストーン）→ マージ → retrospective
 
 ## 未着手のタスク
 
@@ -42,6 +42,7 @@ LoopForAlpha の flow 課題（`LoopForAlpha#Issue-0125`）が実測した「検
 ## Post ラッパー消化記録
 
 - 2026-08-29 ADR-0117 設計確定・spec 確定点 (c): ADR=0117 / worklog=`MakeAiInstructions-2026-08-29-02` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
+- 2026-08-29 実装 plan 確定・plan 確定点: ADR=なし（設計は ADR-0117 で確定済み・plan はその写像） / worklog=`MakeAiInstructions-2026-08-29-03` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
 
 ## 次セッション開始時のアクション
 

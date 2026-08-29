@@ -1,9 +1,9 @@
 # Handoff: 前提実在観点の新設と前提検査規範の追加（LoopForAlpha Issue-0125 還流）
 
 - **Branch**: feature/premise-existence-review
-- **Last Updated**: 2026-08-29 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装完了・ADR-0117 Accepted 昇格済み・マージ待ち
+- **Last Updated**: 2026-08-30 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: サイクル完了（master へ --no-ff マージ済み: `52551b3`。retrospective 実施済み: `docs/records/retrospectives/system/2026-08-30-premise-existence-review.md`）
 
 ## 作業の目的・背景
 
@@ -28,14 +28,11 @@ LoopForAlpha の flow 課題（`LoopForAlpha#Issue-0125`）が実測した「検
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: feature ブランチの完了処理（master への取り込み）
-  - 状態: 実装・検証・昇格まで完了。マージ方式の確認（`references/merge-practice.md`）と finishing-a-development-branch が未実施
-  - 残り: マージ → retrospective（マージ直後に起動。スコープ・出力先は同スキルが正）→ handoff cycle-reset
+（なし。サイクル完了。以後の状態は `docs/working/handoff/master.md` が正）
 
 ## 未着手のタスク
 
-- [ ] マージ（superpowers:finishing-a-development-branch。直前に start-work の `references/merge-practice.md` を読む）
-- [ ] retrospective（master マージ直後・handoff finalize 前）
+（なし）
 
 ## 既知のブロッカー・懸念
 

@@ -1,7 +1,7 @@
-# Handoff: start-work 責務分割サイクル完了・次サイクル待ち
+# Handoff: 前提実在観点サイクル完了・次サイクル待ち
 
-- **Branch**: master（feature/start-work-responsibility-split を --no-ff で取り込み。マージコミット `5c1ac0e`）
-- **Last Updated**: 2026-08-28 23:30 (Asia/Tokyo)
+- **Branch**: master（feature/premise-existence-review を --no-ff で取り込み。マージコミット `52551b3`）
+- **Last Updated**: 2026-08-30 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: サイクル完了（retrospective・cycle-reset 済み）。次サイクル着手はユーザー判断
 
@@ -9,14 +9,14 @@
 
 本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AI駆動開発ガイドライン（5原則 + スキル群 + ADR。AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系）を整備するプロジェクト。
 
-**直近サイクル（2026-08-28〜29: start-work 責務分割）**: start-work の本文約 6 割を占めたドメイン規範 2 節を責務帰属で移設した（ADR-0115/0116）。「確定前レビューの提示規則」16,771B は pre-finalization-review へ（提示操作・実施操作の 2 操作構成へ改組。確定点・提示・反復・停止判定の正本は同スキル）、「完了処理のマージ方式確認」4,270B は `skills/start-work/references/merge-practice.md` へ。start-work は 34,676B → 14,456B のオーケストレーション＋発火点ポインタに残留化。張り替え 9＋4＋2 箇所・ADR 部分修正注記 7 件・plugin 0.1.13。実装時の独立レビュー（claude-opus-5・32 ファイル全数）が整合検査の見落とした Important 1 を検出し反映＝実質収束と実装時レビューの補完関係の初実測（Issue-0107 事例 9）。次サイクル着手はユーザー判断待ち。
+**直近サイクル（2026-08-29〜30: 前提実在観点。LoopForAlpha Issue-0125 還流）**: 確定前レビューへ第 4 観点「前提実在」（機構が守るもの・得るものの実在を方針の正本と実体で検査。判定 5 値）を常設し、手順 5 へ指摘 1 件ずつの前提検査、3-2 (b) へ「なし」記載時の探索先併記、subagent-dispatch へ受け取り時義務（手順 6）、feature-block-design Phase 2〜4 へ実体読み直しを追加した（ADR-0117 Accepted）。ADR 部分修正/注記 5 件（0080/0107/0067/0063）・現行 spec 3 件同期・plugin 0.1.14・worklog 台帳 8 行記入。整合検査（5 観点）指摘なし。retrospective: `docs/records/retrospectives/system/2026-08-30-premise-existence-review.md`。次サイクル着手はユーザー判断待ち。
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 55 件。2026-08-29 実測: 前回 54 ＋ 新規起票 1〈0111〉・close 0）
+- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 55 件。2026-08-30 実測: 新規起票 0・close 0。Issue-0103/0105 へ検討状況追記）
 - 課題管理の運用規範の正本: `docs/overview/issue-management.md`（課題管理定義）
-- 直近サイクルの決定: ADR-0115/0116。設計 spec: `docs/current/specs/2026-08-28-start-work-responsibility-split-design.md`。retrospective: `docs/records/retrospectives/system/2026-08-29-start-work-responsibility-split.md`（system のみ）。実装 plan: `docs/working/plans/2026-08-28-start-work-responsibility-split-implementation.md`
-- ADR インデックス: `docs/records/decisions/README.md`（0001〜0116。Rejected 3 件・部分修正注記は ADR-0116 由来 7 件を含む）
+- 直近サイクルの決定: ADR-0117（設計文書兼用・spec 確定点 (c) 型のため設計 spec なし）。retrospective: `docs/records/retrospectives/system/2026-08-30-premise-existence-review.md`（system のみ）。実装 plan: `docs/working/plans/2026-08-29-premise-existence-review-implementation.md`
+- ADR インデックス: `docs/records/decisions/README.md`（0001〜0117。Rejected 3 件）
 - 記法規約と執行点: `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」
 - worklog スキーマ正典: `skills/worklog-record/references/store-format.md`（v2）
 - 原則: `docs/overview/principles.md` / **Layer 2: `AGENTS.md`（`CLAUDE.md` は `@AGENTS.md` の 1 行）** / 拡張ルール: `CONTRIBUTING.md`
@@ -53,32 +53,32 @@
 - **規約に適合していても配布物が壊れる型がある**（ADR-0084）。生成後の配布物を読む工程を別に置くこと。R1-a 型の機械検出は Issue-0104
 - **Layer 3 の退行確認はマージ・push 後にしか実行できない**（Issue-0109）。マーケットプレイス登録が GitHub 経由のため、feature ブランチの内容は `marketplace update` に降りてこない
 - **質問はテキストの番号付き選択肢のみ**（ADR-0109）。構造化質問ツールは全ツール・全モデルで使用しない
-- **確定前レビューの提示規則＋指摘反映後の反復規範**（ADR-0080/0107）・**サイクル全体整合検査**（ADR-0092/0099）・**新設の評価可能性**（ADR-0102）・**Accepted 後改訂の改訂記録規定**（ADR-0108）が稼働中。確定点で `review=`、Accepted 昇格で `cyclecheck=` を消化記録へ。**提示規則・反復・停止判定の正本は ADR-0116 により pre-finalization-review（提示操作）へ、マージ方式確認の正本は `skills/start-work/references/merge-practice.md` へ移設済み**（start-work は発火点ポインタのみ）
+- **確定前レビューの提示規則＋指摘反映後の反復規範**（ADR-0080/0107）・**サイクル全体整合検査**（ADR-0092/0099）・**新設の評価可能性**（ADR-0102）・**Accepted 後改訂の改訂記録規定**（ADR-0108）が稼働中。確定点で `review=`、Accepted 昇格で `cyclecheck=` を消化記録へ。**提示規則・反復・停止判定の正本は ADR-0116 により pre-finalization-review（提示操作）へ、マージ方式確認の正本は `skills/start-work/references/merge-practice.md` へ移設済み**（start-work は発火点ポインタのみ）。**確定前レビューは ADR-0117 により 4 観点（敵対的・実装整合性・仕様適合・前提実在）・体数 1〜4 体。集約手順 5 は指摘 1 件ずつの前提検査、3-2 (b) の「なし」記載は探索先併記が必須**
 - **Issue 運用の規範が稼働中**（ADR-0095〜0098): 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須
-- **リモート同期**: `513cd0c` まで push 済み（origin と一致。2026-08-29 push）。**配布元 GitHub は 0.1.13**。各ツールのローカルキャッシュへの反映は利用側の更新コマンド実行が必要（README「スキルのバージョンアップ」参照。ユーザーが実行）
+- **リモート同期**: `513cd0c` まで push 済み（2026-08-29 push）。**ローカル master は 7 コミット ahead（`52551b3` まで未 push）。配布元 GitHub は 0.1.13 のままで、0.1.14 は push 後に配布へ反映**。各ツールのローカルキャッシュへの反映は利用側の更新コマンド実行が必要（README「スキルのバージョンアップ」参照。ユーザーが実行）
 - **inbox に未整理 3 件が滞留**: `docs/inbox/` の 3 ファイル（いずれも未追跡）。`docs/conversation_log.md` も未追跡のまま。**ユーザーが手動移動予定のため organize-inbox の提案は不要**。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
-- **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。配布版は push まで 0.1.12）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
+- **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。配布版は push まで 0.1.13）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
 - **Copilot CLI は未契約**のため、同ツール向けの検証（Layer 2・Layer 3 の退行確認）が恒久的に実行できない。3 ツール対応を謳う以上、片方が検証不能なまま続く
-- **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` に 29 世代が残置**（本サイクル分 `2026-08-28-start-work-responsibility-split/` を含む）。掃除規定は Issue-0106。当面は手動判断
-- **中央ストアの現状**: 本 repo 111 件（〜`MakeAiInstructions-2026-08-29-01`。2026-08-29 実測）
+- **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` の残置が増加**（直下の旧世代群に加え、本サイクル分 6 世代 = `MakeAiInstructions/2026-08-29-premise-existence-*`）。掃除規定は Issue-0106。当面は手動判断
+- **中央ストアの現状**: 本 repo 113 件（〜`MakeAiInstructions-2026-08-29-03`。2026-08-30 実測）。処理済み台帳へ LoopForAlpha 5 件（merged×3・deferred×2）を記入済み
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**
 - ADR-0023 の留意（継続): GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
 
 ## Post ラッパー消化記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_start-work-responsibility-split.md`）参照。
+マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_premise-existence-review.md`）参照。
 
-- 2026-08-29 サイクル完了処理（マージ 5c1ac0e・retrospective・cycle-reset・Issue-0111 起票）: ADR=なし（完了処理と記録のみ） / worklog=棄却（delta なし。確立済みフローどおり）
+- 2026-08-30 サイクル完了処理（マージ 52551b3・retrospective・cycle-reset）: ADR=なし（完了処理と記録のみ） / worklog=棄却（delta なし。確立済みフローどおり）
 
 ## 次セッション開始時のアクション
 
-1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。**ローカル master が 12 コミット ahead** のため、必要なら先に `git push origin master`（push で Codex 配布側も 0.1.13 へ）
-2. **抽出した課題は issues に起票済み**（Issue-0111。着手はユーザー判断）。優先順の目安は「未着手のタスク」参照
+1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。**ローカル master が 7 コミット ahead**（`52551b3` まで未 push）のため、必要なら先に `git push origin master`（push で配布側も 0.1.14 へ）
+2. **本サイクルの新規起票は 0 件**（Issue-0103/0105 へ検討状況を追記済み。着手はユーザー判断）。優先順の目安は「未着手のタスク」参照
 3. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - **Layer 2 へ固有指示を書くときは `AGENTS.md`**（`CLAUDE.md` はポインタのまま）
-   - **配布対象ソースを変更したら執行点 4 手順**（`CONTRIBUTING.md`）。スキル改定は version bump も必須（ADR-0090。現行 0.1.13）
+   - **配布対象ソースを変更したら執行点 4 手順**（`CONTRIBUTING.md`）。スキル改定は version bump も必須（ADR-0090。現行 0.1.14）
    - **ガイドライン拡張時は過剰適合点検＋新設の評価可能性が必須**（ADR-0079/0099/0102）
    - **確定点で確定前レビューを提示し、指摘反映後は反復提示**（ADR-0080/0107）。**Accepted 昇格前はサイクル全体整合検査**（ADR-0092/0099）。**Accepted 済み ADR 本文を改訂したら改訂記録規定**（ADR-0108）
    - サブエージェント委譲時は `subagent-dispatch`（判定行必須）。**再委譲・再レビューでは前提値を委譲直前に再実測して渡す**。**数値・ファイルパス・名称は書く直前に実測する**（Issue-0095 の教訓）
@@ -90,6 +90,5 @@
 
 ## 重要な意思決定の履歴
 
-- ADR-0116: start-work のドメイン規範 2 節は責務帰属で移設し、提示規則は pre-finalization-review へ・マージ方式確認は references へ移す（2026-08-28 Accepted。実装時レビュー由来の改訂記録 1 件）
-- ADR-0115: start-work 責務過多の解消サイクルは分割の実施に集中し、SKILL.md サイズ・分割の一般規範は扱わない（2026-08-28 Accepted）
-- （ADR-0001〜0114 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）
+- ADR-0117: 確定前レビューに前提実在観点を新設し、指摘採否・提示・設計記述に前提と実在の検査を課す（2026-08-29 Accepted）
+- （ADR-0001〜0116 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）

@@ -2,8 +2,8 @@
 
 - **Branch**: feature/premise-existence-review
 - **Last Updated**: 2026-08-29 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装 plan 確定（plan 確定点通過）・実装実行へ移行
+- **Status**: paused
+- **Current Phase**: ガイドライン拡張/実装 plan 確定済み・実装実行の方式選択待ちで中断
 
 ## 作業の目的・背景
 
@@ -26,8 +26,8 @@ LoopForAlpha の flow 課題（`LoopForAlpha#Issue-0125`）が実測した「検
 ## 進行中のタスク
 
 - [ ] **現在の作業**: plan の実装実行（`docs/working/plans/2026-08-29-premise-existence-review-implementation.md` の Task 1〜10）
-  - 状態: plan 確定済み（フル巡 1〈2 体兼務〉＋差分確認巡 1・改訂 r0→r2・実質収束。退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-29-premise-existence-plan-r0/`・`-r1/`）。実行方式の選択待ち
-  - 残り: Task 1〜10 の実行 → 完了前検証 → ADR-0117 Accepted 昇格（サイクル全体整合検査・`Accepted 昇格` を名称に含むマイルストーン）→ マージ → retrospective
+  - 状態: plan 確定・コミット済み（`f8f09e8`。フル巡 1〈2 体兼務〉＋差分確認巡 1・改訂 r0→r2・実質収束。退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-29-premise-existence-plan-r0/`・`-r1/`）。**実行方式の選択への回答待ちで中断**（提示済みの選択肢: 1. インライン実行〈superpowers:executing-plans。AI の推奨〉/ 2. サブエージェント駆動〈superpowers:subagent-driven-development〉）
+  - 残り: 実行方式の選択 → Task 1〜10 の実行 → 完了前検証 → ADR-0117 Accepted 昇格（サイクル全体整合検査・`Accepted 昇格` を名称に含むマイルストーン）→ マージ → retrospective
 
 ## 未着手のタスク
 
@@ -43,12 +43,13 @@ LoopForAlpha の flow 課題（`LoopForAlpha#Issue-0125`）が実測した「検
 
 - 2026-08-29 ADR-0117 設計確定・spec 確定点 (c): ADR=0117 / worklog=`MakeAiInstructions-2026-08-29-02` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
 - 2026-08-29 実装 plan 確定・plan 確定点: ADR=なし（設計は ADR-0117 で確定済み・plan はその写像） / worklog=`MakeAiInstructions-2026-08-29-03` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
+- 2026-08-29 セッション終了処理: ADR=なし（plan 確定以降の新規決定なし） / worklog=棄却（plan 確定以降の delta なし）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフと ADR-0117 ドラフト
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）
-3. 留意点: ADR-0117 は未コミット（コミットは確定前レビュー収束後）。レビュー反復の状態は「進行中のタスク」参照
+1. 最初に確認すべきファイル: 本ハンドオフと実装 plan `docs/working/plans/2026-08-29-premise-existence-review-implementation.md`（挿入文・アンカー・検証値は plan が自己完結。実装対象の正本は ADR-0117 Consequences）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ 実行方式の選択（「進行中のタスク」の 2 択。AI 推奨はインライン実行）→ plan Task 1 から実行
+3. 留意点: ADR-0117 は Proposed のまま（Accepted 昇格は実装完了・検証後。昇格マイルストーン名に `Accepted 昇格` を含めサイクル全体整合検査を実施）。配布対象ソース変更のため plan Task 7 の執行点 4 手順（0.1.14 bump・生成器・両 -Check・配布物目視）を省略しない。plan の検証 grep は期待値まで確定済みなので、失敗したら plan でなく編集結果を疑う
 
 ## 重要な意思決定の履歴
 

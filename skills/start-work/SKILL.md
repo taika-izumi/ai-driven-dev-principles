@@ -59,10 +59,10 @@ start-work が正本として持つのはオーケストレーション（フェ
 |----------|----------|--------------|
 | 新規開発・機能追加・改修 | superpowers:brainstorming | インライン簡易ヒアリング |
 | brainstorming 完了後・計画作成前の機能ブロック分割 | feature-block-design（適用要否を内部判定） | スキップして writing-plans へ |
-| 既存仕様からの計画作成 | superpowers:writing-plans | インライン簡易plan作成 |
-| 既存planの実装 | superpowers:executing-plans または superpowers:subagent-driven-development | インラインTDDサイクル |
+| 既存仕様からの計画作成 | superpowers:writing-plans（実行直前に `references/plan-deviation-defaults.md`〈計画逸脱判断の既定の正本〉を読んで適用） | インライン簡易plan作成 |
+| 既存planの実装 | superpowers:executing-plans または superpowers:subagent-driven-development（いずれも実行直前に `references/plan-deviation-defaults.md`〈計画逸脱判断の既定の正本〉を読んで適用） | インラインTDDサイクル |
 | バグ修正・デバッグ | superpowers:systematic-debugging | インライン仮説立案→検証→修正 |
-| コードレビュー対応 | superpowers:receiving-code-review | インライン指摘整理→対応 |
+| コードレビュー対応 | superpowers:receiving-code-review（確定済み計画の実行中の場合は `references/plan-deviation-defaults.md`〈計画逸脱判断の既定の正本〉を適用） | インライン指摘整理→対応 |
 | コードレビュー依頼 | superpowers:requesting-code-review | インラインPR説明作成 |
 | 完了前検証 | superpowers:verification-before-completion | インラインチェックリスト確認 |
 | feature ブランチの完了処理（既定ブランチへの取り込み） | superpowers:finishing-a-development-branch（実行直前に `references/merge-practice.md`〈マージ方式確認の正本〉を読んで適用） | インラインで慣行確認＋マージ手順を案内 |
@@ -84,6 +84,7 @@ start-work が正本として持つのはオーケストレーション（フェ
 - 不可逆操作・大規模変更の可能性があれば `pre-action-review` スキルを呼ぶ
 - サブエージェントへ作業を委譲する場合は `subagent-dispatch` スキルを呼び、委譲プロンプトの制約ブロック（A 群＋B 群判定行）を組み立てる（ADR-0066 / ADR-0071）
 - 完了処理〈既定ブランチへの取り込み〉を行うスキル・手順の実行直前は、`references/merge-practice.md`（マージ方式確認の正本）を読んで適用する。本条項は冒頭の適用範囲文（「delegate する前後」）の例外として、delegate 済みスキルが内部で呼ぶ必須サブスキルの実行直前にも適用される（Post ラッパーの発火粒度は現行のまま変わらない）
+- 計画作成（writing-plans またはインライン簡易 plan）へ進む直前、および実装系スキル（executing-plans / subagent-driven-development またはインライン TDD）へ delegate する直前は、`references/plan-deviation-defaults.md`（計画逸脱判断の既定の正本）を読んで適用する。適用は委譲中に発生する実装時レビュー・実装者検証の指摘受領時にも及ぶ（本条項も冒頭の適用範囲文の例外として delegate 済みスキル内部の当該時点に適用される。Post ラッパーの発火粒度は現行のまま変わらない。二重発火の抑止と再開時の扱いは正本の「発火点」節が正）
 
 **Post（実行後）:**
 

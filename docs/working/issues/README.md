@@ -122,4 +122,7 @@
 | [0106](flow/0106-review-snapshot-area-no-naming-cleanup-rules.md) | 改訂前退避領域の命名規約・掃除規定が無い | open | 2026-08-18 |
 | [0107](flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md) | 反復レビューの推奨規範が状況要素を無視して推奨を決める（推奨と実選択の乖離記録） | open | 2026-08-25 |
 | [0109](flow/0109-layer3-regression-check-only-after-merge.md) | Layer 3 の退行確認が、マージ・push 後にしか実行できない | open | 2026-08-25 |
-| [0110](flow/0110-plan-deviation-decision-has-no-default.md) | 確定済み計画からの逸脱判断に既定が無く、実装時レビューの指摘ごとに設計判断が発生する | open | 2026-08-25 |
+| [0110](flow/0110-plan-deviation-decision-has-no-default.md) | 確定済み計画からの逸脱判断に既定が無く、実装時レビューの指摘ごとに設計判断が発生する | closed | 2026-08-25 |
+| [0112](flow/0112-multilayer-review-role-separation-not-codified.md) | 多層レビューの役割分担指針が明文化されておらず、レビュー設計の再現性がコンテキスト依存（LoopForAlpha#Issue-0043 委譲） | open | 2026-08-30 |
+| [0113](flow/0113-implementation-process-type-selection-criteria/0113-implementation-process-type-selection-criteria.md) | 実装工程 2 型（タスク別独立レビュー往復 / 確定前レビューへの前倒し）の使い分け基準が未確立（LoopForAlpha#Issue-0096 委譲） | open | 2026-08-30 |
+| [0114](flow/0114-quality-investment-marginal-utility-and-stratified-defaults/0114-quality-investment-marginal-utility-and-stratified-defaults.md) | 品質・設計投資の限界効用を実測し、レビュー・検査の既定を層別に再設計する（LoopForAlpha#Issue-0117 委譲） | open | 2026-08-30 |

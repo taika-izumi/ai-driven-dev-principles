@@ -3,7 +3,7 @@
 - **Branch**: feature/review-records-reflux
 - **Last Updated**: 2026-08-30 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 第 2 段の対策設計が確定（ADR-0119・実質収束）。次は writing-plans（実装計画）
+- **Current Phase**: 実装計画確定（plan 確定点通過・実質収束）。次は実装（インライン実行）
 
 ## 作業の目的・背景
 
@@ -25,9 +25,9 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: Issue-0110 対策の実装計画作成（writing-plans）→ 実装
-  - 状態: 設計は ADR-0119（Proposed・設計文書兼用）で確定。確定前レビューはフル 3 巡＋差分確認 1 巡＋機械検証 1 回で実質収束。改訂前退避は `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-30-plan-deviation-r0〜r3/`
-  - 残り: writing-plans（plan 確定点で提示）→ 実装（references 正本新設・start-work / subagent-dispatch 配線・version bump 0.1.15・執行点 4 手順）→ サイクル全体整合検査 → ADR-0119/0118 Accepted 昇格・Issue-0110 close → マージ → retrospective
+- [ ] **現在の作業**: Issue-0110 対策の実装（`docs/working/plans/2026-08-30-plan-deviation-defaults-implementation.md` の Task 1〜6）
+  - 状態: 計画確定済み（plan 確定点通過。レビュー = 1 体 4 観点兼務フル 1 巡＋機械検証・実質収束。宣言欄で ADR-0119 を自己適用: Task 1〜3 前倒し型・Task 4〜6 安全弁のみ）。退避 = `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-30-plan-deviation-*`
+  - 残り: Task 1〜6 のインライン実行（正本新設 → start-work / subagent-dispatch 配線 → version 0.1.15 → 生成・執行点 4 手順 → 検証・コミット）→ サイクル全体整合検査 → ADR-0119/0118 Accepted 昇格・Issue-0110 close → マージ → retrospective
 
 ## 既知のブロッカー・懸念
 
@@ -43,6 +43,7 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 - 2026-08-30 第 1 段委譲実施設計の確定・spec 確定点 (b): ADR=0118（ドラフト反映・Proposed 未コミット） / worklog=棄却（delta なし） / review=非発火（推奨判定が偽）
 - 2026-08-30 第 1 段委譲実施完了・spec 確定点 (c)（ADR-0118 コミット）: ADR=0118（Proposed のままコミット） / worklog=棄却（delta なし） / review=非発火（推奨判定が偽。(b) 通過済み内容のみで未レビュー差分ゼロ）
 - 2026-08-30 第 2 段 Issue-0110 対策設計の確定（ADR-0119）・spec 確定点 (c): ADR=0119（Proposed でコミット） / worklog=棄却（delta なし。乖離は Issue-0107 事例 10 へ記録） / review=フル実施（claude-opus-5・3 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
+- 2026-08-30 実装計画の確定・plan 確定点: ADR=なし（ADR-0119 の写像計画） / worklog=棄却（delta なし。兼務構成の初実測は Issue-0103 へ記録） / review=フル実施（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 
 ## 次セッション開始時のアクション
 

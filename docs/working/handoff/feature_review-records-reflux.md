@@ -2,7 +2,7 @@
 
 - **Branch**: feature/review-records-reflux
 - **Last Updated**: 2026-08-30 (Asia/Tokyo)
-- **Status**: in_progress
+- **Status**: paused
 - **Current Phase**: 実装計画確定（plan 確定点通過・実質収束）。次は実装（インライン実行）
 
 ## 作業の目的・背景
@@ -44,12 +44,13 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 - 2026-08-30 第 1 段委譲実施完了・spec 確定点 (c)（ADR-0118 コミット）: ADR=0118（Proposed のままコミット） / worklog=棄却（delta なし） / review=非発火（推奨判定が偽。(b) 通過済み内容のみで未レビュー差分ゼロ）
 - 2026-08-30 第 2 段 Issue-0110 対策設計の確定（ADR-0119）・spec 確定点 (c): ADR=0119（Proposed でコミット） / worklog=棄却（delta なし。乖離は Issue-0107 事例 10 へ記録） / review=フル実施（claude-opus-5・3 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-08-30 実装計画の確定・plan 確定点: ADR=なし（ADR-0119 の写像計画） / worklog=棄却（delta なし。兼務構成の初実測は Issue-0103 へ記録） / review=フル実施（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
+- 2026-08-30 セッション終了処理: ADR=なし（0118/0119 コミット済み・昇格は実装完了後） / worklog=`MakeAiInstructions-2026-08-30-01`（埋め込み成果物込みの期待値計数）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ・ADR-0118・Issue-0110
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ extend-guidelines / brainstorming の続きへ
-3. 留意点: 質問はテキストの番号付き選択肢のみ（ADR-0109）。配布対象ソースを変更したら執行点 4 手順＋version bump（現行 0.1.14）。確定点で確定前レビューを提示（ADR-0080/0107/0117）
+1. 最初に確認すべきファイル: 本ハンドオフ → `docs/working/plans/2026-08-30-plan-deviation-defaults-implementation.md`（確定済み計画。宣言欄で ADR-0119 を自己適用済み）→ ADR-0119
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ superpowers:executing-plans で計画の Task 1 から**インライン実行**（前倒し型宣言と整合。サブエージェント委譲型は使わない）
+3. 留意点: 計画は逐語厳守（Task 1〜3。逸脱時は ADR-0119 の型分類・逸脱記録行を自己適用し、各タスク完了報告に「逸脱突合:」1 行）。実装完了後 = サイクル全体整合検査 → ADR-0119/0118 の Accepted 昇格（`Accepted 昇格` をマイルストーン名に含め cyclecheck= を記録）→ Issue-0110 close → マージ → retrospective。質問はテキスト番号付き選択肢のみ（ADR-0109）
 
 ## 重要な意思決定の履歴
 

@@ -2,8 +2,8 @@
 
 - **Branch**: feature/review-records-reflux
 - **Last Updated**: 2026-08-30 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装完了・ADR-0119/0118 Accepted 昇格・Issue-0110 close 済み。次は master へのマージ → retrospective
+- **Status**: completed
+- **Current Phase**: サイクル完了（master へ --no-ff マージ `96b9218`・retrospective 実施済み。以後の正本は `docs/working/handoff/master.md`）
 
 ## 作業の目的・背景
 
@@ -28,9 +28,7 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: サイクル完了処理
-  - 状態: 実装・昇格・close 完了。未 push コミット多数（master 7 件＋本ブランチ）
-  - 残り: master へのマージ（finishing-a-development-branch。直前に `references/merge-practice.md` 読み込み）→ retrospective → handoff cycle-reset
+（なし。サイクル完了。マージ `96b9218`・retrospective `docs/records/retrospectives/system/2026-08-30-review-records-reflux.md`・cycle-reset は master.md へ適用済み）
 
 ## 既知のブロッカー・懸念
 

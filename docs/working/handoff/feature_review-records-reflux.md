@@ -2,8 +2,8 @@
 
 - **Branch**: feature/review-records-reflux
 - **Last Updated**: 2026-08-30 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 実装計画確定（plan 確定点通過・実質収束）。次は実装（インライン実行）
+- **Status**: in_progress
+- **Current Phase**: 実装完了・ADR-0119/0118 Accepted 昇格・Issue-0110 close 済み。次は master へのマージ → retrospective
 
 ## 作業の目的・背景
 
@@ -11,23 +11,26 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 
 ## 関連ドキュメント
 
-- スコープ決定: ADR-0118（`docs/records/decisions/0118-bulk-reflux-of-lfa-review-flow-issues.md`。Proposed・未コミット）
-- 本サイクルの主テーマ: Issue-0110（`docs/working/issues/flow/0110-plan-deviation-decision-has-no-default.md`）
+- スコープ決定: ADR-0118（`docs/records/decisions/0118-bulk-reflux-of-lfa-review-flow-issues.md`。Accepted）
+- 対策設計: ADR-0119（`docs/records/decisions/0119-plan-deviation-decision-defaults.md`。Accepted）。実装正本は `skills/start-work/references/plan-deviation-defaults.md`
+- 本サイクルの主テーマ: Issue-0110（`docs/working/issues/flow/0110-plan-deviation-decision-has-no-default.md`。closed・結論 = ADR-0119）
 - 委譲元（LoopForAlpha リポジトリ `D:\Dev\001_Trade\LoopForAlpha`）: `docs/working/issues/flow/` の 0043 / 0096 / 0109 / 0117
 - 受け皿候補: Issue-0107（`docs/working/issues/flow/0107-iterative-review-recommendation-divergence/`。LoopForAlpha#Issue-0109 の移譲先として予定済み）/ Issue-0103（反復のコスト予算）
-- 課題一覧: `docs/working/issues/README.md` / ADR インデックス: `docs/records/decisions/README.md`（0001〜0118）
+- 課題一覧: `docs/working/issues/README.md` / ADR インデックス: `docs/records/decisions/README.md`（0001〜0119）
 
 ## 完了済みタスク
 
 - [x] 次サイクルテーマ選定（Issue-0110）と委譲スコープ決定（4 件一括）・ADR-0118 ドラフト作成（2026-08-30）
 - [x] 第 1 段委譲実施設計の確定（spec 確定点 (b) 通過。設計は ADR-0118 Decision の「委譲の実施方式」節が正本）（2026-08-30）
 - [x] 第 1 段＝委譲の実施完了（受け皿 Issue-0112/0113/0114 新設・LFA#0109→Issue-0107 統合・コピー 11 ファイル検証済み・インデックス 3 行・LFA 側 4 課題へ追記〈未コミット残置〉）（2026-08-30）
+- [x] Issue-0110 対策の実装（計画 Task 1〜6 インライン実行・完了条件 6 項目充足・逸脱記録 1 件〈期待値陳腐化・採用〉・コミット `59c8357`）（2026-08-30）
+- [x] サイクル全体整合検査（5 観点・修正 1 件 = dispatch 仕様へ手順 7 書き戻し）・ADR-0119/0118 Accepted 昇格・Issue-0110 close（コミット `960d7ba`）（2026-08-30）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: Issue-0110 対策の実装（`docs/working/plans/2026-08-30-plan-deviation-defaults-implementation.md` の Task 1〜6）
-  - 状態: 計画確定済み（plan 確定点通過。レビュー = 1 体 4 観点兼務フル 1 巡＋機械検証・実質収束。宣言欄で ADR-0119 を自己適用: Task 1〜3 前倒し型・Task 4〜6 安全弁のみ）。退避 = `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-30-plan-deviation-*`
-  - 残り: Task 1〜6 のインライン実行（正本新設 → start-work / subagent-dispatch 配線 → version 0.1.15 → 生成・執行点 4 手順 → 検証・コミット）→ サイクル全体整合検査 → ADR-0119/0118 Accepted 昇格・Issue-0110 close → マージ → retrospective
+- [ ] **現在の作業**: サイクル完了処理
+  - 状態: 実装・昇格・close 完了。未 push コミット多数（master 7 件＋本ブランチ）
+  - 残り: master へのマージ（finishing-a-development-branch。直前に `references/merge-practice.md` 読み込み）→ retrospective → handoff cycle-reset
 
 ## 既知のブロッカー・懸念
 
@@ -45,6 +48,7 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 - 2026-08-30 第 2 段 Issue-0110 対策設計の確定（ADR-0119）・spec 確定点 (c): ADR=0119（Proposed でコミット） / worklog=棄却（delta なし。乖離は Issue-0107 事例 10 へ記録） / review=フル実施（claude-opus-5・3 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-08-30 実装計画の確定・plan 確定点: ADR=なし（ADR-0119 の写像計画） / worklog=棄却（delta なし。兼務構成の初実測は Issue-0103 へ記録） / review=フル実施（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-08-30 セッション終了処理: ADR=なし（0118/0119 コミット済み・昇格は実装完了後） / worklog=`MakeAiInstructions-2026-08-30-01`（埋め込み成果物込みの期待値計数）
+- 2026-08-30 Issue-0110 対策実装完了（Task 1〜6）・ADR-0119/0118 Accepted 昇格: ADR=0119/0118（Accepted 昇格・`960d7ba`） / worklog=棄却（delta なし） / cyclecheck=実施（修正: `960d7ba`）
 
 ## 次セッション開始時のアクション
 
@@ -54,4 +58,5 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 
 ## 重要な意思決定の履歴
 
-- ADR-0118: LoopForAlpha のレビュー関連 flow 課題 4 件を一括委譲し、Issue-0110 対策設計と同一サイクルで扱う（2026-08-30 Proposed）
+- ADR-0118: LoopForAlpha のレビュー関連 flow 課題 4 件を一括委譲し、Issue-0110 対策設計と同一サイクルで扱う（2026-08-30 Accepted）
+- ADR-0119: 確定済み計画からの逸脱判断に型分類と採用基準の既定を置き、references 正本と計画側宣言で常設する（2026-08-30 Accepted）

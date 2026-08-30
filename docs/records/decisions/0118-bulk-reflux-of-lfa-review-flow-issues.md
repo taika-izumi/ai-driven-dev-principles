@@ -1,6 +1,6 @@
 # ADR-0118: LoopForAlpha のレビュー関連 flow 課題 4 件を一括委譲し、Issue-0110 対策設計と同一サイクルで扱う
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-30
 
 ## Context

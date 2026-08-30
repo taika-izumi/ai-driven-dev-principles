@@ -1,6 +1,6 @@
 # ADR-0119: 確定済み計画からの逸脱判断に型分類と採用基準の既定を置き、references 正本と計画側宣言で常設する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-30
 
 ## Context

@@ -3,7 +3,7 @@
 - **Branch**: feature/review-records-reflux
 - **Last Updated**: 2026-08-30 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 第 2 段（委譲材料の精読 → Issue-0110 対策設計）。第 1 段は完了・コミット済み
+- **Current Phase**: 第 2 段の対策設計が確定（ADR-0119・実質収束）。次は writing-plans（実装計画）
 
 ## 作業の目的・背景
 
@@ -25,9 +25,9 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 第 2 段＝委譲材料の精読 → Issue-0110 対策設計（brainstorming 続行）
-  - 状態: 未着手。精読対象 = Issue-0113 の `lfa-0096-*`（工程 2 型・逸脱時格下げの安全弁）、Issue-0114 の `lfa-0117-2026-08-27-marginal-utility-aggregation.md`（層別実測）、Issue-0107 の `lfa-0109-note-divergence-cases.md`（乖離事例）
-  - 残り: 精読 → 対策設計（spec 確定点で確定前レビュー提示）→ 対策 ADR → plan（plan 確定点）→ 実装 → Accepted 昇格・Issue close
+- [ ] **現在の作業**: Issue-0110 対策の実装計画作成（writing-plans）→ 実装
+  - 状態: 設計は ADR-0119（Proposed・設計文書兼用）で確定。確定前レビューはフル 3 巡＋差分確認 1 巡＋機械検証 1 回で実質収束。改訂前退避は `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-30-plan-deviation-r0〜r3/`
+  - 残り: writing-plans（plan 確定点で提示）→ 実装（references 正本新設・start-work / subagent-dispatch 配線・version bump 0.1.15・執行点 4 手順）→ サイクル全体整合検査 → ADR-0119/0118 Accepted 昇格・Issue-0110 close → マージ → retrospective
 
 ## 既知のブロッカー・懸念
 
@@ -42,6 +42,7 @@ LoopForAlpha プロジェクトに蓄積されたレビュー関連の flow 型 
 
 - 2026-08-30 第 1 段委譲実施設計の確定・spec 確定点 (b): ADR=0118（ドラフト反映・Proposed 未コミット） / worklog=棄却（delta なし） / review=非発火（推奨判定が偽）
 - 2026-08-30 第 1 段委譲実施完了・spec 確定点 (c)（ADR-0118 コミット）: ADR=0118（Proposed のままコミット） / worklog=棄却（delta なし） / review=非発火（推奨判定が偽。(b) 通過済み内容のみで未レビュー差分ゼロ）
+- 2026-08-30 第 2 段 Issue-0110 対策設計の確定（ADR-0119）・spec 確定点 (c): ADR=0119（Proposed でコミット） / worklog=棄却（delta なし。乖離は Issue-0107 事例 10 へ記録） / review=フル実施（claude-opus-5・3 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 
 ## 次セッション開始時のアクション
 

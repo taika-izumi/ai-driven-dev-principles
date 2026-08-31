@@ -1,8 +1,8 @@
 # Handoff: SKILL.md サイズ・分割規範の設計（Issue-0105）＋ merge-practice 導入文重複の解消（Issue-0111）
 
 - **Branch**: feature/issue-0105-skill-size-norm
-- **Last Updated**: 2026-09-01 01:40 (Asia/Tokyo)
-- **Status**: in_progress
+- **Last Updated**: 2026-09-01 07:10 (Asia/Tokyo)
+- **Status**: paused
 - **Current Phase**: 新規開発・改修/実装計画を確定（plan 確定点 通過・実質収束）。次は実装工程の型を選んで実装へ
 
 ## 作業の目的・背景
@@ -49,7 +49,7 @@
 
 - **配布元は `dist/`**（ADR-0082）。`skills/` 編集後は `scripts/build-dist.ps1` で再生成し生成物も同じコミットへ。ルート `.agents/plugins/marketplace.json` も生成物
 - **ガイドライン拡張時は過剰適合点検＋新設の評価可能性が必須**（ADR-0079/0099/0102）
-- **確定点では 2 型分類の凍結＋確定前レビュー提示**（ADR-0080/0107/0117/0120）。本テーマは規範文の新設を含むため規範改定型（観点分離 4 体）になる見込み
+- **確定点では 2 型分類の凍結＋確定前レビュー提示**（ADR-0080/0107/0117/0120）。本サイクルの 2 確定点（spec (c)・plan）は通過済みで、いずれも規範改定型・観点分離 4 体で実施した。実装中に設計変更へ至れば新規 ADR で spec 確定点 (c) が再び生じうる
 - **計画作成・実装着手の直前に `skills/start-work/references/plan-deviation-defaults.md` を読む**（ADR-0119）
 - inbox 未整理 3 件＋conversation_log 未追跡はユーザーが手動移動予定（organize-inbox 提案不要）。`git add` はディレクトリ巻き込み禁止・pathspec 付き（Issue-0020）
 

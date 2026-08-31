@@ -179,6 +179,10 @@ Expected: 2 ファイルのパスが表示され、最終行が `2`
 git add docs/working/issues/flow/0115-session-handoff-size-split-candidate.md docs/working/issues/flow/0116-decision-log-size-split-candidate.md docs/working/issues/README.md && git commit -m "issue: 0115/0116 - session-handoff / decision-log を SKILL.md 分割候補として起票（ADR-0121 決定 5 の残余）"
 ```
 
+逸脱記録: 機械的な適応 / 採用 / 日付リテラルの一般規定（宣言欄）、Issue-0115/0116 の Opened・検討状況の起票行とインデックス 2 行の日付を 2026-08-31 から実装当日 2026-09-01 へ読み替え、本文の「31,097B（2026-08-31 実測）」「26,801B（2026-08-31 実測）」は歴史的事実の実測日のため据え置き
+
+逸脱記録: 対象外 / 対象外 / 実装着手前に計画末尾「確定前レビューの記録」へ第 5 巡の節を補完（コミット dc0323c、ユーザー承認 2026-09-01）、確定前レビュー工程の記録欠落の補完でありタスクの指示内容は不変のため plan-deviation-defaults.md の適用対象外と裁定、あわせて本タスクのコミットへ計画ファイルを含めて逸脱記録行を同時に残す
+
 ---
 
 ### Task 2: build-dist.ps1 へサイズ計測と例外テーブルを組み込む

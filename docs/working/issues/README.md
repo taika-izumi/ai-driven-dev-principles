@@ -126,3 +126,5 @@
 | [0112](flow/0112-multilayer-review-role-separation-not-codified.md) | 多層レビューの役割分担指針が明文化されておらず、レビュー設計の再現性がコンテキスト依存（LoopForAlpha#Issue-0043 委譲） | open | 2026-08-30 |
 | [0113](flow/0113-implementation-process-type-selection-criteria/0113-implementation-process-type-selection-criteria.md) | 実装工程 2 型（タスク別独立レビュー往復 / 確定前レビューへの前倒し）の使い分け基準が未確立（LoopForAlpha#Issue-0096 委譲） | open | 2026-08-30 |
 | [0114](flow/0114-quality-investment-marginal-utility-and-stratified-defaults/0114-quality-investment-marginal-utility-and-stratified-defaults.md) | 品質・設計投資の限界効用を実測し、レビュー・検査の既定を層別に再設計する（LoopForAlpha#Issue-0117 委譲） | open | 2026-08-30 |
+| [0115](flow/0115-session-handoff-size-split-candidate.md) | session-handoff の SKILL.md が分割候補のまま暫定登録されている | open | 2026-09-01 |
+| [0116](flow/0116-decision-log-size-split-candidate.md) | decision-log の SKILL.md が分割候補のまま暫定登録されている | open | 2026-09-01 |

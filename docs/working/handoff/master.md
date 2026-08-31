@@ -1,7 +1,7 @@
-# Handoff: レビュー記録委譲＋計画逸脱既定サイクル完了・次サイクル待ち
+# Handoff: 品質投資の層別既定サイクル完了・次サイクル待ち
 
-- **Branch**: master（feature/review-records-reflux を --no-ff で取り込み。マージコミット `96b9218`）
-- **Last Updated**: 2026-08-30 (Asia/Tokyo)
+- **Branch**: master（feature/quality-investment-stratified-defaults を --no-ff で取り込み。マージコミット `7afdd66`）
+- **Last Updated**: 2026-08-31 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: サイクル完了（retrospective・cycle-reset 済み）。次サイクル着手はユーザー判断
 
@@ -9,14 +9,14 @@
 
 本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AI駆動開発ガイドライン（5原則 + スキル群 + ADR。AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系）を整備するプロジェクト。
 
-**直近サイクル（2026-08-30: レビュー記録委譲＋計画逸脱判断の既定）**: 第 1 段で LoopForAlpha のレビュー関連 flow 課題 4 件（約 180KB）を全文コピーで一括委譲（受け皿 Issue-0112/0113/0114 新設・LFA#0109→Issue-0107 統合。ADR-0118 Accepted）。第 2 段で計画逸脱判断の既定（型分類 4 型・設計変更級の採用基準 (i)(ii)・計画側宣言欄・逸脱記録行・予防/検出 2 層）を `skills/start-work/references/plan-deviation-defaults.md` を正本として常設し、start-work Pre 条項＋マッピング表 3 セル・subagent-dispatch 手順 7 を配線（ADR-0119 Accepted・plugin 0.1.15・Issue-0110 close）。逸脱記録機構の初運用で期待値陳腐化 1 件を捕捉。整合検査（5 観点）で dispatch 現用仕様への書き戻し漏れ 1 件を修正。retrospective: `docs/records/retrospectives/system/2026-08-30-review-records-reflux.md`。次サイクル着手はユーザー判断待ち。
+**直近サイクル（2026-08-30〜31: レビュー・品質投資の層別既定再設計＋反復コスト予算）**: Issue-0114/0103 を合流し ADR-0120 を設計・実装（Accepted・plugin 0.1.16・Issue-0103 close）。確定前レビューへ**成果物の 2 型分類**（規範改定型／通常型・確定点到達時に凍結・提示へ型と体数既定を明示）、**初回フル巡の体数の型別既定**（レビュー済み上流からの写像通常型に限り 1 体 4 観点兼務）、**通算巡数の分布外検知**（通常型 4 巡・規範改定型 8 巡で発火時注記 2 点の提示義務。上限ではない）を常設し、session-handoff の反復継続記載へ独立項目「成果物の型」を追加。plan 確定点で新既定（1 体兼務）を先行適用し Critical 2 ほかを検出（機能実測 2 例目）。逸脱 0・整合検査（5 観点）指摘なし。retrospective: `docs/records/retrospectives/system/2026-08-31-quality-investment-stratified-defaults.md`。次サイクル着手はユーザー判断待ち。
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 57 件。2026-08-30 実測: 新設 3〈0112/0113/0114〉・close 1〈0110〉。Issue-0073/0103/0107 へ検討状況追記）
+- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 56 件。2026-08-31 実測: close 1〈0103〉・新設 0。Issue-0072/0105/0107/0114 へ検討状況・事例追記）
 - 課題管理の運用規範の正本: `docs/overview/issue-management.md`（課題管理定義）
-- 直近サイクルの決定: ADR-0118/0119（0119 は設計文書兼用・spec 確定点 (c) 型のため設計 spec なし）。retrospective: `docs/records/retrospectives/system/2026-08-30-review-records-reflux.md`（system のみ）。実装 plan: `docs/working/plans/2026-08-30-plan-deviation-defaults-implementation.md`
-- ADR インデックス: `docs/records/decisions/README.md`（0001〜0119。Rejected 3 件）
+- 直近サイクルの決定: ADR-0120（設計文書兼用・spec 確定点 (c) 型のため設計 spec なし）。retrospective: `docs/records/retrospectives/system/2026-08-31-quality-investment-stratified-defaults.md`（system のみ）。実装 plan: `docs/working/plans/2026-08-31-adr-0120-stratified-review-implementation.md`
+- ADR インデックス: `docs/records/decisions/README.md`（0001〜0120。Rejected 3 件）
 - 記法規約と執行点: `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」
 - worklog スキーマ正典: `skills/worklog-record/references/store-format.md`（v2）
 - 原則: `docs/overview/principles.md` / **Layer 2: `AGENTS.md`（`CLAUDE.md` は `@AGENTS.md` の 1 行）** / 拡張ルール: `CONTRIBUTING.md`
@@ -34,8 +34,8 @@
 
 バックログは `docs/working/issues/README.md` に一元化。次サイクルの候補として目安を示す:
 
-1. [ ] **Issue-0114 / 0103**（flow）: レビュー・品質投資の限界効用と層別既定の再設計 / 反復のコスト予算。LFA#0117 の層別実測・コスト実測（委譲済み・約 86KB）が直接材料。ADR-0119 の射程宣言が明示的に次送りしたテーマ
-2. [ ] **Issue-0107**（flow）: 反復レビューの推奨規範の乖離。LFA#0109 の乖離事例 8 件＋横断観測 2 組を統合済み（事例 10 まで蓄積）
+1. [ ] **Issue-0114 残余射程**（flow）: レビュー対象からの層の除外・変異検査・実装時レビュー深度の既定・「コードを含む計画」の独立型層別・サイクル通算の予算（ADR-0120 Decision 4 が明示的に残した射程。Issue-0103 は close 済み）
+2. [ ] **Issue-0107**（flow）: 反復レビューの推奨規範の乖離（事例 11 まで蓄積。事例 11 = 2 段型が「新規の規範文追加」の出所〈レビュー済み正本からの写しか〉を判定材料に持たない粗さの実測）
 3. [ ] **Issue-0113 / 0112**（flow）: 実装工程 2 型の使い分け基準（LFA#0096 委譲済み。ADR-0119 が安全弁側を既定化し、選定基準側が残り） / 多層レビューの役割分担指針（LFA#0043 委譲済み）
 4. [ ] **Issue-0109**（flow）: Layer 3 の退行確認がマージ・push 後にしか実行できない。プレフライト手段の設計
 5. [ ] **Issue-0108**（system）: `build-dist.ps1` の見送り指摘 4 群（C0 制御文字・`.agents/` の stale 未検出・保守性・1 要素配列の素通り）。同ファイルを次に触るサイクルでまとめて処理するのが自然
@@ -57,32 +57,32 @@
 - **確定前レビューの提示規則＋指摘反映後の反復規範**（ADR-0080/0107）・**サイクル全体整合検査**（ADR-0092/0099）・**新設の評価可能性**（ADR-0102）・**Accepted 後改訂の改訂記録規定**（ADR-0108）が稼働中。確定点で `review=`、Accepted 昇格で `cyclecheck=` を消化記録へ。**提示規則・反復・停止判定の正本は ADR-0116 により pre-finalization-review（提示操作）へ、マージ方式確認の正本は `skills/start-work/references/merge-practice.md` へ移設済み**（start-work は発火点ポインタのみ）。**確定前レビューは ADR-0117 により 4 観点（敵対的・実装整合性・仕様適合・前提実在）・体数 1〜4 体。集約手順 5 は指摘 1 件ずつの前提検査、3-2 (b) の「なし」記載は探索先併記が必須**。**ADR-0120 により確定点は 2 型分類（規範改定型／通常型。到達時に凍結・提示へ型と体数既定を明示）——初回フル巡の体数は規範改定型 = 観点分離 4 体・写像通常型 = 1 体 4 観点兼務（迷えば観点分離）、反復提示には通算巡数の分布外検知（通常型 4 巡・規範改定型 8 巡で発火時注記 2 点。発火は提示であり上限ではない）が常設**
 - **計画逸脱判断の既定が稼働中**（ADR-0119。正本 = `skills/start-work/references/plan-deviation-defaults.md`）: 計画作成・実装着手の直前に正本を読み、計画に「逸脱判断の既定」宣言欄を置く。実装中の指摘は型分類（4 型）→ 採用基準 (i)(ii) で裁き、**全帰結を計画ファイルへ行頭 `逸脱記録:` の 1 行で残す**。前倒し型・インライン TDD ではタスク完了報告に「逸脱突合:」1 行。委譲時は注入項目（subagent-dispatch 手順 7）を確認
 - **Issue 運用の規範が稼働中**（ADR-0095〜0098): 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須
-- **リモート同期**: `377a92c` まで push 済み（2026-08-30。0.1.15 は配布へ反映済み）。各ツールのローカルキャッシュへの反映は利用側の更新コマンド実行が必要（README「スキルのバージョンアップ」参照。ユーザーが実行）
+- **リモート同期**: 2026-08-31 のサイクル完了・finalize コミットまで push 済み（0.1.16 は配布へ反映済み）。各ツールのローカルキャッシュへの反映は利用側の更新コマンド実行が必要（README「スキルのバージョンアップ」参照。ユーザーが実行）
 - **inbox に未整理 3 件が滞留**: `docs/inbox/` の 3 ファイル（いずれも未追跡）。`docs/conversation_log.md` も未追跡のまま。**ユーザーが手動移動予定のため organize-inbox の提案は不要**。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。配布版は 0.1.15）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
 - **LoopForAlpha リポジトリに委譲済み追記 4 ファイルが未コミットで残置**（`feature/stage7-part2-design` の作業ツリー上。ユーザーが LFA セッションで LFA 側の流儀によりコミット予定。本リポジトリからはコミットしない。ADR-0118）
 - **Copilot CLI は未契約**のため、同ツール向けの検証（Layer 2・Layer 3 の退行確認）が恒久的に実行できない。3 ツール対応を謳う以上、片方が検証不能なまま続く
-- **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` の残置が増加**（直下の旧世代群・`MakeAiInstructions/2026-08-29-premise-existence-*` に加え、本サイクル分 = `MakeAiInstructions/2026-08-30-plan-deviation-*`）。掃除規定は Issue-0106。当面は手動判断
-- **中央ストアの現状**: 本 repo 115 件（〜`MakeAiInstructions-2026-08-30-02`。2026-08-30 実測）。処理済み台帳へ LoopForAlpha 5 件（merged×3・deferred×2）を記入済み
+- **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` の残置が増加**（直下の旧世代群・`MakeAiInstructions/2026-08-29-premise-existence-*`・`2026-08-30-plan-deviation-*` に加え、本サイクル分 = `MakeAiInstructions/2026-08-31-adr-0120-plan/r1〜r3`）。掃除規定は Issue-0106。当面は手動判断
+- **中央ストアの現状**: 本 repo 120 件（〜`MakeAiInstructions-2026-08-31-05`。2026-08-31 実測）。処理済み台帳へ LoopForAlpha 5 件（merged×3・deferred×2）を記入済み
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**
 - ADR-0023 の留意（継続): GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
 
 ## Post ラッパー消化記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_review-records-reflux.md`）参照。
+マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_quality-investment-stratified-defaults.md`）参照。
 
-- 2026-08-30 サイクル完了処理（マージ 96b9218・retrospective・cycle-reset）: ADR=なし（完了処理と記録のみ） / worklog=棄却（delta なし。本サイクルの delta は `MakeAiInstructions-2026-08-30-02` で記録済み）
-- 2026-08-30 リモート同期完了（push `eed1b63`〜`377a92c`・配布 0.1.15 反映）: ADR=なし（承認済みアクションの実行のみ） / worklog=棄却（delta なし）
+- 2026-08-31 サイクル完了処理（マージ 7afdd66・retrospective・cycle-reset）: ADR=なし（完了処理と記録のみ） / worklog=棄却（delta なし。本サイクルの delta は `MakeAiInstructions-2026-08-31-03`〜`-05` で記録済み）
+- 2026-08-31 リモート同期・セッション終了処理（push `d9b28d9`〜`7afdd66`・配布 0.1.16 反映）: ADR=なし（承認済みアクションの実行のみ） / worklog=棄却（delta なし）
 
 ## 次セッション開始時のアクション
 
-1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。リモート同期は `377a92c` まで完了済み（配布 0.1.15 反映済み）
-2. **本サイクルの新規起票は 0 件・委譲による新設 3 件**（Issue-0112/0113/0114。Issue-0073/0103/0107 へ検討状況を追記済み。着手はユーザー判断）。優先順の目安は「未着手のタスク」参照
+1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。リモート同期は 2026-08-31 の finalize コミットまで完了済み（配布 0.1.16 反映済み）
+2. **本サイクルの新規起票は 0 件・close 1 件**（Issue-0103。Issue-0072/0105/0107/0114 へ検討状況・事例を追記済み。着手はユーザー判断）。優先順の目安は「未着手のタスク」参照
 3. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - **Layer 2 へ固有指示を書くときは `AGENTS.md`**（`CLAUDE.md` はポインタのまま）
-   - **配布対象ソースを変更したら執行点 4 手順**（`CONTRIBUTING.md`）。スキル改定は version bump も必須（ADR-0090。現行 0.1.14）
+   - **配布対象ソースを変更したら執行点 4 手順**（`CONTRIBUTING.md`）。スキル改定は version bump も必須（ADR-0090。現行 0.1.16）
    - **ガイドライン拡張時は過剰適合点検＋新設の評価可能性が必須**（ADR-0079/0099/0102）
    - **確定点で確定前レビューを提示し、指摘反映後は反復提示**（ADR-0080/0107）。**Accepted 昇格前はサイクル全体整合検査**（ADR-0092/0099）。**Accepted 済み ADR 本文を改訂したら改訂記録規定**（ADR-0108）
    - **計画作成・実装着手の直前に `references/plan-deviation-defaults.md` を読み、計画へ宣言欄・実装中は逸脱記録行**（ADR-0119。稼働規範の詳細は「既知のブロッカー・懸念」参照）
@@ -95,6 +95,5 @@
 
 ## 重要な意思決定の履歴
 
-- ADR-0119: 確定済み計画からの逸脱判断に型分類と採用基準の既定を置き、references 正本と計画側宣言で常設する（2026-08-30 Accepted）
-- ADR-0118: LoopForAlpha のレビュー関連 flow 課題 4 件を一括委譲し、Issue-0110 対策設計と同一サイクルで扱う（2026-08-30 Accepted）
-- （ADR-0001〜0117 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）
+- ADR-0120: 確定前レビューの初回体数を成果物 2 型で層別し、通算巡数の分布外検知を反復提示に常設する（2026-08-31 Accepted）
+- （ADR-0001〜0119 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）

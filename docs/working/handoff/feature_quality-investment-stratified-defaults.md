@@ -2,8 +2,8 @@
 
 - **Branch**: feature/quality-investment-stratified-defaults
 - **Last Updated**: 2026-08-31 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装完了・ADR-0120 Accepted。次は feature ブランチの完了処理（master へのマージ）
+- **Status**: completed
+- **Current Phase**: サイクル完了（master へ --no-ff マージ `7afdd66`・retrospective・cycle-reset 済み。以後は `master.md` を参照）
 
 ## 作業の目的・背景
 
@@ -27,9 +27,7 @@ Issue-0114（品質・設計投資の限界効用の実測に基づく、レビ�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: feature ブランチの完了処理（superpowers:finishing-a-development-branch。直前に `skills/start-work/references/merge-practice.md` を読む）
-  - 状態: 実装・検証・ADR-0120 Accepted 昇格まで完了（コミット `d9b28d9`＋昇格コミット）
-  - 残り: マージ方式確認 → master へマージ → マージ後に retrospective（AGENTS.md の起動規範）→ handoff cycle-reset
+（なし。サイクル完了）
 
 ## 未着手のタスク
 
@@ -50,9 +48,9 @@ Issue-0114（品質・設計投資の限界効用の実測に基づく、レビ�
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → ADR-0120（Accepted・実装済み）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:finishing-a-development-branch`（**直前に `skills/start-work/references/merge-practice.md` を読む**）→ master へマージ → `retrospective` → `session-handoff` cycle-reset
-3. 留意点: マージ後の retrospective 起動は AGENTS.md「検証」節の規範（スキル側に自動起動なし）・未追跡の inbox 3 件と conversation_log.md を巻き込まない
+1. 最初に確認すべきファイル: `docs/working/handoff/master.md`（本ブランチのサイクルは完了。以後の状態は master handoff が正）
+2. 最初に実行すべきコマンド/スキル: master ブランチで `start-work`
+3. 留意点: 本ハンドオフは completed のまま残置する（アーカイブ機構なし）
 
 ## 重要な意思決定の履歴
 

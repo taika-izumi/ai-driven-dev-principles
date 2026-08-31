@@ -713,7 +713,9 @@ Expected: `SKILL.md` と references 3 ファイルが生成されていること
 git add skills/pre-finalization-review dist .agents/plugins/marketplace.json && git commit -m "refactor: pre-finalization-review を references 型で分割（ADR-0121 決定 5。本文 20KB 以下・初回提示は本文のみで履行可）"
 ```
 
-逸脱記録: 対象外 / 対象外 / 本タスクで発生した指摘の帰結を確定時に追記する
+逸脱記録: 対象外 / 不採用 / 前処理 2. の突合対象である第 2 巡の不採用 1 件（新設節へ転記する対抗実測の括弧が記法規約 R1-a に該当するか）を Step 5-14 の配布物目視で検査、除去後は `（写像 plan を 3 体分離で 2 巡・指摘 31 件を要した対抗実測がある）` となり残骸も文法破綻も無く生成器の違反も 0 件のため、前巡の不採用理由が実体で覆っておらず不採用のまま維持
+
+逸脱記録: 事実誤り・期待値の陳腐化の訂正 / 採用 / Step 12-5 の Expected「0 件」が実体と食い違う（是正の適用先は Task 12。詳細と実測根拠は同タスクの逸脱記録行）
 
 ---
 

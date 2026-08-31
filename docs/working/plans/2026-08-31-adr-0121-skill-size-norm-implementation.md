@@ -1035,6 +1035,8 @@ Expected: `1` と、バイト数が 10000 未満（課題管理定義の目安�
 git add docs/working/issues/flow/0099-overturned-5-duplicated-rows-conditional-backlog.md && git commit -m "issue: 0099 へサイズ実測トリガー 5 箇所目の到達経路を追記（ADR-0121）"
 ```
 
+逸脱記録: 機械的な適応 / 採用 / 日付リテラルの一般規定（宣言欄）、Step 9-1 の追記行の日付を 2026-08-31 から実装当日 2026-09-01 へ読み替え
+
 ---
 
 ### Task 10: spec 02-distribution-generator.md の追従

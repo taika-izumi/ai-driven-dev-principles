@@ -125,3 +125,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0117](0117-premise-existence-viewpoint-and-premise-checks.md) | 確定前レビューに前提実在観点を新設し、指摘採否・提示・設計記述に前提と実在の検査を課す | Accepted | 2026-08-29 |
 | [0118](0118-bulk-reflux-of-lfa-review-flow-issues.md) | LoopForAlpha のレビュー関連 flow 課題 4 件を一括委譲し、Issue-0110 対策設計と同一サイクルで扱う | Accepted | 2026-08-30 |
 | [0119](0119-plan-deviation-decision-defaults.md) | 確定済み計画からの逸脱判断に型分類と採用基準の既定を置き、references 正本と計画側宣言で常設する | Accepted | 2026-08-30 |
+| [0120](0120-stratified-initial-review-bodies-and-round-outlier-detection.md) | 確定前レビューの初回体数を成果物 2 型で層別し、通算巡数の分布外検知を反復提示に常設する | Proposed | 2026-08-30 |

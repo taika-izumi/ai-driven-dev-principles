@@ -1,6 +1,6 @@
 # ADR-0120: 確定前レビューの初回体数を成果物 2 型で層別し、通算巡数の分布外検知を反復提示に常設する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-30
 
 ## Context

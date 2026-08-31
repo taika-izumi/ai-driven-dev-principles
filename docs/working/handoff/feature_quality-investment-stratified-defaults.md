@@ -2,8 +2,8 @@
 
 - **Branch**: feature/quality-investment-stratified-defaults
 - **Last Updated**: 2026-08-31 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張/設計確定（ADR-0120 コミット済み）。次は writing-plans
+- **Status**: in_progress
+- **Current Phase**: ガイドライン拡張/実装完了・ADR-0120 Accepted。次は feature ブランチの完了処理（master へのマージ）
 
 ## 作業の目的・背景
 
@@ -23,21 +23,20 @@ Issue-0114（品質・設計投資の限界効用の実測に基づく、レビ�
 
 - [x] extend-guidelines → brainstorming → 設計確定（2026-08-30〜31）
 - [x] ADR-0120 起草・確定前レビュー（フル 8 巡＋差分確認 1 巡＋機械検証・実質収束・設計縮小 2 回）・Proposed でコミット `55d199d`（2026-08-31 完了）
+- [x] 実装計画の作成・確定前レビュー・確定（`docs/working/plans/2026-08-31-adr-0120-stratified-review-implementation.md`。1 体 4 観点兼務＝ADR-0120 新既定の先行適用 → 差分確認 1 巡 → 機械検証で実質収束。レビュー採用で ADR-0120 実装対象へ「根拠と世代」1 項目追記〈未コミット・plan Task 9 で同梱〉）（2026-08-31 完了）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の作成（superpowers:writing-plans）
-  - 状態: 未着手。設計は ADR-0120 で確定済み（実装対象一覧は同 ADR Consequences が正）
-  - 残り: 計画作成直前に `skills/start-work/references/plan-deviation-defaults.md` を読む（ADR-0119）→ writing-plans → plan 確定点で確定前レビュー提示 → 実装
+- [ ] **現在の作業**: feature ブランチの完了処理（superpowers:finishing-a-development-branch。直前に `skills/start-work/references/merge-practice.md` を読む）
+  - 状態: 実装・検証・ADR-0120 Accepted 昇格まで完了（コミット `d9b28d9`＋昇格コミット）
+  - 残り: マージ方式確認 → master へマージ → マージ後に retrospective（AGENTS.md の起動規範）→ handoff cycle-reset
 
 ## 未着手のタスク
 
-- [ ] 実装（skills/pre-finalization-review・session-handoff・spec 2026-08-05・ADR 注記 4 本。執行点 4 手順・version bump 0.1.15→次版）
-- [ ] Accepted 昇格時: Issue-0103 close・Issue-0114 検討状況追記
+（なし）
 
 ## 既知のブロッカー・懸念
 
-- master ハンドオフ（`docs/working/handoff/master.md`）の未コミット更新（push 記録）が作業ツリーに残っている。次のコミット時に pathspec 指定で同時にコミットする
 - `docs/inbox/` 未整理 3 件＋`docs/conversation_log.md` は未追跡のまま（ユーザーが手動移動予定。`git add <ディレクトリ>` で巻き込まない）
 
 ## Post ラッパー消化記録
@@ -46,12 +45,14 @@ Issue-0114（品質・設計投資の限界効用の実測に基づく、レビ�
 
 - 2026-08-31 ADR-0120 設計確定・spec 確定点 (c) 通過（コミット `55d199d`）: ADR=0120（Proposed でコミット） / worklog=`MakeAiInstructions-2026-08-31-01` / review=フル実施（claude-opus-5・8 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-08-31 セッション終了処理: ADR=なし（終了処理のみ） / worklog=`MakeAiInstructions-2026-08-31-02`（規範変更時の全記載箇所の同期漏れ 2 回の delta）
+- 2026-08-31 実装計画の作成・確定・plan 確定点通過: ADR=0120（実装対象へ「根拠と世代」1 項目追記・Proposed 維持） / worklog=`MakeAiInstructions-2026-08-31-03` / review=フル実施（claude-opus-5・1 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
+- 2026-08-31 実装完了（コミット `d9b28d9`・全 9 タスク検証一致・逸脱ゼロ）・ADR-0120 Accepted 昇格: ADR=0120（Accepted。Issue-0103 close・Issue-0114 対策範囲追記） / worklog=棄却（delta なし。実装は plan 逐語どおり・昇格は既存手順どおり） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本ハンドオフ → ADR-0120（設計の正本。実装対象一覧は Consequences）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:writing-plans` で実装計画作成（出力先は `docs/working/plans/`。**着手直前に `skills/start-work/references/plan-deviation-defaults.md` を読み、計画へ宣言欄を置く**〈ADR-0119〉）
-3. 留意点: plan 確定点で確定前レビュー提示（当該 plan は ADR-0120 の写像＝現行規範では推奨判定が偽の見込み。ADR-0120 設計の自己適用も判断材料に）・配布対象変更時は執行点 4 手順＋version bump（現行 0.1.15）・規範文の変更時は同内容の全記載箇所を先に grep 列挙（worklog `-02` の教訓）
+1. 最初に確認すべきファイル: 本ハンドオフ → ADR-0120（Accepted・実装済み）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本ハンドオフを read）→ `superpowers:finishing-a-development-branch`（**直前に `skills/start-work/references/merge-practice.md` を読む**）→ master へマージ → `retrospective` → `session-handoff` cycle-reset
+3. 留意点: マージ後の retrospective 起動は AGENTS.md「検証」節の規範（スキル側に自動起動なし）・未追跡の inbox 3 件と conversation_log.md を巻き込まない
 
 ## 重要な意思決定の履歴
 

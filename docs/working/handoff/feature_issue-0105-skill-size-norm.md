@@ -1,9 +1,9 @@
 # Handoff: SKILL.md サイズ・分割規範の設計（Issue-0105）＋ merge-practice 導入文重複の解消（Issue-0111）
 
 - **Branch**: feature/issue-0105-skill-size-norm
-- **Last Updated**: 2026-09-01 07:10 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 新規開発・改修/実装計画を確定（plan 確定点 通過・実質収束）。次は実装工程の型を選んで実装へ
+- **Last Updated**: 2026-09-01 12:40 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 新規開発・改修/実装計画の実行（executing-plans・前倒し型）。Task 8 まで完了、次は Task 9
 
 ## 作業の目的・背景
 
@@ -27,16 +27,20 @@
 - [x] ADR-0121 設計確定・spec 確定点 (c) 通過（2026-08-31。フル 5 巡＋差分確認 1 巡＋機械検証 1 回・実質収束。ドラフトを `5fe9afc` でコミット）
 - [x] 実装計画の作成（2026-09-01。`docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`。全 13 タスク・逸脱判断の宣言欄つき）
 - [x] plan 確定点 通過（2026-09-01。フル巡 3＋差分確認巡 2＋機械検証 1 回・実質収束）
+- [x] 第 5 巡の記録欠落を計画へ補完（2026-09-01。`dc0323c`。退避 r5 との差分と `2b4458f` の件数から復元）
+- [x] 実装工程の型を選択（2026-09-01。前倒し型＝タスク別独立レビューを置かず、`git diff` と逸脱記録行の自己検査＋格下げ安全弁）
+- [x] 計画 Task 1〜8 完了（2026-09-01。課題起票・サイズ警告機構・CONTRIBUTING 共通節と配線・分割本体・参照張り替え・ADR 注記 8 件・Issue-0111）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の実行（全 13 タスク）
-  - 状態: 計画は確定済み（plan 確定点 通過）。**実装工程の型（前倒し型 / タスク別独立レビュー往復）が未選択**で、これを決めてから実装系スキルへ delegate する
-  - 残り: Task 1（課題 2 件起票）から Task 13（close と Accepted 昇格）まで順に実行。実装着手の直前に `skills/start-work/references/plan-deviation-defaults.md` を読み直す
+- [ ] **現在の作業**: 実装計画の実行（全 13 タスク中 Task 9 から）
+  - 状態: Task 1〜8 完了（`d07efad` / `d38d43c` / `a25110b` / `64a9875` / `2404e6c` / `4bad0ad` / `bee637d`）。`skills/` の編集はすべて完了し、SKILL.md は 42,643B → 17,539B
+  - 残り: Task 9（Issue-0099 追記）→ Task 10（spec 02 追従）→ **Task 11（例外テーブル登録値のユーザー承認。AI 単独で完了させない）** → Task 12（bump 0.1.17・執行点 4 手順）→ Task 13（close・Accepted 昇格・サイクル全体整合検査）
 - [ ] **実装時の申し送り**
-  - **不採用 2 件あり**（実装時レビューへの引き継ぎ対象。`plan-deviation-defaults.md` 前処理 2. の突合対象）。所在は計画の「逸脱判断の既定」節と末尾「確定前レビューの記録」
+  - **不採用 2 件のうち 1 件（R1-a 該当性）は Task 5 で突合済み・不採用のまま維持**。残り 1 件（執行点手順 1 の解釈判断）の引き継ぎ先は Task 12 preamble の記述
   - 計画中の日付リテラルはすべて実装当日へ読み替える（規則は計画の宣言欄。歴史的事実の実測日は対象外）
-  - Accepted 済み ADR 本文の改訂: 予定あり（ADR-0116 Consequences へ存置判定＋改訂記録の計 2 行。計画 Task 7 Step 7-8・未記入）
+  - Accepted 済み ADR 本文の改訂: **実施済み**（ADR-0116 Consequences へ存置判定＋改訂記録の計 2 行。`4bad0ad`）
+  - Step 12-5 の Expected「0 件」は実体と食い違う（正当な入れ子括弧にもヒットする）。是正は Task 12 で適用する
   - 改訂前退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-31-adr-0121-plan/` の `r1`〜`r5`（掃除は Issue-0106 の管轄・手動判断）。spec 確定点分は `.../2026-08-31-adr-0121-spec/r1`〜`r6`
 
 ## 未着手のタスク
@@ -58,12 +62,13 @@
 - 2026-08-31 設計承認・ADR-0121 Proposed 起票・レビュー 1 巡目完了: ADR=0121 / worklog=棄却（計測誤り delta はレビュー工程が捕捉済み・スキル化余地なし）
 - 2026-08-31 ADR-0121 設計確定・spec 確定点 (c) 通過: ADR=0121 / worklog=棄却（パッチ増設の棘輪は前置 1 規範が発火済み・共通節誤判断はレビュー工程が捕捉済み） / review=フル実施（claude-opus-5・5 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
 - 2026-09-01 実装計画の確定・plan 確定点 通過: ADR=なし（ADR-0121 の決定範囲内の計画作成で新規の決定なし） / worklog=`MakeAiInstructions-2026-09-01-01` / review=フル実施（claude-fable-5・1 巡）＋フル実施（claude-sonnet-5・2 巡）＋差分再確認（claude-sonnet-5・2 巡）＋機械検証（1 回・実質収束）
+- 2026-09-01 実装 Task 1〜8 完了（skills/ 編集の完了）: ADR=なし（確定済み計画の実行で新規の決定なし。ADR-0116 の改訂は decision-log の改訂記録規定に従い同 ADR 本文へ記載） / worklog=`MakeAiInstructions-2026-09-01-03`・`MakeAiInstructions-2026-09-01-04`
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本 handoff → 実装計画 `docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`（末尾「確定前レビューの記録」に 4 巡分の経緯）→ 設計の正本 ADR-0121（`docs/records/decisions/0121-skill-md-size-trigger-and-split-norm.md`。コミット済み `5fe9afc`）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ 実装工程の型を選んでから実装系スキル（`superpowers:subagent-driven-development` または `executing-plans`）へ delegate。**delegate の直前に `skills/start-work/references/plan-deviation-defaults.md` を読み直す**（ADR-0119）
-3. 留意点: 計画は確定済み。実装時レビューの前処理で突合すべき**不採用 2 件**がある（所在は計画の宣言欄）。計画中の日付リテラルはすべて実装当日へ読み替える。レビュアーのモデルは作成側と変える（本サイクルの作成側は claude-opus-5、レビュアーは claude-sonnet-5 を使用）。規範推奨と実選択の乖離が 2 回あり Issue-0107 へ記録済み
+1. 最初に確認すべきファイル: 本 handoff → 実装計画 `docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`（Task 9 以降の未消化ステップと、各タスク末尾の逸脱記録行）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ `superpowers:executing-plans` を Task 9 から再開。**再開の直前に `skills/start-work/references/plan-deviation-defaults.md` と計画の宣言欄を読み直す**（ADR-0119。セッション再開時は再読が要る）
+3. 留意点: 工程型は前倒し型（タスク別独立レビューなし）で確定済み。各タスク完了時に `git diff` と逸脱記録行を突合し「逸脱突合: 一致／差分あり」を報告へ残す。**Task 11 は登録値のユーザー承認が必要で AI 単独で完了させない**。計画中の日付リテラルはすべて実装当日へ読み替える
 
 ## 重要な意思決定の履歴
 

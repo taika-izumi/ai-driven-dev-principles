@@ -1,9 +1,9 @@
 # Handoff: SKILL.md サイズ・分割規範の設計（Issue-0105）＋ merge-practice 導入文重複の解消（Issue-0111）
 
 - **Branch**: feature/issue-0105-skill-size-norm
-- **Last Updated**: 2026-08-31 22:16 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 新規開発・改修/設計確定済み（spec 確定点 (c) 通過）。次は writing-plans
+- **Last Updated**: 2026-09-01 01:40 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 新規開発・改修/実装計画を確定（plan 確定点 通過・実質収束）。次は実装工程の型を選んで実装へ
 
 ## 作業の目的・背景
 
@@ -13,6 +13,9 @@
 
 ## 関連ドキュメント
 
+- 設計の正本: ADR-0121（`docs/records/decisions/0121-skill-md-size-trigger-and-split-norm.md`。Proposed・コミット済み `5fe9afc`）
+- 実装計画: `docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`（全 13 タスク。plan 確定点の反復中で未確定）
+- 本サイクルの乖離記録: `docs/working/issues/flow/0107-iterative-review-recommendation-divergence/`（事例 12・一般観察 4 を追記）
 - 主課題: `docs/working/issues/flow/0105-skill-md-size-growth-no-norm.md`
 - 同梱課題: `docs/working/issues/system/0111-merge-practice-duplicate-intro.md`
 - 分割の先行実例: ADR-0115/0116（start-work の責務分割。34,676B → 14,456B）
@@ -21,22 +24,26 @@
 
 ## 完了済みタスク
 
-（なし）
+- [x] ADR-0121 設計確定・spec 確定点 (c) 通過（2026-08-31。フル 5 巡＋差分確認 1 巡＋機械検証 1 回・実質収束。ドラフトを `5fe9afc` でコミット）
+- [x] 実装計画の作成（2026-09-01。`docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`。全 13 タスク・逸脱判断の宣言欄つき）
+- [x] plan 確定点 通過（2026-09-01。フル巡 3＋差分確認巡 2＋機械検証 1 回・実質収束）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: ADR-0121 設計確定（spec 確定点 (c) 通過・実質収束）
-  - 状態: 確定前レビュー反復が終了（フル 5 巡＋差分確認 1 巡＋機械検証 1 回・実質収束）。ADR-0121 ドラフトをコミットし spec 確定点 (c) を通過
-  - 残り: writing-plans で実装計画を作成（分割実施・build-dist 改修・CONTRIBUTING 共通節・課題 2 件起票・0111 修正・執行点 4 手順・bump 0.1.17）→ plan 確定点の提示へ
-  - 改訂前退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-31-adr-0121-spec/r1`〜`r6`（掃除は Issue-0106 の管轄・手動判断）
-  - Accepted 済み ADR 本文の改訂: 予定あり（ADR-0116 Consequences へ存置判定＋改訂記録の計 2 行。実装時・未記入）
-  - 不採用 8 件の主要判断は ADR-0121 本文へ吸収済み（25KB 回帰 = CA4・基準ファイル/references 別閾値 = CA5・当初のシナリオ内配置 = CA7・テーブル上限/頻度別閾値/陳腐化検知の受容 = 決定 2〜3 と Consequences・0111/決定 6 の粒度判断 = Consequences/決定 6）。plan 作成時に CA・受容記述を実装時レビューの引き継ぎ材料として参照する
+- [ ] **現在の作業**: 実装計画の実行（全 13 タスク）
+  - 状態: 計画は確定済み（plan 確定点 通過）。**実装工程の型（前倒し型 / タスク別独立レビュー往復）が未選択**で、これを決めてから実装系スキルへ delegate する
+  - 残り: Task 1（課題 2 件起票）から Task 13（close と Accepted 昇格）まで順に実行。実装着手の直前に `skills/start-work/references/plan-deviation-defaults.md` を読み直す
+- [ ] **実装時の申し送り**
+  - **不採用 2 件あり**（実装時レビューへの引き継ぎ対象。`plan-deviation-defaults.md` 前処理 2. の突合対象）。所在は計画の「逸脱判断の既定」節と末尾「確定前レビューの記録」
+  - 計画中の日付リテラルはすべて実装当日へ読み替える（規則は計画の宣言欄。歴史的事実の実測日は対象外）
+  - Accepted 済み ADR 本文の改訂: 予定あり（ADR-0116 Consequences へ存置判定＋改訂記録の計 2 行。計画 Task 7 Step 7-8・未記入）
+  - 改訂前退避: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-08-31-adr-0121-plan/` の `r1`〜`r5`（掃除は Issue-0106 の管轄・手動判断）。spec 確定点分は `.../2026-08-31-adr-0121-spec/r1`〜`r6`
 
 ## 未着手のタスク
 
-- [ ] Issue-0105: brainstorming → （必要なら feature-block-design 判定）→ 設計確定 → ADR → 実装（規範の常設先の改定＋pre-finalization-review の分割判断）
-- [ ] Issue-0111: merge-practice.md 導入文の絞り込み修正（条文本体は触らない）
-- [ ] 配布反映: 執行点 4 手順＋version bump（0.1.16 → 次版）を 1 回で実施
+- [ ] 実装計画の実行（全 13 タスク）。実装工程の型（前倒し型 / タスク別独立レビュー往復）は plan 確定後にユーザーが選ぶ
+- [ ] 配布反映: 執行点 4 手順＋version bump 0.1.16 → 0.1.17 を 1 回で実施（計画 Task 12。Issue-0111 同梱）
+- [ ] Issue-0105 / Issue-0111 の close と ADR-0121 の Accepted 昇格（計画 Task 13。サイクル全体整合検査・粒度の点検を含む）
 
 ## 既知のブロッカー・懸念
 
@@ -50,12 +57,13 @@
 
 - 2026-08-31 設計承認・ADR-0121 Proposed 起票・レビュー 1 巡目完了: ADR=0121 / worklog=棄却（計測誤り delta はレビュー工程が捕捉済み・スキル化余地なし）
 - 2026-08-31 ADR-0121 設計確定・spec 確定点 (c) 通過: ADR=0121 / worklog=棄却（パッチ増設の棘輪は前置 1 規範が発火済み・共通節誤判断はレビュー工程が捕捉済み） / review=フル実施（claude-opus-5・5 巡）＋差分再確認（claude-opus-5・1 巡）＋機械検証（1 回・実質収束）
+- 2026-09-01 実装計画の確定・plan 確定点 通過: ADR=なし（ADR-0121 の決定範囲内の計画作成で新規の決定なし） / worklog=`MakeAiInstructions-2026-09-01-01` / review=フル実施（claude-fable-5・1 巡）＋フル実施（claude-sonnet-5・2 巡）＋差分再確認（claude-sonnet-5・2 巡）＋機械検証（1 回・実質収束）
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本 handoff と ADR-0121（`docs/records/decisions/0121-skill-md-size-trigger-and-split-norm.md`。設計の正本・コミット済み `5fe9afc`）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ `superpowers:writing-plans` で実装計画作成（出力先は `docs/working/plans/`）。**作成直前に `skills/start-work/references/plan-deviation-defaults.md` を読み、計画へ逸脱判断の宣言欄を置く**（ADR-0119）
-3. 留意点: plan 確定点はレビュー済み上流（ADR-0121・実質収束）からの写像通常型 → 初回体数の既定は 1 体 4 観点兼務。決定 5 の張り替え (a)〜(e) は plan 作成時に全数走査で確定。配布反映は執行点 4 手順＋bump 0.1.17 を 1 回（Issue-0111 同梱）。session-handoff/decision-log の課題 2 件起票と ADR-0116 追記 2 行・Issue-0099/0105 の記録類更新も plan のタスクに含める
+1. 最初に確認すべきファイル: 本 handoff → 実装計画 `docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`（末尾「確定前レビューの記録」に 4 巡分の経緯）→ 設計の正本 ADR-0121（`docs/records/decisions/0121-skill-md-size-trigger-and-split-norm.md`。コミット済み `5fe9afc`）
+2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ 実装工程の型を選んでから実装系スキル（`superpowers:subagent-driven-development` または `executing-plans`）へ delegate。**delegate の直前に `skills/start-work/references/plan-deviation-defaults.md` を読み直す**（ADR-0119）
+3. 留意点: 計画は確定済み。実装時レビューの前処理で突合すべき**不採用 2 件**がある（所在は計画の宣言欄）。計画中の日付リテラルはすべて実装当日へ読み替える。レビュアーのモデルは作成側と変える（本サイクルの作成側は claude-opus-5、レビュアーは claude-sonnet-5 を使用）。規範推奨と実選択の乖離が 2 回あり Issue-0107 へ記録済み
 
 ## 重要な意思決定の履歴
 

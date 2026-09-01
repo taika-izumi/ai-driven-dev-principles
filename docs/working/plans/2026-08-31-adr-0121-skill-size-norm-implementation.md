@@ -1357,6 +1357,8 @@ Expected: 両ファイルとも 10000 未満（課題管理定義の「追記時
 git add docs/records/decisions docs/working/issues && git commit -m "adr: 0121 Accepted 昇格 - Issue-0105/0111 close・サイクル全体整合検査実施"
 ```
 
+逸脱記録: 機械的な適応 / 採用 / 日付リテラルの一般規定（宣言欄）、Issue-0105・0111 の `Closed` と検討状況の追記行の日付を 2026-08-31 から実装当日 2026-09-01 へ読み替え、ADR-0121 の `Date` と Issue-0105 本文の 2026-08-31 実測記述は歴史的事実のため据え置き
+
 ---
 
 ## 完了後の次手

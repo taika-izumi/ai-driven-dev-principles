@@ -1,6 +1,6 @@
 # ADR-0121: SKILL.md の肥大は build-dist のサイズ警告で検知し、分割判断の型と例外テーブルで制御する（ADR-0116 境界宣言は存置）
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-08-31
 
 ## Context

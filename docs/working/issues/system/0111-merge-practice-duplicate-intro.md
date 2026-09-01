@@ -1,7 +1,8 @@
 # Issue-0111: merge-practice.md 冒頭の導入文が移設条文の書き出しと重複している
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-08-29
+- **Closed**: 2026-09-01
 - **起票元**: `retrospectives/system/2026-08-29-start-work-responsibility-split.md` 課題#1
 - **関連**: ADR-0116（責務帰属による移設）、`skills/start-work/references/merge-practice.md`
 
@@ -12,7 +13,8 @@
 ## 検討状況
 
 - 2026-08-29: 起票。対策の着手はユーザー判断（軽微修正。配布対象ソースのため執行点 4 手順・version bump の対象）
+- 2026-09-01: ADR-0121 のサイクルへ同梱して修正（導入文を発火点の説明へ絞り込み、移設条文本体は無改変。執行点 4 手順と version bump 0.1.17 を共有）
 
 ## 結論
 
-（open）
+ADR-0121 のサイクルで同梱修正。

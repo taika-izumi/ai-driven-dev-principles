@@ -1,9 +1,9 @@
 # Handoff: SKILL.md サイズ・分割規範の設計（Issue-0105）＋ merge-practice 導入文重複の解消（Issue-0111）
 
 - **Branch**: feature/issue-0105-skill-size-norm
-- **Last Updated**: 2026-09-01 12:40 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 新規開発・改修/実装計画の実行（executing-plans・前倒し型）。Task 8 まで完了、次は Task 9
+- **Last Updated**: 2026-09-01 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: サイクル完了。master へ `--no-ff` で取り込み（マージコミット `2accc29`）・push 済み。retrospective と cycle-reset は `master.md` 側で実施済み
 
 ## 作業の目的・背景
 
@@ -66,9 +66,9 @@
 
 ## 次セッション開始時のアクション
 
-1. 最初に確認すべきファイル: 本 handoff → 実装計画 `docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`（Task 9 以降の未消化ステップと、各タスク末尾の逸脱記録行）
-2. 最初に実行すべきコマンド/スキル: `start-work`（Phase 0 で本 handoff を read）→ `superpowers:executing-plans` を Task 9 から再開。**再開の直前に `skills/start-work/references/plan-deviation-defaults.md` と計画の宣言欄を読み直す**（ADR-0119。セッション再開時は再読が要る）
-3. 留意点: 工程型は前倒し型（タスク別独立レビューなし）で確定済み。各タスク完了時に `git diff` と逸脱記録行を突合し「逸脱突合: 一致／差分あり」を報告へ残す。**Task 11 は登録値のユーザー承認が必要で AI 単独で完了させない**。計画中の日付リテラルはすべて実装当日へ読み替える
+1. 本 handoff は役目を終えた（`completed`）。次サイクルの起点は `docs/working/handoff/master.md`
+2. 本サイクルの経緯を追う場合: 実装計画 `docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`（各タスク末尾の逸脱記録行 11 件と末尾「確定前レビューの記録」5 巡分）→ 振り返り `docs/records/retrospectives/system/2026-09-01-adr-0121-skill-size-norm.md`
+3. 留意点: 残余の分割候補は Issue-0115 / Issue-0116 が追跡する（例外テーブルへ暫定登録済み）
 
 ## 重要な意思決定の履歴
 

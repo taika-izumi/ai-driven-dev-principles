@@ -1,7 +1,7 @@
-# Handoff: 品質投資の層別既定サイクル完了・次サイクル待ち
+# Handoff: SKILL.md サイズ・分割規範サイクル完了・次サイクル待ち
 
-- **Branch**: master（feature/quality-investment-stratified-defaults を --no-ff で取り込み。マージコミット `7afdd66`）
-- **Last Updated**: 2026-08-31 (Asia/Tokyo)
+- **Branch**: master（feature/issue-0105-skill-size-norm を --no-ff で取り込み。マージコミット `2accc29`）
+- **Last Updated**: 2026-09-01 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: サイクル完了（retrospective・cycle-reset 済み）。次サイクル着手はユーザー判断
 
@@ -9,15 +9,15 @@
 
 本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AI駆動開発ガイドライン（5原則 + スキル群 + ADR。AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系）を整備するプロジェクト。
 
-**直近サイクル（2026-08-30〜31: レビュー・品質投資の層別既定再設計＋反復コスト予算）**: Issue-0114/0103 を合流し ADR-0120 を設計・実装（Accepted・plugin 0.1.16・Issue-0103 close）。確定前レビューへ**成果物の 2 型分類**（規範改定型／通常型・確定点到達時に凍結・提示へ型と体数既定を明示）、**初回フル巡の体数の型別既定**（レビュー済み上流からの写像通常型に限り 1 体 4 観点兼務）、**通算巡数の分布外検知**（通常型 4 巡・規範改定型 8 巡で発火時注記 2 点の提示義務。上限ではない）を常設し、session-handoff の反復継続記載へ独立項目「成果物の型」を追加。plan 確定点で新既定（1 体兼務）を先行適用し Critical 2 ほかを検出（機能実測 2 例目）。逸脱 0・整合検査（5 観点）指摘なし。retrospective: `docs/records/retrospectives/system/2026-08-31-quality-investment-stratified-defaults.md`。次サイクル着手はユーザー判断待ち。
+**直近サイクル（2026-08-31〜09-01: SKILL.md のサイズ・分割規範の導入）**: Issue-0105 を主・Issue-0111 を同梱として ADR-0121 を設計・実装（Accepted・plugin 0.1.17・両課題 close）。`build-dist.ps1` へ **SKILL.md のサイズ計測**（目安値 20KB・例外テーブル・非ブロック警告・通常実行と `-Check` の両モード）を組み込み、CONTRIBUTING へ**全シナリオ共通節「SKILL.md のサイズと分割」**を新設して 5 シナリオへ配線（分割判断は 責務帰属型 → references 型 → 例外登録 の順）。本サイクルの適用として pre-finalization-review を references 型で分割（42,643B → 17,539B）。実装は前倒し型で完走し逸脱記録 8 行・格下げ発火 0・整合検査（5 観点）指摘なし。retrospective: `docs/records/retrospectives/system/2026-09-01-adr-0121-skill-size-norm.md`。次サイクル着手はユーザー判断待ち。
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 56 件。2026-08-31 実測: close 1〈0103〉・新設 0。Issue-0072/0105/0107/0114 へ検討状況・事例追記）
+- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（open 計 56 件。2026-09-01 実測: close 2〈0105・0111〉・新設 2〈0115・0116〉。Issue-0073/0100/0106/0113 へ検討状況追記）
 - 課題管理の運用規範の正本: `docs/overview/issue-management.md`（課題管理定義）
-- 直近サイクルの決定: ADR-0120（設計文書兼用・spec 確定点 (c) 型のため設計 spec なし）。retrospective: `docs/records/retrospectives/system/2026-08-31-quality-investment-stratified-defaults.md`（system のみ）。実装 plan: `docs/working/plans/2026-08-31-adr-0120-stratified-review-implementation.md`
-- ADR インデックス: `docs/records/decisions/README.md`（0001〜0120。Rejected 3 件）
-- 記法規約と執行点: `CONTRIBUTING.md`「全シナリオ共通: 配布対象ソースの記法規約」
+- 直近サイクルの決定: ADR-0121（設計文書兼用・spec 確定点 (c) 型のため設計 spec なし）。retrospective: `docs/records/retrospectives/system/2026-09-01-adr-0121-skill-size-norm.md`（system のみ）。実装 plan: `docs/working/plans/2026-08-31-adr-0121-skill-size-norm-implementation.md`
+- ADR インデックス: `docs/records/decisions/README.md`（0001〜0121。Rejected 3 件）
+- 記法規約と執行点／SKILL.md のサイズと分割: `CONTRIBUTING.md` の各「全シナリオ共通」節
 - worklog スキーマ正典: `skills/worklog-record/references/store-format.md`（v2）
 - 原則: `docs/overview/principles.md` / **Layer 2: `AGENTS.md`（`CLAUDE.md` は `@AGENTS.md` の 1 行）** / 拡張ルール: `CONTRIBUTING.md`
 - PowerShell / .NET API の落とし穴集: `docs/reference/powershell-pitfalls.md`
@@ -34,15 +34,15 @@
 
 バックログは `docs/working/issues/README.md` に一元化。次サイクルの候補として目安を示す:
 
-1. [ ] **Issue-0114 残余射程**（flow）: レビュー対象からの層の除外・変異検査・実装時レビュー深度の既定・「コードを含む計画」の独立型層別・サイクル通算の予算（ADR-0120 Decision 4 が明示的に残した射程。Issue-0103 は close 済み）
-2. [ ] **Issue-0107**（flow）: 反復レビューの推奨規範の乖離（事例 11 まで蓄積。事例 11 = 2 段型が「新規の規範文追加」の出所〈レビュー済み正本からの写しか〉を判定材料に持たない粗さの実測）
-3. [ ] **Issue-0113 / 0112**（flow）: 実装工程 2 型の使い分け基準（LFA#0096 委譲済み。ADR-0119 が安全弁側を既定化し、選定基準側が残り） / 多層レビューの役割分担指針（LFA#0043 委譲済み）
-4. [ ] **Issue-0109**（flow）: Layer 3 の退行確認がマージ・push 後にしか実行できない。プレフライト手段の設計
-5. [ ] **Issue-0108**（system）: `build-dist.ps1` の見送り指摘 4 群（C0 制御文字・`.agents/` の stale 未検出・保守性・1 要素配列の素通り）。同ファイルを次に触るサイクルでまとめて処理するのが自然
-6. [ ] **Issue-0111**（system）: merge-practice.md 冒頭の導入文重複（軽微。配布対象のため執行点・version bump 対象。他の配布物修正と同サイクルが自然）
-7. [ ] **Issue-0102**（flow）: マージ後の cycle-reset の適用先 handoff の明示配線（応急規範は 6 サイクル連続で機能。恒久対策未着手）
-8. [ ] **Issue-0095 / 0073 / 0056**（flow）: 計画の検証期待値の突合・陳腐化・実行可能性。3 件同時対策が前提（0073 は累計 9 件目を追記済み。採否側は ADR-0119 で既定化、検出側が未対策）
-9. [ ] **Issue-0101 / 0100 / 0104 / 0105 / 0106**（flow）: 旧設計仕様書の図示乖離 / 配線行の可変数値 / R1-a 型の機械検出 / SKILL.md サイズ規範 / 退避領域の掃除規定
+1. [ ] **Issue-0115 / 0116**（flow）: session-handoff 31,169B・decision-log 26,837B の分割。ADR-0121 決定 5 が本サイクルの範囲外として送った残余で、例外テーブルへ暫定登録済み。分割の型は 責務帰属型 → references 型 → 例外登録 の順で検討する
+2. [ ] **Issue-0114 残余射程**（flow）: レビュー対象からの層の除外・変異検査・実装時レビュー深度の既定・「コードを含む計画」の独立型層別・サイクル通算の予算（ADR-0120 Decision 4 が明示的に残した射程）
+3. [ ] **Issue-0107**（flow）: 反復レビューの推奨規範の乖離（事例 12・一般観察 4 まで蓄積。一般観察 4 = 骨格安定の判定が欠陥の由来〈設計の不安定さ か 書き手の記述ミス か〉を区別しない）
+4. [ ] **Issue-0113 / 0112**（flow）: 実装工程 2 型の使い分け基準（**前倒し型の完走実測 1 件を追記済み**。対照実験は未実施） / 多層レビューの役割分担指針
+5. [ ] **Issue-0109**（flow）: Layer 3 の退行確認がマージ・push 後にしか実行できない。プレフライト手段の設計
+6. [ ] **Issue-0108**（system）: `build-dist.ps1` の見送り指摘 4 群（C0 制御文字・`.agents/` の stale 未検出・保守性・1 要素配列の素通り）。同ファイルを次に触るサイクルでまとめて処理するのが自然
+7. [ ] **Issue-0102**（flow）: マージ後の cycle-reset の適用先 handoff の明示配線（応急規範は 7 サイクル連続で機能。恒久対策未着手）
+8. [ ] **Issue-0095 / 0073 / 0056**（flow）: 計画の検証期待値の突合・陳腐化・実行可能性。3 件同時対策が前提（0073 は累計 10 件目を追記済み。**新種「検出器の性質を期待値へ写し損ねた」型で、確定前レビュー 5 巡でも検出されなかった**）
+9. [ ] **Issue-0101 / 0100 / 0104 / 0106**（flow）: 旧設計仕様書の図示乖離 / 配線行の可変数値（**ADR-0121 で同型を新規に作った実測を追記済み**）/ R1-a 型の機械検出 / 退避領域の掃除規定（**退避が記録復元の唯一の手段になった実測を追記済み**）
 10. [ ] **Issue-0097 / Issue-0099**（flow・待機）: 保留 44 行＋存置 5 行の再判定。発火はユーザーの棚卸し指示のみ
 11. [ ] その他の既存 backlog: Issue-0072（半角括弧・軽量）/ Issue-0089 / Issue-0075 / Issue-0090 / Issue-0045 / Issue-0008 / Issue-0070/0071/0077 ほか低優先課題群 / Issue-0028（v2 テーマ）
 
@@ -52,48 +52,49 @@
 - **既存プロジェクトの移行手順は README の「既存プロジェクトを AGENTS.md 構成へ移行する」節**。template を再コピーする前に固有指示を `AGENTS.md` へ退避しないと消える。未移行プロジェクトを検知する機構は無い（ADR-0114 で受容）
 - **配布元が `dist/` へ切り替わっている**（ADR-0082）。`skills/` を編集しただけでは動くスキルは変わらない。`scripts/build-dist.ps1` で再生成し、生成物も同じコミットへ。**ルートの `.agents/plugins/marketplace.json` も生成物**（手編集しない）。手順は `CONTRIBUTING.md` の執行点（4 手順）
 - **規約に適合していても配布物が壊れる型がある**（ADR-0084）。生成後の配布物を読む工程を別に置くこと。R1-a 型の機械検出は Issue-0104
+- **SKILL.md のサイズ警告が稼働開始**（ADR-0121）。`skills/` を変更するサイクルでは `build-dist.ps1` 実行時に自動で計測される（非ブロック警告）。発火したら CONTRIBUTING「全シナリオ共通: SKILL.md のサイズと分割」の判断（責務帰属型 → references 型 → 例外登録）へ進む。例外テーブルの現行登録は session-handoff 31169・decision-log 26837 の 2 行（分割待ちの暫定行。根拠は Issue-0115/0116）。**`skills/retrospective/SKILL.md` は 19,042B で、次の追記でほぼ確実に発火する**（ADR-0121 Consequences が予告。その際の判断は「凝集 → 例外登録」1 回で足りる見込み）
 - **Layer 3 の退行確認はマージ・push 後にしか実行できない**（Issue-0109）。マーケットプレイス登録が GitHub 経由のため、feature ブランチの内容は `marketplace update` に降りてこない
 - **質問はテキストの番号付き選択肢のみ**（ADR-0109）。構造化質問ツールは全ツール・全モデルで使用しない
-- **確定前レビューの提示規則＋指摘反映後の反復規範**（ADR-0080/0107）・**サイクル全体整合検査**（ADR-0092/0099）・**新設の評価可能性**（ADR-0102）・**Accepted 後改訂の改訂記録規定**（ADR-0108）が稼働中。確定点で `review=`、Accepted 昇格で `cyclecheck=` を消化記録へ。**提示規則・反復・停止判定の正本は ADR-0116 により pre-finalization-review（提示操作）へ、マージ方式確認の正本は `skills/start-work/references/merge-practice.md` へ移設済み**（start-work は発火点ポインタのみ）。**確定前レビューは ADR-0117 により 4 観点（敵対的・実装整合性・仕様適合・前提実在）・体数 1〜4 体。集約手順 5 は指摘 1 件ずつの前提検査、3-2 (b) の「なし」記載は探索先併記が必須**。**ADR-0120 により確定点は 2 型分類（規範改定型／通常型。到達時に凍結・提示へ型と体数既定を明示）——初回フル巡の体数は規範改定型 = 観点分離 4 体・写像通常型 = 1 体 4 観点兼務（迷えば観点分離）、反復提示には通算巡数の分布外検知（通常型 4 巡・規範改定型 8 巡で発火時注記 2 点。発火は提示であり上限ではない）が常設**
+- **確定前レビューの提示規則＋指摘反映後の反復規範**（ADR-0080/0107）・**サイクル全体整合検査**（ADR-0092/0099）・**新設の評価可能性**（ADR-0102）・**Accepted 後改訂の改訂記録規定**（ADR-0108）が稼働中。確定点で `review=`、Accepted 昇格で `cyclecheck=` を消化記録へ。**ADR-0121 により pre-finalization-review は 4 ファイル構成**——提示規則・観点と初回体数・レビューの狙いは `SKILL.md`、反復規範と実施方式は `references/iteration-norms.md`、実施手順は `references/review-procedure.md`、適用例と根拠は `references/examples-and-evidence.md`（所在の一覧は SKILL.md「参照ファイル」節が正）。マージ方式確認の正本は `skills/start-work/references/merge-practice.md`
+- **確定前レビューは 4 観点**（敵対的・実装整合性・仕様適合・前提実在。ADR-0117）・**体数 1〜4 体**。集約手順は指摘 1 件ずつの前提検査、3-2 (b) の「なし」記載は探索先併記が必須。**ADR-0120 により確定点は 2 型分類**（規範改定型／通常型。到達時に凍結）——初回フル巡は規範改定型 = 観点分離 4 体・写像通常型 = 1 体 4 観点兼務（迷えば観点分離）、反復提示には通算巡数の分布外検知（通常型 4 巡・規範改定型 8 巡。発火は提示であり上限ではない）
 - **計画逸脱判断の既定が稼働中**（ADR-0119。正本 = `skills/start-work/references/plan-deviation-defaults.md`）: 計画作成・実装着手の直前に正本を読み、計画に「逸脱判断の既定」宣言欄を置く。実装中の指摘は型分類（4 型）→ 採用基準 (i)(ii) で裁き、**全帰結を計画ファイルへ行頭 `逸脱記録:` の 1 行で残す**。前倒し型・インライン TDD ではタスク完了報告に「逸脱突合:」1 行。委譲時は注入項目（subagent-dispatch 手順 7）を確認
 - **Issue 運用の規範が稼働中**（ADR-0095〜0098): 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須
-- **リモート同期**: 2026-08-31 のサイクル完了・finalize コミットまで push 済み（0.1.16 は配布へ反映済み）。各ツールのローカルキャッシュへの反映は利用側の更新コマンド実行が必要（README「スキルのバージョンアップ」参照。ユーザーが実行）
+- **リモート同期**: 2026-09-01 のマージコミット `2accc29` まで push 済み（0.1.17 は配布へ反映済み）。各ツールのローカルキャッシュへの反映は利用側の更新コマンド実行が必要（README「スキルのバージョンアップ」参照。ユーザーが実行）
 - **inbox に未整理 3 件が滞留**: `docs/inbox/` の 3 ファイル（いずれも未追跡）。`docs/conversation_log.md` も未追跡のまま。**ユーザーが手動移動予定のため organize-inbox の提案は不要**。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
 - **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。配布版は 0.1.15）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
 - **LoopForAlpha リポジトリに委譲済み追記 4 ファイルが未コミットで残置**（`feature/stage7-part2-design` の作業ツリー上。ユーザーが LFA セッションで LFA 側の流儀によりコミット予定。本リポジトリからはコミットしない。ADR-0118）
 - **Copilot CLI は未契約**のため、同ツール向けの検証（Layer 2・Layer 3 の退行確認）が恒久的に実行できない。3 ツール対応を謳う以上、片方が検証不能なまま続く
-- **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` の残置が増加**（直下の旧世代群・`MakeAiInstructions/2026-08-29-premise-existence-*`・`2026-08-30-plan-deviation-*` に加え、本サイクル分 = `MakeAiInstructions/2026-08-31-adr-0120-plan/r1〜r3`）。掃除規定は Issue-0106。当面は手動判断
-- **中央ストアの現状**: 本 repo 120 件（〜`MakeAiInstructions-2026-08-31-05`。2026-08-31 実測）。処理済み台帳へ LoopForAlpha 5 件（merged×3・deferred×2）を記入済み
+- **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` の残置が 15 ディレクトリへ増加**（本サイクル分 = `MakeAiInstructions/2026-08-31-adr-0121-plan/r1〜r5`・`2026-08-31-adr-0121-spec/r1〜r6`）。掃除規定は Issue-0106。**本サイクルで退避が記録復元の唯一の手段になった実測があるため、削除の向きに寄せる前に同課題の追記を読むこと**。当面は手動判断
+- **中央ストアの現状**: 本 repo 125 件（〜`MakeAiInstructions-2026-09-01-05`。2026-09-01 実測）。処理済み台帳へ LoopForAlpha 5 件（merged×3・deferred×2）を記入済み
 - **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
 - **PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**
+- **この環境に Python は無い**（実測: exit 49）。一括編集は Edit ツールかシェルの heredoc で行う
 - ADR-0023 の留意（継続): GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
 
 ## Post ラッパー消化記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_quality-investment-stratified-defaults.md`）参照。
-
-- 2026-08-31 サイクル完了処理（マージ 7afdd66・retrospective・cycle-reset）: ADR=なし（完了処理と記録のみ） / worklog=棄却（delta なし。本サイクルの delta は `MakeAiInstructions-2026-08-31-03`〜`-05` で記録済み）
-- 2026-08-31 リモート同期・セッション終了処理（push `d9b28d9`〜`7afdd66`・配布 0.1.16 反映）: ADR=なし（承認済みアクションの実行のみ） / worklog=棄却（delta なし）
+マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_issue-0105-skill-size-norm.md`）参照。
 
 ## 次セッション開始時のアクション
 
-1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。リモート同期は 2026-08-31 の finalize コミットまで完了済み（配布 0.1.16 反映済み）
-2. **本サイクルの新規起票は 0 件・close 1 件**（Issue-0103。Issue-0072/0105/0107/0114 へ検討状況・事例を追記済み。着手はユーザー判断）。優先順の目安は「未着手のタスク」参照
+1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。リモート同期はマージコミット `2accc29` まで完了済み（配布 0.1.17 反映済み）
+2. **本サイクルは新規起票 0 件・close 2 件・新設 2 件**（close: Issue-0105/0111。新設: Issue-0115/0116〈ADR-0121 決定 5 の残余〉。Issue-0073/0100/0106/0113 へ検討状況を追記済み。着手はユーザー判断）。優先順の目安は「未着手のタスク」参照。**次サイクルの自然な候補は Issue-0115/0116 の分割**（規範と機構が本サイクルで整い、例外テーブルの暫定行がその受け皿になっている）
 3. **留意点**:
    - master 直接作業は禁止。テーマごとに feature ブランチを切る
    - **Layer 2 へ固有指示を書くときは `AGENTS.md`**（`CLAUDE.md` はポインタのまま）
-   - **配布対象ソースを変更したら執行点 4 手順**（`CONTRIBUTING.md`）。スキル改定は version bump も必須（ADR-0090。現行 0.1.16）
+   - **配布対象ソースを変更したら執行点 4 手順**（`CONTRIBUTING.md`）。スキル改定は version bump も必須（ADR-0090。現行 0.1.17）
+   - **`skills/` を変更したら SKILL.md のサイズ警告に注意**（ADR-0121。発火時は共通節の分割判断へ）
    - **ガイドライン拡張時は過剰適合点検＋新設の評価可能性が必須**（ADR-0079/0099/0102）
-   - **確定点で確定前レビューを提示し、指摘反映後は反復提示**（ADR-0080/0107）。**Accepted 昇格前はサイクル全体整合検査**（ADR-0092/0099）。**Accepted 済み ADR 本文を改訂したら改訂記録規定**（ADR-0108）
+   - **確定点で確定前レビューを提示し、指摘反映後は反復提示**（ADR-0080/0107）。**反復の最終巡まで記録節へ書き切ってから確定コミットする**（本サイクルで第 5 巡の記録欠落が発生。復元は退避頼みだった）。**Accepted 昇格前はサイクル全体整合検査**（ADR-0092/0099）。**Accepted 済み ADR 本文を改訂したら改訂記録規定**（ADR-0108）
    - **計画作成・実装着手の直前に `references/plan-deviation-defaults.md` を読み、計画へ宣言欄・実装中は逸脱記録行**（ADR-0119。稼働規範の詳細は「既知のブロッカー・懸念」参照）
-   - サブエージェント委譲時は `subagent-dispatch`（判定行必須）。**再委譲・再レビューでは前提値を委譲直前に再実測して渡す**。**数値・ファイルパス・名称は書く直前に実測する**（Issue-0095 の教訓）
-   - **計画の検証コマンドは書いたら実行してから確定する**（本サイクルで同一セッション内に 2 度再発。worklog `-02` / `-10`）
-   - **インデックス・台帳へ行を追加する前に挿入位置を実体確認**（表がファイル末尾にあるとは限らない。本サイクルで再発。worklog `-24`）
+   - サブエージェント委譲時は `subagent-dispatch`（判定行必須）。**再委譲・再レビューでは前提値を委譲直前に再実測して渡す**。**数値・ファイルパス・名称は書く直前に実測する**
+   - **計画の検証コマンドは書いたら実行してから確定する**。**検出器の近似が正当なヒットを拾わないかも配布物側で実測する**（本サイクルの Issue-0073 追記）
+   - **worklog の id 採番・検証は JSON パースで行う**（素の grep はストアの整形差で 0 件を返す。worklog `-02` / `-05`）
    - Post ラッパーは1項目ずつ消し込み、結果を消化記録へ（ADR-0057）。worklog id は全体を書く
    - コミット前に `git status --short` と staged 確認。**コミットは pathspec 付きが安全**（Issue-0020）
    - ハンドオフの剪定は finalize で基準付き圧縮、サイクル完了時に cycle-reset（ADR-0075）。**cycle-reset の適用先は現在ブランチの handoff。feature 側は `completed` で閉じる**（Issue-0102 の応急規範）
 
 ## 重要な意思決定の履歴
 
-- ADR-0120: 確定前レビューの初回体数を成果物 2 型で層別し、通算巡数の分布外検知を反復提示に常設する（2026-08-31 Accepted）
-- （ADR-0001〜0119 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）
+- ADR-0121: SKILL.md の肥大は build-dist のサイズ警告で検知し、分割判断の型と例外テーブルで制御する（ADR-0116 境界宣言は存置）（2026-09-01 Accepted）
+- （ADR-0001〜0120 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）

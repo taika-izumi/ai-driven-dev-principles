@@ -75,6 +75,9 @@
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_issue-0105-skill-size-norm.md`）参照。
 
+- 2026-09-01 サイクル完了処理（マージ `2accc29`・retrospective・cycle-reset）: ADR=なし（完了処理と記録のみ） / worklog=`MakeAiInstructions-2026-09-01-05`
+- 2026-09-01 リモート同期・セッション終了処理（push `2accc29`・`037d18b`・配布 0.1.17 反映）: ADR=なし（承認済みアクションの実行のみ） / worklog=棄却（delta なし。時系列追記の順序ミス 1 件は ADR-0011 が既に定める規範への逸脱で記録ゲート (a) を満たさない）
+
 ## 次セッション開始時のアクション
 
 1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。リモート同期はマージコミット `2accc29` まで完了済み（配布 0.1.17 反映済み）

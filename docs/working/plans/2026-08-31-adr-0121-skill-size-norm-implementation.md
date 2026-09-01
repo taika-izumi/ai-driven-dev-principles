@@ -1239,13 +1239,17 @@ Expected: `sync-template exit=0`。`template.manifest` 記載ファイルを変�
 LANG=C.UTF-8 grep -nE "（[^）]*（|）に従い|\(\)|本リポジトリ|本 repo" dist/skills/pre-finalization-review/SKILL.md dist/skills/pre-finalization-review/references/*.md dist/skills/start-work/references/merge-practice.md
 ```
 
-Expected: 0 件（機械で拾える範囲の残骸がないこと）。**`LANG=C.UTF-8` の前置は必須** — 否定文字クラス `[^）]` はロケール未設定の環境でバイト単位に解釈され、検出力が大きく落ちる。実測（`skills/pre-finalization-review/SKILL.md` を対象）で **前置なし 1 件・前置あり 6 件**と差が出る。Step 6-7 の `-F` 版はロケール非依存だが、**本 Step の正規表現版は事情が異なるので混同しないこと**。**この grep は補助であり、目視での通読を省略しない** — 記法規約が挙げる 5 型のうち、書式例の実在の固有名と自己参照は grep では拾えない
+Expected: **除去残骸のヒットが 0 件**であること。本 grep の `（[^）]*（` は入れ子括弧を拾う近似であり、`「（推奨）」`・`「フルレビュー（4 観点）」`・`比較（コミット済みの成果物では \`git diff\`）` のような**正当な入れ子にもヒットする**（配布物側で実測 5 件）。したがってヒット行は 1 件ずつ「除去後に文法が破綻した残骸か否か」を判定し、正当な入れ子は不問とする（ヒット総数を 0 と期待しない）。**`LANG=C.UTF-8` の前置は必須** — 否定文字クラス `[^）]` はロケール未設定の環境でバイト単位に解釈され、検出力が大きく落ちる。実測（`skills/pre-finalization-review/SKILL.md` を対象）で **前置なし 1 件・前置あり 6 件**と差が出る。Step 6-7 の `-F` 版はロケール非依存だが、**本 Step の正規表現版は事情が異なるので混同しないこと**。**この grep は補助であり、目視での通読を省略しない** — 記法規約が挙げる 5 型のうち、書式例の実在の固有名と自己参照は grep では拾えない
 
 - [ ] **Step 12-6: コミット**
 
 ```bash
 git add .claude-plugin dist .agents/plugins/marketplace.json && git commit -m "chore: plugin version 0.1.17（ADR-0121 のサイズ警告・分割と Issue-0111 修正の配布反映）"
 ```
+
+逸脱記録: 事実誤り・期待値の陳腐化の訂正 / 採用 / Step 12-5 の Expected を「ヒット総数 0 件」から「除去残骸のヒットが 0 件（正当な入れ子括弧は不問）」へ訂正、実測は配布物 5 ファイルで 5 件ヒットし全件が `「（推奨）」` 等の正当な入れ子で除去残骸ゼロ、指摘の発生は Task 5 Step 5-14（同タスクにポインタ 1 行）
+
+逸脱記録: 対象外 / 不採用 / 前処理 2. の突合対象である第 3 巡の不採用 1 件（執行点手順 1 の解釈判断が Task 1・Task 13 の各コミット時点で参照されない）を実装後の実体で検査、計画は通しで実行され Step 12-3 の `sync-template.ps1 -Check` が exit=0 で一致を返したため前巡の不採用理由が覆っておらず不採用のまま維持
 
 ---
 

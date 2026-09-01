@@ -51,6 +51,7 @@
 - 根拠が単一プロジェクト・単一モデル世代（claude-fable-5）の実測 2 件であるため、他プロジェクト・他ランタイムでの一般化は保証されない。既存の退役規範（ADR-0073: 同型 delta が長期に現れなければ退役候補として提案）に本項目も乗る
 - 実装の同期対象は次のとおり（表だけ変えると数値・参照の食い違いが残るため列挙する）: `skills/subagent-dispatch/SKILL.md` の B 群表・判定行例・見出しの条件数・frontmatter description の「5 行」、スナップショット仕様書 `docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md` の B 群節（条件数・項目数・判定行例・表）、`docs/reference/powershell-pitfalls.md` の該当項の参照更新、`skills/pre-finalization-review/SKILL.md` 手順 4 の隔離条項（並列時限定の記述を本決定の該当条件への参照に更新）
 - 配布反映にはプラグインの version bump と `dist/` 再生成が必要（ADR-0090 / ADR-0082）。実装時は配布対象ソースの記法規約の執行点 4 手順を実施し、例示はプレースホルダで書く（ADR-0083）
+- **部分修正（ADR-0121）**: 同期対象が名指しする `skills/pre-finalization-review/SKILL.md` 手順 4 の隔離条項は、ADR-0121 決定 5 の references 型分割により `skills/pre-finalization-review/references/review-procedure.md` 手順 4 へ移った。条項の内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

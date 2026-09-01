@@ -42,6 +42,7 @@ Accepted 昇格後に**当該 ADR 自身の本文を書き換える改訂**（�
 - 悪い影響・リスク: 「決定内容を変えるか」の判定は AI の自己判定を経てユーザーが確認する運用になり、判定を誤ると決定変更が記録 1 行で流れる。常設の機械的監視は置かないため、検出はレビュー・棚卸し頼みになる（設計縮小による受容。観測されたら退役条件の強化側で判定基準を改める）
 - 実装対象: decision-log の改定（「ステータス変更」節への追記・「いつ使うか」への起動契機 1 行・再昇格関連 3 箇所の削除・整理〈Decision 最終箇条のとおり〉。配布対象ソース）と、pre-finalization-review・start-work へのポインタ各 1 行、**ADR-0092 への部分修正注記**（再昇格関連記述の削除。Status は Accepted 維持）。現行 spec の同期は `docs/current/specs/2026-04-12-meta-guidelines-design.md` の decision-log 更新トリガー節へ第 3 の経路（決定を変えない改訂 → Consequences へ改訂記録 1 行）を追記し、`docs/current/specs/2026-04-25-record-strengthening-design.md` の start-work Post 項目 1 の記述へ配線 (ii) の起動契機（意思決定の有無を問わない改訂記録規定の適用）を反映する。ADR-0107 の実装と同一サイクルで実施し、執行点 4 手順＋version bump は合流して 1 回でよい
 - 既存行は遡及改修しない: 部分修正形式（`- **部分修正（ADR-XXXX）**:` とその変種・現存 32 行）は別カテゴリとしてそのまま有効。ADR-0102 の既存改訂記録行（固定書式前の形）もそのまま残す（計数は前方一致 grep が拾う）。いずれも次にその ADR の当該行を触る機会に各カテゴリの固定書式へ揃えることを妨げない。Superseded 化に伴う既存改訂記録行の末尾句（「Status は Accepted のまま維持」）の書き換えも行わない（当該行は改訂時点の記録である）
+- **部分修正（ADR-0121）**: 実装対象が名指しする pre-finalization-review 手順 6 のポインタは、ADR-0121 決定 5 の references 型分割により `skills/pre-finalization-review/references/review-procedure.md` 手順 6 へ移った。改訂記録規定への配線内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

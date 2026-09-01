@@ -63,6 +63,7 @@ LoopForAlpha 側提案の 4 点を採用し、次のとおり実装する。
 - 改修完了後、worklog 中央ストアの処理済み台帳へ記入する。`LoopForAlpha-2026-08-29-01`/`-02`/`-03` は `adopted` → `merged` の 2 行（規約は `adopted` 先行を必須とせず単独 `merged` の先例もあるが、状態遷移の可読性のため 2 行を選ぶ。`ref` はリポジトリ修飾つきで `MakeAiInstructions:skills/pre-finalization-review` ほか統合先を指す）、`-04`/`-05` は `deferred`（`evidence_count: 1`。`-04` はスクリプト編集の機械検証手順、`-05` は提案書の時点資料化手順で、いずれも本改修のスコープ外・未スキル化のため）。`merged` 追記は通常 `worklog-skillify` の責務だが、本サイクルは worklog-extract を経由しない直接還流のため本サイクル内で記入する（読み側は最新レコードの outcome を採用する仕様のため互換）
 - 配布対象ソースの変更のため、plugin version bump（0.1.13 → 0.1.14）と執行点 4 手順（生成器実行・両 -Check・dist 同コミット・配布物目視）を実施する
 - **部分修正（ADR-0120）**: Decision 1「観点数の写像」の時点注記「4 体構成・1 体 4 観点兼務の実測は無い」は、両主張とも実測の反映により更新された（4 体側 = 規範改定型 spec 確定点の反復実測〈Issue-0107 事例 10〉、1 体兼務側 = 写像 plan の初回フル巡実測〈Issue-0103 検討状況 2026-08-30〉）。Consequences「費用が増える」の時点注記「4 体構成の実測は無い」も同様に更新して読む（規範改定型 spec 確定点で 4 体 ≈58〜69 万トークンの実測が得られた——見積り値の記載は据え置き）。あわせて初回フル巡の体数に成果物の型別既定（規範改定型 = 観点分離 4 体、レビュー済み上流からの写像通常型 = 1 体 4 観点兼務）が追加された。前提実在観点の常設・検査手順の骨格は現役のため、Status は Accepted のまま維持する
+- **部分修正（ADR-0121）**: 実装対象が名指しする `skills/pre-finalization-review/SKILL.md` の記載箇所のうち、手順 1 の前提実在観点の定義と手順 5 の前提検査は `skills/pre-finalization-review/references/review-procedure.md` へ、適用例「前提実在観点で特に疑う型」は `skills/pre-finalization-review/references/examples-and-evidence.md` へ、ADR-0121 決定 5 の references 型分割により移った。frontmatter description と提示規則の記載箇所は SKILL.md 本文に残る。観点の定義・前提検査の内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

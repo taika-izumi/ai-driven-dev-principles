@@ -32,7 +32,7 @@
 | [0077](system/0077-distribution-artifact-layout-inconsistent.md) | 2 つの配布物の置き場が非対称で、`dist` の名前が実態（プラグインルート）と合っていない | open | 2026-08-08 |
 | [0091](system/0091-completed-migration-spec-stale-after-split.md) | 完了済み移行 spec のひな形パス言及が課題管理定義の分離後と乖離している | open | 2026-08-15 |
 | [0108](system/0108-build-dist-review-deferred-findings-backlog.md) | build-dist.ps1 のコード品質レビューで採用を見送った指摘 4 群が未対応（条件付き backlog） | open | 2026-08-25 |
-| [0111](system/0111-merge-practice-duplicate-intro.md) | merge-practice.md 冒頭の導入文が移設条文の書き出しと重複している | open | 2026-08-29 |
+| [0111](system/0111-merge-practice-duplicate-intro.md) | merge-practice.md 冒頭の導入文が移設条文の書き出しと重複している | closed | 2026-08-29 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 
@@ -118,7 +118,7 @@
 | [0102](flow/0102-cycle-reset-handoff-target-ambiguous-after-merge.md) | マージ後の cycle-reset の適用先 handoff が暗黙で、マージ先ブランチの handoff が陳腐化する | open | 2026-08-18 |
 | [0103](flow/0103-iteration-cost-budget-guideline-missing.md) | 確定前レビュー反復に確定点あたりのコスト・巡数の目安（予算基準）が無い | closed | 2026-08-18 |
 | [0104](flow/0104-provenance-strip-grammar-breakage-not-machine-detected.md) | 識別子除去後の文法破綻（R1-a 型）を機械検出できない | open | 2026-08-18 |
-| [0105](flow/0105-skill-md-size-growth-no-norm.md) | SKILL.md のサイズ・分割規範が無い | open | 2026-08-18 |
+| [0105](flow/0105-skill-md-size-growth-no-norm.md) | SKILL.md のサイズ・分割規範が無い | closed | 2026-08-18 |
 | [0106](flow/0106-review-snapshot-area-no-naming-cleanup-rules.md) | 改訂前退避領域の命名規約・掃除規定が無い | open | 2026-08-18 |
 | [0107](flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md) | 反復レビューの推奨規範が状況要素を無視して推奨を決める（推奨と実選択の乖離記録） | open | 2026-08-25 |
 | [0109](flow/0109-layer3-regression-check-only-after-merge.md) | Layer 3 の退行確認が、マージ・push 後にしか実行できない | open | 2026-08-25 |
@@ -126,3 +126,5 @@
 | [0112](flow/0112-multilayer-review-role-separation-not-codified.md) | 多層レビューの役割分担指針が明文化されておらず、レビュー設計の再現性がコンテキスト依存（LoopForAlpha#Issue-0043 委譲） | open | 2026-08-30 |
 | [0113](flow/0113-implementation-process-type-selection-criteria/0113-implementation-process-type-selection-criteria.md) | 実装工程 2 型（タスク別独立レビュー往復 / 確定前レビューへの前倒し）の使い分け基準が未確立（LoopForAlpha#Issue-0096 委譲） | open | 2026-08-30 |
 | [0114](flow/0114-quality-investment-marginal-utility-and-stratified-defaults/0114-quality-investment-marginal-utility-and-stratified-defaults.md) | 品質・設計投資の限界効用を実測し、レビュー・検査の既定を層別に再設計する（LoopForAlpha#Issue-0117 委譲） | open | 2026-08-30 |
+| [0115](flow/0115-session-handoff-size-split-candidate.md) | session-handoff の SKILL.md が分割候補のまま暫定登録されている | open | 2026-09-01 |
+| [0116](flow/0116-decision-log-size-split-candidate.md) | decision-log の SKILL.md が分割候補のまま暫定登録されている | open | 2026-09-01 |

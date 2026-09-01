@@ -7,7 +7,7 @@
 
 ## 責務
 
-配布対象ソースを走査し、記法規約（ブロック 01）への適合を判定する。適合していれば出所識別子を除去した配布物を生成し、違反していれば違反箇所と違反した規約 ID を出力して非ゼロ終了する。生成物がソースから再生成した結果と一致するかも判定する。あわせてプラグイン定義の正本 2 ファイル（`.claude-plugin/plugin.json` / `.claude-plugin/marketplace.json`）の version 一致を検査し、Codex 向けマニフェスト 2 生成物を正本から導出する。
+配布対象ソースを走査し、記法規約（ブロック 01）への適合を判定する。適合していれば出所識別子を除去した配布物を生成し、違反していれば違反箇所と違反した規約 ID を出力して非ゼロ終了する。生成物がソースから再生成した結果と一致するかも判定する。あわせてプラグイン定義の正本 2 ファイル（`.claude-plugin/plugin.json` / `.claude-plugin/marketplace.json`）の version 一致を検査し、Codex 向けマニフェスト 2 生成物を正本から導出する。あわせて `skills/*/SKILL.md` のサイズを実測し、目安値または例外テーブルの承認済みサイズを超えていれば警告する（非ブロック。終了コードを変えない）。
 
 ## インターフェース
 
@@ -54,16 +54,18 @@ Codex 向けマーケットプレイスの生成は `plugins[].source` が**文�
 ### 標準出力
 
 ```
-[build-dist] Scanning 18 source files...
+[build-dist] Scanning 23 source files...
 [build-dist] Convention violations: 0
   ✓ skills/start-work/SKILL.md (28 identifiers removed)
   ✓ skills/session-handoff/SKILL.md (34 identifiers removed)
   ...
 [build-dist] Generating dist/ and root artifacts ...
-[build-dist] Done. 20 files written to dist/, 1 to repository root.
+[build-dist] Done. 25 files written to dist/, 1 to repository root.
 ```
 
 `✓` 行（ファイル別の除去数）は生成内容の組み立て時に出力するため、`Generating` 行より前に並び、書き込みを行わない `-Check` でも表示される。`Done.` の件数は 2 系統に分けて出す。`dist/` 側は `.claude-plugin/plugin.json` と `.codex-plugin/plugin.json` を含む書き出しファイルの総数、ルート側はホワイトリストの生成物件数である。
+
+SKILL.md のサイズ警告は**標準出力ではなく警告ストリーム**（`Write-Warning`）へ出す。上記の標準出力の並びには現れず、超過が 1 件も無ければ何も出力しない。警告は走査対象の収集直後・規約判定より前に評価されるため、`Scanning` 行の近傍に現れる。1 件の超過につき 2 行（本体と、スキルディレクトリ配下の全 md 合計の参考値）を出す。
 
 規約違反時（各違反は「位置と規約 ID」の行と「違反行の内容」の行の 2 行で出力する。規約 ID の定義はブロック 01 を参照）:
 
@@ -80,9 +82,9 @@ Codex 向けマーケットプレイスの生成は `plugins[].source` が**文�
 
 ### 1. 走査対象の決定
 
-配布対象ソースは計 27 ファイルで、走査は生成器ごとに分担する。
+配布対象ソースは計 32 ファイルで、走査は生成器ごとに分担する。
 
-- `scripts/build-dist.ps1`（本ブロック）: `skills/` 配下の全ファイル（18）
+- `scripts/build-dist.ps1`（本ブロック）: `skills/` 配下の全ファイル（23）
 - `scripts/sync-template.ps1`（ブロック 03）: `template.manifest` に記載されたファイル（6）と空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容）
 
 このほか `build-dist.ps1` は `.claude-plugin/plugin.json` と `.claude-plugin/marketplace.json` を読むが、これらは走査対象ではなく**生成の入力（正本）**である。
@@ -164,6 +166,17 @@ JSON は `ConvertTo-Json` ではなくテンプレート組み立てで出力す
 
 **ディレクトリ走査を伴う自己検査は `dist/` に限定する。** ルート直下の生成物に対しては、書き込み前に生成内容（メモリ上の文字列）へ `Get-ProvenanceLeak` を掛けるファイル単位の検査を行う。ルートを再帰走査すると配布物ではないリポジトリ内の全ファイルが検査対象になってしまうため。
 
+### 7. SKILL.md のサイズ計測
+
+走査対象の収集直後・規約判定と `-Check` 分岐より前で、`skills/*/SKILL.md`（ソース側）のバイト数を実測する。この位置に置くことで、規約違反の abort と `-Check` の早期終了より前になり、通常実行・`-Check` の両モードで同じ計測が走る。
+
+- **目安値**: 生成器内の定数 20000 バイト（1KB = 1000 バイト）
+- **例外テーブル**: 生成器内の定数表（スキル名 → 承認済みサイズ）。登録されたスキルは目安値ではなく承認済みサイズと比較する。各行には判断根拠をコメントで併記する
+- **警告**: 超過時に `Write-Warning` で 2 行（超過の本体と、スキルディレクトリ配下の全 md 合計の参考値）を出す。**終了コードは変えない**。警告文には分割判断の正本（`CONTRIBUTING.md` の全シナリオ共通節）の所在を含める
+- 正本 JSON 2 ファイルの不在・不正 JSON・`plugins` 0 件・version 不一致による中断はこの計測より前に起きるため、その場合は計測されない（受容）
+
+判断規範（分割判断の型・例外テーブルの運用規律）は生成器ではなく `CONTRIBUTING.md`「全シナリオ共通: SKILL.md のサイズと分割」が正本である。生成器が持つのは分量の定義（定数・定数表）と警告の挙動のみ。
+
 ## このブロック固有の制約・前提
 
 - **迂回路を用意しない。** 規約違反を無視して生成を続けるオプション（`-Force` 等）は設けない。迂回できると規約が空文化する
@@ -177,3 +190,4 @@ JSON は `ConvertTo-Json` ではなくテンプレート組み立てで出力す
 - ADR-0083: 配布対象ソースの出所識別子は位置で規約化し、生成器が規約適合の検査を兼ねる
 - ADR-0033: 生成物は LF 固定で書き出す
 - ADR-0054: 検査は silent tolerance をせず、検出したら報告して停止する
+- ADR-0121: SKILL.md の肥大は生成器のサイズ警告で検知し、例外テーブルで凝集スキルへの常時警告を避ける

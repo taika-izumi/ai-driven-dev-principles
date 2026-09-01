@@ -203,6 +203,36 @@ if ($versionMismatch -gt 0) {
 # 1. 走査対象を集める（@() で囲む。1 件・0 件のとき .Count が使えなくなるのを防ぐ）
 $sources = @(Get-ChildItem -Path $srcDir -Recurse -File | Sort-Object FullName)
 
+# 1.5 SKILL.md のサイズ計測（ADR-0121）。走査対象の収集直後・規約判定と -Check 分岐より前に置き、
+#     通常実行と -Check の両モードで同じ計測が走ることを保証する。警告は非ブロック（終了コードを変えない）。
+#     目安値の根拠と分割判断の手順は CONTRIBUTING.md「全シナリオ共通: SKILL.md のサイズと分割」が正本。
+$skillSizeThreshold = 20000   # 目安値 20KB（1KB = 1000 バイト）
+# 例外テーブル: スキル名 → 承認済みサイズ（バイト）。各行に判断根拠を必ず併記する。
+# 承認済みサイズ以下は警告せず、それを超えて成長したら再警告する。引き上げは
+# CONTRIBUTING.md の共通節が定める ①責務帰属型 →②references 型 →③例外登録 の判断を経てから行う。
+$skillSizeExceptions = @{
+    'session-handoff' = 31169   # 分割待ちの暫定行。根拠と追跡は起票済みの課題（Issue-0115）
+    'decision-log'    = 26837   # 分割待ちの暫定行。根拠と追跡は起票済みの課題（Issue-0116）
+}
+$skillNormRef = 'CONTRIBUTING.md「全シナリオ共通: SKILL.md のサイズと分割」'
+foreach ($skillDir in @(Get-ChildItem -Path $srcDir -Directory | Sort-Object Name)) {
+    $skillMd = Join-Path $skillDir.FullName 'SKILL.md'
+    if (-not (Test-Path $skillMd)) { continue }
+    $skillBytes = (Get-Item $skillMd).Length
+    $limit = $skillSizeThreshold
+    $limitLabel = "目安値 $skillSizeThreshold"
+    if ($skillSizeExceptions.ContainsKey($skillDir.Name)) {
+        $limit = $skillSizeExceptions[$skillDir.Name]
+        $limitLabel = "承認済みサイズ $limit"
+    }
+    if ($skillBytes -gt $limit) {
+        $mdTotal = 0
+        foreach ($md in @(Get-ChildItem -Path $skillDir.FullName -Recurse -File -Filter '*.md')) { $mdTotal += $md.Length }
+        Write-Warning "[build-dist] $($skillDir.Name)/SKILL.md: $skillBytes bytes > ${limitLabel}。分割判断は ${skillNormRef}を参照してください。"
+        Write-Warning "  - スキルディレクトリ配下の全 md 合計: $mdTotal bytes（参考値。出力雛形等も含む粗い値で、閾値は課さない）"
+    }
+}
+
 # 2. 規約判定と変換を1ループで行う（M-4: 判定用・変換用でファイルを2回読んでいたのを解消）。
 #    ここで組み立てる $generated / $removedInfo は、違反が見つかった場合は使わずに捨てる
 #    （書き込みは後段でのみ行うため、この時点では dist/ に一切触れていない＝不変が保たれる）。

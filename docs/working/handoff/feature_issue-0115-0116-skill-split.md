@@ -81,6 +81,7 @@ Issue-0115 / Issue-0116 の対策サイクル。ADR-0121 が導入した SKILL.m
 1. **最初に確認**: 実装計画 `docs/working/plans/2026-09-03-adr-0122-skill-split-implementation.md` の「完了後の次手」（3 項目）と、各タスク末尾の `逸脱記録:` 4 行
 2. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。再開点は**完了処理**——`superpowers:finishing-a-development-branch` の実行直前に `skills/start-work/references/merge-practice.md` を読む（マージ方式確認の正本。慣行は `--no-ff`）
 3. **留意点**: マージ後に `retrospective` → `session-handoff` cycle-reset → push の順。push は配布 0.1.18 の反映を兼ねる。未追跡 4 件（`docs/conversation_log.md`・`docs/inbox/` 3 件）は本サイクルで触っていない
+
 ## 重要な意思決定の履歴
 
 - ADR-0122: session-handoff と decision-log は発火単位で references へ分割し、SKILL.md 本文を共通部とディスパッチ表に絞る（2026-09-01 起票・2026-09-02 設計確定 a6991f9・2026-09-03 Accepted 昇格 db565f2）

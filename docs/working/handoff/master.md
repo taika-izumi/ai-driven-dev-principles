@@ -76,6 +76,7 @@
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。直近サイクル中の分は git 履歴（`feature_issue-0105-skill-size-norm.md`）参照。
 
 - 2026-09-03 サイクル完了処理（マージ `2295f07`・retrospective・cycle-reset・push `351b0d5`・配布 0.1.18 反映）: ADR=なし（完了処理と記録のみ。ADR-0122 の Accepted 昇格は feature 側で消化済み） / worklog=`MakeAiInstructions-2026-09-03-07`
+- 2026-09-03 セッション終了処理（Proposed 据え置き・Rejected 更新漏れの確認を含む。いずれもなし）: ADR=なし（新規の意思決定なし。ADR-0122 は昇格済み） / worklog=`MakeAiInstructions-2026-09-03-08`
 
 ## 次セッション開始時のアクション
 

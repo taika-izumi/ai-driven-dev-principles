@@ -43,7 +43,7 @@
 - `scripts/check-claude-md-size.ps1` の計測対象を AGENTS.md へ切り替える（ポインタ化した CLAUDE.md を測り続けると ADR-0040 の規範肥大監視が永久に無音化するため。ハードコード 5 箇所＋CONTRIBUTING・sync-template・生成器 spec の外部参照を追随）
 - Layer 2 への**書き込み先**を指す参照（`skills/worklog-skillify` のスコープ 3 分岐表の 1 箇所）も、読み側と同じ二段フォールバックとする（`AGENTS.md` が無いプロジェクトでは `CLAUDE.md` へ追記する）。未移行の配布先で新規 `AGENTS.md` へ書くと、`CLAUDE.md` にインポート行が無いため Claude Code が読まず、規範が無言で不発になるため（ADR-0114）
 - スキル本文等の「プロジェクトの CLAUDE.md に調整値があればそれを優先」型の参照（8 箇所）は、プラグイン（全配布先へ即時反映）と template（手動同期）の反映時期のずれで新旧どちらのプロジェクトも壊れうるため、**「プロジェクトの AGENTS.md（当該調整値の記載が無ければ CLAUDE.md）」の二段フォールバック表現**へ書き換える（ファイルの有無ではなく**調整値の記載の有無**で探索する。AGENTS.md が存在しても調整値を持たない移行途中のプロジェクトで CLAUDE.md 側の調整値を読み飛ばさないため）
-- ADR-0023 への部分修正注記: 対象は Decision 1（「Layer 2 ファイルは 1 つに統一」→「内容の正本は 1 つに統一」）と **Decision 7（「AGENTS.md は Claude Code がネイティブに読まないため採用しない」→ `@path` インポートの公式サポート確認により不採用理由が失効）**の 2 項目。あわせて ADR-0023 Considered Alternatives 案 2（AGENTS.md 単一ソース＋`@AGENTS.md` インポート＝今回採用する構成）の否定評価が前提失効により覆った旨を同じ注記内で言及する。書式は decision-log「ステータス変更」の部分修正の型（`- **部分修正（ADR-XXXX）**:`）に従い Consequences へ追記、Accepted 維持
+- ADR-0023 への部分修正注記: 対象は Decision 1（「Layer 2 ファイルは 1 つに統一」→「内容の正本は 1 つに統一」）と **Decision 7（「AGENTS.md は Claude Code がネイティブに読まないため採用しない」→ `@path` インポートの公式サポート確認により不採用理由が失効）**の 2 項目。あわせて ADR-0023 Considered Alternatives 案 2（AGENTS.md 単一ソース＋`@AGENTS.md` インポート＝今回採用する構成）の否定評価が前提失効により覆った旨を同じ注記内で言及する。書式は decision-log の `references/status-updates.md`「ステータス変更」の部分修正の型（`- **部分修正（ADR-XXXX）**:`）に従い Consequences へ追記、Accepted 維持
 
 ### 2. Layer 3 — Codex 向けマニフェストの生成器導出（ADR-0112）
 

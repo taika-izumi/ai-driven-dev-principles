@@ -35,6 +35,8 @@ ADR-0089 に従う: 情報分類と配置先の定義（What/Where）の正本�
 | `README.md` | スキル一覧テーブルの session-handoff 行を現状（5 操作＋移設手順）に合わせ更新 | なし |
 | ADR-0086/0087/0088/0089 | 新規（Proposed → 実装完了時 Accepted、対応 Issue close） | なし |
 
+> **注記（ADR-0122）**: 上表が `skills/session-handoff/SKILL.md` へ置くとした内容のうち、節別の記載規範は `references/section-volume-norms.md`、独立手順「移設」は `references/relocation-map.md`（導入と種類別対応表）と `references/relocation-procedure.md`（手順 1〜6）、read / update / finalize / cycle-reset の各操作は `references/op-<操作名>.md` へ、ADR-0122 の references 型分割により移った。規定内容は不変。「本サイクル」の定義とフォーマット節は SKILL.md 本文に残る。
+
 スコープ外: LoopForAlpha など配布先の実ファイルの整理（規範の配布後、各プロジェクトの運用で実施）。retrospective スキルの発動条件変更（cycle-reset の呼び出し関係の一般化は Issue-0050 の検討へ委譲）。
 
 ## 4. 完了基準

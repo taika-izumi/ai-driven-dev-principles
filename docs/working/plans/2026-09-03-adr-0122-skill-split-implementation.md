@@ -853,6 +853,8 @@ Expected: `22`（全件が Consequences 節の内側にあること）
 git add docs/records/decisions docs/working/plans/2026-09-03-adr-0122-skill-split-implementation.md && git commit -m "adr: 分割に伴う部分修正注記 22 件を追記（ADR-0122 決定 6 (e)）"
 ```
 
+逸脱記録: 事実誤り・期待値の陳腐化の訂正 / 採用 / Step 4-1 末尾の「挿入位置の目安」（実測値と称する分類）が ADR-0087 を「`## 過剰適合点検（ADR-0079）` が続く 12 件」に入れているが、実体の 0087 は Context・Considered Alternatives・Decision・Consequences の 4 節のみで点検節を持たず Consequences が最終節。正しい内訳は 最終節 8 件、`## Related` 3 件、過剰適合点検 11 件。計画自身が「本目安は確認用」「手順文に従えば正しく入る」と明記しており挿入結果は不変で、Step 4-2 の 2 本の検証も 22 件で通過。是正は読み替えに留め計画本文は書き換えない（Task 1・3 と同じ扱い）
+
 ---
 
 ### Task 5: 例外テーブルの暫定行 2 件の削除と spec 02 の件数追従

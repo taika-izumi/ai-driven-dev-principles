@@ -1173,6 +1173,8 @@ Expected: 両ファイルとも 10000 未満（課題管理定義の追記時サ
 git add docs/records/decisions docs/working/issues docs/working/plans/2026-09-03-adr-0122-skill-split-implementation.md && git commit -m "adr: 0122 Accepted 昇格 - Issue-0115/0116 close・サイクル全体整合検査実施"
 ```
 
+逸脱記録: 設計の変更 / 採用 / Step 8-5 の観点 4 が到達経路の欠落を検出。SKILL.md の横断規範の参照表の導入文が発動条件を「操作ファイルが名指しした時点」とだけ書き、操作 5 ファイル中 0 件しか名指さない `section-volume-norms.md` だけ条件が恒常的に偽になっていた（実証と修正内容は ADR-0122 Consequences の当該箇条）。採用基準は (ii) 当該サイクルのコミット自身が持ち込んだ後退——分割前は同一ファイル内の節で常時利用可能だった。導入文へ「または下表の「読むとき」に当たった時点」を追加。SKILL.md が 8,248B → 8,308B となったため ADR-0122 の該当数値と Issue-0115 の記載値を再実測へ更新し、執行点 4 手順を再消化した。新規 ADR は起こさない——決定 3 の「一意に引けるディスパッチ表」の実装是正であり方針の変更ではないため
+
 ---
 
 ## 完了後の次手

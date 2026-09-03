@@ -129,3 +129,4 @@
 | [0114](flow/0114-quality-investment-marginal-utility-and-stratified-defaults/0114-quality-investment-marginal-utility-and-stratified-defaults.md) | 品質・設計投資の限界効用を実測し、レビュー・検査の既定を層別に再設計する（LoopForAlpha#Issue-0117 委譲） | open | 2026-08-30 |
 | [0115](flow/0115-session-handoff-size-split-candidate.md) | session-handoff の SKILL.md が分割候補のまま暫定登録されている | closed | 2026-09-01 |
 | [0116](flow/0116-decision-log-size-split-candidate.md) | decision-log の SKILL.md が分割候補のまま暫定登録されている | closed | 2026-09-01 |
+| [0118](flow/0118-information-reachability-mechanism-undesigned.md) | 総情報量の増加に対し、AI が必要な情報へ到達する仕組みが体系として設計されていない | open | 2026-09-03 |

@@ -211,8 +211,6 @@ $skillSizeThreshold = 20000   # 目安値 20KB（1KB = 1000 バイト）
 # 承認済みサイズ以下は警告せず、それを超えて成長したら再警告する。引き上げは
 # CONTRIBUTING.md の共通節が定める ①責務帰属型 →②references 型 →③例外登録 の判断を経てから行う。
 $skillSizeExceptions = @{
-    'session-handoff' = 31169   # 分割待ちの暫定行。根拠と追跡は起票済みの課題（Issue-0115）
-    'decision-log'    = 26837   # 分割待ちの暫定行。根拠と追跡は起票済みの課題（Issue-0116）
 }
 $skillNormRef = 'CONTRIBUTING.md「全シナリオ共通: SKILL.md のサイズと分割」'
 foreach ($skillDir in @(Get-ChildItem -Path $srcDir -Directory | Sort-Object Name)) {

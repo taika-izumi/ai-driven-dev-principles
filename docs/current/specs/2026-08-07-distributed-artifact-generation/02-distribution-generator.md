@@ -54,13 +54,13 @@ Codex 向けマーケットプレイスの生成は `plugins[].source` が**文�
 ### 標準出力
 
 ```
-[build-dist] Scanning 23 source files...
+[build-dist] Scanning 36 source files...
 [build-dist] Convention violations: 0
-  ✓ skills/start-work/SKILL.md (28 identifiers removed)
-  ✓ skills/session-handoff/SKILL.md (34 identifiers removed)
+  ✓ skills/start-work/SKILL.md (23 identifiers removed)
+  ✓ skills/session-handoff/SKILL.md (4 identifiers removed)
   ...
 [build-dist] Generating dist/ and root artifacts ...
-[build-dist] Done. 25 files written to dist/, 1 to repository root.
+[build-dist] Done. 38 files written to dist/, 1 to repository root.
 ```
 
 `✓` 行（ファイル別の除去数）は生成内容の組み立て時に出力するため、`Generating` 行より前に並び、書き込みを行わない `-Check` でも表示される。`Done.` の件数は 2 系統に分けて出す。`dist/` 側は `.claude-plugin/plugin.json` と `.codex-plugin/plugin.json` を含む書き出しファイルの総数、ルート側はホワイトリストの生成物件数である。
@@ -82,9 +82,9 @@ SKILL.md のサイズ警告は**標準出力ではなく警告ストリーム**�
 
 ### 1. 走査対象の決定
 
-配布対象ソースは計 32 ファイルで、走査は生成器ごとに分担する。
+配布対象ソースは計 45 ファイルで、走査は生成器ごとに分担する。
 
-- `scripts/build-dist.ps1`（本ブロック）: `skills/` 配下の全ファイル（23）
+- `scripts/build-dist.ps1`（本ブロック）: `skills/` 配下の全ファイル（36）
 - `scripts/sync-template.ps1`（ブロック 03）: `template.manifest` に記載されたファイル（6）と空インデックス生成対象 3 ファイル（判定は空インデックス化後の内容）
 
 このほか `build-dist.ps1` は `.claude-plugin/plugin.json` と `.claude-plugin/marketplace.json` を読むが、これらは走査対象ではなく**生成の入力（正本）**である。

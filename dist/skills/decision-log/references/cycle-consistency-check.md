@@ -1,6 +1,6 @@
 # サイクル全体整合検査
 
-`decision-log` の Accepted 昇格時に実施する検査の正本。`status-updates.md`「承認の昇格」の第 1 ステップから読む。
+`decision-log` の Accepted 昇格時に実施する検査の正本。
 
 タスク単位のレビューでは検出できない累積ずれ・経路不全を、昇格チェックポイントで検査する工程。`status-updates.md`「承認の昇格」の第 1 ステップとして実施する。
 

@@ -2,8 +2,8 @@
 
 - **Branch**: feature/issue-0115-0116-skill-split（master から分岐。マージ未実施）
 - **Last Updated**: 2026-09-03 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 実装（subagent-driven-development。Task 1〜4 完了・Task 5 着手前）
+- **Status**: in_progress
+- **Current Phase**: 実装完了（計画 Task 1〜8 消化・ADR-0122 Accepted）／完了処理の着手前
 
 ## 作業の目的・背景
 
@@ -33,22 +33,23 @@ Issue-0115 / Issue-0116 の対策サイクル。ADR-0121 が導入した SKILL.m
 - [x] 計画 Task 2: session-handoff を references 9 ファイルへ分割・張り替え 29 項目（6bbe1c9。逸脱ゼロ。2026-09-03）
 - [x] 計画 Task 3: 外部参照の張り替え 18 箇所と所在注記 5 ブロック（0180dac。旧形式参照の grep が 18→0 件。2026-09-03）
 - [x] 計画 Task 4: Accepted 済み ADR 22 件へ部分修正注記（28c51f2。全件 Consequences 内・Status 維持・削除行ゼロ。2026-09-03）
+- [x] 計画 Task 5: 例外テーブルの暫定行 2 件削除と spec 02 の件数追従（fdad078。2026-09-03）
+- [x] 計画 Task 6: ADR-0122 決定 6 の判明分を全数走査の実測へ更新（c507697。(g) の適用縮小の理由も本文へ記録。2026-09-03）
+- [x] 計画 Task 7: version 0.1.18 と執行点 4 手順（6fdc776。両生成器の -Check が exit=0。2026-09-03）
+- [x] 計画 Task 8: 昇格ガード評価・Issue close・整合検査・ADR-0122 Accepted 昇格（db565f2。2026-09-03）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装（計画 Task 5〜8）
-  - 状態: 実行方式は `superpowers:subagent-driven-development`（Task 単位で委譲。逸脱記録の書き込みと逸脱突合の自己検査は委譲元が担う）。計画の「逸脱判断の既定」は**タスク別レビューを置かない工程型**を宣言しており、逐語厳守は課さず格下げ安全弁のみ維持する
-  - 状態（続き）: Task 1〜4 とも逸脱突合: 一致。逸脱は 3 件（いずれも型: 事実誤り・期待値の陳腐化の訂正 / 帰結: 採用。計画の Task 1・3・4 の各末尾へ記録済み）
-  - 状態（続き 3）: 確定済み計画の Expected が実体とずれた場合、**計画本文は書き換えず逸脱記録行へ読み替えを書く**方針で統一している（Task 1 の 6,856B・Task 3 の対照値 34 の 2 件で適用）
-  - 状態（続き 2）: 完了条件は両スキルとも達成済み。(a) decision-log 4,073B・session-handoff 8,248B（いずれも 20,000B 未満）／(b) 12,823B ≤ 13,400B・12,684B ≤ 15,600B
-  - 残り: Task 5（例外テーブル 2 行の削除と spec 02 の件数追従）から続行。**Task 6 で ADR-0122 決定 6 (g) の適用を狭めた理由を ADR 本文へ記録すること**（忘れやすい）。**実装時レビューへの引き継ぎ 3 件**の突合は `plan-deviation-defaults.md` 前処理 2. に従い、計画冒頭の宣言欄を正本とする
+- [ ] **現在の作業**: feature ブランチの完了処理（master への取り込み）
+  - 状態: 計画 Task 1〜8 をすべて消化し ADR-0122 は Accepted。Issue-0115 / 0116 は closed。plugin version は 0.1.18。全 8 タスクで逸脱突合: 一致
+  - 状態（続き）: 逸脱は 4 件。Task 1・3・4 が型「事実誤り・期待値の陳腐化の訂正」、Task 8 が型「設計の変更」（採用基準は当該サイクル自身が持ち込んだ後退）。いずれも帰結は採用で、計画の各タスク末尾へ記録済み
+  - 状態（続き 2）: 完了条件の最終実測。(a) decision-log 4,073B・session-handoff 8,308B（いずれも 20,000B 未満）／(b) 12,823B ≤ 13,400B・12,744B ≤ 15,600B
+  - 状態（続き 3）: 確定済み計画の Expected が実体とずれた場合、**計画本文は書き換えず逸脱記録行へ読み替えを書く**方針で統一した（Task 1・3・4 の 3 件で適用）
+  - 残り: `superpowers:finishing-a-development-branch`（実行直前に `skills/start-work/references/merge-practice.md` を読む。master handoff の慣行は `--no-ff`）→ マージ後に `retrospective` → cycle-reset → push（配布 0.1.18 の反映）
 
 ## 未着手のタスク
 
-- [ ] 実装: 計画 Task 5〜8（例外テーブル 2 行の削除・spec 02 の件数追従・ADR-0122 本文の更新・version bump・Issue close と Accepted 昇格）
-- [ ] 執行点 4 手順（`CONTRIBUTING.md`）と plugin version bump（0.1.17 → 0.1.18）
-- [ ] 現用 spec `docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md` の件数系数値の追従
-- [ ] ADR-0122 の Accepted 昇格（サイクル全体整合検査を含む）と Issue-0115 / Issue-0116 の close
+- [ ] master へのマージ（`--no-ff`）と `retrospective`・cycle-reset・push
 
 ## 既知のブロッカー・懸念
 
@@ -70,14 +71,17 @@ Issue-0115 / Issue-0116 の対策サイクル。ADR-0121 が導入した SKILL.m
 - 2026-09-03 計画 Task 2 完了（session-handoff の references 9 分割・6bbe1c9）: ADR=なし（無改変移設と列挙どおりの張り替えのみで意思決定なし） / worklog=棄却（delta なし。全 Expected 一致・逸脱ゼロで記録ゲート (a)(b) とも不成立）
 - 2026-09-03 計画 Task 3 完了（外部参照の張り替え 18・注記 5・0180dac）: ADR=なし（張り替え判定規則 R2/R3/R6 の適用であり新規の意思決定なし） / worklog=`MakeAiInstructions-2026-09-03-04`
 - 2026-09-03 計画 Task 4 完了（ADR 22 件へ部分修正注記・28c51f2）: ADR=なし（R7 の適用であり新規の意思決定なし。既存 ADR は Status 維持で本文不変） / worklog=`MakeAiInstructions-2026-09-03-05`
+- 2026-09-03 計画 Task 5 完了（例外テーブル 2 行削除・spec 02 追従・fdad078）: ADR=なし（決定 7 の実施であり新規の意思決定なし） / worklog=棄却（delta なし。全 Expected 一致・逸脱ゼロ）
+- 2026-09-03 計画 Task 6 完了（ADR-0122 決定 6 を実測へ更新・c507697）: ADR=0122（Proposed 本文の書き直し。(g) の適用縮小の理由を記録） / worklog=棄却（delta なし）
+- 2026-09-03 計画 Task 7 完了（version 0.1.18・執行点 4 手順・6fdc776）: ADR=なし（ADR-0090 の適用） / worklog=棄却（delta なし）
+- 2026-09-03 計画 Task 8 完了・**ADR-0122 Accepted 昇格**（Issue-0115/0116 close・db565f2）: ADR=0122（Accepted へ昇格。受容値の実測更新はユーザー承認済み） / worklog=`MakeAiInstructions-2026-09-03-06` / cyclecheck=実施（修正: db565f2）
 
 ## 次セッション開始時のアクション
 
-1. **最初に確認**: 実装計画 `docs/working/plans/2026-09-03-adr-0122-skill-split-implementation.md`（確定済み。冒頭の「逸脱判断の既定」と Task 5 から読む。前提確認 Step 0-1〜0-4 と Task 1〜4 は消化済み）
-2. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。再開点は**計画 Task 5 の実装**。実装系スキルへ入る直前に `skills/start-work/references/plan-deviation-defaults.md` を読み直す（発火点 2・セッション再開時）
-3. **留意点**: **Task 6 で ADR-0122 決定 6 (g) の適用縮小の理由を ADR 本文へ記録する**（忘れやすい）。**Task 8 Step 8-0 のガード (ii) は発火する見込み**——受容値の更新可否をユーザーへ提示してから Issue close へ進む
-
+1. **最初に確認**: 実装計画 `docs/working/plans/2026-09-03-adr-0122-skill-split-implementation.md` の「完了後の次手」（3 項目）と、各タスク末尾の `逸脱記録:` 4 行
+2. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。再開点は**完了処理**——`superpowers:finishing-a-development-branch` の実行直前に `skills/start-work/references/merge-practice.md` を読む（マージ方式確認の正本。慣行は `--no-ff`）
+3. **留意点**: マージ後に `retrospective` → `session-handoff` cycle-reset → push の順。push は配布 0.1.18 の反映を兼ねる。未追跡 4 件（`docs/conversation_log.md`・`docs/inbox/` 3 件）は本サイクルで触っていない
 ## 重要な意思決定の履歴
 
-- ADR-0122: session-handoff と decision-log は発火単位で references へ分割し、SKILL.md 本文を共通部とディスパッチ表に絞る（2026-09-01 起票・2026-09-02 確定してコミット a6991f9。Status は Proposed のまま）
+- ADR-0122: session-handoff と decision-log は発火単位で references へ分割し、SKILL.md 本文を共通部とディスパッチ表に絞る（2026-09-01 起票・2026-09-02 設計確定 a6991f9・2026-09-03 Accepted 昇格 db565f2）
 - （ADR-0001〜0121 は `docs/records/decisions/README.md` 参照）

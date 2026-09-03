@@ -13,7 +13,7 @@
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（**open 計 58 件**。2026-09-03 実測: close 2〈0115・0116〉・新設 2〈0117・0118〉。Issue-0099 へ検討状況追記。**同日さらに配布先からの申し送りで新設 2** = 0119〈LoopForAlpha#Issue-0130 の受け皿〉・0120〈申し送り時に随伴検出〉）
+- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（**open 計 59 件**。2026-09-03 実測: close 2〈0115・0116〉・新設 2〈0117・0118〉。Issue-0099 へ検討状況追記。**同日さらに配布先からの申し送りで新設 3** = 0119〈LoopForAlpha#Issue-0130 の受け皿〉・0120〈申し送り時に随伴検出〉・0121〈LoopForAlpha#Issue-0140 の受け皿〉）
 - 課題管理の運用規範の正本: `docs/overview/issue-management.md`（課題管理定義）
 - 直近サイクルの決定: ADR-0122（設計文書兼用・spec 確定点 (c) 型のため設計 spec なし）。retrospective: `docs/records/retrospectives/system/2026-09-03-adr-0122-skill-split.md`（system のみ）。実装 plan: `docs/working/plans/2026-09-03-adr-0122-skill-split-implementation.md`
 - ADR インデックス: `docs/records/decisions/README.md`（0001〜0122。Rejected 3 件）

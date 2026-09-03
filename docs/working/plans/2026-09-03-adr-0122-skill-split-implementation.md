@@ -755,6 +755,8 @@ Expected: `Convention violations: 0` と `Done. 38 files written to dist/, 1 to 
 git add skills/start-work/SKILL.md skills/pre-finalization-review/references CONTRIBUTING.md docs/reference/README.md docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md docs/current/specs/2026-08-07-overfitting-check-for-extensions-design.md docs/current/specs/2026-08-25-codex-support-design.md docs/current/specs/2026-08-13-handoff-bloat-control/00-overview.md docs/current/specs/2026-08-28-start-work-responsibility-split-design.md docs/current/specs/2026-04-25-record-strengthening-design.md docs/working/issues/flow/0085-digest-field-extension-lacks-checklist.md dist .agents/plugins/marketplace.json docs/working/plans/2026-09-03-adr-0122-skill-split-implementation.md && git commit -m "refactor: 分割に伴う外部参照の張り替え（skills 3 件・CONTRIBUTING 6 行・docs/reference・現用 spec 6 件・Issue-0085 の所在注記。ADR-0122 決定 6 (d)）"
 ```
 
+逸脱記録: 事実誤り・期待値の陳腐化の訂正 / 採用 / Step 0-4 の括弧書き「Task 3 完了後の実測は 34」（増える向きの予測）が実体と食い違う。実測は分割前 a6991f9 で 32（Expected と一致）、Task 2 完了時 31、Task 3 完了時 30 で減少した。減少分は Step 3-2 の置換が節名表記ごと `references/review-field-values.md` へ置き換えたためで、他の置換は節名を残すため増減しない。当該値は計画自身が非ゲートの対照値と明記しており、網羅の実ゲートである Step 3-7 は 0 件で合格。是正は「34 は 30 と読み替える」の読み替えに留め、計画本文の Expected は書き換えない（Task 1 の 6,856B と同じ扱い）
+
 ---
 
 ### Task 4: ADR の部分修正注記 22 件

@@ -35,3 +35,4 @@
 - 留意点: コミット漏れのリスクが生じる。ADR-0019 の昇格漏れ対策と同様に、`start-work` Phase 2 Post とセッション終了処理で未コミットドラフトの確認を促すことで補う。
 - 留意点: `CLAUDE.md` は template.manifest 対象のため変更後に `scripts/sync-template.ps1` の実行が必要。skills/ の変更はプラグイン更新（`/plugin marketplace update ai-driven-dev-principles`）まで利用者に反映されない。
 - **部分修正（ADR-0105）**: 決定 4 の反映先（CLAUDE.md 即時記録節・start-work 冒頭ブロック）のコミット遅延の定義列挙は decision-log への参照に置換された（コミット遅延の規範本体は decision-log 側で現役）
+- **部分修正（ADR-0122）**: 決定 4 が反映先とした `skills/decision-log/SKILL.md` の「手順のコミット規定と承認プロンプト前後の記述」は、ADR-0122 の references 型分割により `skills/decision-log/references/adr-authoring.md`（コミットのタイミング・ユーザーへの確認）へ移った。規定内容は不変のため、Status は Accepted のまま維持

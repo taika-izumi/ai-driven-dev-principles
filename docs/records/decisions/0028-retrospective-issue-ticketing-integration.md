@@ -35,6 +35,7 @@
 - **コスト・悪い影響**: retrospective 実行時の作業が増える（課題件数分の issue ファイル作成＋インデックス行追加）。既存課題（Issue-0001）のフォルダ移動と、未起票バックログ（2026-07-05 振り返りの6件等）の移行起票が必要。全課題を通した時系列の一覧はインデックス2セクションを跨いで見る必要がある。分類を変える場合はファイル移動＋インデックス修正になる。
 - 波及更新: `skills/retrospective/SKILL.md` / `flow-template.md` / `template.md`、`docs/overview/folder-structure.md` §7（フォルダ構成・課題フォーマット・インデックス形式）、`docs/records/retrospectives/README.md`、`CONTRIBUTING.md`（未決事項・課題シナリオ / 課題対策シナリオ）、`skills/decision-log/SKILL.md`（未決事項の起票手順のパス）。template 対象は `scripts/sync-template.ps1` で同期する。
 - **部分修正（ADR-0105）**: retrospective Phase 2 の起票サブ手順（採番・起票・インデックス行追加）は課題管理定義への参照に置換された
+- **部分修正（ADR-0122）**: 決定の波及更新先とした `skills/decision-log/SKILL.md` の未決事項の起票手順は、ADR-0122 の references 型分割により `skills/decision-log/references/open-questions.md` へ移った。手順の内容は不変のため、Status は Accepted のまま維持
 
 ## Related
 

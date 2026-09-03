@@ -51,3 +51,4 @@ Issue-0079: finalize の基準付き圧縮（ADR-0075）は「正本が handoff 
 - `session-handoff` スキルと folder-structure.md の両方の改定が必要（プラグイン更新と template 同期の両方を要する）
 - 退役経路: サイズトリガーが長期にわたり未発火で、移設の実績も生じない状態が続いた場合、移設工程の簡素化・退役を候補としてユーザーへ提案する。判断はユーザーが行う
 - 部分修正（ADR-0091・2026-08-14）: Decision 2 の呼び出し箇所 (a) の「必須工程」表記は、条件付き規定（サイズ超過時は必須、平時は該当記述があれば実施。正本は finalize 手順 3）への参照形へ明確化された。あわせて Decision 1 の対応表の worklog 行・レビュー結果行へ標準パスが併記され、対応表導入文に worklog 中央ストアがフォルダ構成定義の管轄外である旨の例外が追記された（Decision 本文は当時の決定の記録として据え置く）
+- **部分修正（ADR-0122）**: 決定 1 の種類別対応表と決定 2 の独立手順「移設」は、ADR-0122 の references 型分割により `skills/session-handoff/references/relocation-map.md`（導入と対応表）と `references/relocation-procedure.md`（手順 1〜6）へ分かれて移った（対応表を判定材料として読む経路と手順が走る経路が一致しないため）。3 起点の各操作は `references/op-<操作名>.md`。規定内容は不変のため、Status は Accepted のまま維持

@@ -84,6 +84,7 @@ AI 自身のインライン検査とする。独立サブエージェントレ�
 - **部分修正（ADR-0105）**: サイクルの定義の参照先は start-work から session-handoff「「本サイクル」の定義」へ張り替えられた
 - **部分修正（ADR-0108）**: 本 ADR とその実装が導入した再昇格関連の記述 3 箇所（decision-log「ステータス変更」の「（初回昇格・見直し後の再昇格とも）」の括弧書き・再昇格時の Consequences 追記規定・「承認の昇格」の「（見直し後の再昇格を含む）」の括弧書き）は削除された（Accepted → Proposed の差し戻しを用いない運用への一本化。ADR-0108）。サイクル全体整合検査の規範本体は現役のため Status は Accepted のまま維持する
 - **部分修正（ADR-0116）**: サイクルの定義・規範文書の型の参照先（start-work「確定前レビューの提示規則」）は、ADR-0116 により pre-finalization-review へ移設された。検査の決定自体は不変のため、Status は Accepted のまま維持
+- **部分修正（ADR-0122）**: 決定が工程を追加した「承認の昇格」は `skills/decision-log/references/status-updates.md` へ、新設節「サイクル全体整合検査」は `references/cycle-consistency-check.md` へ、session-handoff 側の update / read / finalize の各改定は `skills/session-handoff/references/op-<操作名>.md` へ、ADR-0122 の references 型分割により移った。形式行・書式例・命名規約は session-handoff SKILL.md 本文に残る。規定内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

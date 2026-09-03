@@ -119,6 +119,7 @@ Issue-0098 の対策として、確定前レビューの反復基準を次の 4 
 - **部分修正（ADR-0120）**: 評価可能性の退役側トリガー（フル巡推奨の長期全見送り）・改良側トリガー（軽量側推奨後の重大欠陥）の計数からは、分布外検知の発火機会が生じた確定点を代理指標として除いて読む（発火の遵守は観測できないため代理指標で除外する。両トリガーに同一の代理指標を適用する。計数母集団を変えるため部分修正とする）
 - **注記（ADR-0120）**: 本 ADR の評価可能性の計数経路（git 履歴上の `review=` 行）は、ADR-0120 の分布外検知の発火機会の計数も共用する。決定 2 の停止判定「件数・巡数でなく指摘の分類で判定する」には、分布外検知の発火が通算巡数を停止判定・骨格安定の判断へ流入させない旨の但し書きが実装先（pre-finalization-review）で添えられた（決定を変えない明確化）
 - **部分修正（ADR-0121）**: 決定 3 が正本として指定した pre-finalization-review「反復の実施」節、決定 1・2 の実装先である同スキルの「指摘反映後の反復」、および適用例の記載先は、ADR-0121 決定 5 の references 型分割によりいずれも `skills/pre-finalization-review/references/iteration-norms.md` へ移った。見出しの番号接頭辞「4.」は分割時に落としたが呼称「指摘反映後の反復」は不変であり、規則内容も不変のため、Status は Accepted のまま維持
+- **部分修正（ADR-0122）**: 実装対象のうち session-handoff の「`review=` の値定義」小節は `skills/session-handoff/references/review-field-values.md` へ、update 手順 2・3 への追記は `references/op-update.md` へ、節別記載規範表への 1 句は `references/section-volume-norms.md` へ、ADR-0122 の references 型分割により移った。形式行の値スロット・書式例・記載条件文は SKILL.md 本文に残る。規定内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

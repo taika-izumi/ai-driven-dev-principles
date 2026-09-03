@@ -37,11 +37,11 @@ finalize の手順に剪定ステップを追加する（ADR-0075 前段）。�
 1. **詳細が他の正本（ADR / issue / worklog / plan / spec / コミット履歴）に記録済みの完了タスク・記述** → 1 行要約＋正本への参照（安定識別子）に置き換える
 2. **役目を終えた状態情報**（解消済みブロッカー、確定済み過去セッションの消化記録行 = 既存 ADR-0057 規約）→ 削除する
 
-**圧縮しないもの**: 正本が handoff 以外にないもの（進行中タスクの状態・残り、現役の申し送り・懸念）。無条件の 1 行要約はしない。この保護規定はその後、`review=` を含む消化記録行の保護（ADR-0080）が加わり、独立手順「移設」で正本を外へ作るまでの暫定と位置付けられた（ADR-0086）。現状の正は `skills/session-handoff/SKILL.md` を参照。
+**圧縮しないもの**: 正本が handoff 以外にないもの（進行中タスクの状態・残り、現役の申し送り・懸念）。無条件の 1 行要約はしない。この保護規定はその後、`review=` を含む消化記録行の保護（ADR-0080）が加わり、独立手順「移設」で正本を外へ作るまでの暫定と位置付けられた（ADR-0086）。現状の正は `skills/session-handoff/references/op-finalize.md` 手順 4 を参照。
 
 あわせて finalize の Status 更新ガイドに次の分岐を追加する: cycle-reset 実施済みで次サイクル未着手のまま終了する場合は `ready-for-next-cycle` を維持する（paused 等で上書きしない）。
 
-finalize の現行の手順構成は、後続設計により 7 段（サイズ実測・移設を含む）へ再構成されている。現状の正は `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §3 と `skills/session-handoff/SKILL.md` を参照。
+finalize の現行の手順構成は、後続設計により 7 段（サイズ実測・移設を含む）へ再構成されている。現状の正は `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §3 と `skills/session-handoff/references/op-finalize.md` を参照。
 
 ## 変更 4: 新操作 `cycle-reset` の追加（`skills/session-handoff/SKILL.md` 操作 5）
 

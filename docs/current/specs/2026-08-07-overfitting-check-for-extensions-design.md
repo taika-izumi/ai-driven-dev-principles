@@ -24,7 +24,7 @@
 ```markdown
 ## 全シナリオ共通: 過剰適合の点検
 
-本節は `extend-guidelines`（手順 5）と `worklog-skillify`（是正パターンの提示）、および `decision-log`（サイクル全体整合検査の再点検規定）から参照される。
+本節は `extend-guidelines`（手順 5）と `worklog-skillify`（是正パターンの提示）、および `decision-log`（`references/cycle-consistency-check.md` の再点検規定）から参照される。
 
 ### 背景
 

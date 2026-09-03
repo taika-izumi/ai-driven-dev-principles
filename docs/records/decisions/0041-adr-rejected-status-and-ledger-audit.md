@@ -53,6 +53,7 @@ Post チェックの「Proposed の昇格漏れ確認」を対称化し、議論
 - ＋ 昇格・不採用の両方向が同じチェックポイントで見直されるため、Proposed の長期滞留が減る
 - − 終端ステータスが増えることで、使い分けの判断が必要になる（意味境界表で緩和する）
 - **部分修正（ADR-0105）**: start-work Post の昇格漏れ確認（決定 3 の対称化箇所）は decision-log の手順への参照形に置換された
+- **部分修正（ADR-0122）**: 決定 2 が記載箇所とした `skills/decision-log/SKILL.md`「ユーザーへの確認」は `skills/decision-log/references/adr-authoring.md` へ、終端ステータスの意味境界と Rejected 経路は `references/status-updates.md` へ、ADR-0122 の references 型分割により移った。規定内容は不変のため、Status は Accepted のまま維持
 
 ## Related
 

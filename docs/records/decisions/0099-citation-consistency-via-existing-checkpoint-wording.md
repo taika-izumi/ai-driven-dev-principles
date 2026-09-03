@@ -78,6 +78,7 @@ CONTRIBUTING.md「全シナリオ共通: 過剰適合の点検」を次の 2 点
 - 実装の同期対象: `skills/decision-log/SKILL.md`（観点 5 の書き換え）、CONTRIBUTING.md（共通注記の追加・点検ブロック雛形の観点 2・3 根拠欄の改定）、`docs/current/specs/2026-08-07-overfitting-check-for-extensions-design.md`（変更 1 の挿入全文ブロックへ同一の注記・雛形改定を反映。仕様のスナップショット性の維持）、ADR-0092 / ADR-0079 の Consequences への部分修正追記、`.claude-plugin/plugin.json`・`.claude-plugin/marketplace.json`（version bump。ADR-0090）、`dist/` 再生成（執行点 4 手順。ADR-0082/0083）。ADR-0092 本文中の観点 5 記述は書き換えない（Accepted 済み ADR の本文は不変。正本はスキル側）
 - 退役経路: 本拡張は独立した規範を持たず、既存検査（ADR-0092 の検査・ADR-0079 の点検）の退役規範に相乗りする。母体の検査が退役・簡素化される場合、本拡張分も同時に見直す
 - 本 ADR は確定前に 3 観点（敵対的・実装整合性・仕様適合）の独立レビュー（claude-opus-5）を受け、Critical 2・Major 5・Minor 10（重複統合前）の指摘を反映して改訂した
+- **部分修正（ADR-0122）**: 決定 1 が書き換えたサイクル全体整合検査の観点 5 は、ADR-0122 の references 型分割により `skills/decision-log/references/cycle-consistency-check.md` へ移った。規定内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

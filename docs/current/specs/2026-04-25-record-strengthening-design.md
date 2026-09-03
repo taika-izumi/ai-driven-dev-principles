@@ -141,7 +141,7 @@ Post ラッパーの各項目は**1つずつ明示的に消し込む**。消し�
 
 Post ラッパーに完全に入らなかった場合は消化記録の行そのものが書かれず、即時には検出できない。これは `retrospective` の Phase 3 で `git log` と突合して事後に回収する（ADR-0057）。
 
-Post ラッパー項目1で据え置き ADR を Accepted へ昇格させるときは、`decision-log` の「承認の昇格」手順に含まれる粒度点検が先に走る（ADR-0059 / ADR-0060）。点検の規範は `decision-log` 側に一本化されており、Post ラッパー側およびセッション終了処理には重複して記述しない。
+Post ラッパー項目1で据え置き ADR を Accepted へ昇格させるときは、`decision-log` の `references/status-updates.md`「承認の昇格」手順に含まれる粒度点検が先に走る（ADR-0059 / ADR-0060）。点検の規範は `decision-log` 側に一本化されており、Post ラッパー側およびセッション終了処理には重複して記述しない。
 
 ### 5.4 依存検出パターン
 
@@ -222,7 +222,7 @@ docs/handoff/<branch-name>.md
 ## Post ラッパー消化記録
 
 マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。
-形式: `- <日付> <マイルストーン>: ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<結果> / cyclecheck=<結果>`（`review=` は確定点を通過した行のみ、`cyclecheck=` は Accepted 昇格処理・サイクル全体整合検査を実施した行のみ併記する。記録対象・形式・値の定義は `session-handoff` スキルのフォーマット節が正）
+形式: `- <日付> <マイルストーン>: ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<結果> / cyclecheck=<結果>`（`review=` は確定点を通過した行のみ、`cyclecheck=` は Accepted 昇格処理・サイクル全体整合検査を実施した行のみ併記する。記録対象・形式は `session-handoff` スキルのフォーマット節が、`review=` / `cyclecheck=` の値の定義はそれぞれ `references/review-field-values.md` と `decision-log` の `references/cycle-consistency-check.md` が正）
 行が存在すること自体が `session-handoff` update の証跡であるため、update の項目は書かない。
 
 - YYYY-MM-DD <マイルストーン名>: ADR=NNNN / worklog=`<project>-YYYY-MM-DD-NN`
@@ -241,6 +241,8 @@ docs/handoff/<branch-name>.md
 
 ### 6.4 操作
 
+> **注記（ADR-0122）**: 本節の 5 操作の手順は、ADR-0122 の references 型分割により `skills/session-handoff/references/op-<操作名>.md` へ移った。SKILL.md 本文には操作ディスパッチ表が残る。
+
 | 操作 | 呼ばれるタイミング | 動作 |
 |------|------------------|------|
 | `read` | start-work の Phase 0 | 現在ブランチの handoff を読み込み、要約をユーザーに提示。あわせて消化記録欄が空白のマイルストーンがないか検査する（ADR-0057） |
@@ -253,6 +255,8 @@ docs/handoff/<branch-name>.md
 PR マージなどで作業完了した handoff は、`Status: completed` のまま残す。`docs/handoff/archive/` への移動は将来検討（初版では実装しない）。
 
 ## 7. 既存スキル拡張: `decision-log`
+
+> **注記（ADR-0122）**: 本節が `skills/decision-log/SKILL.md` へ置くとした内容のうち、検出トリガー一覧（7.1・7.3）は SKILL.md 本文に残り、ADR 作成手順・ユーザーへの確認（7.2）と粒度の注記（7.4）は `references/adr-authoring.md`、承認の昇格（7.4）は `references/status-updates.md` へ、ADR-0122 の references 型分割により移った。規定内容は不変。
 
 ### 7.1 「いつ使うか」セクションの全面改訂
 

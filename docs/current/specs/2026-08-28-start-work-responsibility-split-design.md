@@ -57,6 +57,8 @@ start-work スキルの責務過多の指摘を分析し、妥当と判定した
 | `docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md` | 3 | 正本ポインタの逐語記述（現行 L86・L95・L99）。現用 spec のスナップショット性維持のため張り替える |
 | `docs/working/issues/flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md` | 1 | open 課題の課題内容にある現在の正本所在参照（現行 L10） |
 
+- **部分修正（ADR-0122）**: 上表の `skills/decision-log/SKILL.md` 3 箇所は、それぞれ `references/adr-authoring.md`（コミットのタイミング）・`references/status-updates.md`（改訂記録規定）・`references/cycle-consistency-check.md`（規範・手順文書の型の参照）へ、`skills/session-handoff/SKILL.md` 3 箇所のうち `review=` 値定義は `references/review-field-values.md`、update 手順 3 は `references/op-update.md` へ、ADR-0122 の references 型分割により移った（「本サイクル」定義は SKILL.md 本文に残る）。張り替え済みの参照内容は不変。
+
 ### 「完了処理のマージ方式確認」→ references/merge-practice.md へ
 
 | ファイル | 箇所数 | 対象 |

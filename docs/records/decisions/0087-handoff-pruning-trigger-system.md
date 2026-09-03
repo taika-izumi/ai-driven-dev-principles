@@ -36,3 +36,4 @@ Issue-0078: cycle-reset の発火点は「サブプロジェクトの master マ
 - 数値はデフォルト値であり、プロジェクトの調整値が優先される。デフォルト値の見直しは、ユーザーが配布先の実測を持ち込んだ時点で行う（エージェントは配布先の実測を観測できないため、判断主体をユーザーに置く）
 - サイズトリガーが長期にわたり未発火（肥大が構造的に再発しない）で、同型の delta が中央ストアへ現れない場合、本トリガーの簡素化・退役を候補としてユーザーへ提案する。判断はユーザーが行う
 - **部分修正（ADR-0105）**: 決定 6「本サイクル」定義の所在は session-handoff の独立節「「本サイクル」の定義」へ移設された
+- **部分修正（ADR-0122）**: 決定 1 が実装対象とした `session-handoff` の read（手順 4）・finalize（手順 1）のサイズ実測と、決定 4・5 の超過時の移設手順の実施は、ADR-0122 の references 型分割によりそれぞれ `skills/session-handoff/references/op-read.md`・`references/op-finalize.md`・`references/relocation-procedure.md` へ移った。トリガーの発火条件・目安値・手順の内容は不変のため、Status は Accepted のまま維持

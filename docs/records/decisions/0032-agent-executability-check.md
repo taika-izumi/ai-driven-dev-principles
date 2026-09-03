@@ -26,3 +26,4 @@ ADR-0029 の起草時、撤去基準を「事象が発生しないモデルの�
 - 留意点: チェックは起草者の自己確認であり、確実な防止を保証するものではない。ユーザーレビューを置き換えない。
 - 留意点: skills/ の変更はプラグイン更新（`/plugin marketplace update ai-driven-dev-principles`）まで利用者に反映されない。`CONTRIBUTING.md` は template.manifest 対象外のため同期作業は不要。
 - **部分修正（ADR-0105）**: CONTRIBUTING「ADRを記録するとき」の実行可能性条項は decision-log への参照に置換された（条項本体は decision-log 側で現役）
+- **部分修正（ADR-0122）**: 決定 2 が反映先とした `skills/decision-log/SKILL.md` の記述規律の 1 項（実行可能性チェックの注記）は、ADR-0122 の references 型分割により `skills/decision-log/references/adr-authoring.md` の ADR ファイル作成手順へ移った。規定内容は不変のため、Status は Accepted のまま維持

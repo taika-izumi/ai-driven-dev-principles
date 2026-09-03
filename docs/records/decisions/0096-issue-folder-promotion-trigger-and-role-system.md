@@ -73,6 +73,7 @@
 - 番号接頭辞のぶんファイル名が数文字延びる
 - 時点資料に任意形式を許すため、大きなバイナリのコミットが起きうる。制限は設けず、実害が観測されたら対策を検討する
 - **部分修正（ADR-0105）**: Decision が名指しする folder-structure の節番号（課題管理早見表ほか）は「7. 仕様書の運用規約」新設で繰り上がった（規範内容は不変。retrospective 側のサイズ実測記載は既に参照形のため不変）
+- **部分修正（ADR-0122）**: 改定対象が名指しする `skills/decision-log/SKILL.md` ライフサイクル節の close 手順は `skills/decision-log/references/open-questions.md` へ、`skills/session-handoff/SKILL.md` の既存課題追記行は `skills/session-handoff/references/relocation-procedure.md` 手順 3 へ、ADR-0122 の references 型分割により移った。規定内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

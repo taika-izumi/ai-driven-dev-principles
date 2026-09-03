@@ -52,6 +52,7 @@ Issue-0083: handoff 肥大化制御サイクル（Issue-0078〜0081 対策）の
 - SKILL.md・spec 01・spec 00（点検節 1 行）・ADR-0086 注記の 4 点同期が必要（本 ADR が同期範囲の記録を兼ねる）
 - **部分修正（ADR-0105）**: 決定 1・手順 6 が名指しする「update 手順 9」の 2 文は番号非依存の表現へ追従され、決定 5 が名指しする「update 手順 8」（消化記録追記）は束ね直しにより update 手順 3 へ移った
 - **部分修正（ADR-0116）**: 決定 5 と Consequences の「定義の正本は start-work 側に維持する」旨は、ADR-0116 による移設後は pre-finalization-review 側と読み替える。参照 1 文に集約する決定自体は不変のため、Status は Accepted のまま維持
+- **部分修正（ADR-0122）**: 決定 1・2 が改めた独立手順「移設」の起点列挙と finalize 手順 3 は `skills/session-handoff/references/relocation-map.md` と `references/op-finalize.md` へ、決定 4 の対応表の標準パス併記は `references/relocation-map.md` へ、ADR-0122 の references 型分割により移った。規定内容は不変のため、Status は Accepted のまま維持
 
 ## 過剰適合点検（ADR-0079）
 

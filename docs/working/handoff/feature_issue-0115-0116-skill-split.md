@@ -2,8 +2,8 @@
 
 - **Branch**: feature/issue-0115-0116-skill-split（master から分岐。マージ未実施）
 - **Last Updated**: 2026-09-03 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装完了（計画 Task 1〜8 消化・ADR-0122 Accepted）／完了処理の着手前
+- **Status**: completed
+- **Current Phase**: 完了（master へ `--no-ff` で取り込み済み。マージコミット `2295f07`）
 
 ## 作業の目的・背景
 

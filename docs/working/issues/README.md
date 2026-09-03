@@ -33,6 +33,7 @@
 | [0091](system/0091-completed-migration-spec-stale-after-split.md) | 完了済み移行 spec のひな形パス言及が課題管理定義の分離後と乖離している | open | 2026-08-15 |
 | [0108](system/0108-build-dist-review-deferred-findings-backlog.md) | build-dist.ps1 のコード品質レビューで採用を見送った指摘 4 群が未対応（条件付き backlog） | open | 2026-08-25 |
 | [0111](system/0111-merge-practice-duplicate-intro.md) | merge-practice.md 冒頭の導入文が移設条文の書き出しと重複している | closed | 2026-08-29 |
+| [0117](system/0117-split-completion-criteria-lacks-reachability-check.md) | references 型分割の完了基準に参照表の到達元の実在確認が無い | open | 2026-09-03 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

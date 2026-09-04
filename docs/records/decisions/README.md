@@ -128,3 +128,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0120](0120-stratified-initial-review-bodies-and-round-outlier-detection.md) | 確定前レビューの初回体数を成果物 2 型で層別し、通算巡数の分布外検知を反復提示に常設する | Accepted | 2026-08-30 |
 | [0121](0121-skill-md-size-trigger-and-split-norm.md) | SKILL.md の肥大は build-dist のサイズ警告で検知し、分割判断の型と例外テーブルで制御する（ADR-0116 境界宣言は存置） | Accepted | 2026-08-31 |
 | [0122](0122-split-session-handoff-and-decision-log-by-firing-unit.md) | session-handoff と decision-log は発火単位で references へ分割し、SKILL.md 本文を共通部とディスパッチ表に絞る | Accepted | 2026-09-01 |
+| [0123](0123-plain-language-vocabulary-in-normative-documents.md) | 規範文書の語彙は 3 型で射程を定め、出所の書き換えと非ブロックの語彙検査で平易表現規約へ適合させる | Proposed | 2026-09-04 |

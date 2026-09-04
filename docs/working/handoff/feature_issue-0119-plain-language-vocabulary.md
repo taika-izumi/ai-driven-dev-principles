@@ -13,6 +13,7 @@ Issue-0119 の対策サイクル。`AGENTS.md`「コンテキスト管理」の�
 
 ## 関連ドキュメント
 
+- 実装計画: `docs/working/plans/2026-09-05-adr-0123-plain-language-vocabulary-implementation.md`（14 タスク。語の置き換え表・逸脱判断の宣言欄を保持）
 - 設計書: `docs/current/specs/2026-09-04-plain-language-vocabulary-design.md`（Draft・26,903B。置き換え表・置き換え表ファイルと提案の規範・名前の変更・記録型文書のタイトル・完了条件 12 項・過剰適合点検ブロック）
 - 決定: ADR-0123（Proposed・17,694B。`docs/records/decisions/0123-plain-language-vocabulary-in-normative-documents.md`。決定 7 項・新設の評価可能性の記載を含む）
 - 対象課題: `docs/working/issues/flow/0119-guideline-wording-violates-its-own-plain-language-norm/`（課題本体＋配布先の観測資料 `lfa-0130-*` 10 本）
@@ -38,13 +39,15 @@ Issue-0119 の対策サイクル。`AGENTS.md`「コンテキスト管理」の�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の作成（`superpowers:writing-plans`）
-  - 状態: 設計確定済み。着手前に `skills/start-work/references/plan-deviation-defaults.md` を読み、計画へ逸脱判断の宣言欄を置く
-  - 残り: 計画作成 → plan 確定点で確定前レビューを提示 → 実装
+- [ ] **現在の作業**: 実装計画の確定（plan 確定点。確定前レビューの提示への回答待ち）
+  - 状態: 計画作成済み（`docs/working/plans/2026-09-05-adr-0123-plain-language-vocabulary-implementation.md`。14 タスク・75 手順・49,471B）。逸脱判断の宣言欄は既定どおり（plugin 0.1.18 時点の版）で、確定前レビューからの引き継ぎ一覧はなし
+  - 対象確定点の型: plan 確定点
+  - 成果物の型: 規範改定型（計画は規範文書そのものではないが、置き換え対象へ規範文書を含むため。判定に迷い規範改定型側へ倒した。分布外検知の閾値は 8 回）
+  - 実施済みの方式と回数: なし（plan 確定点は初回）
+  - 残り: 確定前レビューの提示への回答 → 実施または確定 → 実装（`superpowers:subagent-driven-development` または `executing-plans`）
 
 ## 未着手のタスク
 
-- [ ] 実装計画の作成（writing-plans。plan 確定点で確定前レビューを提示）
 - [ ] 実装: 語とラベルの置き換え（4 群）・`docs/reference/wording-replacements.md` 新設と template 追加・`AGENTS.md` の 1 行・`CONTRIBUTING.md` の新節・見出しや書式の名前の変更・`session-handoff` の汎用 1 文・記録型文書のタイトル 24 件と一覧・`master.md` の 2 節・執行点 4 手順・version 0.1.19
 - [ ] 完了処理（ADR-0123 の Accepted 昇格〈サイクル全体整合検査〉・Issue-0119 close・`--no-ff` マージ・retrospective・cycle-reset・push）
 

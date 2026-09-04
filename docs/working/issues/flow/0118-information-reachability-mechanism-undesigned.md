@@ -37,6 +37,8 @@
 
 - 2026-09-04: **LoopForAlpha#Issue-0169 から具体形を申し送り**（開発の進め方の見直し `LoopForAlpha:docs/records/reviews/2026-09-04-dev-process-review/report.md` 提案 D・所見 U4）。実測: 記録側 7 経路のうち作業開始時に AI が読む契機は handoff の索引ポインタ数行のみ、作業記録の記録費用は主出力の 7.3%・キャッシュ読込の 9.1%、記録済み教訓の再演クラスタ 12 件・躓き型 5 クラスタは 9 割超が人間の指摘を待たず再発。提案 = `start-work` Phase 1 手順 2（inbox 一覧）の並びに open 課題索引・参照知識索引・躓き型チェックリストの読み込みを常設し、チェックリストは `subagent-dispatch` B 群表と `plan-deviation-defaults.md` の注入項目へ固定（入力増は索引 ≈ 28KB・概算 1 万トークン = 平均文脈の ≈ 3%）。ADR-0056 決定 6・ADR-0101 決定 4 の射程（走査工程・常設消費装置）外だが、0056 の却下理由「毎サイクルのトークンコスト」は本提案にも向く。効果は対照が無く未測定（導入後 1 サイクルで再発件数を数える）。全文は下の「委譲元記録」。委譲元は同日 close し、以後の正本は本ファイル
 
+- 2026-09-04: **検討難易度の申し送り = 高**（配布先 LoopForAlpha からの申し送り時に記録。理由 = 到達手段の体系設計〈網羅性・役割の重複と欠落・情報量へのスケール〉は規範改定型で、ADR-0056 決定 6・ADR-0101 決定 4 の射程との整合裁定を含む。対策の検討は上位モデル〈Claude Fable 級〉+ 確定前レビュー〈規範改定型〉を推奨）。ただし **LoopForAlpha#Issue-0169 の最小形（`start-work` Phase 1 に索引の読み込み ≈ 5 行）は体系設計を待たずに Issue-0123 の注入先設計と同じ機会に試行できる**（申し送り側の推奨順 = #0123 → 本課題の最小形 → #0122 → #0107）
+
 ## 委譲元記録（全文）— LoopForAlpha#Issue-0169
 
 出所: `LoopForAlpha:docs/working/issues/flow/0169-start-work-lacks-read-back-path-for-issues-reference-and-recurrence-checklist.md`（2026-09-04 時点。本文無改変）

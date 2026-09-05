@@ -32,7 +32,7 @@
 
 ### 発動
 
-委譲の直前。タスクの型を問わず毎回。`start-work` の横断的ラッパー Pre から配線する。委譲は「作業意図」ではなくどのスキルの最中にも起きるため、Phase 2 のマッピング表（作業意図 → スキル）には載せない。
+委譲の直前。タスクの型を問わず毎回。`start-work` の作業前の確認から配線する。委譲は「作業意図」ではなくどのスキルの最中にも起きるため、Phase 2 のマッピング表（作業意図 → スキル）には載せない。
 
 ### 構成
 
@@ -111,7 +111,7 @@ B群判定: 検査=yes / ミューテーション=no / 並列書き換え=no / �
 | 対象 | 変更 |
 |---|---|
 | `skills/start-work/SKILL.md` Phase 2 マッピング表 | `pre-finalization-review` の行を追加 |
-| `skills/start-work/SKILL.md` 横断的ラッパー Pre | 「サブエージェントへ委譲する場合は `subagent-dispatch` を呼ぶ」を追加 |
+| `skills/start-work/SKILL.md` 作業前の確認 | 「サブエージェントへ委譲する場合は `subagent-dispatch` を呼ぶ」を追加 |
 | `README.md` スキル一覧 | 新規 2 件を追加。あわせて既存の記載漏れ（`worklog-record` / `worklog-extract` / `worklog-skillify`）を補う |
 | `template.manifest` | **変更しない**（ADR-0016。スキルはプラグイン配信対象であってコピー対象ではない） |
 | `scripts/sync-template.ps1` | **実行しない**（`skills/` は template 対象外。`CLAUDE.md` / `principles.md` / `folder-structure.md` / `inbox/README.md` を変更しないため） |

@@ -86,7 +86,7 @@ AI駆動開発ガイドライン運用で得られる「スキル化・ルール
 - **ADR-0044**: 3スキルパイプラインを中央集約アーキテクチャで新設（3スキル構成・スコープ3分岐・責務境界・overlap 対応）
 - **ADR-0045**: スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクル（id・processed.jsonl・deferred）
 - **ADR-0046**: スキル3は writing-skills 既定・Skill Creator 設計時借用・実行環境ガード
-- **ADR-0047**: worklog-record は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる
+- **ADR-0047**: worklog-record は start-work の節目の確認に組み込み全プロジェクトへ伝播させる
 - 決定履歴の全量（D1〜D17）は `docs/working/handoff/skill-pipeline-brainstorming-state.md`
 
 ## スコープ外（YAGNI）
@@ -105,5 +105,5 @@ AI駆動開発ガイドライン運用で得られる「スキル化・ルール
 - [x] スキル1が `projects.json` の upsert 自己修復と id 採番（`<project>-<date>-<NN>`）を行う
 - [x] スキル2が `processed.jsonl` による処理済み除外・deferred の条件付き再浮上・既存スキル重複排除を行い、採否結果を Issue 草案と台帳へ反映する
 - [x] スキル3が実行環境ガード・スコープ3分岐・writing-skills 委譲を行い、結果を台帳へ追記する
-- [x] `start-work` の Post ラッパーに worklog-record 実行判定が組み込まれている（ADR-0047）
+- [x] `start-work` の節目の確認に worklog-record 実行判定が組み込まれている（ADR-0047）
 - [x] ADR 0044/0045/0046/0047 が Accepted へ昇格している

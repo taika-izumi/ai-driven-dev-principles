@@ -76,7 +76,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0068](0068-cross-repo-issue-reference-format.md) | 他リポジトリの課題は `<repo>#Issue-NNNN` で修飾して参照する | Accepted | 2026-08-05 |
 | [0069](0069-general-skill-extension-target-own-repo-only.md) | 汎用スキルの拡張先は自リポジトリの `skills/` に限り、third-party プラグインのスキルは編集しない | Accepted | 2026-08-05 |
 | [0070](0070-dispatch-constraints-as-norm-not-hook-injection.md) | サブエージェント委譲の常時制約は規範文で実装し、フックによる機械注入は採らない | Accepted | 2026-08-05 |
-| [0071](0071-b-group-firing-check-as-mandatory-table-walk.md) | 条件発火の発火判定は、行数の固定された表を毎回読み下ろす手順として担保する | Accepted | 2026-08-05 |
+| [0071](0071-b-group-firing-check-as-mandatory-table-walk.md) | 条件発火の判定は、行数の固定された表を毎回読み下ろす手順として担保する | Accepted | 2026-08-05 |
 | [0072](0072-pre-finalization-review-triggered-by-user-only.md) | 確定前レビューの発動はユーザーの指示に限り、AI は次手として提示するにとどめる | Accepted | 2026-08-05 |
 | [0073](0073-dispatch-norms-carry-provenance-and-sunset-path.md) | 委譲制約の規範項目には根拠と世代を添え、実測にもとづく規範の廃止条件を持たせる | Accepted | 2026-08-05 |
 | [0074](0074-handoff-pruning-recovery-via-git-history-only.md) | ハンドオフ剪定で落とした情報の受け皿は git 履歴のみとし、明示アーカイブを設けない | Accepted | 2026-08-06 |
@@ -107,11 +107,11 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0099](0099-citation-consistency-via-existing-checkpoint-wording.md) | 引用元との照合（条件保存・主張の向き）は新工程を設けず既存検査観点の文言拡張で行い、残余リスクを受容する | Accepted | 2026-08-16 |
 | [0100](0100-one-shot-guideline-audit-with-two-track-judgment.md) | ガイドライン全体棚卸し（Issue-0092）は、常時発火規範の全数台帳と二トラック判定による一回限りの監査として実施する | Accepted | 2026-08-16 |
 | [0101](0101-audit-verdict-keep-integrate-hold-and-weak-brake.md) | 全数監査の判定を keep 72・統合 22・保留 44・簡素化 3・廃止 0 で確定し、増設の歯止めは評価可能性の義務化（弱い形）とする | Accepted | 2026-08-16 |
-| [0102](0102-codify-evaluability-mandate-in-contributing.md) | 評価可能性の義務化（弱い形）は CONTRIBUTING「全シナリオ共通」新節と発火フックの接続の記述で規範化する | Accepted | 2026-08-16 |
+| [0102](0102-codify-evaluability-mandate-in-contributing.md) | 評価可能性の義務化（弱い形）は CONTRIBUTING「全シナリオ共通」新節と発火フックの接続で規範化する | Accepted | 2026-08-16 |
 | [0103](0103-single-cycle-scope-for-integration-and-simplification.md) | Issue-0093 の統合 22 行（全 13 クラスタ）と Issue-0094 の簡素化 3 行を単一サイクルで実施する | Accepted | 2026-08-17 |
 | [0104](0104-integration-design-by-source-collation-with-audit-proposal-as-default.md) | 統合仕様は監査の統合先案を既定とし、正本読み合わせで重複側固有の条件を写像してから確定する | Accepted | 2026-08-17 |
-| [0105](0105-integration-design-wiring-two-commons-and-simplification.md) | 統合 22 行は接続の記述化（共通規範の新設は見送り、7 行は統合先案を覆し現状維持）で、簡素化 3 行は手順の束ね直しと起票手順の参照化で実装する | Accepted | 2026-08-17 |
-| [0106](0106-two-layer-wiring-for-merge-mode-norm.md) | マージコミットを残す規範の再発防止は予防・検出の 2 層の接続の記述とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する | Accepted | 2026-08-17 |
+| [0105](0105-integration-design-wiring-two-commons-and-simplification.md) | 統合 22 行は接続の記述への置き換え（共通規範の新設は見送り、7 行は統合先案を覆し現状維持）で、簡素化 3 行は手順の束ね直しと起票手順の参照化で実装する | Accepted | 2026-08-17 |
+| [0106](0106-two-layer-wiring-for-merge-mode-norm.md) | マージコミットを残す規範の再発防止は予防・検出の 2 層の接続とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する | Accepted | 2026-08-17 |
 | [0107](0107-iterative-review-recommendation-by-revision-nature.md) | 指摘反映後の再レビューは改訂の性質で推奨を切り替え、収束は指摘の分類で判定する | Accepted | 2026-08-18 |
 | [0108](0108-accepted-adr-revision-status-handling.md) | Accepted 昇格後の ADR 本文改訂は決定内容の変更有無でステータス運用を分ける | Accepted | 2026-08-18 |
 | [0109](0109-retire-structured-question-tool-unconditionally.md) | 構造化質問ツールを全ツール・全モデルで廃止しテキスト選択肢に一本化、クリック操作を再有効化する | Accepted | 2026-08-18 |

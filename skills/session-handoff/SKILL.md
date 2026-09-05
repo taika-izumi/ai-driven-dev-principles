@@ -110,7 +110,7 @@ docs/working/handoff/<branch-name>.md
 | read | `references/op-read.md` | ファイル特定・サイズ実測・要約提示・確認の記録の欠落検査・継続確認 |
 | create | `references/op-create.md` | 新規作成・最低限埋める項目・add とコミットの委任 |
 | update | `references/op-update.md` | 各節の最新化・確認の記録の行の追記・移設判定・保存 |
-| finalize | `references/op-finalize.md` | サイズ実測・update 同様の更新・移設・基準付き圧縮・次セッション開始時のアクション・Status・コミット |
+| finalize | `references/op-finalize.md` | サイズ実測・update 同様の更新・記述の移設・基準付き圧縮・次セッション開始時のアクション・Status・コミット |
 | cycle-reset | `references/op-cycle-reset.md` | 完了サイクルの経緯の削除・申し送りの移設と有効性の点検・目的の書き直し・Status・add |
 
 ### 横断規範の参照ファイル

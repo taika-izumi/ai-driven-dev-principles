@@ -1,9 +1,9 @@
 # Handoff: レビュー推奨・費用比較の改定から次サイクルへ
 
 - **Branch**: master
-- **Last Updated**: 2026-09-06 00:11 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: codex/issue-0107-0124-review-judgmentの取り込み準備
+- **Last Updated**: 2026-09-06 00:17 (Asia/Tokyo)
+- **Status**: ready-for-next-cycle
+- **Current Phase**: --no-ffマージ b94710c・retrospective・cycle-reset済み、次サイクル待ち
 
 ## 作業の目的・背景
 
@@ -12,6 +12,8 @@ AI駆動開発ガイドラインの0.1.20で、レビュー方式・人数の固
 次は、品質の最低線を満たす範囲で総費用を抑える判断原則を、必要な判断箇所へ届ける有用性を検討する。第一候補の推薦であり、対策や全面改修を採用済みとは扱わない。
 
 ## 関連ドキュメント
+
+- 今回の振り返り: `docs/records/retrospectives/system/2026-09-06-review-judgment-and-cost-evaluation.md` と同名の `flow/` 記録
 
 - 課題の正本: `docs/working/issues/README.md`
 - 第一推奨: `docs/working/issues/flow/0126-quality-constrained-total-cost-objective-not-integrated.md`
@@ -25,14 +27,11 @@ AI駆動開発ガイドラインの0.1.20で、レビュー方式・人数の固
 
 ## 完了済みタスク
 
-- [x] Issue-0107・0124の改定、配布0.1.20生成、独立実装レビューIR-1修正・再確認、サイクル全体整合検査。詳細は完了計画。
-- [x] 目的関数の局所的な継承と不足を原文で照合し、ユーザー依頼でIssue-0126を起票。
+- [x] 過去サイクルは `docs/records/retrospectives/README.md` とgit履歴を参照。
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: ユーザーが指示したmasterへのマージとpush。
-  - 状態: 追跡ファイルの未コミット変更は引き継ぎ更新のみ。作業ブランチをリモートへ出さず、masterへ--no-ffで取り込みpushする。
-  - 残り: マージ後検査・振り返りと引き継ぎ確定・origin/masterへのpush確認。
+なし。直近の取り込みはマージコミット `b94710c`。リモート同期は `git rev-list --left-right --count master...origin/master` と必要時のfetchで確認する。
 
 ## 未着手のタスク
 
@@ -54,12 +53,12 @@ AI駆動開発ガイドラインの0.1.20で、レビュー方式・人数の固
 
 ## 節目ごとの確認記録
 
-- 2026-09-06 次セッション推奨の整理: ADR=なし（推奨のみ、着手・採用は未決） / worklog=棄却（既存課題からの引き継ぎ）
+（cycle-reset済み。次サイクルの記録から追記する。）
 
 ## 次セッション開始時のアクション
 
 1. 本ファイル、Issue-0126、LoopForAlpha原文§A・Bを読む。最初に0.1.20の利用側反映状況を確認する。
-2. 第一推奨はIssue-0126。start-work→extend-guidelines→brainstormingで、原文の要素の対応表と最小の適用案を検討する。具体的な採用・実装はユーザー判断。
+2. 第一推奨はIssue-0126。専用ブランチを作り、start-work→extend-guidelines→brainstormingで、原文の要素の対応表と最小の適用案を検討する。具体的な採用・実装はユーザー判断。
 3. 品質条件、費用の4側面、恒久と一時の扱い、価値検証の先行条件を分ける。原文固有の数値・測定方法は自動移植せず、既存手順の簡素化案も比較する。
 
 ## 重要な意思決定の履歴

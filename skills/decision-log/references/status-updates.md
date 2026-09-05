@@ -6,7 +6,7 @@
 
 | ステータス | 意味 | 遷移元 |
 |-----------|------|--------|
-| Accepted | 承認され現役 | Proposed |
+| Accepted | 承認され有効 | Proposed |
 | Rejected | 承認前に不採用が確定 | Proposed |
 | Deprecated | 承認後に廃止（置換先なし） | Accepted |
 | Superseded by ADR-XXXX | 承認後に新 ADR で置換 | Accepted |

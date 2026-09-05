@@ -57,7 +57,7 @@ docs/working/handoff/<branch-name>.md
 
 ## 節目ごとの確認記録
 
-マイルストーンごとに節目の確認の消し込み結果を1行残す。
+マイルストーンごとに節目の確認の結果を1行残す。
 形式: `- <日付> <マイルストーン>: ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<見送り or 非発火（推奨判定が偽） or 実施記録> / cyclecheck=<実施（指摘なし） or 実施（修正: <識別子>） or 非該当（理由）>`
 
 `review=` の値の定義は `references/review-field-values.md` を参照。
@@ -107,11 +107,11 @@ docs/working/handoff/<branch-name>.md
 
 | 操作 | ファイル | 正本として持つ内容 |
 |---|---|---|
-| read | `references/op-read.md` | ファイル特定・サイズ実測・要約提示・消化記録の欠落検査・継続確認 |
+| read | `references/op-read.md` | ファイル特定・サイズ実測・要約提示・確認の記録の欠落検査・継続確認 |
 | create | `references/op-create.md` | 新規作成・最低限埋める項目・add とコミットの委任 |
-| update | `references/op-update.md` | 各節の最新化・消化記録行の追記・移設判定・保存 |
+| update | `references/op-update.md` | 各節の最新化・確認の記録の行の追記・移設判定・保存 |
 | finalize | `references/op-finalize.md` | サイズ実測・update 同様の更新・移設・基準付き圧縮・次セッション開始時のアクション・Status・コミット |
-| cycle-reset | `references/op-cycle-reset.md` | 完了サイクルの経緯の削除・申し送りの移設と現役性点検・目的の書き直し・Status・add |
+| cycle-reset | `references/op-cycle-reset.md` | 完了サイクルの経緯の削除・申し送りの移設と有効性の点検・目的の書き直し・Status・add |
 
 ### 横断規範の参照ファイル
 
@@ -119,7 +119,7 @@ docs/working/handoff/<branch-name>.md
 
 | 規範 | ファイル | 読むとき |
 |---|---|---|
-| `review=` の値定義（方式要素・終了状態・縮退規定） | `references/review-field-values.md` | 確定点（spec 確定点 / plan 確定点）を通過したマイルストーンの消化記録行を書くとき |
+| `review=` の値定義（方式要素・終了状態・縮退規定） | `references/review-field-values.md` | 確定点（spec 確定点 / plan 確定点）を通過したマイルストーンの確認の記録の行を書くとき |
 | 節別の記載規範（各節の分量・値限定・移設の既定規則） | `references/section-volume-norms.md` | 書き込み系操作で節の分量・書き分けを判断するとき |
 | 独立手順「移設」の導入と種類別対応表 | `references/relocation-map.md` | 移設先を判定するとき（update の移設判定・finalize の圧縮・cycle-reset の申し送り点検） |
 | 独立手順「移設」の手順 1〜6 | `references/relocation-procedure.md` | 実際に記述を正本へ移すとき（finalize の圧縮前段・read の超過受諾時・cycle-reset の前段・update で正本へ書いたとき） |

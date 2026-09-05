@@ -41,7 +41,7 @@ finalize の手順に剪定ステップを追加する（ADR-0075 前段）。�
 
 あわせて finalize の Status 更新ガイドに次の分岐を追加する: cycle-reset 実施済みで次サイクル未着手のまま終了する場合は `ready-for-next-cycle` を維持する（paused 等で上書きしない）。
 
-finalize の現行の手順構成は、後続設計により 7 段（サイズ実測・移設を含む）へ再構成されている。現状の正は `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §3 と `skills/session-handoff/references/op-finalize.md` を参照。
+finalize の現行の手順構成は、後続設計により 7 段（サイズ実測・記述の移設を含む）へ再構成されている。現状の正は `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §3 と `skills/session-handoff/references/op-finalize.md` を参照。
 
 ## 変更 4: 新操作 `cycle-reset` の追加（`skills/session-handoff/SKILL.md` 操作 5）
 

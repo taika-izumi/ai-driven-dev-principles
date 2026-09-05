@@ -1,4 +1,4 @@
-# Issue-0084: マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した
+# Issue-0084: マージ方式の規範（--no-ff）が完了フローに接続されておらず fast-forward マージが発生した
 
 - **Status**: closed
 - **Opened**: 2026-08-14

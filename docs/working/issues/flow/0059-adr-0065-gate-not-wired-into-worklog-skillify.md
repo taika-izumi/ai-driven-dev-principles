@@ -1,4 +1,4 @@
-# Issue-0059: ADR-0065 の適用条件設計ゲートが worklog-skillify に配線されていない
+# Issue-0059: ADR-0065 の適用条件設計ゲートが worklog-skillify に接続されていない
 
 - **Status**: open
 - **Opened**: 2026-08-07

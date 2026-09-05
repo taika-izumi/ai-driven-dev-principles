@@ -1,4 +1,4 @@
-# Issue-0037: start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的）
+# Issue-0037: start-work の節目の確認の記録漏れが検出できない（worklog-record の発火が確率的）
 
 - **Status**: closed
 - **Opened**: 2026-07-31

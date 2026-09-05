@@ -1,4 +1,4 @@
-# Flow Feedback: Post ラッパー消化の可視化（Issue-0037 対処サイクル）
+# Flow Feedback: 節目の確認の実施の可視化（Issue-0037 対処サイクル）
 
 開発フロー/ガイドラインに関する課題の記録。配布先システム開発repoでは、このファイルがガイドラインrepo（ai-driven-dev-principles）への申し送りバックログになる。
 

@@ -52,7 +52,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0044](0044-worklog-skill-pipeline-central-aggregation.md) | 作業記録→候補抽出→スキル化の3スキルパイプラインを中央集約アーキテクチャで新設する | Accepted | 2026-07-16 |
 | [0045](0045-worklog-entry-schema-and-lifecycle.md) | スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクルで設計する | Accepted | 2026-07-17 |
 | [0046](0046-skill3-engine-borrowing-and-env-guard.md) | スキル3は writing-skills を既定エンジンとし、Skill Creator 技術は設計時抽出で借用、実行環境ガードを設ける | Accepted | 2026-07-16 |
-| [0047](0047-worklog-record-wired-into-start-work-post.md) | worklog-record（スキル1）は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる | Accepted | 2026-07-17 |
+| [0047](0047-worklog-record-wired-into-start-work-post.md) | worklog-record（スキル1）は start-work の節目の確認に組み込み全プロジェクトへ伝播させる | Accepted | 2026-07-17 |
 | [0048](0048-worklog-entry-model-field-required.md) | worklog エントリに delta 発生元モデル ID の必須フィールド model を追加する | Accepted | 2026-07-17 |
 | [0049](0049-worklog-schema-version-field.md) | worklog の log.jsonl / processed.jsonl 両方にスキーマバージョン v を必須導入する | Accepted | 2026-07-17 |
 | [0050](0050-worklog-id-collision-recount-and-readback.md) | worklog の id 採番衝突は追記直前の再カウントと追記後の読み直し検証で対処する | Accepted | 2026-07-17 |
@@ -62,7 +62,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0054](0054-worklog-store-encoding-eol-contract.md) | 中央ストアのエンコーディング・EOL 契約と追記手段・読み側検証を定める | Accepted | 2026-07-18 |
 | [0055](0055-start-work-skill-availability-ai-side-check.md) | start-work Phase -1 にスキル availability の AI 側判定規範を追加する | Accepted | 2026-07-18 |
 | [0056](0056-retrospective-issue-extraction-core-worklog-delegation.md) | retrospective を課題抽出記録に純化し、Went Well / Tech Notes 観点を worklog パイプラインへ委譲する | Accepted | 2026-07-31 |
-| [0057](0057-post-wrapper-consumption-visibility-and-reconciliation.md) | Post ラッパーの消化結果を handoff に残し、未入場は事後突合で回収する | Accepted | 2026-08-01 |
+| [0057](0057-post-wrapper-consumption-visibility-and-reconciliation.md) | 節目の確認の実施結果を handoff に残し、未入場は事後照合で回収する | Accepted | 2026-08-01 |
 | [0058](0058-worklog-record-session-switch-trigger.md) | worklog-record の発火契機にセッション切り替え直前を追加する | Accepted | 2026-08-01 |
 | [0059](0059-adr-granularity-by-question-not-length.md) | ADR の粒度は「後から探しに来るときの問い」で決め、文章量は基準にしない | Accepted | 2026-08-03 |
 | [0060](0060-adr-granularity-check-on-append.md) | ADR 粒度の点検を決定追記の手順に組み込み、昇格前の一括点検を受け皿とする | Accepted | 2026-08-03 |
@@ -72,13 +72,13 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0064](0064-worklog-store-write-api-and-health-check.md) | 中央ストアの書き込みは行終端を明示できる API に限定し、健全性検査は正負の対照を同梱する | Accepted | 2026-08-05 |
 | [0065](0065-skillify-requires-applicability-design-first.md) | 採用した worklog 候補は、根拠一覧をそのまま規範に写さず、適用条件の設計を挟んでからスキル化する | Accepted | 2026-08-05 |
 | [0066](0066-subagent-dispatch-items-split-by-workload-cost.md) | サブエージェント委譲の定型項目は「委譲先の作業量を増やすか」で常時適用と条件発火に分ける | Accepted | 2026-08-05 |
-| [0067](0067-pre-finalization-review-as-new-skill.md) | 非コード成果物の確定前レビューは新規スキルとして立て、start-work から配線する | Accepted | 2026-08-05 |
+| [0067](0067-pre-finalization-review-as-new-skill.md) | 非コード成果物の確定前レビューは新規スキルとして立て、start-work から接続する | Accepted | 2026-08-05 |
 | [0068](0068-cross-repo-issue-reference-format.md) | 他リポジトリの課題は `<repo>#Issue-NNNN` で修飾して参照する | Accepted | 2026-08-05 |
 | [0069](0069-general-skill-extension-target-own-repo-only.md) | 汎用スキルの拡張先は自リポジトリの `skills/` に限り、third-party プラグインのスキルは編集しない | Accepted | 2026-08-05 |
 | [0070](0070-dispatch-constraints-as-norm-not-hook-injection.md) | サブエージェント委譲の常時制約は規範文で実装し、フックによる機械注入は採らない | Accepted | 2026-08-05 |
-| [0071](0071-b-group-firing-check-as-mandatory-table-walk.md) | B 群の発火判定は、行数の固定された表を毎回読み下ろす手順として担保する | Accepted | 2026-08-05 |
+| [0071](0071-b-group-firing-check-as-mandatory-table-walk.md) | 条件発火の発火判定は、行数の固定された表を毎回読み下ろす手順として担保する | Accepted | 2026-08-05 |
 | [0072](0072-pre-finalization-review-triggered-by-user-only.md) | 確定前レビューの発動はユーザーの指示に限り、AI は次手として提示するにとどめる | Accepted | 2026-08-05 |
-| [0073](0073-dispatch-norms-carry-provenance-and-sunset-path.md) | 委譲制約の規範項目には根拠と世代を添え、実測にもとづく退役経路を持たせる | Accepted | 2026-08-05 |
+| [0073](0073-dispatch-norms-carry-provenance-and-sunset-path.md) | 委譲制約の規範項目には根拠と世代を添え、実測にもとづく規範の廃止条件を持たせる | Accepted | 2026-08-05 |
 | [0074](0074-handoff-pruning-recovery-via-git-history-only.md) | ハンドオフ剪定で落とした情報の受け皿は git 履歴のみとし、明示アーカイブを設けない | Accepted | 2026-08-06 |
 | [0075](0075-handoff-two-stage-pruning-discipline.md) | ハンドオフの剪定は二段階で行う（セッション境界で基準付き圧縮、サイクル境界で初期状態への書き換え） | Accepted | 2026-08-06 |
 | [0076](0076-handoff-status-add-ready-for-next-cycle.md) | handoff の Status に `ready-for-next-cycle` を正式追加する | Accepted | 2026-08-06 |
@@ -104,14 +104,14 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0096](0096-issue-folder-promotion-trigger-and-role-system.md) | Issue のフォルダ昇格は観測可能な条件で提案し、フォルダ内は 4 役割・番号接頭辞の固定体系とする | Accepted | 2026-08-15 |
 | [0097](0097-issue-granularity-one-problem-many-questions.md) | Issue の粒度は「1 Issue ＝ 1 問題」とし、複数の問いの内包を認める | Accepted | 2026-08-15 |
 | [0098](0098-norm-placement-behavior-in-skills-structure-in-docs.md) | 規範の記載先は「発火条件・手順はスキル、構造・命名・分量の定義はプロジェクト文書」で分け、境界をまたぐ複写を禁止する | Accepted | 2026-08-15 |
-| [0099](0099-citation-consistency-via-existing-checkpoint-wording.md) | 引用元との突合（条件保存・主張の向き）は新工程を設けず既存検査観点の文言拡張で行い、残余リスクを受容する | Accepted | 2026-08-16 |
+| [0099](0099-citation-consistency-via-existing-checkpoint-wording.md) | 引用元との照合（条件保存・主張の向き）は新工程を設けず既存検査観点の文言拡張で行い、残余リスクを受容する | Accepted | 2026-08-16 |
 | [0100](0100-one-shot-guideline-audit-with-two-track-judgment.md) | ガイドライン全体棚卸し（Issue-0092）は、常時発火規範の全数台帳と二トラック判定による一回限りの監査として実施する | Accepted | 2026-08-16 |
-| [0101](0101-audit-verdict-keep-integrate-hold-and-weak-brake.md) | 全数監査の判定を keep 72・統合 22・保留 44・簡素化 3・退役 0 で確定し、増設の歯止めは評価可能性の義務化（弱い形）とする | Accepted | 2026-08-16 |
-| [0102](0102-codify-evaluability-mandate-in-contributing.md) | 評価可能性の義務化（弱い形）は CONTRIBUTING「全シナリオ共通」新節と発火フックの配線で規範化する | Accepted | 2026-08-16 |
+| [0101](0101-audit-verdict-keep-integrate-hold-and-weak-brake.md) | 全数監査の判定を keep 72・統合 22・保留 44・簡素化 3・廃止 0 で確定し、増設の歯止めは評価可能性の義務化（弱い形）とする | Accepted | 2026-08-16 |
+| [0102](0102-codify-evaluability-mandate-in-contributing.md) | 評価可能性の義務化（弱い形）は CONTRIBUTING「全シナリオ共通」新節と発火フックの接続の記述で規範化する | Accepted | 2026-08-16 |
 | [0103](0103-single-cycle-scope-for-integration-and-simplification.md) | Issue-0093 の統合 22 行（全 13 クラスタ）と Issue-0094 の簡素化 3 行を単一サイクルで実施する | Accepted | 2026-08-17 |
 | [0104](0104-integration-design-by-source-collation-with-audit-proposal-as-default.md) | 統合仕様は監査の統合先案を既定とし、正本読み合わせで重複側固有の条件を写像してから確定する | Accepted | 2026-08-17 |
-| [0105](0105-integration-design-wiring-two-commons-and-simplification.md) | 統合 22 行は配線化（共通規範の新設は見送り、7 行は統合先案を覆し現状維持）で、簡素化 3 行は手順の束ね直しと起票手順の参照化で実装する | Accepted | 2026-08-17 |
-| [0106](0106-two-layer-wiring-for-merge-mode-norm.md) | マージコミットを残す規範の再発防止は予防・検出の 2 層配線とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する | Accepted | 2026-08-17 |
+| [0105](0105-integration-design-wiring-two-commons-and-simplification.md) | 統合 22 行は接続の記述化（共通規範の新設は見送り、7 行は統合先案を覆し現状維持）で、簡素化 3 行は手順の束ね直しと起票手順の参照化で実装する | Accepted | 2026-08-17 |
+| [0106](0106-two-layer-wiring-for-merge-mode-norm.md) | マージコミットを残す規範の再発防止は予防・検出の 2 層の接続の記述とローカル git 設定の併用で行い、検出した fast-forward は履歴のやり直しで是正する | Accepted | 2026-08-17 |
 | [0107](0107-iterative-review-recommendation-by-revision-nature.md) | 指摘反映後の再レビューは改訂の性質で推奨を切り替え、収束は指摘の分類で判定する | Accepted | 2026-08-18 |
 | [0108](0108-accepted-adr-revision-status-handling.md) | Accepted 昇格後の ADR 本文改訂は決定内容の変更有無でステータス運用を分ける | Accepted | 2026-08-18 |
 | [0109](0109-retire-structured-question-tool-unconditionally.md) | 構造化質問ツールを全ツール・全モデルで廃止しテキスト選択肢に一本化、クリック操作を再有効化する | Accepted | 2026-08-18 |
@@ -125,7 +125,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0117](0117-premise-existence-viewpoint-and-premise-checks.md) | 確定前レビューに前提実在観点を新設し、指摘採否・提示・設計記述に前提と実在の検査を課す | Accepted | 2026-08-29 |
 | [0118](0118-bulk-reflux-of-lfa-review-flow-issues.md) | LoopForAlpha のレビュー関連 flow 課題 4 件を一括委譲し、Issue-0110 対策設計と同一サイクルで扱う | Accepted | 2026-08-30 |
 | [0119](0119-plan-deviation-decision-defaults.md) | 確定済み計画からの逸脱判断に型分類と採用基準の既定を置き、references 正本と計画側宣言で常設する | Accepted | 2026-08-30 |
-| [0120](0120-stratified-initial-review-bodies-and-round-outlier-detection.md) | 確定前レビューの初回体数を成果物 2 型で層別し、通算巡数の分布外検知を反復提示に常設する | Accepted | 2026-08-30 |
+| [0120](0120-stratified-initial-review-bodies-and-round-outlier-detection.md) | 確定前レビューの初回体数を成果物 2 型で層別し、通算回数の分布外検知を反復提示に常設する | Accepted | 2026-08-30 |
 | [0121](0121-skill-md-size-trigger-and-split-norm.md) | SKILL.md の肥大は build-dist のサイズ警告で検知し、分割判断の型と例外テーブルで制御する（ADR-0116 境界宣言は存置） | Accepted | 2026-08-31 |
 | [0122](0122-split-session-handoff-and-decision-log-by-firing-unit.md) | session-handoff と decision-log は発火単位で references へ分割し、SKILL.md 本文を共通部とディスパッチ表に絞る | Accepted | 2026-09-01 |
 | [0123](0123-plain-language-vocabulary-in-normative-documents.md) | ガイドライン文書の分かりにくい語は、対象を 3 種類に定めて文書自体を書き換え、再流入は配布する置き換え表と提案の規範で防ぐ（自動検査は設けず、古い名前も列挙しない） | Proposed | 2026-09-04 |

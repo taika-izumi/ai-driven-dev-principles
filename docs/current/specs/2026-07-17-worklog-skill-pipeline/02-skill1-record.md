@@ -44,5 +44,5 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 
 - ADR-0044（記録ゲート・スキル1/2 責務境界・scope 暫定タグ）
 - ADR-0045（エントリスキーマ・delta 核心・id 採番）
-- ADR-0047（start-work Post への配線・全プロジェクト伝播）
+- ADR-0047（start-work Post への接続の記述・全プロジェクト伝播）
 - ADR-0048〜0053（v1.1 改訂: model 必須・スキーマ版数 v・id 採番強化・friction string[]・運用ガイド・記録単位）

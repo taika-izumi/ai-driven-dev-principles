@@ -44,7 +44,7 @@ R1 は参照番号を括弧内に置くことを許すが、括弧内でその�
 | ファイル | 理由 |
 |---|---|
 | `skills/start-work/SKILL.md` | 自己参照 4 行（`（本リポジトリ固有スキル…）`。配布物では「他リポジトリ専用だから使えない」と誤読される） |
-| `skills/extend-guidelines/SKILL.md` | ブロック 01 の執行点の配線（手順 6 の書き換え） |
+| `skills/extend-guidelines/SKILL.md` | ブロック 01 の執行点の接続の記述（手順 6 の書き換え） |
 | `skills/worklog-extract/scripts/check-store-health.py` | docstring と利用者へ表示するメッセージからの参照番号除去（ADR-0084） |
 
 規約適合済み（変更不要）は 135 行（括弧内 120・出所リスト行のコロン形 15）。

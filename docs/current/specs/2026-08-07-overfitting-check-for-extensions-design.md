@@ -5,7 +5,7 @@
 - **関連 ADR**: ADR-0079（本設計の決定）。是正パターンの参照元: ADR-0032（観測可能な発動条件）/ ADR-0073（適用例への降格・撤回・根拠と世代・規範の廃止条件）。本設計が型を一般化する既存 ADR: ADR-0040（CLAUDE.md 事前判定。是正パターン②のゲート要求は同手順のゲート必須と同一）。部分修正: ADR-0099（観点 2〈システム種別依存性〉・3〈AI モデル/ツール依存性〉の引用突合注記と雛形根拠欄の改定。2026-08-16）
 - **契機**: 2026-08-05 の Issue-0033/0034 スキル化サイクルで、単一プロジェクト（LoopForAlpha）出所の教訓が汎用スキルの拘束的規範として spec 承認まで進んだ（検出はユーザー目視に依存。worklog `MakeAiInstructions-2026-08-05-07`）
 - **レビュー履歴**: 2026-08-07 確定前レビュー（`pre-finalization-review`・3 観点・レビュアーは claude-opus-5）の指摘を反映して v2 へ改訂
-- **スコープ外**: 廃止候補の機械検出（Issue-0048 の領分）。`worklog-extract` のスコープ確定手順の変更（出所点検は `worklog-skillify` 側で行う）。ADR-0065 の `worklog-skillify` 未配線（既存の穴。本サイクルで課題起票のみ行う）
+- **スコープ外**: 廃止候補の機械検出（Issue-0048 の領分）。`worklog-extract` のスコープ確定手順の変更（出所点検は `worklog-skillify` 側で行う）。ADR-0065 の `worklog-skillify` 未接続（既存の穴。本サイクルで課題起票のみ行う）
 
 ## 設計の骨子
 
@@ -77,7 +77,7 @@
 点検が長期にわたり全拡張で「問題なし / 該当なし」のみとなり、かつ過剰適合の同型事象（ユーザー指摘・worklog delta）が中央ストアへ現れない場合、本点検の簡素化・廃止を候補としてユーザーへ提案する。判断はユーザーが行う。
 ```
 
-## 変更 2: 各シナリオへの配線（9 シナリオ）
+## 変更 2: 各シナリオへの接続の記述（9 シナリオ）
 
 **(a) チェックリスト参照行の追加（6 箇所）**。追加する行（6 箇所とも同一）:
 
@@ -101,7 +101,7 @@
 
 **(f) スキル改定 3 シナリオの ADR 任意文言の改訂**: start-work 変更 / feature-block-design 変更の手順 1「ADRを作成して変更理由を記録する（重要な変更の場合）」を「ADRを作成して変更理由を記録する（規範・手順・観点を追加または強化する変更では必須。それ以外は重要な変更の場合）」へ、retrospective 変更の手順 1 は「（規範・手順・観点を追加または強化する変更、および新セクション追加など出力構造に影響するものは必須。それ以外は重要な変更の場合）」へ書き換える（記録先の存在保証）。
 
-配線しないシナリオは「未決事項・課題を記録するとき」のみ（記録行為であり規範を追加しない）。
+接続しないシナリオは「未決事項・課題を記録するとき」のみ（記録行為であり規範を追加しない）。
 
 ## 変更 3: `skills/extend-guidelines/SKILL.md` へ点検工程を追加
 
@@ -144,8 +144,8 @@
 
 - `CLAUDE.md` / `docs/overview/principles.md` / template 対象ファイル → 変更なし。`scripts/sync-template.ps1` の実行は不要（CONTRIBUTING.md・skills/ は template 対象外）
 - `CLAUDE.md` の「意思決定の即時記録」トリガー一覧に「ガイドライン・ルールの追加・変更」が無い件 → 本サイクルでは触らない（`decision-log` の強トリガー 5 が同内容を担保しており、CLAUDE.md 変更は template 波及を伴うため。不整合自体は課題起票する）
-- `pre-finalization-review` → 配線しない（発動はユーザー指示のみの原則 = ADR-0072 を維持する。執行点は extend-guidelines のコミット前確認と各シナリオのチェックリストに置く）
-- `feature-block-design` → 配線しない（単一目的のガイドライン拡張は適用要否判定に該当せず通常通らない。同スキル自体の改定は変更 2(a)④のチェックリスト行で覆う）
+- `pre-finalization-review` → 接続しない（発動はユーザー指示のみの原則 = ADR-0072 を維持する。執行点は extend-guidelines のコミット前確認と各シナリオのチェックリストに置く）
+- `feature-block-design` → 接続しない（単一目的のガイドライン拡張は適用要否判定に該当せず通常通らない。同スキル自体の改定は変更 2(a)④のチェックリスト行で覆う）
 - `worklog-extract` → 変更なし（スコープ確定は従来どおり。出所点検は skillify 側の委譲直前ゲートとして実施）
 - README のスキル一覧 → 変更なし（新規スキルの追加は無い）
 
@@ -157,7 +157,7 @@
 2. 定型ブロック雛形の存在: `Select-String -Path CONTRIBUTING.md -Pattern '### 過剰適合点検（ADR-0079）'` → ちょうど 1 件
 3. 参照行: `Select-String -Path CONTRIBUTING.md -Pattern '過剰適合の点検を実施し'` → ちょうど 8 件（チェックリスト行 6 + 棚卸し条件付き行 1 + CLAUDE.md 更新シナリオ手順ステップ 1。横断節本文にはこの語句を使わない）
 4. `ADR-0079` の総出現件数: 実装計画で機械計数した確定値と等号一致（`Select-String -Path CONTRIBUTING.md -Pattern 'ADR-0079'`）
-5. スキル配線: `Select-String -Path skills/extend-guidelines/SKILL.md,skills/worklog-skillify/SKILL.md -Pattern 'ADR-0079' | Group-Object Filename` → extend-guidelines 1 件以上・worklog-skillify 2 件（手順ステップ + 関連 ADR 行）
+5. スキルの接続: `Select-String -Path skills/extend-guidelines/SKILL.md,skills/worklog-skillify/SKILL.md -Pattern 'ADR-0079' | Group-Object Filename` → extend-guidelines 1 件以上・worklog-skillify 2 件（手順ステップ + 関連 ADR 行）
 6. renumber: `skills/extend-guidelines/SKILL.md` の手順見出しが 1〜6、`skills/worklog-skillify/SKILL.md` の「## 手順」節内の番号が 1〜6 の連番であること（他節の番号付きリストは対象外）
 7. スナップショット同期: `Select-String -Path docs/current/specs/2026-07-17-worklog-skill-pipeline/04-skill3-skillify.md -Pattern '出所点検'` → 1 件以上
 8. プラグイン更新後のスキル本文反映: ユーザーに `/plugin marketplace update ai-driven-dev-principles` を依頼し、改定スキルを起動して返る本文と repo 実ファイルを突合する（Issue-0044 の運用知見）
@@ -167,6 +167,6 @@
 - ADR-0079 を Accepted へ昇格（実装完了・検証後。ADR-0019）
 - 課題起票 3 件（確定前レビューで発見された既存の穴。本サイクルの実装対象外）:
   1. `docs/current/specs/2026-04-13-contributing-and-gateway-skill-design.md` の陳腐化（system。旧名称・旧セクション構成のままスナップショット規約を満たしていない）
-  2. ADR-0065（適用条件設計ゲート）が `worklog-skillify` に未配線（flow。Accepted 決定がスキル手順に反映されていない）
+  2. ADR-0065（適用条件設計ゲート）が `worklog-skillify` に未接続（flow。Accepted 決定がスキル手順に反映されていない）
   3. `CLAUDE.md` の意思決定即時記録トリガーに「ガイドライン・ルールの追加・変更」が無い（flow。`decision-log` 強トリガー 5 との不整合）
 - 対応する open issue の close は無し（本サイクルはユーザー起点）

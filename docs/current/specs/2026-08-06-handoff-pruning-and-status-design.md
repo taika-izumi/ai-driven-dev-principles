@@ -72,7 +72,7 @@ Phase 3 手順 3 の現行記述「`session-handoff` の **update** 操作を呼
 ## 変更対象外
 
 - `CLAUDE.md` / `docs/overview/principles.md` → 変更なし。ただし template 対象の `docs/overview/folder-structure.md` は後続設計（`docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md` §5）で変更され、`scripts/sync-template.ps1` の実行が必要になった
-- `skills/start-work/SKILL.md` → 本設計での変更はなし（セッション終了処理は finalize を呼ぶ既存配線のまま。cycle-reset は retrospective 経由でのみ発動する）。ただし「本サイクル」の定義文言は後続設計（`docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md` §2）で変更された
+- `skills/start-work/SKILL.md` → 本設計での変更はなし（セッション終了処理は finalize を呼ぶ既存の接続の記述のまま。cycle-reset は retrospective 経由でのみ発動する）。ただし「本サイクル」の定義文言は後続設計（`docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md` §2）で変更された
 - 既存 handoff ファイルの一括修正 → しない。新規約は次回以降の操作時に適用される
 
 ## 検証

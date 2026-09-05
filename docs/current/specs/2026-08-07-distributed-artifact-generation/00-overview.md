@@ -7,7 +7,7 @@
 | ファイル | 内容 |
 |---|---|
 | `00-overview.md`（本ファイル） | 背景、全体アーキテクチャ、処理フロー、意思決定、スコープ外、完了基準、過剰適合点検 |
-| `01-provenance-notation-convention.md` | 配布対象ソースにおける出所識別子の記法規約と、拡張フローへの執行点配線 |
+| `01-provenance-notation-convention.md` | 配布対象ソースにおける出所識別子の記法規約と、拡張フローへの執行点の接続の記述 |
 | `02-distribution-generator.md` | 配布物生成器（参照番号の除去・規約検査・陳腐化検出） |
 | `03-template-sync-integration.md` | `template/` 生成への変換組み込み |
 | `04-plugin-distribution-layout.md` | プラグイン配布構造 |
@@ -45,7 +45,7 @@
 
 | # | ブロック | 責務 | 主な対象ファイル |
 |---|---|---|---|
-| 01 | 出所識別子の記法規約 | 配布対象ソースにおける参照番号の書き方（R1〜R5）を定義し、拡張フローへ執行点を配線する | `CONTRIBUTING.md`、`skills/extend-guidelines/SKILL.md` |
+| 01 | 出所識別子の記法規約 | 配布対象ソースにおける参照番号の書き方（R1〜R5）を定義し、拡張フローへ執行点を接続する | `CONTRIBUTING.md`、`skills/extend-guidelines/SKILL.md` |
 | 02 | 配布物生成器 | 配布対象ソースから参照番号を除去した配布物を生成し、規約違反を検出したらエラーで停止する。生成物の陳腐化も検出する | `scripts/build-dist.ps1`、`scripts/lib/strip-provenance.ps1`（いずれも新規） |
 | 03 | template 同期への変換組み込み | `template/` の生成にも同じ判定と変換を適用する | `scripts/sync-template.ps1` |
 | 04 | プラグイン配布構造 | 生成物をプラグインのルートとして配布する構造を定義し、成立性を実機で検証する | `.claude-plugin/marketplace.json`、`.claude-plugin/plugin.json`、`dist/.claude-plugin/plugin.json`、`README.md` |

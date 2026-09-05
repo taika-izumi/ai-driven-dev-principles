@@ -6,4 +6,4 @@
 
 | ドキュメント | 内容 |
 |---|---|
-| [powershell-pitfalls.md](powershell-pitfalls.md) | PowerShell / .NET API の実測済みの落とし穴集（検索・集計・追記・作業ディレクトリ） |
+| [powershell-pitfalls.md](powershell-pitfalls.md) | シェル・PowerShell / .NET API の実測済みの落とし穴集（検索・集計・追記・作業ディレクトリ。`grep` の否定先読みと計数方式を含む。出所: Issue-0119） |

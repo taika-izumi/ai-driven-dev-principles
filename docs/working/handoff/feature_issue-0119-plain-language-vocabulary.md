@@ -1,9 +1,9 @@
 # Handoff: ガイドライン文書の分かりにくい語を平易表現規約へ合わせる（Issue-0119）
 
-- **Branch**: feature/issue-0119-plain-language-vocabulary（master `d11c38b` から分岐。マージ未実施）
-- **Last Updated**: 2026-09-05 18:10 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: ガイドライン拡張/実装 14 タスクが完了し ADR-0123 を Accepted へ昇格・Issue-0119 を close 済み。残るのは完了処理（マージ・振り返り・サイクルの引き継ぎのリセット・push）
+- **Branch**: feature/issue-0119-plain-language-vocabulary（master `d11c38b` から分岐。**master へ `--no-ff` で取り込み済み: マージコミット `77ec45b`**）
+- **Last Updated**: 2026-09-05 18:40 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: 完了。master へ `--no-ff` で取り込み済み（マージコミット `77ec45b`）・振り返り記録作成済み・master.md の cycle-reset 済み。残るのは push のみ（ユーザー判断）
 
 ## 作業の目的・背景
 
@@ -19,7 +19,7 @@ Issue-0119 の対策サイクル。`AGENTS.md`「コンテキスト管理」の�
 - 対象課題: `docs/working/issues/flow/0119-guideline-wording-violates-its-own-plain-language-norm/`（課題本体＋配布先の観測資料 `lfa-0130-*` 10 本）
 - 問われている規約: `AGENTS.md`「コンテキスト管理」/ その設計: `docs/current/specs/2026-06-15-naming-clarity-discipline-design.md`・ADR-0022
 - 隣接課題: Issue-0043 / Issue-0120 / LoopForAlpha#Issue-0131（配布先文書側の同型。配布先が所有）
-- 本サイクルで起票: Issue-0124（レビュー指摘の採否に費用側の評価が無く恒久資産が増え続ける）／Issue-0125（語彙の規範が委譲制約に配線されておらず、委譲先が文書を編集する経路に届かない。昇格時の検査の観点 4 で検出）
+- 本サイクルで起票: Issue-0124（レビュー指摘の採否に費用側の評価が無く恒久資産が増え続ける）／Issue-0125（語彙の規範が委譲制約に接続されておらず、委譲先が文書を編集する経路に届かない。昇格時の検査の観点 4 で検出）
 - 拡張ルール: `CONTRIBUTING.md`（執行点 4 手順・SKILL.md のサイズと分割・過剰適合点検・新設の評価可能性）
 - master の申し送り（本ブランチでも有効）: `docs/working/handoff/master.md`
 - 改訂前退避と差分: `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-09-04-adr-0123-spec/`（r1・r2 と、r1→r2・r2→r3 の差分ファイル）

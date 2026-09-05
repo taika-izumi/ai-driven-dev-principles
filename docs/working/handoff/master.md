@@ -68,7 +68,7 @@
 - **Issue 運用の規範が稼働中**（ADR-0095〜0098): 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須
 - **リモート同期**: 2026-09-05 の `e8631af` まで push 済み（マージ `77ec45b` と配布 0.1.19 を含む）。**feature ブランチは push しない慣行**（リモートは `origin/master` のみ）。各ツールへの反映は利用側の更新操作が必要
 - **inbox に未整理 3 件が滞留**: `docs/inbox/` の 3 ファイル（いずれも未追跡）。`docs/conversation_log.md` も未追跡のまま。**ユーザーが手動移動予定のため organize-inbox の提案は不要**。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
-- **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。配布版は 0.1.15）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
+- **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。**0.1.19 が反映済み**。2026-09-05 にユーザーが Codex CLI の plugins コマンドで確認）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
 - **LoopForAlpha リポジトリに委譲済み追記 4 ファイルが未コミットで残置**（`feature/stage7-part2-design` の作業ツリー上。ユーザーが LFA セッションで LFA 側の流儀によりコミット予定。本リポジトリからはコミットしない。ADR-0118）
 - **Copilot CLI は未契約**のため、同ツール向けの検証（Layer 2・Layer 3 の退行確認）が恒久的に実行できない。3 ツール対応を謳う以上、片方が検証不能なまま続く
 - **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` の残置が 21 ディレクトリ**（本サイクル分 = `MakeAiInstructions/2026-09-01-adr-0122-spec/r1〜r9`・`2026-09-03-adr-0122-plan/r1〜r6`。整理はユーザー判断）

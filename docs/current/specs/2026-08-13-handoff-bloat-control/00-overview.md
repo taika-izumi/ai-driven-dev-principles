@@ -42,7 +42,7 @@ ADR-0089 に従う: 情報分類と配置先の定義（What/Where）の正本�
 ## 4. 完了基準
 
 1. session-handoff・start-work スキルに §3 (a)〜(h) が記載され、`scripts/build-dist.ps1`（-Check 含む）が違反 0 で通過する
-2. 配布物の目視: `dist/skills/session-handoff/SKILL.md` と `template/docs/overview/folder-structure.md` で、機械判定の届かない 5 型（半角括弧・識別子同居・実在固有名・自己参照・表示文字列）の違反がない
+2. 配布物の目視: `dist/skills/session-handoff/SKILL.md` と `template/docs/overview/folder-structure.md` で、機械判定の届かない 5 型（半角括弧・参照番号の同居・実在固有名・自己参照・表示文字列）の違反がない
 3. folder-structure.md の配置表の拡張行が本体と `template/` の両方に実在する（`scripts/sync-template.ps1 -Check` 通過）
 4. ADR-0075 の Consequences に移設セット運用の部分修正注記が、ADR-0080 の Consequences に「本サイクル」定義変更の部分修正注記が実在する
 5. 旧 spec `2026-08-06-handoff-pruning-and-status-design.md` に §3 (i)〜(vi) の矛盾記述が残っていない（「数値ゲート（行数閾値等）は設けない」等が grep で不検出）

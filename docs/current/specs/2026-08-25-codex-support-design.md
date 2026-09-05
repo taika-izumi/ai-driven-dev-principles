@@ -47,7 +47,7 @@
 
 ### 2. Layer 3 — Codex 向けマニフェストの生成器導出（ADR-0112）
 
-- `build-dist.ps1` の出力先を一般化する。ただし**ディレクトリ走査を伴う工程（wipe・stale 検出・残存識別子自己検査）は従来どおり `dist/` に限定**し、ルート直下の生成物（`.agents/plugins/marketplace.json`）は**既知パスのホワイトリストに対するファイル単位の生成・存在・内容比較**とする。`-Check` の一致条件のうち「余分なファイルの不在」はルート側に適用しない（リポジトリルートを出力先ルートとして走査すると全リポジトリファイルが stale 判定され、wipe に含めると不可逆事故になるため。現行実装がルート生成物を扱えず `-Check` が恒久失敗する構造の解消がこの改修の目的）
+- `build-dist.ps1` の出力先を一般化する。ただし**ディレクトリ走査を伴う工程（wipe・stale 検出・残存する参照番号の自己検査）は従来どおり `dist/` に限定**し、ルート直下の生成物（`.agents/plugins/marketplace.json`）は**既知パスのホワイトリストに対するファイル単位の生成・存在・内容比較**とする。`-Check` の一致条件のうち「余分なファイルの不在」はルート側に適用しない（リポジトリルートを出力先ルートとして走査すると全リポジトリファイルが stale 判定され、wipe に含めると不可逆事故になるため。現行実装がルート生成物を扱えず `-Check` が恒久失敗する構造の解消がこの改修の目的）
 - 正本 `.claude-plugin/marketplace.json`・`.claude-plugin/plugin.json` から次の 2 生成物を導出する:
   - `.agents/plugins/marketplace.json`（ルート）: 実測済みレイアウト（`source: {"source":"local","path":"./dist"}`・パス解決はリポジトリルート基準）。`interface.displayName`・`policy.installation`・`policy.authentication`・`category` は生成器内の固定マッピングで付与
   - `dist/.codex-plugin/plugin.json`: `name` / `version` / `description` / `author` は正本 plugin.json から複写、**`skills` は `"./skills/"` 固定、`interface` は `displayName`・`category` の 2 キーのみを生成器内の固定マッピングで付与**し、それ以外の interface キー（`composerIcon` / `logo` / `screenshots` / `shortDescription` ほか）は生成しない（資産参照キーは dist に実体が無く、その他は必須である根拠が無いため最小構成とする）

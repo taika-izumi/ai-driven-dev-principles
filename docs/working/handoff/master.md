@@ -78,9 +78,9 @@
 - **`python3` は Windows ストアのスタブで exit 49 を返すが、`python` は 3.12.1 が動作する**（2026-09-03 実測）。一括編集は `python` のヒアドキュメント・Edit ツール・シェルの heredoc のいずれでもよい
 - ADR-0023 の留意（継続): GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
 
-## Post ラッパー消化記録
+## 節目ごとの確認記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。
+マイルストーンごとに節目の確認の結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。
 
 - 2026-09-05 サイクル完了処理（マージ `77ec45b`・retrospective・cycle-reset・push `e8631af`・配布 0.1.19 反映）: ADR=なし（完了処理に新規の意思決定なし。マージ方式は慣行判定どおり `--no-ff`、push はユーザー承認） / worklog=`MakeAiInstructions-2026-09-05-07`
 

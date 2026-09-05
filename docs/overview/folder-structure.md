@@ -74,6 +74,7 @@ docs/
 | リリース手順・運用手順 | `docs/reference/` |
 | 既知エラー・トラブルシュート | `docs/reference/` |
 | 技術調査・検証メモ、セッション跨ぎに再利用する教訓・作業知見 | `docs/reference/` |
+| 分かりにくい語の置き換え表 | `docs/overview/wording-replacements.md` |
 
 ## 7. 仕様書の運用規約
 

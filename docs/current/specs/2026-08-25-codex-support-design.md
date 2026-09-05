@@ -47,7 +47,7 @@
 
 ### 2. Layer 3 — Codex 向けマニフェストの生成器導出（ADR-0112）
 
-- `build-dist.ps1` の出力先を一般化する。ただし**ディレクトリ走査を伴う工程（wipe・stale 検出・残存識別子自己検査）は従来どおり `dist/` に限定**し、ルート直下の生成物（`.agents/plugins/marketplace.json`）は**既知パスのホワイトリストに対するファイル単位の生成・存在・内容比較**とする。`-Check` の一致条件のうち「余分なファイルの不在」はルート側に適用しない（リポジトリルートを出力先ルートとして走査すると全リポジトリファイルが stale 判定され、wipe に含めると不可逆事故になるため。現行実装がルート生成物を扱えず `-Check` が恒久失敗する構造の解消がこの改修の目的）
+- `build-dist.ps1` の出力先を一般化する。ただし**ディレクトリ走査を伴う工程（wipe・stale 検出・残存する参照番号の自己検査）は従来どおり `dist/` に限定**し、ルート直下の生成物（`.agents/plugins/marketplace.json`）は**既知パスのホワイトリストに対するファイル単位の生成・存在・内容比較**とする。`-Check` の一致条件のうち「余分なファイルの不在」はルート側に適用しない（リポジトリルートを出力先ルートとして走査すると全リポジトリファイルが stale 判定され、wipe に含めると不可逆事故になるため。現行実装がルート生成物を扱えず `-Check` が恒久失敗する構造の解消がこの改修の目的）
 - 正本 `.claude-plugin/marketplace.json`・`.claude-plugin/plugin.json` から次の 2 生成物を導出する:
   - `.agents/plugins/marketplace.json`（ルート）: 実測済みレイアウト（`source: {"source":"local","path":"./dist"}`・パス解決はリポジトリルート基準）。`interface.displayName`・`policy.installation`・`policy.authentication`・`category` は生成器内の固定マッピングで付与
   - `dist/.codex-plugin/plugin.json`: `name` / `version` / `description` / `author` は正本 plugin.json から複写、**`skills` は `"./skills/"` 固定、`interface` は `displayName`・`category` の 2 キーのみを生成器内の固定マッピングで付与**し、それ以外の interface キー（`composerIcon` / `logo` / `screenshots` / `shortDescription` ほか）は生成しない（資産参照キーは dist に実体が無く、その他は必須である根拠が無いため最小構成とする）
@@ -57,7 +57,7 @@
 - 生成物へ複写する必須の文字列値（`.claude-plugin/marketplace.json` の `name`、`.claude-plugin/plugin.json` の `name` / `version` / `description` / `author.name`）は、欠損・非文字列・空白のみのいずれでも非ゼロ終了する。`[string]` パラメータがオブジェクトを `@{...}`・`$null` を空文字へ黙って変換するため、素通りさせると構文的に妥当な JSON へ壊れた値が埋まり `-Check` が自己一致で恒久的に通ってしまう（ADR-0113 の追加決定）
 - 生成物はいずれも git 管理し、`-Check` の検査対象に加える。手編集しない（正本は `.claude-plugin/` の 2 ファイルのみ）
 - **プラグイン version を patch bump する（0.1.11 → 0.1.12）**: 本サイクルは dist の内容を改定するため ADR-0090 の bump 必須条件に該当する
-- 生成器の正本仕様のスナップショット同期: `docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md`（`-Check` 4 条件・dist 構成表・出力例・責務・走査対象の実数 26→27 / 5→6）と `03-template-sync-integration.md`（template.manifest「変更しない」注記の撤回・同期対象 5→6 ファイル・全 8→9 ファイル・影響表の CLAUDE.md 行・check-claude-md-size 呼び出し）を書き換えで更新する。あわせて同ディレクトリの `00-overview.md`（スコープ外リストの `template/CLAUDE.md` 参照）・`01-provenance-notation-convention.md`（配布対象ソース件数 5→6・シナリオ配線表）・`04-plugin-distribution-layout.md`（配布構造図・プラグイン宣言元・スキル本数）、および skills の正本テキストを逐語ないし準逐語で写している `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md`・`02-volume-norms.md` と `docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md`・`04-skill3-skillify.md` も、同じ基準（本サイクルの変更が直接無効化する記述であること）で同期する
+- 生成器の正本仕様のスナップショット同期: `docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md`（`-Check` 4 条件・dist 構成表・出力例・責務・走査対象の実数 26→27 / 5→6）と `03-template-sync-integration.md`（template.manifest「変更しない」注記の撤回・同期対象 5→6 ファイル・全 8→9 ファイル・影響表の CLAUDE.md 行・check-claude-md-size 呼び出し）を書き換えで更新する。あわせて同ディレクトリの `00-overview.md`（スコープ外リストの `template/CLAUDE.md` 参照）・`01-provenance-notation-convention.md`（配布対象ソース件数 5→6・シナリオの接続の一覧）・`04-plugin-distribution-layout.md`（配布構造図・プラグイン宣言元・スキル本数）、および skills の正本テキストを逐語ないし準逐語で写している `docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md`・`02-volume-norms.md` と `docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md`・`04-skill3-skillify.md` も、同じ基準（本サイクルの変更が直接無効化する記述であること）で同期する
 
 ### 3. superpowers 依存 — 実測により解消
 
@@ -124,9 +124,9 @@
 | 出所の偏り | 問題なし | 根拠は外部ツール公式仕様（OpenAI / Anthropic / GitHub。2026-08-25 確認）＋実機実測 6 件・1 環境（Windows 11・Codex CLI 0.149.0-alpha.4.3・Claude Code）。単一環境実測に依存する記載（コマンド名 `plugin add`・native 優先挙動）には確認日・バージョンを明記して依存を局所化する。プロジェクト横断の教訓の規範昇格ではない |
 | システム種別依存性 | 問題なし | 開発対象システムの種別・技術スタックに依存しない（ツール到達経路の拡張のみ）。引き写し箇所: (1) CONTRIBUTING 執行点 4 手順の対象リスト拡張 — 引用元のゲート（配布対象ソース変更時のみ発火）を変えずに対象を追加する。(2) 「プロジェクトの CLAUDE.md に調整値」8 箇所の二段フォールバック化 — 各引用元の「プロジェクトの調整値優先」ゲートを変えずに参照先のみ拡張する |
 | AIモデル/ツール依存性 | 問題なし | 対象 3 ツールの列挙に閉じ、将来モデル・将来ツールの性能発揮を制限する拘束は加えない。Codex 実測値（コマンド名・native 優先）は README・spec に確認日・バージョンを添えて記載する。引き写し箇所: 上記 2 件以外なし |
-| 退役経路 | 定義済み | Codex が AGENTS.md 読み込みまたは `.codex-plugin` / `.agents/plugins` 探索を廃止・変更したことをユーザーまたはエージェントが観測した時点で、該当生成物・記述の撤去を提案しユーザーが判断する |
+| 規範の廃止条件 | 定義済み | Codex が AGENTS.md 読み込みまたは `.codex-plugin` / `.agents/plugins` 探索を廃止・変更したことをユーザーまたはエージェントが観測した時点で、該当生成物・記述の撤去を提案しユーザーが判断する |
 
 **新設の評価可能性（ADR-0102）**: 本拡張は規範・工程・観点の新設を含まない（生成器の生成対象追加・version 一致検査の追加は既存工程「執行点 4 手順」の内部拡張であり、新工程ではない。AGENTS.md はファイル追加であって規範の新設ではない）。よって ADR への記載要件は対象外と判定する。
 
-**再点検（2026-08-25・実装中の差分について。ADR-0114）**: Task 4 のコード品質レビューを受けて、二段フォールバック句の探索対象を「当該調整値の記載」と明示し、Layer 2 の書き込み点 1 箇所（`skills/worklog-skillify/SKILL.md` のスコープ 3 分岐表）にも同じ二段フォールバックを適用し、ローカルスキル配置先の列挙を `など` で開いた。4 観点の判定は上表から変わらない——(a) 出所の偏り: 根拠は同一サイクルの独立レビューと ADR-0016 の既存記録で、プロジェクト横断の教訓の規範昇格ではない。(b) システム種別依存性: 引き写し箇所は上表 (2) の二段フォールバック化と同一で、適用先が読み側 7 箇所＋書き込み側 1 箇所へ増えるのみ。引用元のゲート（プロジェクトの調整値優先）は変えていない。(c) AI モデル / ツール依存性: **列挙を閉じない方向の是正であり、依存はむしろ減る**。特定ツールの非対応を断定しない判断（ADR-0114 の Considered Alternatives 3 を不採用）により、Copilot CLI の現行仕様への依存を持ち込んでいない。(d) 退役経路: 上表と同じ。**新設の評価可能性の判定も変わらない**——表現の明確化と既存パターンの適用先追加であり、新しい拘束的文を足していない。
+**再点検（2026-08-25・実装中の差分について。ADR-0114）**: Task 4 のコード品質レビューを受けて、二段フォールバック句の探索対象を「当該調整値の記載」と明示し、Layer 2 の書き込み点 1 箇所（`skills/worklog-skillify/SKILL.md` のスコープ 3 分岐表）にも同じ二段フォールバックを適用し、ローカルスキル配置先の列挙を `など` で開いた。4 観点の判定は上表から変わらない——(a) 出所の偏り: 根拠は同一サイクルの独立レビューと ADR-0016 の既存記録で、プロジェクト横断の教訓の規範昇格ではない。(b) システム種別依存性: 引き写し箇所は上表 (2) の二段フォールバック化と同一で、適用先が読み側 7 箇所＋書き込み側 1 箇所へ増えるのみ。引用元のゲート（プロジェクトの調整値優先）は変えていない。(c) AI モデル / ツール依存性: **列挙を閉じない方向の是正であり、依存はむしろ減る**。特定ツールの非対応を断定しない判断（ADR-0114 の Considered Alternatives 3 を不採用）により、Copilot CLI の現行仕様への依存を持ち込んでいない。(d) 規範の廃止条件: 上表と同じ。**新設の評価可能性の判定も変わらない**——表現の明確化と既存パターンの適用先追加であり、新しい拘束的文を足していない。
 

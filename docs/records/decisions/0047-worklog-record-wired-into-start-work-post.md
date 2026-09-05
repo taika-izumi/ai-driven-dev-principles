@@ -1,4 +1,4 @@
-# ADR-0047: worklog-record（スキル1）は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる
+# ADR-0047: worklog-record（スキル1）は start-work の節目の確認に組み込み全プロジェクトへ伝播させる
 
 - **Status**: Accepted
 - **Date**: 2026-07-17

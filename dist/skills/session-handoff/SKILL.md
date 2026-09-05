@@ -55,20 +55,20 @@ docs/working/handoff/<branch-name>.md
 
 （なし、または箇条書き）
 
-## Post ラッパー消化記録
+## 節目ごとの確認記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す。
-形式: `- <日付> <マイルストーン>: ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<見送り or 非発火（推奨判定が偽） or 実施記録> / cyclecheck=<実施（指摘なし） or 実施（修正: <識別子>） or 非該当（理由）>`
+マイルストーンごとに節目の確認の結果を1行残す。
+形式: `- <日付> <マイルストーン>: ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<見送り or 非発火（推奨判定が偽） or 実施記録> / cyclecheck=<実施（指摘なし） or 実施（修正: <参照番号>） or 非該当（理由）>`
 
 `review=` の値の定義は `references/review-field-values.md` を参照。
 
-`review=` は確定点（spec 確定点 / plan 確定点）を通過したマイルストーンにのみ書く。反復の途中経過行には書かず確定点行へ集約する。途中経過行の名称には確定点ラベルを含めない（read の欠落検査の誤判定防止。対象確定点の識別は行本文の参照で行う）。確定点を通過したマイルストーンは、**名称に `spec 確定点 (a)` / `spec 確定点 (b)` / `spec 確定点 (c)` / `plan 確定点` のいずれかを含める**（read の欠落検査が対象行を識別できるようにするため）。
+`review=` は確定点（spec 確定点 / plan 確定点）を通過したマイルストーンにのみ書く。反復の途中経過行には書かず確定点行へ集約する。途中経過行の名称には確定点ラベルを含めない（read の欠落検査の誤判定防止。対象確定点の識別は行本文の参照で行う）。確定点を通過したマイルストーンは、**名称に `spec 確定点` / `plan 確定点` のいずれかを含める**（read の欠落検査が対象行を識別できるようにするため）。型の括弧書きは書かない。
 `cyclecheck=` は、Accepted 昇格処理を含むマイルストーン行と、サイクル全体整合検査のみを実施したマイルストーン行に書く（値の定義と手順は `decision-log` の `references/cycle-consistency-check.md` を参照）。それ以外のマイルストーンでは省略してよい。**Accepted 昇格処理を含むマイルストーンは、名称に `Accepted 昇格` を含める**（read の欠落検査の識別用）。
 行が存在すること自体が update の証跡であるため、session-handoff update の項目は書かない。
 
 - YYYY-MM-DD <マイルストーン名>: ADR=NNNN / worklog=`<project>-YYYY-MM-DD-NN`
 - YYYY-MM-DD <マイルストーン名>: ADR=なし（<理由>） / worklog=棄却（delta なし）
-- YYYY-MM-DD <確定点のマイルストーン名>: ADR=NNNN / worklog=`<project>-YYYY-MM-DD-NN` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
+- YYYY-MM-DD <確定点のマイルストーン名>: ADR=NNNN / worklog=`<project>-YYYY-MM-DD-NN` / review=フル実施（claude-opus-5・2 回）＋差分再確認（claude-opus-5・1 回・実質的な収束）
 - YYYY-MM-DD <マイルストーン名・ADR-NNNN Accepted 昇格>: ADR=NNNN / worklog=棄却（delta なし） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
@@ -103,13 +103,15 @@ docs/working/handoff/<branch-name>.md
 
 このスキルは5つの操作を提供する。呼び出し側は操作を明示すること。各操作の手順は `references/` 配下の操作別ファイルが正本であり、呼び出された操作のファイルだけを読む。
 
+書式で定めた節見出しが実ファイルに無い場合、検査や追記を進めず、ユーザーへ報告して判断を仰ぐ（古い名前からの更新か、新規作成か）。古い名前は本スキルへ列挙しない。
+
 | 操作 | ファイル | 正本として持つ内容 |
 |---|---|---|
-| read | `references/op-read.md` | ファイル特定・サイズ実測・要約提示・消化記録の欠落検査・継続確認 |
+| read | `references/op-read.md` | ファイル特定・サイズ実測・要約提示・確認の記録の欠落検査・継続確認 |
 | create | `references/op-create.md` | 新規作成・最低限埋める項目・add とコミットの委任 |
-| update | `references/op-update.md` | 各節の最新化・消化記録行の追記・移設判定・保存 |
-| finalize | `references/op-finalize.md` | サイズ実測・update 同様の更新・移設・基準付き圧縮・次セッション開始時のアクション・Status・コミット |
-| cycle-reset | `references/op-cycle-reset.md` | 完了サイクルの経緯の削除・申し送りの移設と現役性点検・目的の書き直し・Status・add |
+| update | `references/op-update.md` | 各節の最新化・確認の記録の行の追記・移設判定・保存 |
+| finalize | `references/op-finalize.md` | サイズ実測・update 同様の更新・記述の移設・基準付き圧縮・次セッション開始時のアクション・Status・コミット |
+| cycle-reset | `references/op-cycle-reset.md` | 完了サイクルの経緯の削除・申し送りの移設と有効性の点検・目的の書き直し・Status・add |
 
 ### 横断規範の参照ファイル
 
@@ -117,7 +119,7 @@ docs/working/handoff/<branch-name>.md
 
 | 規範 | ファイル | 読むとき |
 |---|---|---|
-| `review=` の値定義（方式要素・終了状態・縮退規定） | `references/review-field-values.md` | 確定点（spec 確定点 / plan 確定点）を通過したマイルストーンの消化記録行を書くとき |
+| `review=` の値定義（方式要素・終了状態・縮退規定） | `references/review-field-values.md` | 確定点（spec 確定点 / plan 確定点）を通過したマイルストーンの確認の記録の行を書くとき |
 | 節別の記載規範（各節の分量・値限定・移設の既定規則） | `references/section-volume-norms.md` | 書き込み系操作で節の分量・書き分けを判断するとき |
 | 独立手順「移設」の導入と種類別対応表 | `references/relocation-map.md` | 移設先を判定するとき（update の移設判定・finalize の圧縮・cycle-reset の申し送り点検） |
 | 独立手順「移設」の手順 1〜6 | `references/relocation-procedure.md` | 実際に記述を正本へ移すとき（finalize の圧縮前段・read の超過受諾時・cycle-reset の前段・update で正本へ書いたとき） |

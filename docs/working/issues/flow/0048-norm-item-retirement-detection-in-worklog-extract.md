@@ -1,4 +1,4 @@
-# Issue-0048: 規範項目の退役候補を worklog-extract の走査で機械検出できない
+# Issue-0048: 規範項目の廃止候補を worklog-extract の走査で機械検出できない
 
 - **Status**: open
 - **Opened**: 2026-08-05

@@ -1,4 +1,4 @@
-# Retrospective: Issue-0086/0066 対策 引用突合の文言拡張
+# Retrospective: Issue-0086/0066 対策 引用照合の文言拡張
 
 - **Subject**: Issue-0086（引用実測と見送り理由の向きの突合工程なし）と Issue-0066（引用元ゲートの無条件化検出手順なし）の同時対策
 - **Branch**: feature/issue-0086-citation-consistency（merge済み: 598b279）

@@ -1,4 +1,4 @@
-# Retrospective: Post ラッパー消化の可視化（Issue-0037 対処サイクル）
+# Retrospective: 節目の確認の可視化（Issue-0037 対処サイクル）
 
 - **Subject**: Post ラッパー消化の可視化と事後突合（Issue-0037 対処）
 - **Branch**: feature/worklog-record-firing-reliability（merge済み: `9464574`）

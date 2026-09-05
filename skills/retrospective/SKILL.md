@@ -45,7 +45,7 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 
 ### 重複防止（両方向）
 
-- retrospective 側: 起票前に既存 open 課題（worklog-extract 由来を含む）と突合し、既存があれば「検討状況」へ追記する（ADR-0031）
+- retrospective 側: 起票前に既存 open 課題（worklog-extract 由来を含む）と照合し、既存があれば「検討状況」へ追記する（ADR-0031）
 - worklog-extract 側: Issue 草案化時に retrospective 由来のバックログと重複排除する（worklog-extract 手順8。唯一の合流点）
 
 ## 重要な前提
@@ -100,14 +100,14 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
    - 出力フォーマット指定（短い指摘のリスト形式、優先度タグ付き）
 
    結果はメインが受け取り、ユーザーと相談の上で反映する。やり取りは記録ファイルの「Independent Review Notes」節（実施時のみ追加）に記録する
-2. **worklog 総ざらい確認（マイルストーン突合。ADR-0057）**: サイクル中のマイルストーンと中央ストアのエントリを突合し、Post ラッパーの消化漏れを回収する:
-   1. サイクル中のマイルストーンを列挙する。情報源は handoff の「Post ラッパー消化記録」と「完了済みタスク」、および当該ブランチの `git log`
-   2. 各マイルストーンについて、消化記録に `worklog=` の記載（エントリ id または棄却）があるかを検査し、記載が無いものを未消化として洗い出す
-   3. 中央ストア `<home>/.ai-dev-worklog/<project>/log.jsonl` の当該サイクル分エントリと、消化記録に記載された id を突合する
-   4. 未消化のマイルストーンに delta（躓き・人間の指示）があれば `worklog-record` を呼んで記録し、無ければ消化記録へ棄却として1行補う
+2. **worklog 総ざらい確認（マイルストーン照合。ADR-0057）**: サイクル中のマイルストーンと中央ストアのエントリを照合し、節目の確認の記録漏れを回収する:
+   1. サイクル中のマイルストーンを列挙する。情報源は handoff の「節目ごとの確認記録」と「完了済みタスク」、および当該ブランチの `git log`
+   2. 各マイルストーンについて、確認の記録に `worklog=` の記載（エントリ id または棄却）があるかを検査し、記載が無いものを未記録として洗い出す
+   3. 中央ストア `<home>/.ai-dev-worklog/<project>/log.jsonl` の当該サイクル分エントリと、確認の記録に記載された id を照合する
+   4. 未記録のマイルストーンに delta（躓き・人間の指示）があれば `worklog-record` を呼んで記録し、無ければ確認の記録へ棄却として1行補う
    5. 振り分け規則で「worklog 送り」とした delta 型候補の記録漏れもここで拾う
 
-   本工程は、Post ラッパーに完全に入らなかった場合（消化記録の行そのものが無い）を回収する唯一の経路である（設計意図は `docs/current/specs/2026-05-01-retrospective-design.md` Phase 3 参照）
+   本工程は、節目の確認に完全に入らなかった場合（確認の記録の行そのものが無い）を回収する唯一の経路である（設計意図は `docs/current/specs/2026-05-01-retrospective-design.md` Phase 3 参照）
 3. `session-handoff` の **cycle-reset** 操作を呼ぶ（剪定・書き換えの手順は session-handoff 側の定義に従う。ADR-0075）:
    - Status は `in_progress` → `ready-for-next-cycle` へ遷移する（ADR-0076）
    - 「次セッション開始時のアクション」に「抽出した課題は issues に起票済み（Issue-NNNN〜。着手はユーザー判断）」旨を記す
@@ -136,6 +136,6 @@ retrospective は **「課題の抽出と分類」までに限定**する。対�
 - ADR-0028: 振り返り課題の全件起票と issues の system/flow フォルダ分割
 - ADR-0021: retrospective を課題抽出に限定し、出力を system/flow に分割
 - ADR-0010: 振り返りフェーズ導入
-- ADR-0106: 取り込み方式の慣行判定・fast-forward 検出とやり直し・完了フローへの 2 層配線
+- ADR-0106: 取り込み方式の慣行判定・fast-forward 検出とやり直し・完了フローへの 2 層の接続
 - ADR-0011: 保管規約（時系列追記型）
 - 関連スキル: start-work, decision-log, session-handoff, worklog-record, worklog-extract

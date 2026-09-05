@@ -1,4 +1,4 @@
-# Retrospective: Issue-0084 対策（マージコミット規範の完了フロー配線）
+# Retrospective: Issue-0084 対策（マージコミット規範の完了フローへの接続の記述）
 
 - **Subject**: マージ方式確認と fast-forward 検出の 2 層配線（ADR-0106・plugin 0.1.9）
 - **Branch**: feature/issue-0084-wire-no-ff-merge（取り込み方式: マージコミット 6333928）

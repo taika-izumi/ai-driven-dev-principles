@@ -7,7 +7,7 @@
 | ファイル | 内容 |
 |---------|------|
 | `00-overview.md`（本書） | 背景・全体アーキテクチャ・処理フロー・意思決定参照・スコープ外・完了基準 |
-| `01-worklog-store.md` | 共有データ層（中央ストアのレイアウト・スキーマ・識別子解決） |
+| `01-worklog-store.md` | 共有データ層（中央ストアのレイアウト・スキーマ・プロジェクト識別子の解決） |
 | `02-skill1-record.md` | スキル1（記録） |
 | `03-skill2-extract.md` | スキル2（候補抽出） |
 | `04-skill3-skillify.md` | スキル3（スキル化） |
@@ -63,7 +63,7 @@ AI駆動開発ガイドライン運用で得られる「スキル化・ルール
 1. メインエージェントが作業の節目（handoff マイルストーンと同じ）に到達
 2. 記録ゲート判定（既存スキルで実施済みでない かつ AI 自律で毎回再現できない）
 3. ゲート通過なら delta（friction または corrections の少なくとも一方）を核にエントリを構築
-4. 識別子解決（`projects.json` upsert）→ id 採番 → scope 暫定タグ → delta 必須検証 → `<folderName>/log.jsonl` へ追記
+4. プロジェクト識別子の解決（`projects.json` upsert）→ id 採番 → scope 暫定タグ → delta 必須検証 → `<folderName>/log.jsonl` へ追記
 
 ### フロー2: 抽出（スキル2、ユーザーのオンデマンド実行）
 
@@ -86,7 +86,7 @@ AI駆動開発ガイドライン運用で得られる「スキル化・ルール
 - **ADR-0044**: 3スキルパイプラインを中央集約アーキテクチャで新設（3スキル構成・スコープ3分岐・責務境界・overlap 対応）
 - **ADR-0045**: スキル1のログは delta 核心スキーマ・JSONL・追記専用ライフサイクル（id・processed.jsonl・deferred）
 - **ADR-0046**: スキル3は writing-skills 既定・Skill Creator 設計時借用・実行環境ガード
-- **ADR-0047**: worklog-record は start-work の Post ラッパーに組み込み全プロジェクトへ伝播させる
+- **ADR-0047**: worklog-record は start-work の節目の確認に組み込み全プロジェクトへ伝播させる
 - 決定履歴の全量（D1〜D17）は `docs/working/handoff/skill-pipeline-brainstorming-state.md`
 
 ## スコープ外（YAGNI）
@@ -95,7 +95,7 @@ AI駆動開発ガイドライン運用で得られる「スキル化・ルール
 - **物理ファイル肥大時の archive 退避**: v1 では作らない
 - **中央ストアの git 管理**: v1 ではオプション（素のファイル）
 - **他プロジェクト失敗の自動 Issue 移行**: v2（v1 は既存の手動移行経路のまま）
-- **git remote URL 等の強い識別子**: v1 はフォルダ名＋パス存在チェックのみ
+- **git remote URL 等の強いプロジェクト識別子**: v1 はフォルダ名＋パス存在チェックのみ
 
 ## 完了基準
 
@@ -105,5 +105,5 @@ AI駆動開発ガイドライン運用で得られる「スキル化・ルール
 - [x] スキル1が `projects.json` の upsert 自己修復と id 採番（`<project>-<date>-<NN>`）を行う
 - [x] スキル2が `processed.jsonl` による処理済み除外・deferred の条件付き再浮上・既存スキル重複排除を行い、採否結果を Issue 草案と台帳へ反映する
 - [x] スキル3が実行環境ガード・スコープ3分岐・writing-skills 委譲を行い、結果を台帳へ追記する
-- [x] `start-work` の Post ラッパーに worklog-record 実行判定が組み込まれている（ADR-0047）
+- [x] `start-work` の節目の確認に worklog-record 実行判定が組み込まれている（ADR-0047）
 - [x] ADR 0044/0045/0046/0047 が Accepted へ昇格している

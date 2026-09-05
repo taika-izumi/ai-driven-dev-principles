@@ -63,7 +63,7 @@
 | [0033](flow/0033-subagent-dispatch-prompt-boilerplate.md) | サブエージェント委譲の起動プロンプトに入れるべき定型項目が未定義 | closed | 2026-07-31 |
 | [0034](flow/0034-independent-review-with-proof-for-non-code-artifacts.md) | 計画・仕様など非コード成果物の確定前に「実証を課した独立レビュー」を挟む工程がない | closed | 2026-07-31 |
 | [0035](flow/0035-retrospective-lightweight-mode.md) | retrospective の簡易モードが正式な選択肢として未定義 | closed | 2026-07-31 |
-| [0037](flow/0037-worklog-record-post-wrapper-not-firing.md) | start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的） | closed | 2026-07-31 |
+| [0037](flow/0037-worklog-record-post-wrapper-not-firing.md) | start-work の節目の確認の記録漏れが検出できない（worklog-record の発火が確率的） | closed | 2026-07-31 |
 | [0038](flow/0038-retrospective-phase3-findings-no-path-to-record.md) | retrospective の Phase 3 で得た知見を記録へ反映する経路がない | open | 2026-07-31 |
 | [0039](flow/0039-guideline-reliance-on-invisible-tool-memory.md) | ガイドライン遵守が Claude Code プロジェクトメモリという不可視機構に依存しうる | open | 2026-08-03 |
 | [0040](flow/0040-contributing-template-sync-instruction-stale.md) | CONTRIBUTING.md のテンプレート同期指示が現行構成と矛盾している | closed | 2026-08-04 |
@@ -74,7 +74,7 @@
 | [0045](flow/0045-issue-countermeasure-feasibility-unchecked.md) | 既存 open 課題の対策方針が実行可能かを点検する工程がない | open | 2026-08-05 |
 | [0046](flow/0046-cycle-scale-re-estimation-checkpoint-missing.md) | サイクル規模の再見積もりチェックポイントがない | open | 2026-08-05 |
 | [0047](flow/0047-dispatch-constraint-injection-via-hook.md) | サブエージェント委譲の常時制約を、規範文ではなくフックで機械注入できる | open | 2026-08-05 |
-| [0048](flow/0048-norm-item-retirement-detection-in-worklog-extract.md) | 規範項目の退役候補を worklog-extract の走査で機械検出できない | open | 2026-08-05 |
+| [0048](flow/0048-norm-item-retirement-detection-in-worklog-extract.md) | 規範項目の廃止候補を worklog-extract の走査で機械検出できない | open | 2026-08-05 |
 | [0049](flow/0049-handoff-single-file-growth-no-pruning-rules.md) | ハンドオフが単一ファイルへの時系列追記で肥大し、完了情報の剪定規約がない | closed | 2026-08-05 |
 | [0050](flow/0050-retrospective-cadence-bound-to-subproject-granularity.md) | 振り返りの契機がサブプロジェクト粒度に従属し、長期化すると 1 回で扱う材料が過大になる | open | 2026-08-05 |
 | [0051](flow/0051-handoff-status-value-mismatch-between-skills.md) | retrospective が要求するハンドオフ Status 値を session-handoff が定義していない | closed | 2026-08-05 |
@@ -82,8 +82,8 @@
 | [0053](flow/0053-retrospective-material-loss-across-session-restart.md) | セッション再起動を挟むと retrospective の素材（定性的な学び）が失われる | open | 2026-08-05 |
 | [0054](flow/0054-fallback-norm-ignores-transient-outage.md) | pre-action-review の撤退規範が一時的なインフラ障害と恒常的な失敗を区別しない | open | 2026-08-06 |
 | [0056](flow/0056-plan-verification-commands-never-executed-before-finalization.md) | 計画に書いた検証コマンドが「実行可能か」を確定前に誰も確かめていない | open | 2026-08-07 |
-| [0057](flow/0057-subagent-report-identifiers-relayed-without-verification.md) | サブエージェントの完了報告に含まれる識別子を検証せず後続へ転記する経路がある | open | 2026-08-07 |
-| [0059](flow/0059-adr-0065-gate-not-wired-into-worklog-skillify.md) | ADR-0065 の適用条件設計ゲートが worklog-skillify に配線されていない | open | 2026-08-07 |
+| [0057](flow/0057-subagent-report-identifiers-relayed-without-verification.md) | サブエージェントの完了報告に含まれる参照番号を検証せず後続へ転記する経路がある | open | 2026-08-07 |
+| [0059](flow/0059-adr-0065-gate-not-wired-into-worklog-skillify.md) | ADR-0065 の適用条件設計ゲートが worklog-skillify に接続されていない | open | 2026-08-07 |
 | [0060](flow/0060-claude-md-decision-triggers-missing-guideline-change.md) | CLAUDE.md の意思決定即時記録トリガーに「ガイドライン・ルールの追加・変更」が無い | closed | 2026-08-07 |
 | [0061](flow/0061-skill-revision-scenario-steps-assume-new-creation.md) | 「Skillを新規作成・改定するとき」シナリオの手順・チェックリストが新規作成前提のまま | open | 2026-08-07 |
 | [0062](flow/0062-review-recommendation-ignores-artifact-safety-net.md) | 確定前レビューの次手提示が成果物の性質を問わず中立で、安全網の無い成果物でも非推奨側に倒れる | closed | 2026-08-07 |
@@ -96,12 +96,12 @@
 | [0076](flow/0076-dispatch-lacks-isolation-method-constraint.md) | 破壊的な検証を委譲するとき、隔離の作り方を指定する制約項目がない | closed | 2026-08-08 |
 | [0078](flow/0078-cycle-reset-too-coarse-for-long-cycles.md) | cycle-reset の発火点が長期サイクル運用と噛み合わず、サイクル内の蓄積を制御する機構がない | closed | 2026-08-13 |
 | [0079](flow/0079-handoff-as-canonical-store-unbounded.md) | 「正本が handoff 以外にないもの」の保護規則に、正本を外部へ移す誘導と上限がない | closed | 2026-08-13 |
-| [0080](flow/0080-digest-record-line-length-unbounded.md) | 消化記録の「1 行」に長さ・内容の規範がなく、正本と詳細を重複記載して肥大する | closed | 2026-08-13 |
+| [0080](flow/0080-digest-record-line-length-unbounded.md) | 確認記録の「1 行」に長さ・内容の規範がなく、正本と詳細を重複記載して肥大する | closed | 2026-08-13 |
 | [0081](flow/0081-handoff-free-sections-volume-norm-missing.md) | handoff の自由記述部の記載量を制御する規範がない（タイトル・次アクション・抜粋・圧縮記録） | closed | 2026-08-13 |
 | [0082](flow/0082-choice-recommendation-spec-snapshot-stale.md) | 選択肢提示規範の spec が 3 世代前のツール選択規範のまま（スナップショット規約違反状態） | closed | 2026-08-13 |
-| [0084](flow/0084-merge-mode-norm-not-wired-into-finishing-flow.md) | マージ方式の規範（--no-ff）が完了フローに配線されておらず fast-forward マージが発生した | closed | 2026-08-14 |
-| [0085](flow/0085-digest-field-extension-lacks-checklist.md) | 消化記録へフィールドを新設する拡張に、記録様式側の連動改定チェックリストが無い | open | 2026-08-15 |
-| [0086](flow/0086-adr-rationale-vs-cited-evidence-check.md) | 決定の見送り理由が、引用した実測と矛盾していないかを突合する工程がない | closed | 2026-08-15 |
+| [0084](flow/0084-merge-mode-norm-not-wired-into-finishing-flow.md) | マージ方式の規範（--no-ff）が完了フローに接続されておらず fast-forward マージが発生した | closed | 2026-08-14 |
+| [0085](flow/0085-digest-field-extension-lacks-checklist.md) | 節目ごとの確認記録へフィールドを新設する拡張に、記録様式側の連動改定チェックリストが無い | open | 2026-08-15 |
+| [0086](flow/0086-adr-rationale-vs-cited-evidence-check.md) | 決定の見送り理由が、引用した実測と矛盾していないかを照合する工程がない | closed | 2026-08-15 |
 | [0087](flow/0087-dispatch-table-growth-consolidation-trigger.md) | 条件発火表の行数増加に、統廃合を検討する契機が定義されていない | open | 2026-08-15 |
 | [0088](flow/0088-issue-and-other-artifacts-growth-control.md) | Issue など handoff 以外の成果物に、肥大化を抑制する機構がない | closed | 2026-08-15 |
 | [0089](flow/0089-designated-home-naming-index-rules-missing.md) | 指定席（議事録・インシデント報告等）のファイル命名・索引の規約が未定義 | open | 2026-08-15 |
@@ -109,16 +109,16 @@
 | [0092](flow/0092-stochastic-deviation-premise-audit-of-procedures.md) | 「確率的逸脱は残る」前提でのガイドライン全体棚卸し（過剰手順の検出実績ベース監査）が未実施 | closed | 2026-08-16 |
 | [0093](flow/0093-integrate-22-duplicated-norm-records.md) | 監査で特定した二重定義 22 行の統合が未実施 | closed | 2026-08-16 |
 | [0094](flow/0094-simplify-3-high-cost-zero-detection-records.md) | 欠落検出ゼロのまま高コストの記録様式 3 行の簡素化が未実施 | closed | 2026-08-16 |
-| [0095](flow/0095-redesign-plan-expectation-check-a13.md) | 計画の検証期待値突合（A-13）は検出力が反証されており再設計が必要 | open | 2026-08-16 |
+| [0095](flow/0095-redesign-plan-expectation-check-a13.md) | 計画の検証期待値照合（A-13）は検出力が反証されており再設計が必要 | open | 2026-08-16 |
 | [0096](flow/0096-generalize-evaluability-brake-for-extensions.md) | 増設の歯止め（評価可能性の義務化・弱い形）の CONTRIBUTING への一般規範化が未実施 | closed | 2026-08-16 |
 | [0097](flow/0097-hold-44-records-conditional-backlog.md) | 監査の保留（観測継続）44 行の条件付き backlog（次回棚卸しで再判定） | open | 2026-08-16 |
 | [0098](flow/0098-iterative-review-trigger-criteria/0098-iterative-review-trigger-criteria.md) | 確定前レビューの反復（指摘反映後の再レビュー）の発動基準が未定義 | closed | 2026-08-16 |
 | [0099](flow/0099-overturned-5-duplicated-rows-conditional-backlog.md) | 統合を覆した 5 行の二重定義の存置（次回棚卸しで再判定する条件付き backlog） | open | 2026-08-17 |
-| [0100](flow/0100-wiring-line-volatile-number-ban-not-generalized.md) | 配線行に統合先の可変数値を書かない規律の恒久規範化が未実施 | open | 2026-08-17 |
+| [0100](flow/0100-wiring-line-volatile-number-ban-not-generalized.md) | 接続を書く行に統合先の可変数値を書かない規律の恒久規範化が未実施 | open | 2026-08-17 |
 | [0101](flow/0101-start-work-spec-figure-drift.md) | start-work 旧設計仕様書の図示が現行 SKILL.md から乖離している | open | 2026-08-17 |
 | [0102](flow/0102-cycle-reset-handoff-target-ambiguous-after-merge.md) | マージ後の cycle-reset の適用先 handoff が暗黙で、マージ先ブランチの handoff が陳腐化する | open | 2026-08-18 |
-| [0103](flow/0103-iteration-cost-budget-guideline-missing.md) | 確定前レビュー反復に確定点あたりのコスト・巡数の目安（予算基準）が無い | closed | 2026-08-18 |
-| [0104](flow/0104-provenance-strip-grammar-breakage-not-machine-detected.md) | 識別子除去後の文法破綻（R1-a 型）を機械検出できない | open | 2026-08-18 |
+| [0103](flow/0103-iteration-cost-budget-guideline-missing.md) | 確定前レビュー反復に確定点あたりのコスト・回数の目安（予算基準）が無い | closed | 2026-08-18 |
+| [0104](flow/0104-provenance-strip-grammar-breakage-not-machine-detected.md) | 参照番号除去後の文法破綻（R1-a 型）を機械検出できない | open | 2026-08-18 |
 | [0105](flow/0105-skill-md-size-growth-no-norm.md) | SKILL.md のサイズ・分割規範が無い | closed | 2026-08-18 |
 | [0106](flow/0106-review-snapshot-area-no-naming-cleanup-rules.md) | 改訂前退避領域の命名規約・掃除規定が無い | open | 2026-08-18 |
 | [0107](flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md) | 反復レビューの推奨規範が状況要素を無視して推奨を決める（推奨と実選択の乖離記録） | open | 2026-08-25 |
@@ -130,8 +130,10 @@
 | [0115](flow/0115-session-handoff-size-split-candidate.md) | session-handoff の SKILL.md が分割候補のまま暫定登録されている | closed | 2026-09-01 |
 | [0116](flow/0116-decision-log-size-split-candidate.md) | decision-log の SKILL.md が分割候補のまま暫定登録されている | closed | 2026-09-01 |
 | [0118](flow/0118-information-reachability-mechanism-undesigned.md) | 総情報量の増加に対し、AI が必要な情報へ到達する仕組みが体系として設計されていない | open | 2026-09-03 |
-| [0119](flow/0119-guideline-wording-violates-its-own-plain-language-norm/0119-guideline-wording-violates-its-own-plain-language-norm.md) | 配信ガイドラインの文面が、自ら定める「文章だけで意味が推測できる表現」に反する語と記号的ラベルを多用し、配布先の対話・成果物へ伝播する（LoopForAlpha#Issue-0130 申し送り・フォルダ昇格済み） | open | 2026-09-03 |
+| [0119](flow/0119-guideline-wording-violates-its-own-plain-language-norm/0119-guideline-wording-violates-its-own-plain-language-norm.md) | 配信ガイドラインの文面が、自ら定める「文章だけで意味が推測できる表現」に反する語と記号的ラベルを多用し、配布先の対話・成果物へ伝播する（LoopForAlpha#Issue-0130 申し送り・フォルダ昇格済み） | closed | 2026-09-03 |
 | [0120](flow/0120-promoted-issue-file-has-no-shrink-mechanism.md) | フォルダ昇格済みの課題ファイルに縮める手段が無く、4 役割の規律を守っても「現在地の要約」が単調増加する | open | 2026-09-03 |
 | [0121](flow/0121-subfolder-split-trigger-missing-in-placement-norm.md) | 配置の正本に「種別サブフォルダをいつ作るか」の判定則が無く、同じ議論が分類フォルダごとに再演する（LoopForAlpha#Issue-0140 申し送り） | open | 2026-09-03 |
 | [0122](flow/0122-consistent-recommendation-approval-gates-lack-default-execution-with-rollback.md) | 推奨が一致する承認ゲート（レビュー指摘の採否・反復提示・ADR 承認）に「事前宣言による既定実行 + 差し戻し窓」が無く、番号回答待ちが配布先の壁時計の最大費用になる（LoopForAlpha#Issue-0168 の申し送り） | open | 2026-09-04 |
-| [0123](flow/0123-recurring-friction-clusters-checklist-injection-into-dispatch-and-plan-verification.md) | 躓き型 5 クラスタ（逐語コードの写しずれ・PowerShell の落とし穴・母数の引き写し・検証コマンドの未実行・標本の退化）の 1 行チェックリストを委譲制約と計画検証ステップへ注入する（LoopForAlpha の worklog-extract 走査由来・skillify の受け皿） | open | 2026-09-04 |
+| [0123](flow/0123-recurring-friction-clusters-checklist-injection-into-dispatch-and-plan-verification.md) | 躓き型 5 クラスタ（そのまま書き写すコードの写しずれ・PowerShell の落とし穴・対象の総数の引き写し・検証コマンドの未実行・標本の退化）の 1 行チェックリストを委譲制約と計画検証ステップへ注入する（LoopForAlpha の worklog-extract 走査由来・skillify の受け皿） | open | 2026-09-04 |
+| [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | open | 2026-09-05 |
+| [0125](flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md) | 語彙の規範がサブエージェントへの委譲制約に配線されておらず、委譲先が文書を編集する経路では規範が届かない（委譲元が毎回プロンプトへ手で書き写している） | open | 2026-09-05 |

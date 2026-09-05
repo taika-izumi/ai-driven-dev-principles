@@ -25,7 +25,7 @@
 2. **サブエージェント走査**: 全コーパスをメインコンテキストに載せず、サブエージェントで未処理エントリを1パス走査 → 類似エントリをクラスタリング（同型手順の横断再発をまとめる）
 3. **クラスタ評価**: 横断再発回数・出所プロジェクト数・friction/corrections の重みを集計
 4. **scope 再判定**: ≥2プロジェクト再発→`general-candidate` へ格上げ、単一・ドメイン依存→`project-specific`（record 時タグを横断視点で最終確定）
-5. **既存スキル重複排除**: superpowers＋ai-driven-dev-principles＋プロジェクトローカルの description と突合し、既存済みを除外（あいまい層）
+5. **既存スキル重複排除**: superpowers＋ai-driven-dev-principles＋プロジェクトローカルの description と照合し、既存済みを除外（あいまい層）
 6. **deferred 再浮上判定**: deferred クラスタは、台帳の代表 id を含む現在のクラスタを当該 deferred クラスタとして再同定し、現在のクラスタ根拠数が台帳の `evidence_count` を上回った（新しい該当エントリが増えた）場合のみ再提示。増えていなければ除外
 7. **候補提示**: ランク付き候補リスト（再発数・scope・重複有無・根拠エントリ参照つき）を人間に提示。頻度はハード閾値を置かずソフトな判断材料
 8. **採否反映**: 人間が採否 → rejected/deferred は即 `processed.jsonl` へ追記（deferred は `evidence_count` に現クラスタ根拠数を記録）／採用は Issue 草案化（general→本 repo backlog `docs/working/issues/`、project-specific→当該プロジェクト）＋`adopted` を即 `processed.jsonl` へ追記し、スキル3へ受け渡す。Issue バックログとの重複排除（retrospective 課題との唯一の合流点）を行う

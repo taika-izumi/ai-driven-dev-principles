@@ -46,7 +46,7 @@ markdown スキルであるため「インターフェース」は関数では�
 | フィールド | 型 | 役割 |
 |---|---|---|
 | `v` | number | スキーマ版数。現行は `2`（ADR-0049） |
-| `id` | string | `<project>-<date>-<NN>`。台帳との突合キー |
+| `id` | string | `<project>-<date>-<NN>`。台帳との照合キー |
 | `date` | string | 記録日（YYYY-MM-DD） |
 | `project` | string | 出所プロジェクト名（連結後も行内で出所が分かる） |
 | `model` | string | delta 発生元の AI モデル ID（例 `"claude-fable-5"`。記録時と異なる場合は発生元を優先）。モデル固有か全モデル共通かの判別材料（ADR-0048） |

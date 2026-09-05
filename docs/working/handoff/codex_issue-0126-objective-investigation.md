@@ -1,7 +1,7 @@
 # Handoff: 品質条件と総費用の判断原則の調査
 
 - **Branch**: codex/issue-0126-objective-investigation
-- **Last Updated**: 2026-09-06 01:16 (Asia/Tokyo)
+- **Last Updated**: 2026-09-06 01:45 (Asia/Tokyo)
 - **Status**: paused
 - **Current Phase**: 調査 / 適用対象の前提確認後、対応表作成前に中断
 
@@ -11,6 +11,7 @@
 
 ## 関連ドキュメント
 
+- 別件相談の検証方針・再現入力: `docs/records/minutes/2026-09-06-workflow-continuation-validation.md`。ADR-0126。検証基準ブランチは `codex/verify-start-work-baseline`（開始コミット153d47c）。Issue-0126本体の再開点とは別。
 - 課題・調査要点: `docs/working/issues/flow/0126-quality-constrained-total-cost-objective-not-integrated.md`
 - 原文: `D:/Dev/001_Trade/LoopForAlpha/docs/records/reviews/2026-09-04-dev-process-review/cleanroom/00-cleanroom-input.md` §A・B
 - 前回の判断: `docs/records/decisions/0125-evaluate-cost-of-review-driven-additions.md`
@@ -40,6 +41,7 @@
 
 ## 節目ごとの確認記録
 
+- 2026-09-06 別件の検証方針保存: ADR=0126（Proposed、比較試行は未実施） / worklog=棄却（今回の方針保存・ブランチ準備に新たなdeltaなし）
 - 2026-09-06 開始状況確認・初回調査: ADR=なし（未採用の候補比較、規範変更なし） / worklog=棄却（既存手順に従う調査と環境対応）
 - 2026-09-06 前提確認・セッション終了: ADR=なし（適用対象の論点を記録、採用方針は未決） / worklog=MakeAiInstructions-2026-09-06-01
 
@@ -51,4 +53,5 @@
 
 ## 重要な意思決定の履歴
 
-- 新規の採用決定なし。前回確定済みの範囲はADR-0124・0125を参照。
+- ADR-0126（Proposed）: 別件相談の比較検証方針と基準ブランチ作成。ユーザーが方針保存とブランチ作成を指示。比較試行は未実施。
+- Issue-0126の規範採用決定はなし。前回確定済みの範囲はADR-0124・0125を参照。

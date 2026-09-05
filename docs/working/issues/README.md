@@ -137,3 +137,4 @@
 | [0123](flow/0123-recurring-friction-clusters-checklist-injection-into-dispatch-and-plan-verification.md) | 躓き型 5 クラスタ（そのまま書き写すコードの写しずれ・PowerShell の落とし穴・対象の総数の引き写し・検証コマンドの未実行・標本の退化）の 1 行チェックリストを委譲制約と計画検証ステップへ注入する（LoopForAlpha の worklog-extract 走査由来・skillify の受け皿） | open | 2026-09-04 |
 | [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | closed | 2026-09-05 |
 | [0125](flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md) | 語彙の規範がサブエージェントへの委譲制約に接続されておらず、委譲先が文書を編集する経路では規範が届かない（委譲元が毎回プロンプトへ手で書き写している） | open | 2026-09-05 |
+| [0126](flow/0126-quality-constrained-total-cost-objective-not-integrated.md) | 品質の最低線を満たす範囲で総費用を抑える判断原則が、開発フロー全体に接続されていない | open | 2026-09-06 |

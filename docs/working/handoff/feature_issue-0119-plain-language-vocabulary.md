@@ -1,21 +1,21 @@
 # Handoff: ガイドライン文書の分かりにくい語を平易表現規約へ合わせる（Issue-0119）
 
 - **Branch**: feature/issue-0119-plain-language-vocabulary（master `d11c38b` から分岐。マージ未実施）
-- **Last Updated**: 2026-09-05 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ガイドライン拡張/実装計画は作成・コミット済み。plan 確定点の確定前レビューの提示への回答待ちでセッションを区切った
+- **Last Updated**: 2026-09-05 13:30 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: ガイドライン拡張/実装計画は確定済み（`526424c`）。実装（Task 1〜14）に着手する段階
 
 ## 作業の目的・背景
 
 Issue-0119 の対策サイクル。`AGENTS.md`「コンテキスト管理」の平易表現規約は対話・成果物ドキュメントを対象とし、配信スキルの本文は対象外だった。AI はスキル本文を読んで作業するため、その語彙（突合・消化・母数・消し込み・巡・格下げ など）と記号的ラベル（`A 群 / B 群`・`採用基準 (i)`・`観点 4`・`spec 確定点 (a)`）が配布先の対話・成果物へ写っている。配布先 LoopForAlpha の 8 セッション観測から申し送られた。
 
-方針（ADR-0123。確定前レビュー 2 回と設計縮小を経て確定）: 分かりにくい語を 3 型（語自体型・目的語省略型・記号的ラベル）で定め、AI が読み今後も書き換える文書 4 群（`skills/`・template 対象 6・CONTRIBUTING と README と docs/reference・現用仕様書）を書き換える。再流入は配布する置き換え表（`docs/reference/wording-replacements.md` 新設）と `AGENTS.md` の 1 行（編集時に見つけたら置き換えを提案する）で防ぎ、**自動検査は設けない**。名前を変えるときは古い名前を列挙せず「書式と実ファイルが食い違ったら報告して判断を仰ぐ」の汎用 1 文で受ける。記録型文書は本文を据え置きタイトルのみ置き換える。ユーザーは申し送り側の推奨順（Issue-0123 → 0118 → 0122）を後回しにし、本課題を先に選んだ。
+方針（ADR-0123。確定前レビュー 2 回と設計縮小を経て確定）: 分かりにくい語を 3 型（語自体型・目的語省略型・記号的ラベル）で定め、AI が読み今後も書き換える文書 4 群（`skills/`・template 対象 6・CONTRIBUTING と README と docs/reference・現用仕様書）を書き換える。再流入は配布する置き換え表（`docs/overview/wording-replacements.md` 新設）と `AGENTS.md` の 1 行（編集時に見つけたら置き換えを提案する）で防ぎ、**自動検査は設けない**。名前を変えるときは古い名前を列挙せず「書式と実ファイルが食い違ったら報告して判断を仰ぐ」の汎用 1 文で受ける。記録型文書は本文を据え置きタイトルのみ置き換える。ユーザーは申し送り側の推奨順（Issue-0123 → 0118 → 0122）を後回しにし、本課題を先に選んだ。
 
 ## 関連ドキュメント
 
-- 実装計画: `docs/working/plans/2026-09-05-adr-0123-plain-language-vocabulary-implementation.md`（14 タスク。語の置き換え表・逸脱判断の宣言欄を保持）
-- 設計書: `docs/current/specs/2026-09-04-plain-language-vocabulary-design.md`（Draft・26,903B。置き換え表・置き換え表ファイルと提案の規範・名前の変更・記録型文書のタイトル・完了条件 12 項・過剰適合点検ブロック）
-- 決定: ADR-0123（Proposed・17,694B。`docs/records/decisions/0123-plain-language-vocabulary-in-normative-documents.md`。決定 7 項・新設の評価可能性の記載を含む）
+- 実装計画: `docs/working/plans/2026-09-05-adr-0123-plain-language-vocabulary-implementation.md`（14 タスク・76 手順。確定済み `526424c`。語の置き換え表・逸脱判断の宣言欄を保持）
+- 設計書: `docs/current/specs/2026-09-04-plain-language-vocabulary-design.md`（Draft・30,908B。置き換え表・置き換え表ファイルと提案の規範・名前の変更・記録型文書のタイトル・完了条件 12 項・過剰適合点検ブロック）
+- 決定: ADR-0123（Proposed・19,364B。`docs/records/decisions/0123-plain-language-vocabulary-in-normative-documents.md`。決定 7 項・新設の評価可能性の記載を含む）
 - 対象課題: `docs/working/issues/flow/0119-guideline-wording-violates-its-own-plain-language-norm/`（課題本体＋配布先の観測資料 `lfa-0130-*` 10 本）
 - 問われている規約: `AGENTS.md`「コンテキスト管理」/ その設計: `docs/current/specs/2026-06-15-naming-clarity-discipline-design.md`・ADR-0022
 - 隣接課題: Issue-0043 / Issue-0120 / LoopForAlpha#Issue-0131（配布先文書側の同型。配布先が所有）
@@ -39,19 +39,19 @@ Issue-0119 の対策サイクル。`AGENTS.md`「コンテキスト管理」の�
 - [x] **spec 確定点 通過・設計確定**（提示後確定。設計書 30,723B・ADR 19,336B。2026-09-05）
 - [x] 実装計画の作成とコミット（`4076296`。14 タスク・75 手順。plan 確定点に到達し確定前レビューを提示。2026-09-05）
 - [x] セッション振り返り: レビュー駆動で機構が増える構造を Issue-0124 として起票（2026-09-05）
+- [x] **plan 確定点 通過・実装計画の確定**（確定前レビュー 3 回: 全観点レビュー 2 回〈各 2 体・観点兼務・claude-sonnet-5〉＋差分確認 1 回〈1 体・新規レビュアー〉。指摘 22 件のうち 21 件採用・1 件不採用〈再現せず〉。改訂は 212 行追加・59 行削除。`526424c`。2026-09-05）
+- [x] Issue-0107 へ事例 14 と軸 (m)〈2 段型が「削る改訂」と「足す改訂」を区別しない〉を追記（2026-09-05）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の確定（plan 確定点。確定前レビューの提示への回答待ち。**セッションを区切ったため次セッションで提示を再掲する**）
-  - 状態: 計画作成済み（`docs/working/plans/2026-09-05-adr-0123-plain-language-vocabulary-implementation.md`。14 タスク・75 手順・49,471B）。逸脱判断の宣言欄は既定どおり（plugin 0.1.18 時点の版）で、確定前レビューからの引き継ぎ一覧はなし
-  - 対象確定点の型: plan 確定点
-  - 成果物の型: 規範改定型（計画は規範文書そのものではないが、置き換え対象へ規範文書を含むため。判定に迷い規範改定型側へ倒した。分布外検知の閾値は 8 回）
-  - 実施済みの方式と回数: なし（plan 確定点は初回）
-  - 残り: 確定前レビューの提示への回答 → 実施または確定 → 実装（`superpowers:subagent-driven-development` または `executing-plans`）
+- [ ] **現在の作業**: 実装（Task 1〜14）
+  - 状態: 未着手。計画は確定済み（`docs/working/plans/2026-09-05-adr-0123-plain-language-vocabulary-implementation.md`。14 タスク・76 手順・`526424c`）。逸脱判断の宣言欄は既定どおり（plugin 0.1.18 時点の版）で、確定前レビューからの引き継ぎ一覧はなし（3 回の指摘は 1 件を除き全件反映済み、不採用の 1 件は再現しなかったもので実装時レビューへ委ねる対象ではない）
+  - 残り: `superpowers:subagent-driven-development` または `executing-plans` で Task 1 から実行する（実行直前に `skills/start-work/references/plan-deviation-defaults.md` を読み直す）
+  - 確定前レビューの反復は終了したため、反復継続の記載は除去した
 
 ## 未着手のタスク
 
-- [ ] 実装: 語とラベルの置き換え（4 群）・`docs/reference/wording-replacements.md` 新設と template 追加・`AGENTS.md` の 1 行・`CONTRIBUTING.md` の新節・見出しや書式の名前の変更・`session-handoff` の汎用 1 文・記録型文書のタイトル 24 件と一覧・`master.md` の 2 節・執行点 4 手順・version 0.1.19
+- [ ] 実装: 語とラベルの置き換え（4 群）・`docs/overview/wording-replacements.md` 新設と template 追加・`AGENTS.md` の 1 行・`CONTRIBUTING.md` の新節・見出しや書式の名前の変更・`session-handoff` の汎用 1 文・記録型文書のタイトル 29 件と一覧（＋一覧の記載 29 = 計 58 箇所）・`master.md` の 2 節・執行点 4 手順・version 0.1.19
 - [ ] 完了処理（ADR-0123 の Accepted 昇格〈サイクル全体整合検査〉・Issue-0119 close・`--no-ff` マージ・retrospective・cycle-reset・push）
 
 ### 本サイクル完了後の推奨順（次サイクル候補。cycle-reset で master の「未着手のタスク」へ移す）
@@ -77,6 +77,9 @@ Issue-0119 の対策サイクル。`AGENTS.md`「コンテキスト管理」の�
 - **ゲート付きの手順へ相乗りするときは、そのゲートが新しい対象を覆うかを先に確認する**（自動検査の発火点を 2 回設計し 2 回とも同じ指摘を受けた。worklog `MakeAiInstructions-2026-09-05-01`）
 - **レビュー指摘を採用して機構を足す前に、防ぐ失敗の実測・運用保守の費用・恒久か使い捨てかを名指しする**（Issue-0124。本サイクルは 2 回・90 件・約 100 万トークンの後に設計縮小した）
 - 自リポジトリのハンドオフは本サイクルでは書き換えない（配布物経由で動くスキルがまだ古いため。設計書 6-1）。本ファイルの節見出しが旧名のままなのはこのため
+- **否定先読み・否定後読みは `grep -E` で常に 0 件・無エラーになる。本環境の `grep -P` も `-P supports only unibyte and UTF-8 locales` で失敗する。** この種の検査は Python の `re` で書く（`LC_ALL=C.UTF-8 grep -P` でも動く）。計画の検証コマンド 5 行がこれで常に真になっていた（Issue-0123 の「検証コマンドの未実行」クラスタと同型）
+- **改訂は正本を読み直してから書く。** 確定前レビューの 1 回目の改訂で、ADR-0123 の決定 6（記録型文書はタイトルのみ・本文への拡大の前例にしない）に反する作業を計画へ足していた。2 回目のレビューで検出された
+- **レビュアーの指摘は実証つき・複数体の独立一致でも、前提の検査は委譲側が行う。** 2 体が独立に同じ結論を出したが、両体とも同じ表の 2 列（識別ラベル列 4 件／記録本文にあたる備考列 105 件）を区別していなかった。列を分けて数え直したら設計書の「計 58 箇所」と一致し、AI 側の改訂の誤りも判明した（正本: `pre-finalization-review` の `references/review-procedure.md` 手順 5）
 
 ## Post ラッパー消化記録
 
@@ -85,12 +88,14 @@ Issue-0119 の対策サイクル。`AGENTS.md`「コンテキスト管理」の�
 - 2026-09-05 spec 確定点 通過・設計確定: ADR=0123 / worklog=`MakeAiInstructions-2026-09-04-01`・`MakeAiInstructions-2026-09-05-01` / review=フル実施（claude-opus-5・2 回）＋フル実施（claude-sonnet-5・1 回）＋機械検証（1 回・提示後確定）
 - 2026-09-05 実装計画の作成とコミット（`4076296`。plan 確定点の確定点行は提示への回答後に作成する）: ADR=なし（計画は確定済み設計書の写像で新規の意思決定なし） / worklog=棄却（delta なし。設計書の写像で躓き・注入なし）
 - 2026-09-05 セッション終了処理（振り返り: Issue-0124 起票。Proposed 据え置き = ADR-0123〈実装完了時に昇格〉・Rejected 更新漏れなし・未コミットドラフトなし）: ADR=なし（目的関数の採用は次サイクルの決定。課題経路で扱う） / worklog=`MakeAiInstructions-2026-09-05-02`
+- 2026-09-05 plan 確定点 通過・実装計画の確定（`526424c`）: ADR=なし（ADR-0123 の範囲内） / worklog=`MakeAiInstructions-2026-09-05-03`・`-04` / review=フル実施（claude-sonnet-5・2 巡）＋差分再確認（claude-sonnet-5・1 巡・提示後確定（実質収束せず））
 
 ## 次セッション開始時のアクション
 
 1. 最初に確認すべきファイル: 実装計画 `docs/working/plans/2026-09-05-adr-0123-plain-language-vocabulary-implementation.md`（冒頭の置き換え表と逸脱判断の宣言欄）と本ファイル「進行中のタスク」
-2. 最初に実行すべきコマンド/スキル: `start-work` → `pre-finalization-review` の提示操作で plan 確定点の提示を再掲する（規範改定型・推奨は全観点レビュー 2 体。前回の提示は 4 択: 2 体 / 4 体 / 機械検証 / 確定）→ 回答に応じて実施または確定 → 確定後に `superpowers:subagent-driven-development` か `executing-plans`（直前に `plan-deviation-defaults.md` を読み直す）
-3. 留意点: 成果物は新しい語彙で書く。判断要求は 1 論点ずつ用例つき。機構を足す指摘は費用側を名指ししてから採否を問う（Issue-0124）。レビュアーは作成側と別モデル（設計書・計画は Fable と Opus が作成）
+2. 最初に実行すべきコマンド/スキル: `start-work` → `superpowers:subagent-driven-development` か `executing-plans` で Task 1 から実行する（直前に `skills/start-work/references/plan-deviation-defaults.md` を読み直す）。**plan 確定点の確定前レビューは完了しており、再提示は不要**
+3. 留意点: 成果物は新しい語彙で書く。判断要求は 1 論点ずつ用例つき。機構を足す指摘は費用側を名指ししてから採否を問う（Issue-0124）。レビュアーは作成側と別モデル（設計書・計画は Fable と Opus が作成、確定前レビューは Sonnet）
+4. 実装時の注意: 検証コマンドに否定先読み・後読みを書くなら Python の `re` を使う（`grep -E` は常に 0 件）。計画の各タスクの検証は書式どおり実行し、期待値と実測を照合してからコミットする
 
 ## 重要な意思決定の履歴
 

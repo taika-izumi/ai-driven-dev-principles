@@ -566,6 +566,10 @@ git add skills/
 git commit -m "docs(skills): 記号的なラベルへ定義箇所の名前を与える"
 ```
 
+逸脱記録: 事実誤り・期待値の陳腐化の訂正 / 採用 / `ラッパー` の期待値 28 件 14 ファイルは Task 3 の改名で 12 件消えて陳腐化しており実測は 16 件 8 ファイル、Step 1 と Step 8 の件数を 16 として実施した、実測は委譲前に委譲元が実施
+
+逸脱記録: 事実誤り・期待値の陳腐化の訂正 / 採用 / Step 8 が挙げる `Pre（実行前）` `Post（実行後）` は `ラッパー` を含まないため Step 1 の列挙にも Step 9 の検証にも現れず実装漏れになった、委譲元が 2 見出しと、改名で指す先が消える `Pre` `Post` の参照 5 箇所（`merge-practice.md` `plan-deviation-defaults.md` `status-updates.md` `adr-authoring.md` `worklog-record/SKILL.md`）を追加で置き換えた、Task 6 の語の計数は前後で不変を確認
+
 ---
 
 ## Task 6: 群 A（`skills/`）の語の置き換え

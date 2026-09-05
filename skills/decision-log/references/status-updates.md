@@ -53,4 +53,4 @@ ADRは**原則 Proposed で作成する**。Accepted への昇格は、その決
 2. **粒度を点検する（ADR-0059 / ADR-0060）**: 昇格対象 ADR のタイトルが本文の全決定に答えているかを突合する。答えていない決定があれば分割を提案し、分割してから昇格する
 3. **Status・インデックスを更新しコミットする**: 該当ADRファイルの `Status` を `Accepted` に更新し、`docs/records/decisions/README.md` のテーブルのステータスも更新して、コミットする
 
-`start-work` の Phase 2 Post でも、確定した据え置きADRの昇格漏れがないか確認される。
+`start-work` の Phase 2 の節目の確認でも、確定した据え置きADRの昇格漏れがないか確認される。

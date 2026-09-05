@@ -6,7 +6,13 @@
 
 **進め方**: 語の置き換えは機械的な一括置換をせず、語ごとに全出現を列挙して 1 件ずつ文脈を見て直す。名前の変更は定義箇所を先に、参照箇所を後に行う。各タスクの終わりに差分を取り、列挙外の変更がないことを確認してからコミットする。
 
-**対象と規模**（2026-09-05 実測）: 54 ファイル・681 件。群 A（`skills/`）26 ファイル 348 件、群 B（template 対象）2 ファイル 2 件、群 C（拡張手引きほか）3 ファイル 48 件、群 D（現用仕様書）23 ファイル 283 件。
+**対象と規模**（2026-09-05 実測。確定前レビューで再実測し訂正）: **54 ファイル**。件数は設計書の設計 2 の表の合計で 群 A 348・群 B 2・群 C 48・群 D 277、総計 675 件。
+
+> **件数は数え方で変わる目安値である**。当初は群 D を 283 件・総計 681 件と書いていたが、これは設計書が対象外と明記した裸の `(i)` `(ii)` 6 件（`2026-08-13-handoff-bloat-control/00-overview.md` 3 件・`2026-08-28-start-work-responsibility-split-design.md` 3 件）を含めた誤りだった。訂正後の 277 は設計書の表の合計と一致する。
+>
+> ただし別の数え方では別の値になる。`退役経路` は `退役` にも一致するため両方を数えると二重になり、`プロジェクト識別子` を除外するかでも 4 件動く。Task 14 の完了検証のパターン集合で数えると群 D は 287 件になる。**件数は作業量の目安としてのみ使い、完了の判定には使わない**（完了の判定は Task 14 の「残存 0」で行う）。ファイル数 54 は数え方に依らない。
+
+> **検証コマンドの注意**: 否定後読み・否定先読み（`(?<!...)`・`(?!...)`）は PCRE 専用の書き方で、`grep -E` は解釈せずエラーも出さずに常に 0 件を返す。本環境の `grep -P` も `-P supports only unibyte and UTF-8 locales` で失敗する。この種の検査は本計画では Python の `re` で行う（`LC_ALL=C.UTF-8 grep -P` でも動くが、Task 14 の完了検証と書き方を揃える）。
 
 **正本**: 設計書 `docs/current/specs/2026-09-04-plain-language-vocabulary-design.md`（確定済み）／ADR-0123。
 
@@ -49,11 +55,13 @@
 | 格下げ | 独立レビューへの切り替え |
 | 逐語厳守 | 計画のコードをそのまま書き写す方式 |
 | 退役 | 廃止 |
-| 識別子（`出所識別子`・`安定識別子` を除く） | 参照番号（他文書から指すための番号）／見出しや書式の名前（文書の構造に付けた名前） |
+| 識別子（`出所識別子`・`安定識別子`・`プロジェクト識別子` を除く） | 参照番号（他文書から指すための番号）／見出しや書式の名前（文書の構造に付けた名前） |
 | 検出資産 | 継続して検査する仕組み |
 | 機械的な適応 | 実体に合わせる調整 |
 
-**据え置く語**: 正本・確定点・移設・写経・発火・陳腐化・ADR・出所識別子・安定識別子・素の。
+**据え置く語**: 正本・確定点・移設・写経・発火・陳腐化・ADR・出所識別子・安定識別子・プロジェクト識別子・素の。
+
+`プロジェクト識別子`（プロジェクトを一意に特定する鍵の意）は、上の 2 通りの言い換え（参照番号／見出しや書式の名前）のどちらにも当たらない第 3 の用法なので据え置く（確定前レビューで検出。`skills/worklog-record/references/store-format.md` 1 件・`docs/current/specs/2026-07-17-worklog-skill-pipeline/` 4 件）。
 
 ### 記号的ラベル
 
@@ -154,7 +162,7 @@ wc -c < CONTRIBUTING.md
 | 独立レビューへの切り替え | 格下げ | 2026-09-05 |
 | 計画のコードをそのまま書き写す方式 | 逐語厳守 | 2026-09-05 |
 | 廃止 | 退役 | 2026-09-05 |
-| 参照番号・見出しや書式の名前 | 識別子 | 2026-09-05 |
+| 参照番号・見出しや書式の名前 | 識別子（`出所識別子`・`安定識別子`・`プロジェクト識別子` は据え置く） | 2026-09-05 |
 | 継続して検査する仕組み | 検出資産 | 2026-09-05 |
 | 実体に合わせる調整 | 機械的な適応 | 2026-09-05 |
 | 常時適用・条件発火 | A 群・B 群 | 2026-09-05 |
@@ -228,6 +236,8 @@ grep -n "突合" AGENTS.md
 
 「## 全シナリオ共通: SKILL.md のサイズと分割」節の直前（205 行目の直前）へ次の節を挿入する。
 
+小節の見出しは「### 本規範自体の廃止規範」とする。設計書 3-3 が「既存の共通節 4 つがすべて持つ小節に揃える」を求めており、既存 4 箇所（`CONTRIBUTING.md` 76・92・201・241 行）はいずれも「### 本…自体の退役規範」で、Task 8 の `退役` → `廃止` 置換後は「廃止規範」になるため。`退役経路` → `規範の廃止条件` の置き換えとは語形が異なるが、前者は節見出しの名前、後者は点検の観点名で別物である。
+
 ```markdown
 ## 全シナリオ共通: 規範文書の語彙
 
@@ -252,7 +262,7 @@ AI が作業時に読み込み、今後も書き換える文書。次の 4 群�
 
 対象文書を編集したら、`docs/overview/wording-replacements.md` の置き換え前の語が新たに入っていないかを確認する。自動検査は設けない（ADR-0123）。
 
-### 本規範自体の廃止条件
+### 本規範自体の廃止規範
 
 配布先から語彙が原因の課題・記録が 3 サイクル連続で 0 件、かつ本リポジトリで置き換え表へ追加する語が 3 サイクル連続で 0 件の状態が観測されたら、本規範の簡素化・廃止を候補としてユーザーへ提案する。いずれか有りなら存置側。判断はユーザーが行う。
 ```
@@ -439,9 +449,18 @@ git commit -m "docs(skills): 記録に書かれる文字列を平易な名前へ
 ```bash
 grep -rnE "[AB] 群" skills --include=*.md
 grep -rnE "spec ?確定点 ?\([abc]\)" skills --include=*.md
+grep -nE "\([abc]\)" skills/pre-finalization-review/SKILL.md   # 括弧が「確定点」に隣接しない裸の型参照
 grep -rnE "観点 ?[1-5]" skills --include=*.md
 grep -rnE "前置 ?[12]|\((i|ii)\)" skills --include=*.md
 grep -rn "ラッパー" skills --include=*.md
+```
+
+上の `-n` 付きの列挙は**行**を出す。下の期待値は設計書の数え方（行ではなく出現回数）なので、件数を照合するときは `-o` で数える。
+
+```bash
+for p in "[AB] 群" "spec ?確定点 ?\([abc]\)" "観点 ?[1-5]" "前置 ?[12]|\((i|ii)\)" "ラッパー"; do
+  echo -n "$p : "; grep -rohE "$p" skills --include=*.md | wc -l
+done
 ```
 
 期待: `A 群/B 群` 19 件、`spec 確定点 (a-c)` 14 件、`観点 N` 2 件、`前置 1/2` 4 件と `(i)(ii)` 4 件、`ラッパー` 28 件。
@@ -473,7 +492,24 @@ grep -rn "ラッパー" skills --include=*.md
 確定点を通過したマイルストーンは、**名称に `spec 確定点` / `plan 確定点` のいずれかを含める**（read の欠落検査が対象行を識別できるようにするため）。型の括弧書きは書かない。
 ```
 
-`pre-finalization-review/SKILL.md` の定義表は残し、行の見出しを `spec 確定点 (a)` から「spec 確定点（機能ブロック設計を経た場合）」のように到達の仕方の説明へ直す。他ファイルの `spec 確定点 (a)` 等の参照は「spec 確定点」へ直す。
+`pre-finalization-review/SKILL.md` の定義表（38〜40 行）は残し、行の見出しを到達の仕方の説明へ直す。**3 行すべての文言をここで決めておく**（1 行だけ例示すると、実装者が残り 2 行に別の言い回しを選び、下の本文側の語と揃わなくなる）。
+
+- 38 行目 `| spec 確定点 (a) |` → `| spec 確定点（機能ブロック設計を経た場合） |`
+- 39 行目 `| spec 確定点 (b) |` → `| spec 確定点（設計文書型） |`
+- 40 行目 `| spec 確定点 (c) |` → `| spec 確定点（設計文書兼用 ADR 型） |`
+
+他ファイルの `spec 確定点 (a)` 等の参照は「spec 確定点」へ直す。
+
+**同ファイル内の裸の型参照も同時に直す。** Step 1 の列挙パターン `spec ?確定点 ?\([abc]\)` は「確定点」に括弧が隣接する形しか拾わないため、次の 4 行（32・43・54・66）は列挙から漏れる。見出しから型ラベルを外すとこの 4 行が指す先が消える。
+
+- 32 行目「spec 確定点（到達経路により (a)〜(c) の 3 通り）」→「spec 確定点（到達の仕方が 3 通りある）」
+- 43 行目「確定点が (a)〜(c) のどの型になるか決まらない」→「確定点がどの到達の仕方になるか決まらない」
+- 54 行目「(b) と (c) は成立条件の軸が異なるため」→「設計文書型と設計文書兼用 ADR 型は成立条件の軸が異なるため」
+- 66 行目「既存項目「対象確定点の型」〈spec (a)〜(c)／plan〉」→「既存項目「対象確定点の型」〈spec／plan〉」
+
+97 行目「設計文書兼用 ADR——spec 確定点 (c) の型——は」→「設計文書兼用 ADR——設計文書ファイルを作らない拡張で ADR が設計文書を兼ねる型——は」。**この行は Step 1 のパターンに一致するので列挙に出る**（漏れる 4 行とは別扱い。確定前レビューで、当初「5 箇所すべてが漏れる」と書いていた誤りを訂正した）。
+
+なお 78・79 行目の `(a) 推奨の由来を明示する` / `(b) 反対材料の欄を常設する` は別の列挙の記号で、`spec 確定点` の型ラベルではない。同じ節の中で定義と説明が隣接しているため据え置く。`references/examples-and-evidence.md` にある `SKILL.md 提示規則 3-2 (b)` という参照も同じ列挙を指すので据え置く（Step 1 の裸の型参照の列挙を `SKILL.md` に限ったのはこのため）。
 
 - [ ] **Step 5: 観点の参照に中身を添える**
 
@@ -536,8 +572,14 @@ git commit -m "docs(skills): 記号的なラベルへ定義箇所の名前を与
 
 ```bash
 for w in 突合 消化 消し込 母数 裁定 現役 配線 射程 巡 逐語厳守 退役 検出資産 機械的な適応; do echo "=== $w"; grep -rn "$w" skills --include=*.md | head -50; done
-grep -rnE "前置(?!き)" skills --include=*.md
-grep -rnE "(?<!出所)(?<!安定)識別子" skills --include=*.md
+python - <<'PY'
+import re,glob
+for name,pat in [("前置",r"前置(?!き)"),("識別子",r"(?<!出所)(?<!安定)識別子")]:
+    print("===",name)
+    for f in sorted(glob.glob("skills/**/*.md",recursive=True)):
+        for i,line in enumerate(open(f,encoding="utf-8"),1):
+            if re.search(pat,line): print(f"{f}:{i}:{line.rstrip()}")
+PY
 ```
 
 - [ ] **Step 2: 語ごとに 1 件ずつ直す**
@@ -552,16 +594,25 @@ grep -rnE "(?<!出所)(?<!安定)識別子" skills --include=*.md
 - `review-field-values.md` の「通算 N 巡」→「通算 N 回」、「機械検証 N 回」は据え置き。「巡を立てる方式の和」→「回を立てる方式の和（機械検証は数えない）」
 - `iteration-norms.md` の「初回巡」→「初回の回」ではなく「1 回目」、「巡種」→「方式の種類」
 - `plan-deviation-defaults.md` の「逐語厳守＋設計の変更に至ったら」→「計画のコードをそのまま書き写す方式を採り、設計の変更に至ったら」
+- `worklog-skillify/SKILL.md` の「根拠と世代＋退役経路」→「根拠と世代＋規範の廃止条件」。**`退役` の単純置換で「廃止経路」にしないこと**（`退役経路` は 1 語として「規範の廃止条件」へ置き換える。誤って「廃止経路」にすると Task 14 の完了検証は `退役経路` を探すため検出できない）
+- `subagent-dispatch/SKILL.md` の見出し「## 退役規範」と `examples-and-evidence.md` の同語形は「## 廃止規範」へ（`CONTRIBUTING.md` の既存 4 小節と語形を揃えるため。Task 2 の新設小節も同じ語形にする）
+- `examples-and-evidence.md` 9 行目の「実例 = 点検観点に『退役経路』が無い」→「実例 = 点検観点に『規範の廃止条件』が無い」。**これも `退役` の単純置換で「廃止経路」にしないこと**（群 A の `退役経路` は `worklog-skillify/SKILL.md:43` と本箇所の 2 件で、どちらも 1 語として置き換える）
 
 - [ ] **Step 3: 検証**
 
 ```bash
 for w in 突合 消化 消し込 母数 裁定 現役 配線 射程 巡 実質収束 格下げ 逐語厳守 退役 検出資産 機械的な適応; do n=$(grep -roh "$w" skills --include=*.md | wc -l); echo "$w=$n"; done
-grep -rohE "前置(?!き)" skills --include=*.md | wc -l
-grep -rohE "(?<!出所)(?<!安定)識別子" skills --include=*.md | wc -l
+python - <<'PY'
+import re,glob
+for name,pat in [("前置",r"前置(?!き)"),("識別子",r"(?<!出所)(?<!安定)識別子")]:
+    n=sum(len(re.findall(pat,open(f,encoding="utf-8").read())) for f in glob.glob("skills/**/*.md",recursive=True))
+    print(f"{name}={n}")
+PY
 ```
 
-期待: すべて `0`。`出所識別子`・`安定識別子` は残るので、`識別子` 単独の検査は否定後読みを使う。
+期待: すべて `0`。`出所識別子`・`安定識別子`・`プロジェクト識別子` は残るので、`識別子` 単独の検査は否定後読みを使う（`プロジェクト識別子` は 1 件のみで、上の Python は 1 を返す。この 1 件が `store-format.md` の `プロジェクト識別子` であることを目視で確認して 0 とみなす）。
+
+> 当初は `grep -rohE "前置(?!き)"` と書いていたが、`grep -E` は否定先読み・否定後読みを解釈せず常に 0 件を返すため、置き換えの前後を問わず検証が真になっていた（確定前レビューで検出。実測: `grep -E` は 0 件、Python は 前置 6 件・識別子 9 件）。
 
 - [ ] **Step 4: 差分の確認とコミット**
 
@@ -575,17 +626,35 @@ git commit -m "docs(skills): 分かりにくい語を平易な語へ置き換え
 
 ---
 
-## Task 7: 群 A の型 2（目的語を添える）の点検
+## Task 7: 型 2（目的語を添える）の点検（4 群）
 
-**Files:** 群 A のうち `昇格`・`移設`・`剪定`・裸の `確定点` を含むファイル。
+**Files:** 4 群すべてのうち `昇格`・`移設`・`剪定`・裸の `確定点` を含むファイル。設計書 6-3 の完了条件 2 は「文中の裸の使用を 4 群で目視点検した」を求めており、群 A だけでは足りない（設計書の型 2 の表では群 B・C・D にも非ゼロ件数がある）。
 
-- [ ] **Step 1: 裸の使用を列挙する**
+- [ ] **Step 1: 裸の使用を 4 群で列挙する**
 
 ```bash
-grep -rn "昇格" skills --include=*.md | grep -vE "Accepted 昇格|フォルダ昇格|承認の昇格"
-grep -rn "剪定" skills --include=*.md
-grep -rnE "(?<!spec )(?<!plan )確定点" skills --include=*.md | head -40
+python - <<'PY'
+import re,glob
+manifest=[l.strip() for l in open("template.manifest",encoding="utf-8") if l.strip() and not l.startswith("#")]
+G={"A":sorted(glob.glob("skills/**/*.md",recursive=True)),
+   "B":[f for f in manifest if f.endswith(".md") and "wording-replacements" not in f],
+   "C":["CONTRIBUTING.md","README.md"]+sorted(glob.glob("docs/reference/*.md")),
+   "D":[f for f in sorted(glob.glob("docs/current/**/*.md",recursive=True)) if "2026-09-04-plain-language" not in f]}
+pats=[("昇格",r"昇格"),("移設",r"移設"),("剪定",r"剪定"),("確定点(裸)",r"(?<!spec )(?<!plan )確定点")]
+for g,fs in G.items():
+    for name,pat in pats:
+        hits=[]
+        for f in sorted(set(fs)):
+            try: lines=open(f,encoding="utf-8").readlines()
+            except OSError: continue
+            for i,line in enumerate(lines,1):
+                if re.search(pat,line): hits.append(f"{f}:{i}:{line.rstrip()}")
+        print(f"=== 群{g} {name}: {len(hits)} 行")
+        for h in hits: print(" ",h)
+PY
 ```
+
+`昇格` は `Accepted 昇格`・`フォルダ昇格`・`承認の昇格` のように既に目的語が付いた形も列挙に混ざる。Step 2 で 1 件ずつ読んで判断するため、列挙側では除外しない（除外条件を書くと、まだ知らない付き方を取りこぼす）。
 
 - [ ] **Step 2: 意味が取れない箇所に目的語を添える**
 
@@ -593,14 +662,16 @@ grep -rnE "(?<!spec )(?<!plan )確定点" skills --include=*.md | head -40
 
 - [ ] **Step 3: 点検の実施を記録する**
 
-このタスクのコミットメッセージへ、点検した件数と目的語を添えた件数を書く。
+このタスクのコミットメッセージへ、群ごとに点検した件数と目的語を添えた件数を書く（完了条件 2 が「点検の実施を実装計画に記録する」を求めるため、本計画のこの行に実測値を追記する）。
+
+実測値の記入欄（Step 1 の実行後に埋める）: 群 A 点検 __ 件・修正 __ 件 / 群 B __・__ / 群 C __・__ / 群 D __・__
 
 - [ ] **Step 4: 差分の確認とコミット**
 
 ```bash
-git diff --stat skills/
-git add skills/
-git commit -m "docs(skills): 目的語が省かれた語へ目的語を添える（点検 N 件・修正 M 件）"
+git diff --stat skills/ CONTRIBUTING.md README.md docs/reference/ docs/overview/ docs/current/
+git add -- skills CONTRIBUTING.md README.md docs/reference docs/overview docs/current
+git commit -m "docs: 目的語が省かれた語へ目的語を添える（4 群・点検 N 件・修正 M 件）"
 ```
 
 ---
@@ -629,7 +700,7 @@ grep -nE "[AB] 群|観点 ?[1-5]" CONTRIBUTING.md README.md docs/reference/*.md
 - 86 行目（省略の要件）: 「同一 ADR 内の過剰適合点検ブロック「退役経路」欄の記載がある場合に限り」→「同一 ADR 内の過剰適合点検ブロック**の当該欄**の記載がある場合に限り」
 - 243 行目（ADR-0121 の欄への参照）: 「正本は ADR-0121 の過剰適合点検ブロック「退役経路」欄」→「正本は ADR-0121 の過剰適合点検ブロック**の当該欄**」
 
-`skills/worklog-skillify/SKILL.md` の是正のやり方の名前の再掲も同じ名前に直す（Task 6 で扱っていない場合はここで直す）。
+`skills/worklog-skillify/SKILL.md` の是正のやり方の名前の再掲は Task 6 Step 2 の例外リストで扱う（同ファイルは群 A なので Task 6 の担当。ここでは触らない）。Task 6 の完了後に `grep -rn "廃止経路" skills` が 0 件であることを確認する（`退役` の単純置換で「廃止経路」になっていないかの確認。Task 14 の完了検証は `退役経路` を探すためこの誤りを検出できない）。
 
 - [ ] **Step 3: 残りの語を直す**
 
@@ -638,12 +709,20 @@ grep -nE "[AB] 群|観点 ?[1-5]" CONTRIBUTING.md README.md docs/reference/*.md
 - [ ] **Step 4: 検証**
 
 ```bash
-for w in 突合 現役 退役 検出資産; do n=$(grep -oh "$w" CONTRIBUTING.md README.md docs/reference/*.md | wc -l); echo "$w=$n"; done
+for w in 突合 現役 退役 検出資産 巡; do n=$(grep -oh "$w" CONTRIBUTING.md README.md docs/reference/*.md | wc -l); echo "$w=$n"; done
+grep -ohE "[AB] 群" CONTRIBUTING.md README.md docs/reference/*.md | wc -l
+grep -nE "観点 ?[1-5]" CONTRIBUTING.md README.md docs/reference/*.md
+python - <<'PY'
+import re,glob
+fs=["CONTRIBUTING.md","README.md"]+sorted(glob.glob("docs/reference/*.md"))
+for name,pat in [("前置",r"前置(?!き)"),("識別子",r"(?<!出所)(?<!安定)(?<!プロジェクト)識別子")]:
+    print(f"{name}={sum(len(re.findall(pat,open(f,encoding='utf-8').read())) for f in fs)}")
+PY
 grep -c "退役経路" CONTRIBUTING.md || echo "退役経路 0 件"
 grep -c "規範の廃止条件" CONTRIBUTING.md
 ```
 
-期待: 1 行目はすべて `0`、`退役経路` は 0 件、`規範の廃止条件` が 3 件以上。
+期待: 1 行目の語はすべて `0`、`[AB] 群` は 0 件、`前置` と `識別子` は 0、`退役経路` は 0 件、`規範の廃止条件` が 3 件以上。`観点 ?[1-5]` は 0 にはならない（置き換え表は「名前は据え置き、参照時に中身を添える」と定めているため）。列挙された各行に観点の中身が併記されていることを目視で確認する。
 
 - [ ] **Step 5: 差分の確認とコミット**
 
@@ -686,7 +765,7 @@ git commit -m "docs(overview): 課題管理定義の語彙を置き換え"
 
 ## Task 10: 群 D（現用仕様書）の置き換え
 
-**Files:** `docs/current/` 配下の 23 ファイル（本計画の設計書を除く）。件数の多い順に `2026-08-05-dispatch-and-pre-review-skills-design.md`（31）・`2026-04-25-record-strengthening-design.md`（30）・`2026-08-28-start-work-responsibility-split-design.md`（29）・`2026-08-07-overfitting-check-for-extensions-design.md`（27）・`2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md`（26）ほか。
+**Files:** `docs/current/` 配下の 23 ファイル（本計画の設計書を除く）。件数の多い順に `2026-08-07-overfitting-check-for-extensions-design.md`（32）・`2026-08-05-dispatch-and-pre-review-skills-design.md`（32）・`2026-04-25-record-strengthening-design.md`（30）・`2026-08-28-start-work-responsibility-split-design.md`（27）・`2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md`（27）ほか（Task 14 の完了検証と同じパターン集合での実測。冒頭の注記どおり目安値）。
 
 - [ ] **Step 1: 対象を列挙する**
 
@@ -697,7 +776,19 @@ grep -rnE "[AB] 群|spec ?確定点 ?\([abc]\)|観点 ?[1-5]" docs/current --inc
 
 - [ ] **Step 2: 語ごとに 1 件ずつ直す**
 
-「語の置き換え表」に従う。仕様書は「今どうなっているか」を書く文書なので、スキルの名前を変えた箇所（節見出し・記録の文字列・ラベル）は新しい名前に揃える。`2026-08-07-overfitting-check-for-extensions-design.md` の「退役経路」5 箇所は、点検の観点名・是正のやり方の名前・表の行名として Task 8 と同じ名前に揃える。
+「語の置き換え表」に従う。仕様書は「今どうなっているか」を書く文書なので、スキルの名前を変えた箇所（節見出し・記録の文字列・ラベル）は新しい名前に揃える。
+
+「退役経路」は群 D の **7 ファイル・16 件**に出現する。点検の観点名・是正のやり方の名前・表の行名として、Task 8 と同じ「規範の廃止条件」に揃える（当初は 1 ファイル・5 箇所としていたが、確定前レビューの再実測で 7 ファイル・16 件だった）。
+
+- `2026-08-07-overfitting-check-for-extensions-design.md` 7 件
+- `2026-08-07-distributed-artifact-generation/00-overview.md` 3 件
+- `2026-08-25-codex-support-design.md` 2 件
+- `2026-08-05-dispatch-and-pre-review-skills-design.md` 1 件
+- `2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md` 1 件
+- `2026-08-13-handoff-bloat-control/00-overview.md` 1 件
+- `2026-08-28-start-work-responsibility-split-design.md` 1 件
+
+`退役` の単純置換で「廃止経路」にしないこと（`退役経路` は 1 語として扱う）。
 
 `2026-08-06-handoff-pruning-and-status-design.md` のタイトル「ハンドオフ剪定規約と Status 整合の設計」は既に目的語を含むため据え置く。
 
@@ -706,11 +797,21 @@ grep -rnE "[AB] 群|spec ?確定点 ?\([abc]\)|観点 ?[1-5]" docs/current --inc
 - [ ] **Step 3: 検証**
 
 ```bash
-for w in 突合 消化 消し込 母数 現役 配線 射程 巡 実質収束 退役 検出資産; do n=$(find docs/current -name '*.md' ! -name '2026-09-04-plain*' -exec grep -oh "$w" {} \; | wc -l); echo "$w=$n"; done
+for w in 突合 消化 消し込 母数 裁定 現役 配線 射程 巡 実質収束 格下げ 逐語厳守 退役 検出資産 機械的な適応 廃止経路; do n=$(find docs/current -name '*.md' ! -name '2026-09-04-plain*' -exec grep -oh "$w" {} \; | wc -l); echo "$w=$n"; done
 find docs/current -name '*.md' ! -name '2026-09-04-plain*' -exec grep -ohE "[AB] 群|spec ?確定点 ?\([abc]\)" {} \; | wc -l
+python - <<'PY'
+import re,glob
+fs=[f for f in sorted(glob.glob("docs/current/**/*.md",recursive=True)) if "2026-09-04-plain-language" not in f]
+txt="".join(open(f,encoding="utf-8").read() for f in fs)
+for name,pat in [("前置",r"前置(?!き)"),("識別子",r"(?<!出所)(?<!安定)(?<!プロジェクト)識別子")]:
+    print(f"{name}={len(re.findall(pat,txt))}")
+PY
+find docs/current -name '*.md' ! -name '2026-09-04-plain*' -exec grep -nE "観点 ?[1-5]" {} +
 ```
 
-期待: すべて `0`。
+期待: 1 つ目の for 文の語はすべて `0`（`廃止経路` を含む。`退役経路` を誤って単純置換した場合の検出）、`[AB] 群` と `spec 確定点 (a)` は 0 件、`前置` と `識別子` は 0。`観点 ?[1-5]` は 0 にはならないので、列挙された各行に観点の中身が併記されていることを目視で確認する。
+
+当初は検証の語リストが Step 1 の列挙より短く、群 D で最も件数の多い `識別子`（85 件）と `裁定`・`前置`・`観点` が検証から漏れていた（確定前レビューで検出）。
 
 - [ ] **Step 4: 差分の確認とコミット**
 
@@ -755,36 +856,61 @@ PY
 - `Issue-0037: start-work Post ラッパーの消化漏れが検出できない（worklog-record の発火が確率的）` → `Issue-0037: start-work の節目の確認の記録漏れが検出できない（worklog-record の発火が確率的）`
 - `ADR-0073: 委譲制約の規範項目には根拠と世代を添え、実測にもとづく退役経路を持たせる` → `ADR-0073: 委譲制約の規範項目には根拠と世代を添え、実測にもとづく規範の廃止条件を持たせる`
 
-- [ ] **Step 3: 3 つの一覧のタイトル記載を揃える**
+- [ ] **Step 3: 3 つの一覧の記載を直す（一覧ごとに扱いが違う）**
 
-`docs/records/decisions/README.md`・`docs/records/retrospectives/README.md`・`docs/working/issues/README.md` の該当行のタイトルを、Step 2 と同じ文字列に直す。
+3 つの一覧は書式が同じではないため、「同じタイトルが書かれているので揃える」という 1 つの手順では扱えない（確定前レビューで検出）。一覧ごとに次のように扱う。
+
+- `docs/records/decisions/README.md`: 該当 11 行のタイトルは実ファイルの H1 をそのまま転記した形なので、Step 2 と**同じ文字列**に直す
+- `docs/working/issues/README.md`: 該当 14 行のうち 12 行は H1 の転記だが、2 行（Issue-0080・Issue-0123）は H1 を短くした要約になっている。転記の行は同じ文字列に直し、要約の 2 行は**その行に含まれる置き換え対象の語だけ**を直す（行の要約としての書き方は変えない）
+- `docs/records/retrospectives/README.md`: 表の「サブプロジェクト」列は H1 の転記ではなく自由記述のラベルである（例: 実ファイルの H1「Retrospective: 記録プロセス規範の一括対策」に対し一覧は「記録プロセス規範の一括対策（Issue-0009/0010/0011 対策）」）。この列は一覧が各振り返りを指すための識別ラベルなので、ADR-0123 の決定 6 が言う「対応する一覧」に当たる。**この列にある 4 件（`突合`・`消化`・`配線`・`ラッパー` 各 1 件）だけ**を直す
+  - **同じ表の「備考」列は触らない。** 同列は当時の観察を当時の語彙で残した記録本文にあたり、置き換え対象の語が 105 件ある（Step 4 の検査と同じパターン集合での実測。`巡` 39・`spec 確定点`〈裸〉15・`配線` 14・`実質収束` 10 ほか）。ADR-0123 の決定 6 は「記録型文書はタイトルのみ置き換える」と定め、**「本文への拡大の前例にはしない」**と明記している。`AGENTS.md` へ足す 1 行も「記録型文書の本文は対象としない」である。この 105 件は置き換えない
+
+設計書 5 の「計 58 箇所」の内訳は次のとおりで、実測と一致する（数え直しは要らない）。
+
+| 対象 | 件数 |
+|---|---|
+| 記録型文書のタイトル（ADR 11・振り返り 4・課題 14） | 29 |
+| 決定記録の一覧の行 | 11 |
+| 課題の一覧の行 | 14 |
+| 振り返りの一覧の「サブプロジェクト」列 | 4 |
+| 合計 | 58 |
 
 - [ ] **Step 4: 検証**
 
+Step 1 のスクリプトを再実行して 0 件になることを確認したうえで、一覧側を次で確認する。
+
 ```bash
-# Step 1 のスクリプトを再実行し、0 件になることを確認する
-# 一覧側の突合
 python - <<'PY'
-import re,glob,os
-for d,idx in [("docs/records/decisions","docs/records/decisions/README.md"),
-              ("docs/records/retrospectives","docs/records/retrospectives/README.md"),
-              ("docs/working/issues","docs/working/issues/README.md")]:
-    s=open(idx,encoding="utf-8").read()
-    ng=[]
-    for f in sorted(glob.glob(d+"/**/*.md",recursive=True)):
-        if os.path.basename(f)=="README.md": continue
-        for l in open(f,encoding="utf-8"):
-            if l.startswith("# "):
-                title=l.strip()[2:]
-                # 一覧はタイトルの後半（番号の後）を持つ形式
-                core=title.split(": ",1)[-1]
-                if core[:20] not in s: ng.append((os.path.basename(f),core[:40]))
-                break
-    print(idx,"一覧に無いタイトル:",len(ng)); [print("  ",x) for x in ng[:10]]
+import re
+pats=[r"突合",r"消化",r"消し込",r"母数",r"裁定",r"前置(?!き)",r"現役",r"配線",r"射程",r"巡",
+r"実質収束",r"格下げ",r"逐語厳守",r"退役",r"(?<!出所)(?<!安定)(?<!プロジェクト)識別子",r"検出資産",
+r"機械的な適応",r"ラッパー",r"[AB] 群",r"spec ?確定点 ?\([abc]\)",r"観点 ?[1-5]"]
+def count(text): return sum(len(re.findall(p,text)) for p in pats)
+
+# (1) 決定記録と課題の一覧: 表の行に残っていないこと（着手前は 13 件・15 件）
+for f in ["docs/records/decisions/README.md","docs/working/issues/README.md"]:
+    t=open(f,encoding="utf-8").read()
+    rows="\n".join(l for l in t.splitlines() if l.startswith("| ") and not l.startswith("| ---"))
+    print(f"{f}: 表の行 {count(rows)} 件（表以外 {count(t)-count(rows)} 件）")
+
+# (2) 振り返りの一覧: サブプロジェクト列のみ 0 へ。備考列は触らないので 105 のまま
+cols={"サブプロジェクト":[], "備考":[]}
+for line in open("docs/records/retrospectives/README.md",encoding="utf-8"):
+    if not line.startswith("| ") or line.startswith("| ---") or "実施日" in line: continue
+    c=[x.strip() for x in line.strip().strip("|").split("|")]
+    if len(c)<5: continue
+    cols["サブプロジェクト"].append(c[1]); cols["備考"].append(c[4])
+for k,v in cols.items(): print(f"振り返り一覧 {k}列: {count(chr(10).join(v))} 件")
 PY
 ```
 
-期待: 1 つ目の検査が 0 件。2 つ目は置き換えたタイトルがすべて一覧にあること（元から一覧に載らない種類のファイルは除く）。
+期待:
+
+- Step 1 の再実行が 0 件（タイトル行に残っていない）
+- 決定記録の一覧・課題の一覧はどちらも表の行が **0 件**（着手前は 13 件・15 件。表以外は着手前も 0 件で、変わらない）
+- 振り返り一覧の「サブプロジェクト」列が **0 件**（着手前は 4 件）、「備考」列は **105 件のまま変わらない**（触らないため。減っていたら記録本文を書き換えてしまっている）
+
+`git diff docs/records/retrospectives/README.md` で、変更が「サブプロジェクト」列の 4 箇所だけであることを目視で確認する。
 
 - [ ] **Step 5: 差分の確認とコミット**
 
@@ -806,8 +932,8 @@ git commit -m "docs(records): 記録型文書のタイトル 29 件と一覧の�
 - [ ] **Step 1: 対象を列挙する**
 
 ```bash
-sed -n '/^## 既知のブロッカー・懸念/,/^## 実行後処理\|^## Post/p' docs/working/handoff/master.md | grep -nE "突合|消化|巡|退役|基準 \(i\)|逸脱突合|spec 確定点 \(|A 群|B 群|ラッパー"
-sed -n '/^## 次セッション開始時のアクション/,/^## 重要な意思決定/p' docs/working/handoff/master.md | grep -nE "突合|消化|巡|退役|基準 \(i\)|逸脱突合|spec 確定点 \(|A 群|B 群|ラッパー"
+sed -n '/^## 既知のブロッカー・懸念/,/^## 実行後処理\|^## Post/p' docs/working/handoff/master.md | grep -nE "突合|消化|消し込|母数|裁定|現役|配線|射程|巡|実質収束|格下げ|逐語厳守|退役|検出資産|基準 \(i\)|逸脱突合|B群判定|spec 確定点 \(|A 群|B 群|ラッパー"
+sed -n '/^## 次セッション開始時のアクション/,/^## 重要な意思決定/p' docs/working/handoff/master.md | grep -nE "突合|消化|消し込|母数|裁定|現役|配線|射程|巡|実質収束|格下げ|逐語厳守|退役|検出資産|基準 \(i\)|逸脱突合|B群判定|spec 確定点 \(|A 群|B 群|ラッパー"
 ```
 
 - [ ] **Step 2: この 2 節だけを直す**
@@ -858,7 +984,19 @@ pwsh -NoProfile -File scripts/sync-template.ps1 -Check; echo "sync-template exit
 
 期待: どちらも `exit=0`。記法規約の違反が出た場合は、置き換え表ファイルに ADR 番号・課題番号が入っていないかを確認して直す。
 
-- [ ] **Step 4: SKILL.md のサイズを確認する**
+- [ ] **Step 4: 生成物を読んで、機械判定が届かない 5 つを目視で確かめる**
+
+`CONTRIBUTING.md`「執行点」の 4 手順のうち 4 番目にあたる工程（確定前レビューで、この手順が計画から漏れていることを検出した）。生成後の `dist/skills/` と `template/` を読んで次の 5 つを探す。
+
+1. 括弧内に参照番号以外の語が同居した行
+2. 半角括弧の参照番号
+3. 書式例の実在の固有名（プロジェクト名・絶対パス・文書名）
+4. 自己参照（`本リポジトリ` / `本 repo`）
+5. スクリプトの docstring・利用者へ表示するメッセージ
+
+本サイクルで新規に配布物へ入るのは `template/docs/overview/wording-replacements.md` なので、まずこのファイルを通読する。次に、語を書き換えた `dist/skills/` の各ファイルを差分（`git diff` の範囲）に絞って読む。`CONTRIBUTING.md` は「目視は 1 回で終わらせない」ことを求めているため、Step 7 のコミット直前にもう一度読む。
+
+- [ ] **Step 5: SKILL.md のサイズを確認する**
 
 ```bash
 for f in skills/*/SKILL.md; do printf "%s %s\n" "$(wc -c < $f)" "$f"; done | sort -rn | head -5
@@ -866,7 +1004,7 @@ for f in skills/*/SKILL.md; do printf "%s %s\n" "$(wc -c < $f)" "$f"; done | sor
 
 期待: すべて 20000 未満。超えた場合は `CONTRIBUTING.md`「全シナリオ共通: SKILL.md のサイズと分割」の判断（責務帰属型 → references 型 → 例外登録）へ進み、その判断を ADR-0123 へ追記する。
 
-- [ ] **Step 5: 増分を記録する**
+- [ ] **Step 6: 増分を記録する**
 
 ```bash
 find skills -name '*.md' -exec cat {} + | wc -c
@@ -875,7 +1013,7 @@ wc -c < CONTRIBUTING.md
 
 Task 1 Step 1 の値（skills 227867・CONTRIBUTING 58150）との差と増分率を計算し、ADR-0123 の Consequences へ 1 行追記する。
 
-- [ ] **Step 6: 差分の確認とコミット**
+- [ ] **Step 7: 差分の確認とコミット**
 
 ```bash
 git status --short
@@ -904,15 +1042,18 @@ git commit -m "chore: version 0.1.19 と配布物の再生成"
 python - <<'PY'
 import re,glob
 manifest=[l.strip() for l in open("template.manifest",encoding="utf-8") if l.strip() and not l.startswith("#")]
+# 置き換え表ファイル自身は「置き換え前」列に旧語を保持する設計なので走査対象から外す。
+# Task 1 でこのファイルを template.manifest へ追加するため、除外しないと群 B に入り「残存 0」が原理的に成立しない（確定前レビューで検出）。
+manifest=[f for f in manifest if "wording-replacements" not in f]
 G={"A":sorted(glob.glob("skills/**/*.md",recursive=True)),"B":manifest,
    "C":["CONTRIBUTING.md","README.md"]+sorted(glob.glob("docs/reference/*.md")),
    "D":[f for f in sorted(glob.glob("docs/current/**/*.md",recursive=True)) if "2026-09-04-plain-language" not in f]}
 pats=[("突合",r"突合"),("消化",r"消化"),("消し込",r"消し込"),("母数",r"母数"),("裁定",r"裁定"),
 ("前置",r"前置(?!き)"),("現役",r"現役"),("配線",r"配線"),("射程",r"射程"),("巡",r"巡"),
 ("実質収束",r"実質収束"),("格下げ",r"格下げ"),("逐語厳守",r"逐語厳守"),("退役",r"退役"),
-("識別子",r"(?<!出所)(?<!安定)識別子"),("検出資産",r"検出資産"),("機械的な適応",r"機械的な適応"),
+("識別子",r"(?<!出所)(?<!安定)(?<!プロジェクト)識別子"),("検出資産",r"検出資産"),("機械的な適応",r"機械的な適応"),
 ("ラッパー",r"ラッパー"),("A/B群",r"[AB] 群"),("spec確定点(a-c)",r"spec ?確定点 ?\([abc]\)"),
-("退役経路",r"退役経路"),("B群判定",r"B群判定"),("逸脱突合",r"逸脱突合")]
+("退役経路",r"退役経路"),("廃止経路",r"廃止経路"),("B群判定",r"B群判定"),("逸脱突合",r"逸脱突合")]
 ng=0
 for g,fs in G.items():
     for f in fs:
@@ -929,6 +1070,12 @@ PY
 - [ ] **Step 2: ADR-0123 を Accepted へ昇格する**
 
 `decision-log` の `references/status-updates.md`「承認の昇格」の手順に従う。サイクル全体整合検査（5 観点）を実施し、結果をハンドオフの確認記録へ `cyclecheck=` として残す。
+
+あわせて、決定 6 の「対応する一覧」に次の 1 文を補う（本サイクルで実際に読み違えが起きた箇所。差分確認巡で「決定 6 の文言だけでは一段階の解釈を要する」と指摘された）。
+
+```
+一覧の側で置き換えるのは、各記録を指す識別ラベルの列である（実ファイルの見出しの逐語転記でない言い換えラベルも含む）。同じ表にあっても、当時の観察を残した記録本文にあたる列は置き換えない。
+```
 
 - [ ] **Step 3: Issue-0119 を閉じる**
 
@@ -967,10 +1114,16 @@ git commit -m "docs: ADR-0123 を Accepted へ昇格し Issue-0119 を close"
 | 設計 4-1（節見出しと汎用 1 文） | Task 3 |
 | 設計 4-2（マイルストーン名） | Task 5 Step 4 |
 | 設計 4-3（記録の文字列） | Task 4 |
-| 設計 4-4（退役経路の 3 役割） | Task 8 Step 2 |
+| 設計 4-4（退役経路の 3 役割） | Task 8 Step 2（群 C）・Task 10 Step 2（群 D の 7 ファイル 16 件）・Task 6 Step 2（群 A の `worklog-skillify`） |
 | 設計 4-5（master.md の 2 節） | Task 12 |
 | 設計 5（記録型文書のタイトル） | Task 11 |
-| 設計 6-2（サイズ） | Task 13 Step 4・5 |
+| 設計 6-2（サイズ） | Task 13 Step 5・6 |
 | 設計 6-3（完了条件 12 項） | Task 14 Step 1 |
 
-**未対応が無いことの確認**: 完了条件 12 項のうち、条件 4 の「配置の早見表へ 1 行」は Task 1 Step 4、条件 5 の「他 5 スキル 7 箇所」は Task 3 Step 5、条件 11 の「成果物自身が新しい語彙」は本計画自身が該当し、置き換え対象の語は表と説明の中でのみ使っている。
+**未対応が無いことの確認**: 完了条件 12 項のうち、
+
+- 条件 2「型 2 の 4 語を 4 群で目視点検」→ Task 7（確定前レビューで群 A のみになっていたのを 4 群へ広げた）
+- 条件 4「配置の早見表へ 1 行」→ Task 1 Step 4
+- 条件 5「他 5 スキル 7 箇所」→ Task 3 Step 5
+- 条件 7「執行点 4 手順」→ Task 13 Step 2（生成器の実行）・Step 3（両方の `-Check`）・Step 4（機械判定が届かない 5 つの目視）・**Step 7（生成物を同じコミットに含める）**。4 手順の 3 番目に対応するのは Step 7 で、Step 2・3・4 には含まれない
+- 条件 11「本サイクルの成果物（設計書・ADR-0123・ハンドオフ・実装計画）が新しい語彙で書かれている」→ 設計書・ADR-0123・本計画は該当し、置き換え対象の語は表と説明の中でのみ使っている。**ハンドオフは本サイクルでは書き換えない**（設計書 6-1。自リポジトリのハンドオフを読み書きするスキルが配布物経由で動いており、まだ古い書式を前提にしているため）。したがって条件 11 のうちハンドオフの分は、Task 13 で配布物を更新し利用者がプラグインを更新した後の次サイクルで満たす。この扱いを Task 14 Step 1 の照合結果に 1 行書き残す

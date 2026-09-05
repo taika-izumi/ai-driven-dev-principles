@@ -1,6 +1,6 @@
 # ADR-0125: レビュー対応で追加する仕組みは、失敗の根拠と導入・維持費用を既存の採否手順で比較する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-05
 
 ## Context

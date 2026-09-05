@@ -1,6 +1,6 @@
 # ADR-0124: 確定前レビューの方式と人数は状況から推奨し、実施・見送りはユーザー判断に残す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-05
 
 ## Context

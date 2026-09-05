@@ -64,6 +64,7 @@ LoopForAlpha 側提案の 4 点を採用し、次のとおり実装する。
 - 配布対象ソースの変更のため、plugin version bump（0.1.13 → 0.1.14）と執行点 4 手順（生成器実行・両 -Check・dist 同コミット・配布物目視）を実施する
 - **部分修正（ADR-0120）**: Decision 1「観点数の写像」の時点注記「4 体構成・1 体 4 観点兼務の実測は無い」は、両主張とも実測の反映により更新された（4 体側 = 規範改定型 spec 確定点の反復実測〈Issue-0107 事例 10〉、1 体兼務側 = 写像 plan の初回フル巡実測〈Issue-0103 検討状況 2026-08-30〉）。Consequences「費用が増える」の時点注記「4 体構成の実測は無い」も同様に更新して読む（規範改定型 spec 確定点で 4 体 ≈58〜69 万トークンの実測が得られた——見積り値の記載は据え置き）。あわせて初回フル巡の体数に成果物の型別既定（規範改定型 = 観点分離 4 体、レビュー済み上流からの写像通常型 = 1 体 4 観点兼務）が追加された。前提実在観点の常設・検査手順の骨格は現役のため、Status は Accepted のまま維持する
 - **部分修正（ADR-0121）**: 実装対象が名指しする `skills/pre-finalization-review/SKILL.md` の記載箇所のうち、手順 1 の前提実在観点の定義と手順 5 の前提検査は `skills/pre-finalization-review/references/review-procedure.md` へ、適用例「前提実在観点で特に疑う型」は `skills/pre-finalization-review/references/examples-and-evidence.md` へ、ADR-0121 決定 5 の references 型分割により移った。frontmatter description と提示規則の記載箇所は SKILL.md 本文に残る。観点の定義・前提検査の内容は不変のため、Status は Accepted のまま維持
+- **部分修正（ADR-0125）**: 確定前レビューの前提検査を維持し、新設・増設を採用する案に費用と代替案の比較を加える。その他の委譲全般へ適用を広げず、StatusはAcceptedを維持する。
 
 ## 過剰適合点検（ADR-0079）
 

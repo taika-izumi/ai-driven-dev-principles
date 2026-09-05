@@ -121,7 +121,7 @@
 | [0104](flow/0104-provenance-strip-grammar-breakage-not-machine-detected.md) | 参照番号除去後の文法破綻（R1-a 型）を機械検出できない | open | 2026-08-18 |
 | [0105](flow/0105-skill-md-size-growth-no-norm.md) | SKILL.md のサイズ・分割規範が無い | closed | 2026-08-18 |
 | [0106](flow/0106-review-snapshot-area-no-naming-cleanup-rules.md) | 改訂前退避領域の命名規約・掃除規定が無い | open | 2026-08-18 |
-| [0107](flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md) | 反復レビューの推奨規範が状況要素を無視して推奨を決める（推奨と実選択の乖離記録） | open | 2026-08-25 |
+| [0107](flow/0107-iterative-review-recommendation-divergence/0107-iterative-review-recommendation-divergence.md) | 反復レビューの推奨規範が状況要素を無視して推奨を決める（推奨と実選択の乖離記録） | closed | 2026-08-25 |
 | [0109](flow/0109-layer3-regression-check-only-after-merge.md) | Layer 3 の退行確認が、マージ・push 後にしか実行できない | open | 2026-08-25 |
 | [0110](flow/0110-plan-deviation-decision-has-no-default.md) | 確定済み計画からの逸脱判断に既定が無く、実装時レビューの指摘ごとに設計判断が発生する | closed | 2026-08-25 |
 | [0112](flow/0112-multilayer-review-role-separation-not-codified.md) | 多層レビューの役割分担指針が明文化されておらず、レビュー設計の再現性がコンテキスト依存（LoopForAlpha#Issue-0043 委譲） | open | 2026-08-30 |
@@ -135,5 +135,5 @@
 | [0121](flow/0121-subfolder-split-trigger-missing-in-placement-norm.md) | 配置の正本に「種別サブフォルダをいつ作るか」の判定則が無く、同じ議論が分類フォルダごとに再演する（LoopForAlpha#Issue-0140 申し送り） | open | 2026-09-03 |
 | [0122](flow/0122-consistent-recommendation-approval-gates-lack-default-execution-with-rollback.md) | 推奨が一致する承認ゲート（レビュー指摘の採否・反復提示・ADR 承認）に「事前宣言による既定実行 + 差し戻し窓」が無く、番号回答待ちが配布先の壁時計の最大費用になる（LoopForAlpha#Issue-0168 の申し送り） | open | 2026-09-04 |
 | [0123](flow/0123-recurring-friction-clusters-checklist-injection-into-dispatch-and-plan-verification.md) | 躓き型 5 クラスタ（そのまま書き写すコードの写しずれ・PowerShell の落とし穴・対象の総数の引き写し・検証コマンドの未実行・標本の退化）の 1 行チェックリストを委譲制約と計画検証ステップへ注入する（LoopForAlpha の worklog-extract 走査由来・skillify の受け皿） | open | 2026-09-04 |
-| [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | open | 2026-09-05 |
+| [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | closed | 2026-09-05 |
 | [0125](flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md) | 語彙の規範がサブエージェントへの委譲制約に接続されておらず、委譲先が文書を編集する経路では規範が届かない（委譲元が毎回プロンプトへ手で書き写している） | open | 2026-09-05 |

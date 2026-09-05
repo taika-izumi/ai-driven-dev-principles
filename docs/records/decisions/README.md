@@ -129,3 +129,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0121](0121-skill-md-size-trigger-and-split-norm.md) | SKILL.md の肥大は build-dist のサイズ警告で検知し、分割判断の型と例外テーブルで制御する（ADR-0116 境界宣言は存置） | Accepted | 2026-08-31 |
 | [0122](0122-split-session-handoff-and-decision-log-by-firing-unit.md) | session-handoff と decision-log は発火単位で references へ分割し、SKILL.md 本文を共通部とディスパッチ表に絞る | Accepted | 2026-09-01 |
 | [0123](0123-plain-language-vocabulary-in-normative-documents.md) | ガイドライン文書の分かりにくい語は、対象を 3 種類に定めて文書自体を書き換え、再流入は配布する置き換え表と提案の規範で防ぐ（自動検査は設けず、古い名前も列挙せず、記録型の文書はタイトルだけを直す） | Accepted | 2026-09-04 |
+| [0124](0124-review-minimum-as-recommendation-with-user-discretion.md) | 確定前レビューの方式と人数は状況から推奨し、実施・見送りはユーザー判断に残す | Accepted | 2026-09-05 |
+| [0125](0125-evaluate-cost-of-review-driven-additions.md) | レビュー対応で追加する仕組みは、失敗の根拠と導入・維持費用を既存の採否手順で比較する | Accepted | 2026-09-05 |

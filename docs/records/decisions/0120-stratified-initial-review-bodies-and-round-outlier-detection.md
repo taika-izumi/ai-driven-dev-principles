@@ -49,6 +49,7 @@
 - 構造的解決の検討結果: 巡数の計数は `review=` 記録からの機械読み取りであり、コミット前フック等の自動計数機構を持たない現行ハーネスで可能な範囲では最も構造的な形である（発火判定を規範側に置くのはこのため）
 - **部分修正（ADR-0121）**: 実装対象が名指しする手順 1 の体数規定は、ADR-0121 決定 5 の references 型分割により `skills/pre-finalization-review/SKILL.md` の新設節「観点と初回フル巡の体数」へ移った（初回提示が references の読み込みなしで履行できるようにするため、本文へ残す側のカーブアウトとして扱った）。決定 3 の型別既定・決定の内容はいずれも不変のため、Status は Accepted のまま維持
 - **部分修正（ADR-0122）**: 実装対象が名指しする `skills/session-handoff/SKILL.md` の update 手順（反復継続記載への独立項目「成果物の型」の追加）は、ADR-0122 の references 型分割により `skills/session-handoff/references/op-update.md` へ移った。`skills/pre-finalization-review/` 側の記載箇所は本 ADR の対象外。規定内容は不変のため、Status は Accepted のまま維持
+- **部分修正（ADR-0124）**: 初回人数の型別固定を状況判断へ変更する。成果物2型と通算回数の注意喚起は維持し、StatusはAcceptedを維持する。
 
 ## 過剰適合点検（ADR-0079）
 

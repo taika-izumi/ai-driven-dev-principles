@@ -67,6 +67,7 @@ CONTRIBUTING.md の「全シナリオ共通: 過剰適合の点検」の直後�
 - 本 ADR の Accepted 昇格（実装完了・検証後）をもって Issue-0096 を close する（結論に本 ADR と ADR-0101 を記載）
 - **部分修正（ADR-0105）**: extend-guidelines 手順 5 の評価可能性確認の記載は CONTRIBUTING 共通節への配線に置換され、CONTRIBUTING「ADRを記録するとき」記述規律の文脈語が追従修正された（要件本体は「新設の評価可能性」節で現役）
 - **部分修正（ADR-0122）**: 実装対象が名指しする `skills/decision-log/SKILL.md` の ADR 作成手順の注記部（評価可能性のゲート付きポインタ）は、ADR-0122 の references 型分割により `skills/decision-log/references/adr-authoring.md` へ移った。規定内容は不変のため、Status は Accepted のまま維持
+- **部分修正（ADR-0125）**: 新設を含むADRの既存比較に失敗の根拠と導入・維持費用を含める。期待検出量・廃止条件と既存の執行点は維持し、StatusはAcceptedを維持する。
 
 ## 過剰適合点検（ADR-0079）
 

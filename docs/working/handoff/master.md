@@ -1,115 +1,69 @@
-# Handoff: ガイドライン文書の分かりにくい語の平易化サイクル完了・次サイクル待ち
+# Handoff: レビュー推奨・費用比較の改定から次サイクルへ
 
-- **Branch**: master（feature/issue-0119-plain-language-vocabulary を --no-ff で取り込み。マージコミット `77ec45b`）
-- **Last Updated**: 2026-09-05 (Asia/Tokyo)
-- **Status**: ready-for-next-cycle
-- **Current Phase**: サイクル完了（retrospective・cycle-reset 済み）。次サイクル着手はユーザー判断
+- **Branch**: master
+- **Last Updated**: 2026-09-06 00:11 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: codex/issue-0107-0124-review-judgmentの取り込み準備
 
 ## 作業の目的・背景
 
-本リポジトリ `taika-izumi/ai-driven-dev-principles` は、AI駆動開発ガイドライン（5原則 + スキル群 + ADR。AIエージェントと協働して開発を進めるための、原則・行動指示・スキルの体系）を整備するプロジェクト。
+AI駆動開発ガイドラインの0.1.20で、レビュー方式・人数の固定推奨を状況判断へ改め、追加機構の採否に導入・維持費用の比較を組み込んだ。Issue-0107・0124はclosed、ADR-0124・0125はAccepted。実装は `a8a6f3e`、目的関数全体の継承不足の検討はIssue-0126（起票 `09d1073`）へ分離した。
 
-**直近サイクル（2026-09-04〜09-05: ガイドライン文書の分かりにくい語の平易化）**: Issue-0119 を対象に ADR-0123 を設計・実装（Accepted・plugin 0.1.19・課題 close）。配信スキルの本文が自ら定める平易表現規約に反する語を使い、それが配布先の対話・成果物へ写っていた問題への対策。分かりにくい語を 3 型（語自体型・目的語省略型・記号的ラベル）で定義し、対象文書 4 群で型 1 の語 675 件を置き換えて残存 0 件、型 2 は 388 箇所を点検して 3 箇所へ目的語を添えた。記号的ラベルは定義箇所の説明語から取った名前へ改名し、記録型文書はタイトル 28 件と一覧 28 行のみを直した（本文は不変）。再流入は配布する置き換え表 `docs/overview/wording-replacements.md`（新設）と `AGENTS.md` の 1 行・`CONTRIBUTING.md` の共通節で防ぎ、自動検査は設けない。本サイクルで Issue-0124・Issue-0125 を起票し、Issue-0073・0095 へ追記した。
+次は、品質の最低線を満たす範囲で総費用を抑える判断原則を、必要な判断箇所へ届ける有用性を検討する。第一候補の推薦であり、対策や全面改修を採用済みとは扱わない。
 
 ## 関連ドキュメント
 
-- 課題一覧（唯一のバックログ）: `docs/working/issues/README.md`（**open 計 62 件・closed 61 件**。2026-09-05 実測。直近サイクルは新設 2〈0124・0125〉・close 1〈0119〉・既存 2 件へ追記〈0073・0095〉）
-- 課題管理の運用規範の正本: `docs/overview/issue-management.md`（課題管理定義）
-- 直近サイクルの決定: ADR-0123（設計 spec あり）。retrospective と実装 plan はいずれも `2026-09-05-adr-0123-plain-language-vocabulary` 系（`docs/records/retrospectives/system/`・`docs/working/plans/`）
-- ADR インデックス: `docs/records/decisions/README.md`（0001〜0122。Rejected 3 件）
-- 記法規約と執行点／SKILL.md のサイズと分割: `CONTRIBUTING.md` の各「全シナリオ共通」節
-- worklog スキーマ正典: `skills/worklog-record/references/store-format.md`（v2）
-- 原則: `docs/overview/principles.md` / **Layer 2: `AGENTS.md`（`CLAUDE.md` は `@AGENTS.md` の 1 行）** / 拡張ルール: `CONTRIBUTING.md`
-- PowerShell / .NET API の落とし穴集: `docs/reference/powershell-pitfalls.md`
+- 課題の正本: `docs/working/issues/README.md`
+- 第一推奨: `docs/working/issues/flow/0126-quality-constrained-total-cost-objective-not-integrated.md`
+- 原文: `LoopForAlpha:docs/records/reviews/2026-09-04-dev-process-review/cleanroom/00-cleanroom-input.md` §A・B（`D:/Dev/001_Trade/LoopForAlpha/` 配下）
+- 完了計画・実装レビュー・検証の限界: `docs/working/plans/2026-09-05-review-judgment-and-cost-evaluation.md`
+- 今回の設計: `docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md`
+- 決定の索引: `docs/records/decisions/README.md`（ADR-0124・0125）
+- 詳細引き継ぎ: `docs/working/handoff/codex_issue-0107-0124-review-judgment.md`
+- 規範・配置・運用: `AGENTS.md`、`CONTRIBUTING.md`、`docs/overview/folder-structure.md`、`docs/overview/issue-management.md`
+- 語彙の基準: `docs/overview/wording-replacements.md`。PowerShellの既知事項: `docs/reference/powershell-pitfalls.md`
 
 ## 完了済みタスク
 
-- [x] 過去サイクルは retrospective（`docs/records/retrospectives/README.md`）/ git 履歴参照
+- [x] Issue-0107・0124の改定、配布0.1.20生成、独立実装レビューIR-1修正・再確認、サイクル全体整合検査。詳細は完了計画。
+- [x] 目的関数の局所的な継承と不足を原文で照合し、ユーザー依頼でIssue-0126を起票。
 
 ## 進行中のタスク
 
-（なし。サイクル完了）
+- [ ] **現在の作業**: ユーザーが指示したmasterへのマージとpush。
+  - 状態: 追跡ファイルの未コミット変更は引き継ぎ更新のみ。作業ブランチをリモートへ出さず、masterへ--no-ffで取り込みpushする。
+  - 残り: マージ後検査・振り返りと引き継ぎ確定・origin/masterへのpush確認。
 
-## 未着手のタスク（バックログ。着手はユーザー判断）
+## 未着手のタスク
 
-バックログは `docs/working/issues/README.md` に一元化。次サイクルの候補として目安を示す。**直近サイクルで「レビューの費用が本当に要るのか」という利用者の毎サイクルの実感が言語化された**ため（Issue-0124・Issue-0107 の 2026-09-05 行）、費用に直接効くものを先頭へ入れ替えた:
+1. **Issue-0126（第一推奨）: 調査・適用範囲の設計。** 共通の判断原則を先に整理すると、Issue-0122の人間関与やIssue-0114のレビュー深度の判断が揃う。直近の照合結果を利用できる。初回は原文対応表と最小適用案の比較までとし、導入効果の検証なしに全スキルへ展開しない。
+2. **Issue-0122**: 承認待ちの費用を減らす対策。測定上の改善余地が大きいが、事前の権限設定・差し戻し・実施判断の条件が必要。Issue-0126を大規模な先行作業に膨らませず、その成果を判断材料として用いる。
+3. **Issue-0123＋0125**: 委譲先へ検証上の注意と語彙の規範を届ける。同じ接続先を扱うため、一緒に検討する余地がある。
+4. **Issue-0114、0095・0073・0056**: レビュー深度と計画検証の改善。着手時に既存の残余範囲と対策済み箇所を再確認する。
 
-1. [ ] **Issue-0107 ＋ Issue-0124 を 1 サイクルで**（flow）: 反復レビューの推奨を「規範は下限と歯止め、推奨は判断に任せる」へ再設計し、指摘の採否へ費用側の名指しを足す。同じファイル群（`pre-finalization-review` の 4 ファイル・`CONTRIBUTING.md`）を触る。規範改定型。上位モデルでの設計を推奨
-2. [ ] **Issue-0122**（flow）: 推奨が一致する承認ゲートの既定実行＋差し戻し窓。1 で「判断に任せる推奨」の位置づけが定まってから。配布先の実測で人間の待ち時間が経過時間の半分を占める。ADR-0072 の判断が要る
-3. [ ] **Issue-0123**（flow）: 躓き型 5 クラスタの 1 行チェックリストを委譲制約と計画の検証手順へ注入する。独立。`worklog-skillify` の正規経路で 1 サイクル。**Issue-0125（語彙の規範が委譲制約に接続されていない）と同じ表を触るので同梱すると増分がほぼゼロ**
-4. [ ] **Issue-0095 / 0073 / 0056**（flow）: 計画の検証期待値の照合・陳腐化・実行可能性。3 件同時対策が前提。**直近サイクルで両課題に材料が増えた**（0073 は累計 18 件。うち 3 件は同一計画内のタスク間の依存で機械的に陳腐化する新しい型。0095 は「実行が検出した」実例 2 件）
-5. [ ] **Issue-0114 の残余範囲**（flow）: レビュー対象からの層の除外・変異検査・実装時レビュー深度の既定。1 で入れる費用側の考え方（恒久か使い捨てかの区別）を層別の根拠に使える
-6. [ ] **Issue-0118**（flow）: 総情報量の増加に対し、AI が必要な情報へ到達する仕組みが体系として設計されていない。最小形 = `start-work` Phase 1 への索引読み込み
-7. [ ] **Issue-0117**（system）: references 型分割の完了基準に、参照表の各行の到達元が実在するかの確認が無い。`CONTRIBUTING.md` を触るサイクル（1 または 5）に同梱する
-8. [ ] **Issue-0113 / 0112**（flow）: 実装工程 2 型の使い分け基準（前倒し型の完走実測 1 件を追記済み）
-9. [ ] **Issue-0109**（flow）: Layer 3 の退行確認がマージ・push 後にしか実行できない。プレフライト手段の設計
-10. [ ] **Issue-0108**（system）: `build-dist.ps1` の見送り指摘 4 群
-11. [ ] **Issue-0102**（flow）: マージ後の cycle-reset の適用先ハンドオフの明示的な接続（応急規範は 9 サイクル連続で機能）
-12. [ ] **Issue-0101 / 0100 / 0104 / 0106**（flow）: 旧設計仕様書の図示の乖離 / 接続を書く行の可変数値
-13. [ ] **Issue-0097 / Issue-0099**（flow・待機）: 保留 44 行＋存置 5 行の再判定。発火はユーザーの棚卸し指示のみ
-14. [ ] 配布先 LoopForAlpha からの申し送り分（2026-09-04。開発の進め方の見直し）
-15. [ ] その他の既存 backlog: Issue-0072（半角括弧・軽量）/ Issue-0089 / Issue-0075 / Issue-0090 / Issue-0045 / Issue-0008 / Issue-0070
+これは次手の推奨であり、上記の採用・着手・同時実装を確定するものではない。その他の候補は課題索引を参照する。
 
 ## 既知のブロッカー・懸念
 
-- **語彙の規範が稼働中**（ADR-0123）: 今後も書き換える文書を編集するとき、置き換え表にある置き換え前の語を見つけたら置き換えを提案する。判定の基準と適用範囲の正本は `docs/overview/wording-replacements.md`（配布される）。記録型文書の本文は対象外でタイトルのみ。**自動検査は無い**
-- **ハンドオフの語彙は次サイクルで移行する**（設計書 6-1）。本サイクルでは配布物経由で動くスキルが旧書式を前提にしていたため書き換えなかった。利用者が 0.1.19 へ更新した後、`master.md` と進行中のハンドオフの節見出し「Post ラッパー消化記録」および本文の語を新語彙へ移す
-- **機構を足す前に費用側を名指す**（Issue-0124）: 防ぐ失敗の実測・運用保守の費用・恒久か使い捨てかを示してから採否を問う。直近サイクルはレビュー 2 回・指摘 90 件・約 100 万トークンの後に設計縮小した
-- **Layer 2 の内容正本は `AGENTS.md`**（ADR-0111）。`CLAUDE.md` は `@AGENTS.md` の 1 行のポインタで、内容を書き足さないこと。Codex は `AGENTS.md` を直読み、Claude Code はインポート経由、Copilot CLI は両方を結合読み
-- **既存プロジェクトの移行手順は README の「既存プロジェクトを AGENTS.md 構成へ移行する」節**。template を再コピーする前に固有指示を `AGENTS.md` へ退避しないと消える。未移行プロジェクトを検知する機構は無い（ADR-0114 で受容）
-- **配布元が `dist/` へ切り替わっている**（ADR-0082）。`skills/` を編集しただけでは動くスキルは変わらない。ルートの `.agents/plugins/marketplace.json` も生成物（手編集しない）。手順は `CONTRIBUTING.md` の執行点 4 手順
-- **規約に適合していても配布物が壊れる型がある**（ADR-0084）。生成後の配布物を読む工程を別に置くこと。R1-a 型の機械検出は Issue-0104
-- **SKILL.md のサイズ警告が稼働中**（ADR-0121。例外テーブルは空で全スキルが通常判定）。`skills/` を変更すると `build-dist.ps1` が計測する。発火したら CONTRIBUTING「全シナリオ共通: SKILL.md のサイズと分割」の判断へ。**最大は `retrospective/SKILL.md` 19,051B**
-- **Layer 3 の退行確認はマージ・push 後にしか実行できない**（Issue-0109）。マーケットプレイス登録が GitHub 経由のため、feature ブランチの内容は `marketplace update` に降りてこない
-- **質問はテキストの番号付き選択肢のみ**（ADR-0109）。構造化質問ツールは全ツール・全モデルで使用しない。**判断要求は 1 論点ずつ、語の実際の用例を添えて**（一括提示は理解できないと指摘された実測がある）
-- **確定前レビューの提示規則と反復規範**（ADR-0080/0107）・**サイクル全体整合検査**（ADR-0092/0099）・**新設の評価可能性**（ADR-0102）・**Accepted 後改訂の改訂記録規定**（ADR-0108）が稼働中。確定点で `review=`、Accepted 昇格で `cyclecheck=` を確認の記録へ
-- **確定前レビューは 4 観点・体数 1〜4 体**（ADR-0117）。**確定点は 2 型分類**で初回の体数と通算回数の閾値が変わる（ADR-0120。規範改定型 8 回・通常型 4 回。発火は提示であり上限ではない）。集約は指摘 1 件ずつの前提検査。詳細は `references/iteration-norms.md`
-- **計画からの外れ方の既定が稼働中**（ADR-0119。正本 = `skills/start-work/references/plan-deviation-defaults.md`）: 計画作成・実装着手の直前に正本を読み、計画へ宣言欄を置く。実装中の指摘は 4 型に分類し、**全帰結を計画へ行頭 `逸脱記録:` の 1 行で残す**
-- **Issue 運用の規範が稼働中**（ADR-0095〜0098): 課題ファイルへ追記したらサイズ実測（目安 10KB）、超過なら昇格提案。フォルダ昇格済み課題の close 時は移設判定必須
-- **リモート同期**: 2026-09-05 の `e8631af` まで push 済み（マージ `77ec45b` と配布 0.1.19 を含む）。**feature ブランチは push しない慣行**（リモートは `origin/master` のみ）。各ツールへの反映は利用側の更新操作が必要
-- **inbox に未整理 3 件が滞留**: `docs/inbox/` の 3 ファイル（いずれも未追跡）。`docs/conversation_log.md` も未追跡のまま。**ユーザーが手動移動予定のため organize-inbox の提案は不要**。`git add <ディレクトリ>` で巻き込まないこと（Issue-0020）
-- **Codex に本プラグインを GitHub 経由で登録済み**（実運用状態。**0.1.19 が反映済み**。2026-09-05 にユーザーが Codex CLI の plugins コマンドで確認）。取り消すなら `codex plugin remove` ＋ `codex plugin marketplace remove`
-- **LoopForAlpha リポジトリに委譲済み追記 4 ファイルが未コミットで残置**（`feature/stage7-part2-design` の作業ツリー上。ユーザーが LFA セッションで LFA 側の流儀によりコミット予定。本リポジトリからはコミットしない。ADR-0118）
-- **Copilot CLI は未契約**のため、同ツール向けの検証（Layer 2・Layer 3 の退行確認）が恒久的に実行できない。3 ツール対応を謳う以上、片方が検証不能なまま続く
-- **改訂前退避の恒久領域 `~/.ai-dev-review-snapshots/` の残置が 21 ディレクトリ**（本サイクル分 = `MakeAiInstructions/2026-09-01-adr-0122-spec/r1〜r9`・`2026-09-03-adr-0122-plan/r1〜r6`。整理はユーザー判断）
-- **中央ストアの現状**: 本 repo 144 件（〜`MakeAiInstructions-2026-09-05-07`。2026-09-05 実測）。本サイクル分は 9 件（`-2026-09-02-01`〜`-2026-09-03-06`）で、うち 3 件は起票せず worklog 送りとした delta 型候補
-- **クロス repo の課題参照は `<repo>#Issue-NNNN` で修飾**（ADR-0068）
-- **シェル・PowerShell / .NET API の実測済み落とし穴は `docs/reference/powershell-pitfalls.md` を参照**（`grep -E` が否定先読みを無エラーで 0 件にする件・行数と出現回数の違いを 2026-09-05 に追記）
-- **`python3` は Windows ストアのスタブで exit 49 を返すが、`python` は 3.12.1 が動作する**（2026-09-03 実測）。一括編集は `python` のヒアドキュメント・Edit ツール・シェルの heredoc のいずれでもよい
-- ADR-0023 の留意（継続): GitHub.com の Copilot コーディングエージェントがルート `CLAUDE.md` を読まない可能性
+- `.claude/`、`docs/conversation_log.md`、inbox3件は既存未追跡。ユーザーが手動整理予定で、編集・ステージ対象外。
+- 利用側で最後に確認したプラグインは0.1.19。0.1.20のソース・配布物は生成済みだが、push後の利用側更新・反映確認は別作業。
+- 判断例は主要判断5回一致だが、説明の短さの安定性と、本文供給による追加便益は保証しない。詳細は完了計画。
+- Git所有者差には対象リポジトリ限定の `-c safe.directory=D:/Dev/002_AiDev/MakeAiInstructions` を使用する。global設定は変更しない。
+- Copilot CLIは未契約という前回申し送りがあり、利用側の3ツール全部で検証済みとは扱わない。
+- LoopForAlpha側の未コミット資料整理と、改訂前退避領域の整理はユーザー管理。本リポジトリの完了処理では操作しない。
 
-## Post ラッパー消化記録
+## 節目ごとの確認記録
 
-マイルストーンごとに Post ラッパーの消し込み結果を1行残す（ADR-0057）。形式は `skills/session-handoff/SKILL.md` のフォーマット節を参照。
-
-- 2026-09-05 サイクル完了処理（マージ `77ec45b`・retrospective・cycle-reset・push `e8631af`・配布 0.1.19 反映）: ADR=なし（完了処理に新規の意思決定なし。マージ方式は慣行判定どおり `--no-ff`、push はユーザー承認） / worklog=`MakeAiInstructions-2026-09-05-07`
-
-（前サイクルの行は cycle-reset で削除。以降は次サイクルのマイルストーンから記録する）
+- 2026-09-06 次セッション推奨の整理: ADR=なし（推奨のみ、着手・採用は未決） / worklog=棄却（既存課題からの引き継ぎ）
 
 ## 次セッション開始時のアクション
 
-1. **最初に実行**: `start-work`（Phase 0 で本ハンドオフを read）。リモート同期は `e8631af` まで完了済み（配布 0.1.19 反映済み）
-2. **直近サイクルの起票は 2 件・close 1 件**（新設: Issue-0124〈レビュー指摘の採否に費用側の評価が無い〉・Issue-0125〈語彙の規範が委譲制約に接続されていない〉。close: Issue-0119）。既存 2 件へ追記（Issue-0073・0095）。**着手はユーザー判断**
-3. **次サイクルの候補と推奨順は「未着手のタスク」節**。先頭は Issue-0107 ＋ Issue-0124 の同時対策（費用側に直接効く）
-4. **留意点**:
-   - master 直接作業は禁止。テーマごとに feature ブランチを切る
-   - **Layer 2 へ固有指示を書くときは `AGENTS.md`**（`CLAUDE.md` はポインタのまま）
-   - **配布対象ソースを変更したら執行点 4 手順**（`CONTRIBUTING.md`）。スキル改定は版数も上げる（ADR-0090。現行 0.1.19）
-   - **`skills/` を変更したら SKILL.md のサイズ警告に注意**（ADR-0121。最大は `retrospective/SKILL.md` 19,051B）
-   - **ガイドライン拡張時は過剰適合点検＋新設の評価可能性が必須**（ADR-0079/0099/0102）
-   - **確定点で確定前レビューを提示し、指摘反映後は反復提示**（ADR-0080/0107）。**最終回まで記録節へ書き切ってから確定コミットする**。**Accepted 昇格前はサイクル全体整合検査**（ADR-0092/0099）
-   - **計画作成・実装着手の直前に `references/plan-deviation-defaults.md` を読み、計画へ宣言欄・実装中は逸脱記録行**（ADR-0119）
-   - サブエージェント委譲時は `subagent-dispatch`（判定行必須）。**委譲プロンプトへ書く基準値は他の走査範囲から流用せず、委譲直前に測り直す**（直近サイクルで 3 回誤った）
-   - **計画の検証コマンドは書いたら実行してから確定する**。`grep -E` は否定先読みを無エラーで 0 件にするので Python の `re` で書く（`docs/reference/powershell-pitfalls.md`）
-   - **語の置き換えは長い形から先に**（短い形を先に当てると `フル巡`→「フル回」のような非文が生まれる）
-   - **worklog の id 採番・検証は JSON パースで行う**（素の grep はストアの整形差で 0 件を返す）
-   - 節目の確認は 1 項目ずつ確認して記録し、結果を確認の記録へ（ADR-0057）。worklog id は全体を書く
-   - コミット前に `git status --short` と staged 確認。**コミットは pathspec 付きが安全**（Issue-0020）
-   - ハンドオフの剪定は finalize で基準付き圧縮、サイクル完了時に cycle-reset（ADR-0075）。**cycle-reset の適用先は現在ブランチのハンドオフ**（Issue-0102）
-   - **「次へ進みます」と書いたら同じ応答で着手する**（直近サイクルで宣言だけで応答を終えて 2 回問い直された）
+1. 本ファイル、Issue-0126、LoopForAlpha原文§A・Bを読む。最初に0.1.20の利用側反映状況を確認する。
+2. 第一推奨はIssue-0126。start-work→extend-guidelines→brainstormingで、原文の要素の対応表と最小の適用案を検討する。具体的な採用・実装はユーザー判断。
+3. 品質条件、費用の4側面、恒久と一時の扱い、価値検証の先行条件を分ける。原文固有の数値・測定方法は自動移植せず、既存手順の簡素化案も比較する。
 
 ## 重要な意思決定の履歴
 
-- ADR-0123: ガイドライン文書の分かりにくい語は、対象を 3 種類に定めて文書自体を書き換え、再流入は配布する置き換え表と提案の規範で防ぐ（自動検査は設けず、古い名前も列挙せず、記録型の文書はタイトルだけを直す）（2026-09-05 Accepted）
-- ADR-0122: session-handoff と decision-log は発火単位で references へ分割し、SKILL.md 本文を共通部とディスパッチ表に絞る（2026-09-03 Accepted）
-- （ADR-0001〜0121 は `docs/records/decisions/README.md` 参照。0013/0014/0018 は Rejected）
+- ADR-0124: 方式・人数を状況から推奨し、実施・見送りはユーザー判断（Accepted）。
+- ADR-0125: 追加物の失敗根拠・代替案・導入と維持費用を既存手順で比較（Accepted）。
+- Issue-0126の共通原則の採用・配置は未決。

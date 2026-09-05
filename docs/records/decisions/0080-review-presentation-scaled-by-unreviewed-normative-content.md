@@ -89,6 +89,7 @@ ADR-0072 の骨格（発動はユーザー指示のみ・AI は提示にとど�
 - **部分修正（ADR-0120）**: 提示規則に成果物の 2 型分類（規範改定型／通常型。判定は Decision 2 の推奨判定と同一材料で確定点到達時に行い、当該確定点の反復中は凍結する）が追加され、初回の確定点提示には判定した型・初回体数の既定・概算コストの明示が加わった（Decision 3-2〈反対材料併記〉の適用範囲の拡大ではなく、確定点提示の判断材料の追記）。推奨判定・反対材料欄の骨格は現役のため、Status は Accepted のまま維持する
 - **部分修正（ADR-0121）**: 本 ADR の変更対象が名指しする pre-finalization-review の「適用例」「根拠と世代」は、ADR-0121 決定 5 の references 型分割により `skills/pre-finalization-review/references/examples-and-evidence.md` へ移った。提示規則（決定 1〜3）と「レビューの狙い」は SKILL.md 本文に残る。規則内容は不変のため、Status は Accepted のまま維持
 - **部分修正（ADR-0122）**: 決定 5 の `review=` 値の定義は `skills/session-handoff/references/review-field-values.md` へ、update の記載手順は `references/op-update.md` へ、read の欠落検査は `references/op-read.md` へ、ADR-0122 の references 型分割により移った。形式行と書式例は SKILL.md 本文に残る。規定内容は不変のため、Status は Accepted のまま維持
+- **部分修正（ADR-0124）**: 初回の強い推奨と実施判断を維持し、方式・人数の判断と推奨理由・反対材料の提示を状況に即した形へ変更する。StatusはAcceptedを維持する。
 
 ## 過剰適合点検（ADR-0079）
 

@@ -50,4 +50,4 @@ description: "重要な意思決定をADR（Architecture Decision Record）と�
 | 新規ドラフトの作成・Proposed への追記 | `references/adr-authoring.md` | 検出の報告／採番と置換対象の特定／ファイル作成（記述規律・実行可能性・評価可能性・粒度の各注記を含む）／インデックス更新／コミットのタイミング／Proposed の ADR へ決定を追記するとき／ユーザーへの確認 |
 | 未決事項の課題起票 | `references/open-questions.md` | 起票・ライフサイクル・注意（フォルダ昇格の提案） |
 | 既存 ADR のステータス変更・Accepted 済み本文の改訂・承認の昇格 | `references/status-updates.md` | 終端ステータスの意味境界／ステータス変更（改訂記録規定・部分修正の型を含む）／承認の昇格（チェックポイント・昇格手順 3 ステップ） |
-| Accepted 昇格時のサイクル全体整合検査 | `references/cycle-consistency-check.md` | 発動契機・発動条件の判定・固定 5 観点・重複実施の抑止・検査結果の扱い・記録・退役 |
+| Accepted 昇格時のサイクル全体整合検査 | `references/cycle-consistency-check.md` | 発動契機・発動条件の判定・固定 5 観点・重複実施の抑止・検査結果の扱い・記録・廃止 |

@@ -41,7 +41,7 @@ AI に作業させた後の節目で、その作業の delta（差分）を核�
 2. **delta 抽出**:
    - `friction`（string[]）: 躓き型 = エラー・手戻り・非自明な試行錯誤を要素ごとに1〜2行で。複数の躓きは要素を分ける。損失が大きかった場合は規模感（手戻り回数・時間ロス等）を本文に含めてよい（ADR-0052）
    - `corrections`（string[]）: 注入型 = 人間が注入した指示・修正を発言に近い形で1〜2行ずつ。**AI の当初挙動（指示がなければ何をしようとしていたか）が自明でなければ `context` に 1 行添える**（ADR-0052）
-3. **識別子解決**（`references/store-format.md` の upsert 規則）:
+3. **プロジェクト識別子の解決**（`references/store-format.md` の upsert 規則）:
    - 現在の作業ディレクトリのルートフォルダ名をキーに `projects.json` を upsert
    - **初回**は `<home>/.ai-dev-worklog/` ディレクトリと `projects.json`・`<folderName>/log.jsonl` を新規作成
    - `lastSeen` は今日の日付（YYYY-MM-DD）で毎回上書き

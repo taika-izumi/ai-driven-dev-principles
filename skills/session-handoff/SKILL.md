@@ -58,7 +58,7 @@ docs/working/handoff/<branch-name>.md
 ## 節目ごとの確認記録
 
 マイルストーンごとに節目の確認の結果を1行残す。
-形式: `- <日付> <マイルストーン>: ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<見送り or 非発火（推奨判定が偽） or 実施記録> / cyclecheck=<実施（指摘なし） or 実施（修正: <識別子>） or 非該当（理由）>`
+形式: `- <日付> <マイルストーン>: ADR=<番号 or なし（理由）> / worklog=<エントリ id or 棄却（理由）> / review=<見送り or 非発火（推奨判定が偽） or 実施記録> / cyclecheck=<実施（指摘なし） or 実施（修正: <参照番号>） or 非該当（理由）>`
 
 `review=` の値の定義は `references/review-field-values.md` を参照。
 

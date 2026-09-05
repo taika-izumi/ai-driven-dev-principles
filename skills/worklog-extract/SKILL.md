@@ -14,7 +14,7 @@ description: "中央ストアに蓄積された作業ログをオンデマンド
 ## 入力
 
 - 中央ストア: `<home>/.ai-dev-worklog/`
-  - `projects.json`（識別子リスト）
+  - `projects.json`（プロジェクト識別子リスト）
   - 全プロジェクトの `<folderName>/log.jsonl`（作業ログ）
   - `processed.jsonl`（処理済み台帳）
 

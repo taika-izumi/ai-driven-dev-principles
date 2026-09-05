@@ -68,7 +68,7 @@ docs/working/handoff/<branch-name>.md
 
 - YYYY-MM-DD <マイルストーン名>: ADR=NNNN / worklog=`<project>-YYYY-MM-DD-NN`
 - YYYY-MM-DD <マイルストーン名>: ADR=なし（<理由>） / worklog=棄却（delta なし）
-- YYYY-MM-DD <確定点のマイルストーン名>: ADR=NNNN / worklog=`<project>-YYYY-MM-DD-NN` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡・実質収束）
+- YYYY-MM-DD <確定点のマイルストーン名>: ADR=NNNN / worklog=`<project>-YYYY-MM-DD-NN` / review=フル実施（claude-opus-5・2 巡）＋差分再確認（claude-opus-5・1 巡・実質的な収束）
 - YYYY-MM-DD <マイルストーン名・ADR-NNNN Accepted 昇格>: ADR=NNNN / worklog=棄却（delta なし） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション

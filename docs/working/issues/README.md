@@ -136,3 +136,4 @@
 | [0122](flow/0122-consistent-recommendation-approval-gates-lack-default-execution-with-rollback.md) | 推奨が一致する承認ゲート（レビュー指摘の採否・反復提示・ADR 承認）に「事前宣言による既定実行 + 差し戻し窓」が無く、番号回答待ちが配布先の壁時計の最大費用になる（LoopForAlpha#Issue-0168 の申し送り） | open | 2026-09-04 |
 | [0123](flow/0123-recurring-friction-clusters-checklist-injection-into-dispatch-and-plan-verification.md) | 躓き型 5 クラスタ（そのまま書き写すコードの写しずれ・PowerShell の落とし穴・対象の総数の引き写し・検証コマンドの未実行・標本の退化）の 1 行チェックリストを委譲制約と計画検証ステップへ注入する（LoopForAlpha の worklog-extract 走査由来・skillify の受け皿） | open | 2026-09-04 |
 | [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | open | 2026-09-05 |
+| [0125](flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md) | 語彙の規範がサブエージェントへの委譲制約に配線されておらず、委譲先が文書を編集する経路では規範が届かない（委譲元が毎回プロンプトへ手で書き写している） | open | 2026-09-05 |

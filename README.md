@@ -168,6 +168,10 @@ codex plugin add superpowers@superpowers-marketplace
 
 > **Layer 2 について**: Layer 2 の**内容の正本**はリポジトリルートの `AGENTS.md` である（ADR-0111）。Codex と GitHub Copilot CLI は `AGENTS.md` を直接読み、Claude Code は `CLAUDE.md` に置いた `@AGENTS.md` インポート 1 行を経由して同じ内容を読む。内容を持つファイルは 1 つであり、`CLAUDE.md` はツール到達経路にすぎない。
 
+### 選択肢が表示されない場合
+
+CodexでAGENTS.mdに従った選択肢提示が行われない場合、モード指示との競合を確認する。CLI 0.153.4では `include_collaboration_mode_instructions=false` の効果を確認し、アプリでも設定後に選択肢が表示されたとの利用者報告がある。全利用者の必須設定ではなく、モード指示全体を除外する点に注意する。設定場所・一時指定・確認・元に戻す方法は[対処手順](docs/reference/codex-collaboration-mode-question-format.md)を参照。
+
 ## 新しいプロジェクトでの使い方
 
 ### 前提条件

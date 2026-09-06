@@ -1,7 +1,7 @@
 # Handoff: 品質条件と総費用の判断原則の調査
 
 - **Branch**: codex/issue-0126-objective-investigation
-- **Last Updated**: 2026-09-06 01:45 (Asia/Tokyo)
+- **Last Updated**: 2026-09-06 22:31 (Asia/Tokyo)
 - **Status**: paused
 - **Current Phase**: 調査 / 適用対象の前提確認後、対応表作成前に中断
 
@@ -11,7 +11,8 @@
 
 ## 関連ドキュメント
 
-- 別件相談の検証方針・再現入力: `docs/records/minutes/2026-09-06-workflow-continuation-validation.md`。ADR-0126。検証基準ブランチは `codex/verify-start-work-baseline`（開始コミット153d47c）。Issue-0126本体の再開点とは別。
+- 別件相談の検証方針・報告済み結果: `docs/records/minutes/2026-09-06-workflow-continuation-validation.md`。ADR-0126・0127。検証基準ブランチは `codex/verify-start-work-baseline`（開始コミット153d47c）。
+- Codex対処: `docs/reference/codex-collaboration-mode-question-format.md`。課題はIssue-0127。設定済み、run5で選択肢表示のユーザー報告あり。作業継続の一般的な解決は未確認。
 - 課題・調査要点: `docs/working/issues/flow/0126-quality-constrained-total-cost-objective-not-integrated.md`
 - 原文: `D:/Dev/001_Trade/LoopForAlpha/docs/records/reviews/2026-09-04-dev-process-review/cleanroom/00-cleanroom-input.md` §A・B
 - 前回の判断: `docs/records/decisions/0125-evaluate-cost-of-review-driven-additions.md`
@@ -21,6 +22,7 @@
 
 - [x] 0.1.20のローカル導入と主要superpowersスキルの実在を確認。案内一覧の0.1.19は古いパス。
 - [x] 原文・現行規範・関連課題の初回照合と候補比較。詳細はIssue-0126「初回調査の要点」。
+- [x] 別件のCodex選択肢表示への対処・報告済み結果・利用者向け手順を記録（Issue-0127）。追加検証は終了し、Issue-0126へ戻れる状態。
 
 ## 進行中のタスク
 
@@ -44,14 +46,16 @@
 - 2026-09-06 別件の検証方針保存: ADR=0126（Proposed、比較試行は未実施） / worklog=棄却（今回の方針保存・ブランチ準備に新たなdeltaなし）
 - 2026-09-06 開始状況確認・初回調査: ADR=なし（未採用の候補比較、規範変更なし） / worklog=棄却（既存手順に従う調査と環境対応）
 - 2026-09-06 前提確認・セッション終了: ADR=なし（適用対象の論点を記録、採用方針は未決） / worklog=MakeAiInstructions-2026-09-06-01
+- 2026-09-06 Codex対処文書化・ADR-0126/0127 Accepted 昇格: ADR=0126/0127 / worklog=棄却（報告済み情報の記録、既存手順で実施） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 
-1. 同じブランチでstart-workを実行し、本ファイルとIssue-0126「ユーザーとの前提確認」、原文§A・Bを読む。
+1. 同じブランチでstart-workを実行し、本ファイルとIssue-0126「ユーザーとの前提確認」、原文§A・Bを読む。Codex対処の記録はIssue-0127で区切り済み。
 2. 次手の提案は、各要素について誰の何の負担か、対象外、品質条件との関係、反例、取り込み候補の対応表を作ること。開発するシステムの目的は利用者の要求から別に定める。
 3. 全要素をそのまま採る前提にしない。人間の関与回数と負担を区別する。対象範囲の整理後に採否・配置・到達経路を検討し、採用判断時はdecision-logを呼ぶ。
 
 ## 重要な意思決定の履歴
 
-- ADR-0126（Proposed）: 別件相談の比較検証方針と基準ブランチ作成。ユーザーが方針保存とブランチ作成を指示。比較試行は未実施。
+- ADR-0126（Accepted）: 比較検証方針。報告された範囲で結果を記録し、追加検証は終了。全比較の完遂を意味しない。
+- ADR-0127（Accepted）: Codexの症状に応じた設定案内。配布規範の変更や全員への必須化は行わない。
 - Issue-0126の規範採用決定はなし。前回確定済みの範囲はADR-0124・0125を参照。

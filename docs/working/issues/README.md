@@ -138,3 +138,4 @@
 | [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | closed | 2026-09-05 |
 | [0125](flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md) | 語彙の規範がサブエージェントへの委譲制約に接続されておらず、委譲先が文書を編集する経路では規範が届かない（委譲元が毎回プロンプトへ手で書き写している） | open | 2026-09-05 |
 | [0126](flow/0126-quality-constrained-total-cost-objective-not-integrated.md) | 品質の最低線を満たす範囲で総費用を抑える判断原則が、開発フロー全体に接続されていない | open | 2026-09-06 |
+| [0127](flow/0127-codex-collaboration-mode-question-format.md) | Codexのモード指示によりガイドラインの選択肢提示が行われない | closed | 2026-09-06 |

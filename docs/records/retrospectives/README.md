@@ -73,6 +73,7 @@
 | 2026-09-03 | session-handoff / decision-log の発火単位分割（ADR-0122。Issue-0115 / 0116 の対策） | system/ のみ | feature/issue-0115-0116-skill-split（取り込み方式: マージコミット 2295f07） | 課題 1 件起票（Issue-0117）。flow 課題の起票は 0 件で delta 型 3 件は worklog 送り |
 | 2026-09-05 | ガイドライン文書の分かりにくい語の平易化（ADR-0123。Issue-0119 の対策） | system/ のみ | feature/issue-0119-plain-language-vocabulary（取り込み方式: マージコミット 77ec45b） | 型 1 の語 675 件を 4 群で置き換えて残存 0 件・型 2 は 388 箇所を点検（修正 3）・記号的ラベルを定義箇所の名前へ改名・記録型文書はタイトル 28 件と一覧 28 行のみ。対象システム固有の課題なし。新規起票 0 件で既存 2 課題（Issue-0073・0095）へ追記。delta 型 4 件は作業記録へ。version 0.1.19 |
 | 2026-09-06 | レビュー推奨と追加物の費用評価の見直し（ADR-0124・0125） | [system](system/2026-09-06-review-judgment-and-cost-evaluation.md) / [flow](flow/2026-09-06-review-judgment-and-cost-evaluation.md) | codex/issue-0107-0124-review-judgment（取り込み方式: マージコミット b94710ca95e50822866b89bb98431fef0e11ae48） | plugin 0.1.20。Issue-0107・0124 close、Issue-0126起票済み。入力供給の手戻りは作業記録09。次回は目的関数の最小適用案を検討 |
+| 2026-09-07 | 共通概算方針とスキルの裁量の明確化（ADR-0128〜0130） | [system](system/2026-09-07-lightweight-cost-guidance.md) / [flow](flow/2026-09-07-lightweight-cost-guidance.md) | codex/issue-0126-objective-investigation（取り込み方式: マージコミット ffd5666） | Issue-0126 close。完了処理からマージへの接続不足をIssue-0128として起票。公開・プラグイン更新は未実施 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

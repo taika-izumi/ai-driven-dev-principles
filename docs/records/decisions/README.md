@@ -136,3 +136,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0128](0128-investigate-removing-human-involvement-cost-axis.md) | 人間の関与を独立した費用項目から外す案を検討する | Accepted | 2026-09-06 |
 | [0129](0129-use-lightweight-estimates-in-objective-design.md) | 判断観点の設計はAIの軽い概算を通常とし、見積もり専用の会話を増やさない | Accepted | 2026-09-06 |
 | [0130](0130-apply-cost-guidance-through-local-discretion.md) | 共通の概算方針をAGENTS.mdに置き、スキルでは必要な成果と裁量を具体化する | Accepted | 2026-09-06 |
+| [0131](0131-connect-completed-work-to-integration.md) | 実装完了と終了依頼を既存の統合・引き継ぎ工程へ接続する | Proposed | 2026-09-07 |

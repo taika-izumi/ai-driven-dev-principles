@@ -139,3 +139,4 @@
 | [0125](flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md) | 語彙の規範がサブエージェントへの委譲制約に接続されておらず、委譲先が文書を編集する経路では規範が届かない（委譲元が毎回プロンプトへ手で書き写している） | open | 2026-09-05 |
 | [0126](flow/0126-quality-constrained-total-cost-objective-not-integrated.md) | 品質の最低線を満たす範囲で総費用を抑える判断原則が、開発フロー全体に接続されていない | closed | 2026-09-06 |
 | [0127](flow/0127-codex-collaboration-mode-question-format.md) | Codexのモード指示によりガイドラインの選択肢提示が行われない | closed | 2026-09-06 |
+| [0128](flow/0128-completion-not-connected-to-merge.md) | Issueクローズ・実装完了からマージを含む終了処理への接続が明確でない | open | 2026-09-07 |

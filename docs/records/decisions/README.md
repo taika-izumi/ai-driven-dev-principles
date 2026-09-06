@@ -131,3 +131,8 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0123](0123-plain-language-vocabulary-in-normative-documents.md) | ガイドライン文書の分かりにくい語は、対象を 3 種類に定めて文書自体を書き換え、再流入は配布する置き換え表と提案の規範で防ぐ（自動検査は設けず、古い名前も列挙せず、記録型の文書はタイトルだけを直す） | Accepted | 2026-09-04 |
 | [0124](0124-review-minimum-as-recommendation-with-user-discretion.md) | 確定前レビューの方式と人数は状況から推奨し、実施・見送りはユーザー判断に残す | Accepted | 2026-09-05 |
 | [0125](0125-evaluate-cost-of-review-driven-additions.md) | レビュー対応で追加する仕組みは、失敗の根拠と導入・維持費用を既存の採否手順で比較する | Accepted | 2026-09-05 |
+| [0126](0126-compare-workflow-continuation-from-fixed-baseline.md) | 作業継続の挙動は同一開始点から条件を一つずつ変えて比較する | Accepted | 2026-09-06 |
+| [0127](0127-document-codex-mode-instruction-workaround.md) | Codexの選択肢提示の競合は症状に応じた設定手順で案内する | Accepted | 2026-09-06 |
+| [0128](0128-investigate-removing-human-involvement-cost-axis.md) | 人間の関与を独立した費用項目から外す案を検討する | Accepted | 2026-09-06 |
+| [0129](0129-use-lightweight-estimates-in-objective-design.md) | 判断観点の設計はAIの軽い概算を通常とし、見積もり専用の会話を増やさない | Accepted | 2026-09-06 |
+| [0130](0130-apply-cost-guidance-through-local-discretion.md) | 共通の概算方針をAGENTS.mdに置き、スキルでは必要な成果と裁量を具体化する | Accepted | 2026-09-06 |

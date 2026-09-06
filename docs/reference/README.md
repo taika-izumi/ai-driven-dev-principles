@@ -6,4 +6,5 @@
 
 | ドキュメント | 内容 |
 |---|---|
+| [codex-collaboration-mode-question-format.md](codex-collaboration-mode-question-format.md) | Codexのモード指示と選択肢提示が競合する場合の設定・確認・復元手順（Issue-0127） |
 | [powershell-pitfalls.md](powershell-pitfalls.md) | シェル・PowerShell / .NET API の実測済みの落とし穴集（検索・集計・追記・作業ディレクトリ。`grep` の否定先読みと計数方式を含む。出所: Issue-0119） |

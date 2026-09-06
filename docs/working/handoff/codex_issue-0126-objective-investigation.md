@@ -1,61 +1,58 @@
-# Handoff: 品質条件と総費用の判断原則の調査
+# Handoff: 品質条件と総費用の判断原則の導入
 
 - **Branch**: codex/issue-0126-objective-investigation
-- **Last Updated**: 2026-09-06 22:31 (Asia/Tokyo)
+- **Last Updated**: 2026-09-07 00:08 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: 調査 / 適用対象の前提確認後、対応表作成前に中断
+- **Current Phase**: 実装・検証完了 / 既定ブランチへの取り込み待ち
 
 ## 作業の目的・背景
 
-ユーザーの2026-09-06の指示に基づきIssue-0126を調査する。初回は原文との対応整理と最小適用案の比較まで。規範の採用・実装は未決。
+Issue-0126の調査を経て、共通の概算方針をAGENTS.mdに置き、3スキルで必要な成果と裁量を具体化した。実装・配布物の検証は完了。公開・プラグイン再導入・masterへのマージは未実施。
 
 ## 関連ドキュメント
 
-- 別件相談の検証方針・報告済み結果: `docs/records/minutes/2026-09-06-workflow-continuation-validation.md`。ADR-0126・0127。検証基準ブランチは `codex/verify-start-work-baseline`（開始コミット153d47c）。
-- Codex対処: `docs/reference/codex-collaboration-mode-question-format.md`。課題はIssue-0127。設定済み、run5で選択肢表示のユーザー報告あり。作業継続の一般的な解決は未確認。
-- 課題・調査要点: `docs/working/issues/flow/0126-quality-constrained-total-cost-objective-not-integrated.md`
-- 原文: `D:/Dev/001_Trade/LoopForAlpha/docs/records/reviews/2026-09-04-dev-process-review/cleanroom/00-cleanroom-input.md` §A・B
-- 前回の判断: `docs/records/decisions/0125-evaluate-cost-of-review-driven-additions.md`
-- 手続き: `CONTRIBUTING.md`、`docs/overview/folder-structure.md`
+- 設計・決定: `docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md`。要求の記録はADR-0128・0129。すべてAccepted。
+- 調査・レビュー・検証結果: `docs/working/issues/flow/0126-quality-constrained-total-cost-objective-not-integrated.md`（closed）。
+- 別件のCodex対処: Issue-0127、`docs/reference/codex-collaboration-mode-question-format.md`。ADR-0126・0127は前回確定済み。
 
 ## 完了済みタスク
 
-- [x] 0.1.20のローカル導入と主要superpowersスキルの実在を確認。案内一覧の0.1.19は古いパス。
-- [x] 原文・現行規範・関連課題の初回照合と候補比較。詳細はIssue-0126「初回調査の要点」。
-- [x] 別件のCodex選択肢表示への対処・報告済み結果・利用者向け手順を記録（Issue-0127）。追加検証は終了し、Issue-0126へ戻れる状態。
+- [x] 原文との対応整理、適用範囲・軽い概算の要求・配置の合意。ADR-0128〜0130。
+- [x] 独立レビューの指摘2件を修正し、新規1体の差分再確認で追加指摘なし。Issue-0126のレビュー記録。
+- [x] AGENTS.md、start-work、feature-block-design、pre-finalization-reviewと配布物へ反映。両生成器・両方の-Check・6文面のソース一致・配布物の読取り確認済み。
+- [x] サイクル整合検査とADR-0128〜0130のAccepted昇格、Issue-0126のclose。詳細はIssue-0126「最終検証」。
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 目的関数の各項が対象とする活動の整理
-  - 状態: ユーザーが開発者の関与とシステム利用者の関与の区別を指摘。後者は少ないほどよいとは限らない。詳細はIssue-0126「ユーザーとの前提確認」。
-  - 残り: 各要素・対象範囲・除外範囲・反例・取り込み候補の対応表を作る。配置検討を先行させない。対応表は未作成で、採用・設計承認も未了。
+- [ ] **現在の作業**: ブランチ取り込みの判断待ち
+  - 状態: 実装・検証済み。規範と配布物の同期済み。ADR-0130のレビューは終了。
+  - 残り: ユーザーの指示に応じて既定ブランチへ取り込む。マージ時は方式の慣行確認、マージ後はretrospectiveを実施する。
 
 ## 未着手のタスク
 
-- [ ] 試行と適用範囲の判断。必要に応じADRドラフト・過剰適合点検・設計へ進む。
+- [ ] 公開・バージョン更新・インストール済みプラグインの更新は、必要時にユーザーの指示に従う。
 
 ## 既知のブロッカー・懸念
 
-- Issue-0126は10,266バイトで目安10KBを超過。次回の対応表作成時に課題フォルダ化を提案済み、判断は未了（`docs/overview/issue-management.md` §4）。
-- 共通原則の導入効果は未実証。原文固有の測定基準や「一時成果物の将来費用ゼロ」はそのまま一般化しない。根拠はIssue-0126。
-- `.claude/`、`docs/conversation_log.md`、inbox3件は既存未追跡。ユーザーの手動整理対象で編集・ステージ対象外。
-- Git所有者差は対象限定の `-c safe.directory=D:/Dev/002_AiDev/MakeAiInstructions` で対応。ブランチ作成はサンドボックス外の実行で成功。
+- 費用削減効果の継続実測は未実施。通常判断は概算とし、導入後評価はADR-0130に従ってユーザー指示時に行う。
+- `.claude/`、`docs/conversation_log.md`、inbox3件は既存未追跡。手動整理対象として編集・ステージ対象外。
+- Issue-0126はサイズ目安10KBを超過。フォルダ化は提案済み・未承認。本文と索引を維持してcloseした。
+- Git所有者差は対象限定の `-c safe.directory=D:/Dev/002_AiDev/MakeAiInstructions` で対応。build-distの保護パス書込みには権限付き実行が必要だった。
 
 ## 節目ごとの確認記録
 
-- 2026-09-06 別件の検証方針保存: ADR=0126（Proposed、比較試行は未実施） / worklog=棄却（今回の方針保存・ブランチ準備に新たなdeltaなし）
-- 2026-09-06 開始状況確認・初回調査: ADR=なし（未採用の候補比較、規範変更なし） / worklog=棄却（既存手順に従う調査と環境対応）
-- 2026-09-06 前提確認・セッション終了: ADR=なし（適用対象の論点を記録、採用方針は未決） / worklog=MakeAiInstructions-2026-09-06-01
-- 2026-09-06 Codex対処文書化・ADR-0126/0127 Accepted 昇格: ADR=0126/0127 / worklog=棄却（報告済み情報の記録、既存手順で実施） / cyclecheck=実施（指摘なし）
+- 2026-09-06 Codex対処文書化・ADR-0126/0127 Accepted 昇格: ADR=0126/0127 / worklog=棄却（既存手順で実施） / cyclecheck=実施（指摘なし）
+- 2026-09-06 ADR-0130 spec 確定点: ADR=0130 / worklog=棄却（既存レビュー手順内の指摘反映） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・1回・実質的な収束）
+- 2026-09-07 実装検証・ADR-0128〜0130 Accepted 昇格: ADR=0128〜0130 / worklog=棄却（既存手順の反映・検証、新たなdeltaなし） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 
-1. 同じブランチでstart-workを実行し、本ファイルとIssue-0126「ユーザーとの前提確認」、原文§A・Bを読む。Codex対処の記録はIssue-0127で区切り済み。
-2. 次手の提案は、各要素について誰の何の負担か、対象外、品質条件との関係、反例、取り込み候補の対応表を作ること。開発するシステムの目的は利用者の要求から別に定める。
-3. 全要素をそのまま採る前提にしない。人間の関与回数と負担を区別する。対象範囲の整理後に採否・配置・到達経路を検討し、採用判断時はdecision-logを呼ぶ。
+1. 本ファイル、ADR-0130、Issue-0126「最終検証」とgit statusを確認する。
+2. ユーザーが取り込みを指示した場合はstart-workのマージ慣行確認から進む。方針・文案の再承認は不要。
+3. 既存未追跡ファイルを混ぜない。公開やプラグイン更新はまだ行っていない。マージ後のretrospectiveを忘れない。
 
 ## 重要な意思決定の履歴
 
-- ADR-0126（Accepted）: 比較検証方針。報告された範囲で結果を記録し、追加検証は終了。全比較の完遂を意味しない。
-- ADR-0127（Accepted）: Codexの症状に応じた設定案内。配布規範の変更や全員への必須化は行わない。
-- Issue-0126の規範採用決定はなし。前回確定済みの範囲はADR-0124・0125を参照。
+- ADR-0128（Accepted）: 人間の関与を独立した費用項目から外す案を検討。
+- ADR-0129（Accepted）: 通常は一応答内の概算とし、見積もり専用の会話を増やさない。
+- ADR-0130（Accepted）: AGENTS.mdに共通方針、3スキルに成果と裁量。必要な検証・権限・必須手順は維持。

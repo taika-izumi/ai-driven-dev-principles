@@ -69,4 +69,4 @@
 
 ## 結論
 
-ADR-0133により実装・検証を完了し、2026-09-07にclose。配布予定版0.2.0、統合・公開は別途の到達状態としてhandoffに記録する。検証記録: docs/records/minutes/2026-09-07-issue-0122-implementation-verification.md。
+ADR-0133により実装・検証を完了し、2026-09-07にclose。配布予定版0.1.23、統合・公開は別途の到達状態としてhandoffに記録する。検証記録: docs/records/minutes/2026-09-07-issue-0122-implementation-verification.md。

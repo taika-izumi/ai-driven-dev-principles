@@ -35,6 +35,8 @@ ADRのステータスを変更する場合（Rejected、Deprecated、Superseded�
 
 ## 承認の昇格（Proposed → Accepted）
 
+確定の権限は `start-work` の `references/decision-delegation.md` に従い、個別承認または有効な委任に基づくAI判断と根拠を記録する。以下のユーザーによる確定はこの区別で扱い、同じ決定への回答を繰り返し求めない。昇格のチェックポイント・整合検査・粒度点検は維持する。
+
 ADRは**原則 Proposed で作成する**。Accepted への昇格は、その決定が確定（議論が収束）した**チェックポイント**で行う。作成直後に即 Accepted 化しないこと。議論の途中（とくに brainstorming 中）は決定が覆りうるため、Proposed のまま据え置く。
 
 **本節の手順は Status が `Accepted` へ遷移するすべての場合に適用する。**

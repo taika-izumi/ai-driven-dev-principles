@@ -1,9 +1,9 @@
 # Handoff: Issue-0122 判断の分担に基づく自動進行
 
 - **Branch**: codex/issue-0122-delegated-decisions
-- **Last Updated**: 2026-09-07 15:15 (Asia/Tokyo)
+- **Last Updated**: 2026-09-07 19:53 (Asia/Tokyo)
 - **Status**: completed
-- **Current Phase**: 3ca2746でmasterへ統合済み / push対応はmasterのhandoffへ
+- **Current Phase**: 統合・0.1.23公開・振り返り完了 / 終了記録の送信はmasterのhandoffへ
 
 ## 作業の目的・背景
 
@@ -27,7 +27,7 @@
 
 ## 未着手のタスク
 
-- 本ブランチでの残作業なし。masterでpush承認待ち。実装・マージを繰り返さない。
+- 本ブランチでの残作業なし。masterは3c6e481までpush済み。終了記録の確定はmasterのhandoffを参照。実装・マージ・同じpushを繰り返さない。
 
 ## 既知のブロッカー・懸念
 
@@ -43,12 +43,16 @@
 - 2026-09-07 Task 5実装レビューと検証: ADR=0133 / worklog=棄却（仕様の写し漏れ1文を既存レビューで修正）
 - 2026-09-07 Task 6・ADR-0133 Accepted 昇格: ADR=0133 / worklog=棄却（既存の完了記録） / cyclecheck=実施（修正: ADR-0133）
 - 2026-09-07 予定版0.1.23へ修正: ADR=0133（Decision不変・改訂記録追記） / worklog=棄却（既存の版更新手順）
+- 2026-09-07 Issue-0130保存の確認記録補完: ADR=なし（課題起票のみ、ad2d912） / worklog=棄却（事象はIssue-0130へ記録済み、原因調査は未着手）
+- 2026-09-07 マージとマージ後検証: ADR=0133 / worklog=棄却（既存の統合手順、3ca2746）
+- 2026-09-07 公開の確認記録補完: ADR=なし（承認済み送信、3c6e481） / worklog=棄却（既存の操作承認手順）
+- 2026-09-07 振り返りのユーザー確認: ADR=なし（追加課題なしの確認） / worklog=棄却（既存手順による記録照合）
 
 ## 次セッション開始時のアクション
 
-1. 計画と実装検証記録を読み、統合方法の選択結果から続ける。実装・検証は完了。
-2. 元ツリーへ無断でコピーして未コミット変更を上書きしない。
-3. 統合はfinishing-a-development-branch・merge-practice・pre-action-reviewに従う。
+1. `docs/working/handoff/master.md` を読み、終了記録のコミット・送信状況を確認する。実装・統合・0.1.23公開・振り返りは再実行しない。
+2. 元ツリーへ無断でコピーして未コミット変更を上書きしない。stashと作業worktreeは保全する。
+3. 次サイクルはユーザーが選択する。完了したIssue-0122の実行許可を別作業へ流用しない。
 
 ## 重要な意思決定の履歴
 

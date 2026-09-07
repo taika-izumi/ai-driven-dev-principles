@@ -36,6 +36,7 @@ docs/working/handoff/<branch-name>.md
 - Spec: `docs/current/specs/...`
 - Plan: `docs/working/plans/...`
 - 関連ADR: ADR-NNNN, ADR-NNNN
+- 判断の分担: <合意した場合、その正本のパス・節と承認時点を識別する根拠>
 
 ## 完了済みタスク
 
@@ -46,6 +47,7 @@ docs/working/handoff/<branch-name>.md
 - [ ] **現在の作業**: タスクC
   - 状態: <どこまでやったか>
   - 残り: <次に何をすべきか>
+  - 判断の分担: <合意がある場合、有効な対象作業・相談待ち・撤回等の状態。内容は正本を参照>
 
 ## 未着手のタスク
 

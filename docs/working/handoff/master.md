@@ -1,9 +1,9 @@
 # Handoff: 初期案提示後の問い直しの検証方法の検討
 
 - **Branch**: master
-- **Last Updated**: 2026-09-08 00:27 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: Issue-0132 / 計画確定・実行準備
+- **Last Updated**: 2026-09-08 01:25 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: Issue-0132 / 小規模比較終了・結果提示
 
 ## 作業の目的・背景
 
@@ -11,8 +11,9 @@ Issue-0132について、初期案提示後に懸念・将来費用を問い直�
 
 ## 関連ドキュメント
 
-- 現在の対象: `docs/working/issues/flow/0132-post-proposal-design-reconsideration-effect.md`。対象選択はADR-0136（Proposed・ユーザーの個別承認を記録）。
+- 現在の対象: `docs/working/issues/flow/0132-post-proposal-design-reconsideration-effect.md`。ADR-0136・0137はAccepted。
 - 調査計画: `docs/working/plans/2026-09-08-issue-0132-reconsideration-pilot.md`。判断の分担の承認基準はADR-0137 Context・Decision。
+- 実行記録: `docs/records/experiments/2026-09-08-issue-0132-reconsideration.json`。10回答・評価・費用と主担当の訂正。
 - 対象: `docs/working/issues/flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md`
 - ADR: `docs/records/decisions/0134-pass-wording-rules-to-document-subagents.md`（Accepted・実装検証済み）
 - Plan: `docs/working/plans/2026-09-07-issue-0125-wording-dispatch.md`（実装・検証・レビュー比較の記録）
@@ -27,10 +28,9 @@ Issue-0132について、初期案提示後に懸念・将来費用を問い直�
 
 ## 進行中のタスク
 
-- **現在の作業**: 主担当の差分確認後、時間優先のユーザー指示に従い計画9節の採否で確定。再レビューは省略。通常型・通算1回、提示後確定。動作確認・実験への進行は承認済み。認証は確認、モデル完全IDと履歴分岐の実動作確認が残る。
-- 差分再確認の退避: `C:/Users/d12an/AppData/Local/Temp/issue-0132-review-816f8d15b9b54b43893eb6b3323d5eb7.md`。再開時に残存確認。レビュー担当は `/root/pilot_review`。全文履歴を持たない新規1体で実施済み。
-- 判断の分担: ADR-0137の承認範囲で具体化と整合確認を実施。実験実行・規範採用・比較規模の拡張は相談事項。CLIの認証・モデル固定・履歴分岐の実動作確認が残る。
-- 前回からの申し送り: Issue-0131はopenのまま保留。ADR-0135等の見送り記録はa59373aでローカルコミット済み・未push。現在のADR-0136・0137、計画、課題、handoffの更新は未コミット。
+- **現在の作業**: 2題材・5条件、動作確認3＋設計10＋評価1の14回答を実施済み。入力・モデル・ツール空集合・履歴を照合し、評価の根拠を確認した。結果は調査計画10節と実行記録JSON。追加実験・規範変更は未実施。Issue-0132はopenを維持。
+- 判断の分担: ADR-0137の承認範囲の小規模比較まで完了。追加実験・規範採用は次のユーザー判断を待つ。
+- 保存状態: 計画とADRは54460d1でローカルコミット済み。実行結果・課題・引き継ぎは今回の結果保存コミットへ含める。前回のADR-0135以降、pushは未実施。
 
 ## 未着手のタスク
 
@@ -45,6 +45,8 @@ Issue-0132について、初期案提示後に懸念・将来費用を問い直�
 
 ## 節目ごとの確認記録
 
+- 2026-09-08 結果保存と引き継ぎ: ADR=なし（承認済みの停止点） / worklog=棄却（計画済みの報告・保存）
+- 2026-09-08 小規模比較と結果確認: ADR=0137（承認済み計画の実行） / worklog=棄却（計画済みの実行・結果確認）
 - 2026-09-08 plan 確定点・ADR-0136/0137 Accepted 昇格: ADR=0136・0137 / worklog=棄却（既存の時間・費用判断） / review=フル実施（gpt-5.6-terra・1回・提示後確定（実質的な収束に至らず）） / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-08 独立レビュー初回実施と対応案作成: ADR=0137（承認済み具体化の範囲、実験未実施） / worklog=棄却（既存の指摘受領・実証確認手順）
 - 2026-09-08 事前指示なしを含む5条件へ改訂: ADR=0137（追加承認を記録） / worklog=MakeAiInstructions-2026-09-08-01
@@ -59,8 +61,8 @@ Issue-0132について、初期案提示後に懸念・将来費用を問い直�
 
 ## 次セッション開始時のアクション
 
-1. Issue-0132、ADR-0137、調査計画を読み、提示への回答から再開する。Issue-0125の完了工程は再実行しない。
-2. 計画は確定済み。動作確認と実験を計画の停止条件に従って進める。規模拡張・規範採用は相談事項。Issue-0131は保留、Issue-0114は今回の対象外。
+1. Issue-0132、ADR-0137、調査計画10節を読み、結果へのユーザー回答から再開する。Issue-0125の完了工程は再実行しない。
+2. 小規模比較は完了。結果を踏まえた次の対象はユーザーが選ぶ。追加実験や規範変更を自動で開始しない。Issue-0131は保留、Issue-0114は今回の対象外。
 3. 0.1.24と7b8258fまでの終了記録は公開済み。今回の見送り・終了記録はローカルのみ。pushと利用環境更新は未実施。未追跡ファイル・stash・既存worktreeを保護する。
 
 ## 重要な意思決定の履歴

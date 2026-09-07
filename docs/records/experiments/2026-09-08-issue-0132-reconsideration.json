@@ -1,0 +1,1756 @@
+{
+    "title":  "Issue-0132 小規模比較の実行記録",
+    "date":  "2026-09-08",
+    "plan":  "docs/working/plans/2026-09-08-issue-0132-reconsideration-pilot.md",
+    "model":  "claude-opus-5[1m]",
+    "cli":  "2.1.261",
+    "effort":  "high",
+    "setup":  {
+                  "auth_type":  "claude.ai Max",
+                  "safe_mode":  true,
+                  "initial_prompt_difference_verified":  true,
+                  "tools":  [
+
+                            ],
+                  "mcp_servers":  [
+
+                                  ],
+                  "system_prompt":  "Answer the supplied task. Do not use tools.",
+                  "rendered_branch_attachments_equal":  true,
+                  "history_prefixes_verified":  true
+              },
+    "limits":  [
+                   "2題材各1試行。指示なし一般追送なし。完全な盲検ではない。",
+                   "total_cost_usdはCLIの価格表換算表示で、Max契約への追加請求額ではない。補助処理のHaiku利用も表示額に含む。",
+                   "回答は未実装の設計案。実サービスへの効果は未検証。"
+               ],
+    "calls":  [
+                  {
+                      "name":  "case1-no-initial",
+                      "session_id":  "10e69658-4d22-4f2d-80d4-67e1348101ab",
+                      "duration_ms":  48375,
+                      "listed_cost_usd":  0.08585000000000001,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  1065,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  2943,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  1910
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  1065,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  2943,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  1065,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  1065
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-haiku-4-5-20251001":  {
+                                                                            "inputTokens":  1490,
+                                                                            "outputTokens":  25,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  0,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.0016150000000000001,
+                                                                            "contextWindow":  200000,
+                                                                            "maxOutputTokens":  32000,
+                                                                            "thinkingTokens":  0,
+                                                                            "canonicalModel":  "claude-haiku-4-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        },
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  2943,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  1065,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.084235,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  1910,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case1-no-specific",
+                      "session_id":  "8e42a163-25ab-43fd-a95e-b12f11828e5b",
+                      "duration_ms":  23283,
+                      "listed_cost_usd":  0.0683725,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  3133,
+                                    "cache_read_input_tokens":  1065,
+                                    "output_tokens":  1460,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  369
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  3133,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  1460,
+                                                           "cache_read_input_tokens":  1065,
+                                                           "cache_creation_input_tokens":  3133,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  3133
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  1460,
+                                                                    "cacheReadInputTokens":  1065,
+                                                                    "cacheCreationInputTokens":  3133,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.0683725,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  369,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case1-yes-general",
+                      "session_id":  "e08acec1-27e7-4069-83f9-ee45124d25a8",
+                      "duration_ms":  31524,
+                      "listed_cost_usd":  0.07179550000000001,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  2091,
+                                    "cache_read_input_tokens":  1101,
+                                    "output_tokens":  2013,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  974
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  2091,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  2013,
+                                                           "cache_read_input_tokens":  1101,
+                                                           "cache_creation_input_tokens":  2091,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  2091
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  2013,
+                                                                    "cacheReadInputTokens":  1101,
+                                                                    "cacheCreationInputTokens":  2091,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.07179550000000001,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  974,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case1-yes-initial",
+                      "session_id":  "bd732778-f9e5-41dd-8d0b-8b65c6714764",
+                      "duration_ms":  36904,
+                      "listed_cost_usd":  0.061671000000000004,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  1101,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  1960,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  916
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  1101,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  1960,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  1101,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  1101
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-haiku-4-5-20251001":  {
+                                                                            "inputTokens":  1526,
+                                                                            "outputTokens":  25,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  0,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.0016510000000000001,
+                                                                            "contextWindow":  200000,
+                                                                            "maxOutputTokens":  32000,
+                                                                            "thinkingTokens":  0,
+                                                                            "canonicalModel":  "claude-haiku-4-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        },
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  1960,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  1101,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.060020000000000004,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  916,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case1-yes-specific",
+                      "session_id":  "bdc0d1c5-22bb-47cb-9f92-95645414ffca",
+                      "duration_ms":  27858,
+                      "listed_cost_usd":  0.06366050000000001,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  2150,
+                                    "cache_read_input_tokens":  1101,
+                                    "output_tokens":  1664,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  581
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  2150,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  1664,
+                                                           "cache_read_input_tokens":  1101,
+                                                           "cache_creation_input_tokens":  2150,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  2150
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  1664,
+                                                                    "cacheReadInputTokens":  1101,
+                                                                    "cacheCreationInputTokens":  2150,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.06366050000000001,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  581,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case2-no-initial",
+                      "session_id":  "1247ae8e-89fd-419d-83a0-e275a093a7c6",
+                      "duration_ms":  28953,
+                      "listed_cost_usd":  0.052193,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  1079,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  1591,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  0
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  1079,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  1591,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  1079,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  1079
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-haiku-4-5-20251001":  {
+                                                                            "inputTokens":  1503,
+                                                                            "outputTokens":  23,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  0,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.001618,
+                                                                            "contextWindow":  200000,
+                                                                            "maxOutputTokens":  32000,
+                                                                            "thinkingTokens":  0,
+                                                                            "canonicalModel":  "claude-haiku-4-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        },
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  1591,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  1079,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.050575,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  0,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case2-no-specific",
+                      "session_id":  "5ab8d661-6d31-4df5-82ef-d656a6aa6216",
+                      "duration_ms":  43233,
+                      "listed_cost_usd":  0.0863845,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  1781,
+                                    "cache_read_input_tokens":  1079,
+                                    "output_tokens":  2721,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  1467
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  1781,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  2721,
+                                                           "cache_read_input_tokens":  1079,
+                                                           "cache_creation_input_tokens":  1781,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  1781
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  2721,
+                                                                    "cacheReadInputTokens":  1079,
+                                                                    "cacheCreationInputTokens":  1781,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.0863845,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  1467,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case2-yes-general",
+                      "session_id":  "df7a29dd-7785-466d-a04a-12436c03564e",
+                      "duration_ms":  24715,
+                      "listed_cost_usd":  0.0708575,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  2549,
+                                    "cache_read_input_tokens":  1115,
+                                    "output_tokens":  1792,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  554
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  2549,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  1792,
+                                                           "cache_read_input_tokens":  1115,
+                                                           "cache_creation_input_tokens":  2549,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  2549
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  1792,
+                                                                    "cacheReadInputTokens":  1115,
+                                                                    "cacheCreationInputTokens":  2549,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.0708575,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  554,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case2-yes-initial",
+                      "session_id":  "5eb669e8-b991-4daf-8a64-91684c979973",
+                      "duration_ms":  37674,
+                      "listed_cost_usd":  0.07324900000000001,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  1115,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  2418,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  1377
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  1115,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  2418,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  1115,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  1115
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-haiku-4-5-20251001":  {
+                                                                            "inputTokens":  1539,
+                                                                            "outputTokens":  20,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  0,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.001639,
+                                                                            "contextWindow":  200000,
+                                                                            "maxOutputTokens":  32000,
+                                                                            "thinkingTokens":  0,
+                                                                            "canonicalModel":  "claude-haiku-4-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        },
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  2418,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  1115,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.07161000000000001,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  1377,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "case2-yes-specific",
+                      "session_id":  "8621e3f0-1e19-497e-a6b4-b073d28acc5d",
+                      "duration_ms":  31059,
+                      "listed_cost_usd":  0.0747475,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  2608,
+                                    "cache_read_input_tokens":  1115,
+                                    "output_tokens":  1924,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  768
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  2608,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  1924,
+                                                           "cache_read_input_tokens":  1115,
+                                                           "cache_creation_input_tokens":  2608,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  2608
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  1924,
+                                                                    "cacheReadInputTokens":  1115,
+                                                                    "cacheCreationInputTokens":  2608,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.0747475,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  768,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "evaluation",
+                      "session_id":  "38fade01-953f-4ef2-a447-2d126a0e7b24",
+                      "duration_ms":  152660,
+                      "listed_cost_usd":  0.45979400000000004,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  14479,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  12012,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  3756
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  14479,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  12012,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  14479,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  14479
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-haiku-4-5-20251001":  {
+                                                                            "inputTokens":  14599,
+                                                                            "outputTokens":  19,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  0,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.014694,
+                                                                            "contextWindow":  200000,
+                                                                            "maxOutputTokens":  32000,
+                                                                            "thinkingTokens":  0,
+                                                                            "canonicalModel":  "claude-haiku-4-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        },
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  12012,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  14479,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.44510000000000005,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  3756,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "smoke-base",
+                      "session_id":  "d59850e5-6db3-4831-87d8-cb6309538198",
+                      "duration_ms":  1504,
+                      "listed_cost_usd":  0.002711,
+                      "usage":  {
+                                    "input_tokens":  297,
+                                    "cache_creation_input_tokens":  0,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  9,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  0
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  0,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  297,
+                                                           "output_tokens":  9,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  0,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  0
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-haiku-4-5-20251001":  {
+                                                                            "inputTokens":  921,
+                                                                            "outputTokens":  16,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  0,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.0010010000000000002,
+                                                                            "contextWindow":  200000,
+                                                                            "maxOutputTokens":  32000,
+                                                                            "thinkingTokens":  0,
+                                                                            "canonicalModel":  "claude-haiku-4-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        },
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  297,
+                                                                    "outputTokens":  9,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  0,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.00171,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  0,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "smoke-first",
+                      "session_id":  "12821965-098b-4080-9910-7378127518e1",
+                      "duration_ms":  1475,
+                      "listed_cost_usd":  0.0059,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  554,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  14,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  0
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  554,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  14,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  554,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  554
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  14,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  554,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.0059,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  0,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  },
+                  {
+                      "name":  "smoke-second",
+                      "session_id":  "ccbf2c82-1b58-4970-92d9-60deef5f959e",
+                      "duration_ms":  1807,
+                      "listed_cost_usd":  0.006365000000000001,
+                      "usage":  {
+                                    "input_tokens":  2,
+                                    "cache_creation_input_tokens":  563,
+                                    "cache_read_input_tokens":  0,
+                                    "output_tokens":  29,
+                                    "output_tokens_details":  {
+                                                                  "thinking_tokens":  0
+                                                              },
+                                    "server_tool_use":  {
+                                                            "web_search_requests":  0,
+                                                            "web_fetch_requests":  0
+                                                        },
+                                    "service_tier":  "standard",
+                                    "cache_creation":  {
+                                                           "ephemeral_1h_input_tokens":  563,
+                                                           "ephemeral_5m_input_tokens":  0
+                                                       },
+                                    "inference_geo":  "not_available",
+                                    "iterations":  [
+                                                       {
+                                                           "input_tokens":  2,
+                                                           "output_tokens":  29,
+                                                           "cache_read_input_tokens":  0,
+                                                           "cache_creation_input_tokens":  563,
+                                                           "cache_creation":  {
+                                                                                  "ephemeral_5m_input_tokens":  0,
+                                                                                  "ephemeral_1h_input_tokens":  563
+                                                                              },
+                                                           "type":  "message"
+                                                       }
+                                                   ],
+                                    "speed":  "standard"
+                                },
+                      "model_usage":  {
+                                          "claude-opus-5[1m]":  {
+                                                                    "inputTokens":  2,
+                                                                    "outputTokens":  29,
+                                                                    "cacheReadInputTokens":  0,
+                                                                    "cacheCreationInputTokens":  563,
+                                                                    "webSearchRequests":  0,
+                                                                    "costUSD":  0.006365000000000001,
+                                                                    "contextWindow":  1000000,
+                                                                    "maxOutputTokens":  64000,
+                                                                    "thinkingTokens":  0,
+                                                                    "canonicalModel":  "claude-opus-5",
+                                                                    "provider":  "firstParty",
+                                                                    "costBasis":  "list"
+                                                                }
+                                      },
+                      "success":  true
+                  }
+              ],
+    "design_answers":  [
+                           {
+                               "name":  "case1-no-initial",
+                               "session_id":  "10e69658-4d22-4f2d-80d4-67e1348101ab",
+                               "parent":  "",
+                               "seconds":  49.7202317,
+                               "cost":  0.08585000000000001,
+                               "characters":  1092,
+                               "result":  "## 設計案\n\n**1. 失敗表示の詳細化（中心の変更）**\n検査内部が既に保持している「元の文書 × リンク先」の組を、失敗時にそのまま一覧出力する。項目は「元文書パス／記述どおりのリンク文字列／解決後のパス／（取得できれば）行番号」で、元文書ごとにまとめてCIログと提案の結果要約に出す。新たな収集処理は加えず、出力層のみの改修とする。判定ロジック・対象範囲は変更しない。\n\n**2. 移動先候補の併記（補助）**\n同じ検査実行内で、基底コミットとの差分をリネーム検出付きで取得し「旧パス→新パス」の対応を一時的に作る。切れたリンク先が旧パスに一致した場合のみ、上記一覧に新パス候補を助言として併記する。合否判定には使わないため統合条件は不変。常設の台帳を持たず、実行のたびに差分から生成する。\n\n**3. 例外ファイル**\n現状のまま（過去記録のリンク切れのみ）。読み方も対象も変えず、追記もしない。現用文書は例外に無いため、移動によるリンク切れは必ず失敗となり、統合不可のまま公開前に修正される。\n\n**4. 変更箇所のまとめ**\n検査ツールの出力部分＋CI設定の表示追加のみ。判定・検査対象・例外・統合条件は無変更。\n\n## 要求との対応\n\n- **公開前防止**：既存の「失敗した提案は管理者を含め統合不可」をそのまま利用（3）。新規の仕組みは不要。\n- **担当者が元文書とリンク先を把握**：1の一覧で明示。2で修正先候補も提示。\n- **過去記録の例外維持**：3。\n- **新規登録禁止**：例外ファイルへ一切追記しない設計。\n- **検査対象・統合条件の維持**：外部URLと見出しは対象外のまま、合否判定は不変（1・2）。\n- **手動点検・台帳の不追加**：2はCI実行時にGit差分から自動生成し、恒常的な管理対象を作らない。\n\n## 補足\n\n**仮定**：検査ツールの出力部分を改修できる。内部の組にリンク文字列が含まれる（行番号が無ければ省略）。CIが基底コミットを取得でき、リネーム検出が使える。月1回の検出は同一提案内での移動が主因。\n\n**判断できない点**：例外ファイルの照合方式（パス完全一致か模様一致か）、結果要約に出力できる分量の上限、リンク切れが同一提案内の移動由来か別提案由来かの内訳。いずれも表示の形式・分割方法に影響するが、合否判定には影響しない。\n\n**あえて入れないもの**：例外ファイルへの現用文書登録の機械的な禁止判定は、新しい失敗条件となり「統合条件の維持」に反しうるため今回は含めない。必要なら別途合意のうえ追加する。",
+                               "modelUsage":  {
+                                                  "claude-haiku-4-5-20251001":  {
+                                                                                    "inputTokens":  1490,
+                                                                                    "outputTokens":  25,
+                                                                                    "cacheReadInputTokens":  0,
+                                                                                    "cacheCreationInputTokens":  0,
+                                                                                    "webSearchRequests":  0,
+                                                                                    "costUSD":  0.0016150000000000001,
+                                                                                    "contextWindow":  200000,
+                                                                                    "maxOutputTokens":  32000,
+                                                                                    "thinkingTokens":  0,
+                                                                                    "canonicalModel":  "claude-haiku-4-5",
+                                                                                    "provider":  "firstParty",
+                                                                                    "costBasis":  "list"
+                                                                                },
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  2943,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  1065,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.084235,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  1910,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case1-no-specific",
+                               "session_id":  "8e42a163-25ab-43fd-a95e-b12f11828e5b",
+                               "parent":  "10e69658-4d22-4f2d-80d4-67e1348101ab",
+                               "seconds":  24.4838508,
+                               "cost":  0.0683725,
+                               "characters":  1146,
+                               "result":  "## 変更の有無と理由\n\n**変更あり（1点削減）。** 元案の「移動先候補の併記（旧案2）」を取り下げ、失敗表示の詳細化と例外維持のみに絞る。理由は、要求は「元の文書とリンク先の把握」までであり、リンク先の旧パスが表示されれば移動先はGitの履歴で追える。一方、リネーム検出は基底コミットの取得（浅い複製だと不成立）や誤検出への対処が要り、年12回程度の事象に対して恒常的な保守費が見合わない。他は維持する。\n\n## 設計案\n\n**1. 失敗表示の詳細化（唯一の実装変更）**\n検査が内部で既に保持している「元の文書 × リンク先」の組を、失敗時にそのまま出力する。項目は「元文書パス／記述どおりのリンク文字列／解決後のパス／（取得できれば）行番号」。元文書ごとにまとめ、CIログと提案の結果要約に出す。件数が多い場合は総件数を先頭に示し、本文は上限件数までとして残りはログ参照とする。新たな収集処理・判定変更はなく、出力層のみの改修。\n\n**2. 例外ファイル**\n現状維持（過去記録のリンク切れのみ）。読み方も対象も変えず、追記もしない。現用文書は例外に無いため、移動によるリンク切れは必ず失敗し、統合不可のまま公開前に修正される。\n\n**3. 変更箇所**\n検査ツールの出力部分と、結果要約への表示追加のみ。判定・検査対象・例外・統合条件はすべて不変。\n\n## 要求との対応\n\n- **公開前防止**：既存の「失敗した提案は管理者を含め統合不可」で達成済み（2）。追加の仕組みは不要。\n- **元文書とリンク先の把握**：1の一覧で明示。移動先は表示された旧パスを手掛かりにGitの履歴で辿れる。\n- **過去記録の例外維持／新規登録禁止**：2。例外ファイルへ一切追記しない。\n- **対象・統合条件の維持**：外部URLと見出しは対象外のまま、合否判定は不変（3）。\n- **手動点検・台帳の不追加**：常設の管理対象を作らない。\n\n## 補足\n\n**費用の見立て（仮定を含む）**：導入は出力処理の追加が中心で小規模。保守は検査ツールの改修に追随する程度で、外部状態や設定に依存しないため増分は小さい。旧案2を外したことで、CIの取得設定変更に伴う破損要因を持ち込まない。\n\n**仮定**：出力部分を改修できる。内部の組にリンク文字列が含まれる（行番号が無ければ省略）。\n\n**判断できない点**：例外ファイルの照合方式、結果要約に出せる分量の上限、1件の移動で切れるリンクの典型的な件数。いずれも表示形式にのみ影響し、合否判定には影響しない。\n\n**あえて入れないもの**：例外ファイルへの現用文書登録の機械的禁止は、新しい失敗条件となり統合条件の維持に反しうるため含めない。",
+                               "modelUsage":  {
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  1460,
+                                                                            "cacheReadInputTokens":  1065,
+                                                                            "cacheCreationInputTokens":  3133,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.0683725,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  369,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case1-yes-general",
+                               "session_id":  "e08acec1-27e7-4069-83f9-ee45124d25a8",
+                               "parent":  "bd732778-f9e5-41dd-8d0b-8b65c6714764",
+                               "seconds":  32.7371707,
+                               "cost":  0.07179550000000001,
+                               "characters":  1089,
+                               "result":  "**変更の有無：2点を修正、他は維持**\n- 修正1：ローカル実行コマンドとpre-pushフックを本体から外し、任意の将来案に降格。理由＝失敗提案は管理者を含め統合できないため、公開前の防止は既存CIで既に成立している。発生は年12回程度で、12人分の環境差の支援と保守費用に見合わない。\n- 修正2：出力の件数上限と成果物ログ退避を撤回。理由＝対象は最大80件で全件出しても可読性を損なわず、機構を増やさない方が保守が軽い。\n- 維持：出力層のみの改修、例外ファイル無変更、判定条件の追加なし。\n\n## 設計案\n\n**改修は1点のみ。** 検査が既に内部保持している「元文書＋リンク先」の組を、失敗時に全件そのまま出力する。表記はリポジトリ相対パスで `元文書 -\u003e リンク先（未検出）`。検査対象、合否判定、統合条件、例外ファイルの扱いは一切変更しない。実質は出力層の書き換えのみで、新規の台帳・定期点検・登録手段は作らない。\n\n例外ファイルは形式・内容とも現状維持。現用文書の新規登録禁止は運用規約で担保し、機械的な禁止チェックは追加しない（合否条件が増え「統合条件の維持」に反するため）。\n\n**懸念点**：見出しリンクと外部URLは従来どおり未検査で、本改修でも防げない。原因が移動かどうかは分類せず、事実の組だけを示す（誤った原因表示を避けるため）。提案時点まで検出が遅れる点は残るが、統合はブロックされるので流出には至らない。\n\n**費用（仮定）**：導入は出力整形のみで0.5〜1人日程度。検査本体・設定・例外ファイルを触らないため、将来の保守費用の増分はほぼゼロ。降格した任意案を採らないことで、環境依存の問い合わせ対応も発生しない。\n\n## 要求との対応\n\n- 移動によるリンク切れの公開前防止 → 既存CIの失敗と統合不可条件をそのまま利用（変更なしで充足）。\n- 元文書とリンク先の把握 → 保持済みの組を失敗時に全件出力。\n- 過去記録の例外維持 → 例外ファイル無変更。\n- 現用文書の例外新規登録禁止 → 登録手段を増やさない。\n- 検査対象・統合条件の維持 → 判定に触れない。\n- 手動点検・台帳追加なし → 新設作業ゼロ、既存検査の副産物を提示するのみ。\n\n## 補足\n\n**仮定**：検査が行番号を保持していれば併記し、なければ組のみで足りるとした。CIの標準出力を担当者が参照できると仮定した。\n\n**判断できないこと**：検査の実装言語と出力箇所、例外ファイルの正確な形式。これらは改修工数の見積りを変えうるが、設計方針は変わらない。",
+                               "modelUsage":  {
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  2013,
+                                                                            "cacheReadInputTokens":  1101,
+                                                                            "cacheCreationInputTokens":  2091,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.07179550000000001,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  974,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case1-yes-initial",
+                               "session_id":  "bd732778-f9e5-41dd-8d0b-8b65c6714764",
+                               "parent":  "",
+                               "seconds":  38.1215724,
+                               "cost":  0.061671000000000004,
+                               "characters":  1100,
+                               "result":  "## 設計案\n\n**1. 失敗表示の改修（本体）**\n検査内部が既に保持する「元文書＋リンク先」の組を、失敗時に全件一覧出力する。表記はリポジトリ相対パスで `元文書 -\u003e リンク先（未検出）` の形式。検査ロジック・対象範囲・合否判定・統合条件は一切変更しない（出力層のみの改修）。件数が多い場合は先頭N件を標準出力、全件はCI成果物のログファイルへ。\n\n**2. 公開前に気づく仕組み**\nCIと同一の検査コードを、引数なしで実行できる単一コマンドとして切り出す。ファイル移動を行った担当者が提案作成前に手元で実行できる。任意導入のpre-pushフック雛形を配布するが、強制はしない（検査の二重実装は行わない）。\n\n**3. 例外ファイル**\n形式・内容ともに現状維持。過去記録の列挙はそのまま通す。新規登録禁止は運用規約で担保し、機械的な追加禁止チェックは初期案では見送る（合否条件が増え「統合条件の維持」に反するため）。導入する場合は別提案とする。\n\n**懸念点**\n- 一括移動時に出力が膨大化しうる（上記の件数制限で緩和）。\n- ローカル実行を強制しないため、実行漏れは残る。ただしCI失敗時の原因特定が即座になるので手戻り時間は短縮される。\n- 見出しリンク・外部URLは従来どおり未検査で、この改修でも防げない。\n\n**費用（仮定）**\n導入：出力整形とコマンド切り出しで1〜2人日程度。保守：検査本体を触らないため増分はほぼゼロ。フック配布は各自環境差による問い合わせが発生しうるため任意導入とした。\n\n## 要求との対応\n\n- 移動によるリンク切れの公開前防止 → 既存CIが提案時点で必ず失敗させる（維持）＋ローカル実行で提案前に検出。\n- 元文書とリンク先の把握 → 保持済みの組を一覧出力（設計案1）。\n- 過去記録の例外維持 → 例外ファイル無変更。\n- 現用文書の例外新規登録禁止 → 登録手段を増やさない。\n- 検査対象・統合条件の維持 → 判定に触れず出力層のみ変更。\n- 手動点検・台帳追加なし → 台帳や定期作業を新設せず、既存検査の副産物を提示するだけ。\n\n## 補足\n\n**仮定**：検査が行番号を保持しているかは不明。保持していれば併記、していなければ文書とリンク先の組のみで足りるとした。CIログの成果物保存が可能と仮定した。\n\n**判断できないこと**：検査の実装言語・実行時間・出力先の制約、12人のローカル環境の統一度（フック配布の実効性に影響）、例外ファイルの正確な形式。これらにより設計案2の実現手段は変わりうるが、設計案1は影響を受けない。",
+                               "modelUsage":  {
+                                                  "claude-haiku-4-5-20251001":  {
+                                                                                    "inputTokens":  1526,
+                                                                                    "outputTokens":  25,
+                                                                                    "cacheReadInputTokens":  0,
+                                                                                    "cacheCreationInputTokens":  0,
+                                                                                    "webSearchRequests":  0,
+                                                                                    "costUSD":  0.0016510000000000001,
+                                                                                    "contextWindow":  200000,
+                                                                                    "maxOutputTokens":  32000,
+                                                                                    "thinkingTokens":  0,
+                                                                                    "canonicalModel":  "claude-haiku-4-5",
+                                                                                    "provider":  "firstParty",
+                                                                                    "costBasis":  "list"
+                                                                                },
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  1960,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  1101,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.060020000000000004,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  916,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case1-yes-specific",
+                               "session_id":  "bdc0d1c5-22bb-47cb-9f92-95645414ffca",
+                               "parent":  "bd732778-f9e5-41dd-8d0b-8b65c6714764",
+                               "seconds":  29.1013346,
+                               "cost":  0.06366050000000001,
+                               "characters":  1139,
+                               "result":  "## 変更の有無と理由\n\n**変更する。** 再検討の結果、前案の「設計案2（ローカル実行コマンド＋pre-pushフック配布）」は削除する。理由は2点。(a) 要求「公開前に防ぐ」は、既存CIが提案段階で必ず失敗させ統合を止める時点で既に満たされており、フックは重複投資である。(b) 発生は月1回程度に対し、12人分の環境差・雛形更新という恒久的な保守費用が生じ、費用が便益を上回る。また出力の件数制限も、対象80件で最大規模が知れているため削除し、実装を単純化する。\n\n## 設計案\n\n**1. 失敗表示の改修（唯一の変更点）**\n検査内部が既に保持する「元文書＋リンク先」の組を、失敗時に全件そのまま出力する。形式は `元文書 -\u003e リンク先（未検出）` のリポジトリ相対パス。件数上限や集計は設けない。検査ロジック・対象範囲・合否判定・統合条件・例外ファイルの扱いはすべて現状維持で、変更は出力層のみに閉じる。\n\n**2. 例外ファイル**\n現状維持。過去記録の列挙はそのまま通す。現用文書の新規登録禁止は運用規約で担保し、機械的な追加禁止チェックは行わない（合否条件が増え「統合条件の維持」に反するため）。\n\n**懸念点**\n- 見出しリンク・外部URLは従来どおり未検査で、本改修でも防げない（範囲外として許容）。\n- 失敗メッセージ文字列を機械的に参照している箇所があれば影響しうる。改修時に確認する。\n- 提案作成前には気づけず、CIで初めて判明する。ただし出力に元文書とリンク先が出るため修正は即座に着手でき、月1回の頻度では許容範囲と判断した。\n\n**費用**\n導入：出力層のみのため0.5〜1人日程度（仮定）。保守：判定部・例外ファイル・運用手順のいずれも触らないため、増分は実質ゼロ。新規の定期作業・台帳・配布物を一切増やさない。\n\n## 要求との対応\n\n- 移動によるリンク切れの公開前防止 → 既存CIの失敗と統合ブロックで達成済み（維持）。\n- 元文書とリンク先の把握 → 保持済みの組を全件出力。\n- 過去記録の例外維持 → 例外ファイル無変更。\n- 現用文書の例外新規登録禁止 → 登録手段を増やさない。\n- 検査対象・統合条件の維持 → 判定に触れない。\n- 手動点検・台帳追加なし → 新規作業ゼロ。\n\n## 補足\n\n**仮定**：検査が行番号を保持しているかは不明。保持していれば併記し、なければ組のみで担当者は特定可能と判断した。失敗文字列に依存する外部連携はないと仮定した。\n\n**判断できないこと**：検査の実装言語と出力先の制約、失敗メッセージの参照箇所の有無。いずれも改修規模を数人日以内から変える要因にはならないと見ている。",
+                               "modelUsage":  {
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  1664,
+                                                                            "cacheReadInputTokens":  1101,
+                                                                            "cacheCreationInputTokens":  2150,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.06366050000000001,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  581,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case2-no-initial",
+                               "session_id":  "1247ae8e-89fd-419d-83a0-e275a093a7c6",
+                               "parent":  "",
+                               "seconds":  30.2186716,
+                               "cost":  0.052193,
+                               "characters":  1873,
+                               "result":  "# 設計案\n\n**状態モデル(既存DBに `report_send` テーブルを追加)**\n\n| 列 | 内容 |\n|---|---|\n| `report_date` | 主キー(対象日付) |\n| `status` | `PENDING` / `SENT` / `UNKNOWN` / `FAILED` |\n| `attempts` | 明示的未受理での試行回数 |\n| `updated_at` | 更新時刻 |\n\n**送信手順(バッチ内、直列)**\n\n1. 対象日付の行を取得。無ければ `PENDING` で作成。\n2. `SENT` なら送信せず正常終了(再実行時の二重送信防止)。\n3. `UNKNOWN` なら送信せず、運用通知に「要人手確認」を再掲して異常終了。自動再送は行わない。\n4. `PENDING` / `FAILED` なら、**API 呼び出しの直前に `attempts` を +1 して確定コミット**する。この「送信前記録」により、呼び出し中にプロセスが落ちても再起動後に試行済みと判断できる。\n5. API 応答で分岐。\n   - 成功 → `SENT`\n   - 明示的な未受理 → `FAILED`。`attempts \u003c 3`(仮定)なら固定間隔(例:30秒、仮定)で待機し 4 へ戻る。上限到達なら運用通知して異常終了。\n   - タイムアウト/応答喪失 → `UNKNOWN` に確定し、即座に運用通知して異常終了。以後この日付は自動送信しない。\n6. プロセスが手順 4 と 5 の間で落ちた場合、状態は `PENDING`/`FAILED` のまま `attempts` だけ進む。再起動後は「直前試行の結果不明」とみなし、`attempts` が前回記録より進んでいる行は `UNKNOWN` に倒して通知する(安全側に倒す)。\n\n**人手の復旧**\n\n`UNKNOWN` の日付は、担当者が宛先へ着信を確認し、DB の `status` を `SENT`(届いていた)または `PENDING`(届いていない)へ手動更新する。管理画面は作らず、既存の DB 操作手順で行う。`PENDING` に戻せば翌日の通常実行で再送される。\n\n**翌日以降の扱い**\n\n日付ごとに行が独立しているため、前日が `UNKNOWN` でも当日分の送信は実行する。\n\n# 要求との対応\n\n- **一時的な未受理の再実行削減**:明示的未受理のみ、上限付きで自動再試行。担当者の手作業が不要になる。\n- **二重送信の回避**:`SENT` は再送しない。成否不明の `UNKNOWN` も自動再送しないため、重複は発生しない。\n- **成否不明時の通知**:既存の運用通知経路へ即時通知し、人手確認に委ねる運用を許容する要求に一致。\n- **再起動後の状態引き継ぎ**:既存永続 DB に保持。送信前コミットにより、実行中断も検出できる。\n- **新規リソース不使用**:テーブル 1 つの追加のみ。常駐プロセス・管理画面・外部サービスは増やさない。\n- **翌日分の停止なし**:日付単位で独立して判定。\n\n**完全な「一度だけ」の保証について:保証できません。** API が冪等性キーも状況照会も持たないため、タイムアウト時に受理済みか否かを技術的に判別する手段が存在しない。本設計は「自動処理では絶対に重複させない(未送信側に倒す)」ことを保証し、送信漏れの可能性を人手確認で埋める方針である。結果として自動処理の性質は at-most-once であり、exactly-once は人手を含めた運用全体で近似的に達成される。\n\n# 補足\n\n**仮定**:再試行上限 3 回、待機 30 秒は仮の値で、運用側で調整可能とする。手動での状態更新は既存の DB 運用手順で実施できるものとした。\n\n**判断できない事項**:(1) API の「明示的な未受理」が一時的要因(過負荷等)か恒久的要因(宛先不正等)かを区別できるか不明。区別できない場合、恒久的失敗でも上限まで無駄に再試行する。(2) 送信直前コミットからの実行中断を、再起動時に確実に検出できるかは、バッチ起動時に前回実行の中断を判別できる仕組み(実行 ID の記録等)の有無に依存する。無い場合は「`PENDING`/`FAILED` かつ `attempts \u003e 0` の行は `UNKNOWN` 扱い」という保守的な規則で代替する。",
+                               "modelUsage":  {
+                                                  "claude-haiku-4-5-20251001":  {
+                                                                                    "inputTokens":  1503,
+                                                                                    "outputTokens":  23,
+                                                                                    "cacheReadInputTokens":  0,
+                                                                                    "cacheCreationInputTokens":  0,
+                                                                                    "webSearchRequests":  0,
+                                                                                    "costUSD":  0.001618,
+                                                                                    "contextWindow":  200000,
+                                                                                    "maxOutputTokens":  32000,
+                                                                                    "thinkingTokens":  0,
+                                                                                    "canonicalModel":  "claude-haiku-4-5",
+                                                                                    "provider":  "firstParty",
+                                                                                    "costBasis":  "list"
+                                                                                },
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  1591,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  1079,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.050575,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  0,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case2-no-specific",
+                               "session_id":  "5ab8d661-6d31-4df5-82ef-d656a6aa6216",
+                               "parent":  "1247ae8e-89fd-419d-83a0-e275a093a7c6",
+                               "seconds":  44.4189266,
+                               "cost":  0.0863845,
+                               "characters":  1453,
+                               "result":  "**変更:一部修正(方針は維持)。**理由は2点の不整合。(a) 再試行のたびに `attempts` が増えるため、前案の「`attempts` の進みで中断を検出する」規則が明示的未受理と区別できなかった。(b) 過去日の `UNKNOWN` が残ると毎日異常終了し、「翌日の送信は止めない」要求に反していた。費用は小さく効果が上回るため、実施自体は妥当と判断。\n\n# 設計案\n\n既存DBに `report_send`(`report_date` 主キー / `status` / `attempts` / `updated_at`)を追加。`status` は `PENDING` `SENDING` `SENT` `UNKNOWN` `FAILED`。\n\n**起動時**:`SENDING` の行があれば「呼出中に落ちた=結果不明」とみなし `UNKNOWN` へ更新し通知。これで再起動後の引き継ぎが成立する。\n\n**当日分の処理**\n- `SENT` → 送信せず正常終了(再実行の二重送信防止)\n- `UNKNOWN` → 自動送信せず通知のみ\n- `PENDING`/`FAILED` → `SENDING` と `attempts+1` を**API呼出前にコミット**し送信\n  - 成功 → `SENT`\n  - 明示的な未受理 → `FAILED` に戻す。`attempts\u003c3` なら30秒後に再試行、上限到達で通知し異常終了\n  - タイムアウト → `UNKNOWN` に確定、即通知して異常終了。自動再送はしない\n\n**過去日の `UNKNOWN`** は通知に列挙するだけで、当日分の送信可否・終了コードには影響させない。\n\n**人手復旧**:担当者が宛先へ着信を確認し、既存のDB操作手順で `SENT`(届いていた)か `PENDING`(未着)へ更新。`PENDING` なら次回実行で送信される。管理画面は作らない。\n\n# 要求との対応\n\n- 一時的な未受理:明示的未受理のみ上限付きで自動再試行し、再実行作業を削減。\n- 二重送信回避:`SENT` と `UNKNOWN` は自動送信しない。安全側(未送信扱い)に倒す。\n- 成否不明:既存通知経路へ即時通知し、人手確認に委ねる。\n- 再起動:`SENDING` の残存で中断を検出。\n- 翌日分:日付単位で独立、過去の未解決に影響されない。\n- 新規リソース:テーブル1つのみ。契約・常駐プロセス・管理画面は増やさない。\n\n**完全な一度だけの送信は保証できません。** 冪等性キーも状況照会もないため、タイムアウト時の受理有無を技術的に判別する手段が存在しない。自動処理は at-most-once を保証し、送信漏れは人手確認で埋める。\n\n# 補足\n\n**費用**:導入はテーブル追加と分岐実装のみで小規模。保守は `UNKNOWN` 発生時の確認手順書の維持が中心で、全失敗を毎回手動再実行する現状より運用負荷は低い。将来費用を含めても実施が妥当。\n\n**仮定**:上限3回・待機30秒は仮の値で運用調整可能。手動での状態更新が既存手順で行える。\n\n**判断できない事項**:(1) 明示的未受理が一時的か恒久的かを区別できるか不明。できない場合は恒久的失敗でも上限まで再試行する。(2) `UNKNOWN` の想定発生頻度が不明なため、人手確認の実運用負荷は見積もれない。頻発するなら別途対策が要る。",
+                               "modelUsage":  {
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  2721,
+                                                                            "cacheReadInputTokens":  1079,
+                                                                            "cacheCreationInputTokens":  1781,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.0863845,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  1467,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case2-yes-general",
+                               "session_id":  "df7a29dd-7785-466d-a04a-12436c03564e",
+                               "parent":  "5eb669e8-b991-4daf-8a64-91684c979973",
+                               "seconds":  26.0353053,
+                               "cost":  0.0708575,
+                               "characters":  1296,
+                               "result":  "## 変更の有無と理由\n\n2点のみ修正。他は維持。\n1. **未受理のまま終了した行の再実行時の扱い**を明記。未受理は未達が確定しており再送しても重複しないため、担当者が翌日以降にバッチを再実行した際は試行回数をリセットして自動送信してよい。元案はこれを書いておらず「再実行作業を減らす」要求の充足が不十分だった。\n2. **通知の内容を状態別に区別**。「未受理(要再実行)」と「不明(要宛先確認)」で担当者の行動が異なるため。\n\n## 設計案\n\n既存DBに送信状態テーブルを追加し、状態機械で制御する。キーは「対象日付＋レポート種別」で一意。カラムは状態・試行回数・最終更新時刻。\n\n状態: 未送信 / 送信中 / 送信済 / 未受理 / 不明\n\n1. バッチ開始時に対象日付の行を「未送信」で作成。送信済なら何もせず終了。不明なら自動処理せず通知のみ。**未受理なら試行回数をリセットして再送に進む**(未達確定のため重複しない)。\n2. API呼び出しの**直前**に「送信中」へ更新しコミット。応答が失われても試行の存在が記録に残る。\n3. 成功→送信済。明示的な未受理→未受理(試行回数+1)。タイムアウト・分類不能な応答→不明。\n4. 未受理のみ上限N回(仮にN=3、指数バックオフ)まで同一実行内で自動再試行。上限超過で通知して終了。\n5. 不明は自動再送しない。既存通知経路へ通知し、担当者が宛先を確認して状態を手動是正する。\n6. 再起動後に「送信中」で残る行は不明として扱い通知。翌日分の処理は前日状態に関わらず実行する。\n7. 通知は対象日付・状態・試行回数を含め、「未受理=再実行で復旧可」「不明=宛先確認が必要」を区別する。\n\n## 要求との対応\n\n- **再実行作業の削減**: 一時的な未受理は同一実行内で自動再試行し、上限超過後も次回実行で安全に自動再送。\n- **二重到達の回避**: 成否不明時は自動再送せず、至多一回側に倒す。\n- **状態の永続**: 既存DBに保持し、再起動後も引き継ぐ。\n- **資産を増やさない**: テーブル1つとバッチ内ロジックのみ。通知は既存経路。常駐プロセス・管理画面・新規契約なし。\n- **完全な一度だけの送信は保証できない**。冪等性キーも状況照会もないため、不明状態は人の確認でしか解消できず、自動処理の範囲では「重複しないが未達が残りうる」至多一回にとどまる。\n\n## 補足\n\n**懸念**: 「明示的な未受理」の判定精度が安全性の前提(仮定)。既知エラーコードの許可リスト方式とし、未知の応答は必ず不明へ倒す。バックオフ中はバッチ実行時間が延びる。\n\n**費用**: 導入はテーブル追加・状態遷移・通知連携の小規模改修で完結し、新規の月額費用はない。保守費用は状態行の保持期間管理、手動是正用SQL手順書の維持、不明発生時の人手確認。不明の発生率が主要コスト要因のため定期確認を推奨。\n\n**判断できない点**: APIのタイムアウト発生率と応答コード体系、Nとバックオフ間隔の妥当値、通知経路の到達保証。",
+                               "modelUsage":  {
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  1792,
+                                                                            "cacheReadInputTokens":  1115,
+                                                                            "cacheCreationInputTokens":  2549,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.0708575,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  554,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case2-yes-initial",
+                               "session_id":  "5eb669e8-b991-4daf-8a64-91684c979973",
+                               "parent":  "",
+                               "seconds":  38.8608978,
+                               "cost":  0.07324900000000001,
+                               "characters":  1092,
+                               "result":  "## 設計案\n\n既存DBに送信状態テーブルを追加し、状態機械で制御する。キーは「対象日付＋レポート種別」で一意。カラムは状態・試行回数・最終更新時刻。\n\n状態: 未送信 / 送信中 / 送信済 / 未受理 / 不明\n\n1. バッチ開始時に当日分の行を「未送信」で作成。既に送信済なら何もせず終了、不明なら自動処理せず通知のみ。\n2. API呼び出しの**直前**に「送信中」へ更新しコミット。応答が失われても試行の存在が記録に残る。\n3. 成功→送信済。明示的な未受理→未受理(試行回数+1)。タイムアウト・分類不能な応答→不明。\n4. 未受理のみ上限N回(仮にN=3、指数バックオフ)まで同一実行内で自動再試行。上限超過で通知して終了。\n5. 不明は自動再送しない。既存通知経路へ「成否不明・要確認」を通知し、担当者が宛先を確認して状態を手動是正する。\n6. 再起動後に「送信中」で残る行は不明として扱い通知。翌日分の処理は前日状態に関わらず実行する。\n\n## 要求との対応\n\n- **再実行作業の削減**: 明示的な未受理は担当者を介さず上限付きで自動再試行。\n- **二重到達の回避**: 成否不明時は自動再送せず、至多一回側に倒す。\n- **状態の永続**: 既存DBに保持し、プロセス再起動後も引き継ぐ。\n- **資産を増やさない**: テーブル1つとバッチ内ロジックのみ。通知は既存経路、常駐プロセス・管理画面・新規契約なし。\n- **完全な一度だけの送信は保証できない**。APIが冪等性キーと状況照会の双方を持たないため、不明状態は人の確認でしか解消できない。自動処理の範囲では「重複しないが未達が残りうる」至多一回にとどまる。\n\n## 補足\n\n**懸念**: APIの応答から「明示的な未受理」を誤りなく分類できることが前提(仮定)。分類を誤って不明を未受理と扱うと重複送信になるため、判定は既知のエラーコードの許可リスト方式とし、未知の応答はすべて不明へ倒す。バックオフ中はバッチ実行時間が延びる。\n\n**費用**: 導入はテーブル追加・状態遷移・通知連携の小規模改修で完結し、新規の月額費用は発生しない。将来の保守費用は、状態行の保持期間管理、手動是正用SQL手順書の維持、および不明発生時の人手確認が継続コストとなる。不明の発生率が高いと運用負荷が主要コストになるため、発生件数の定期確認を推奨する。\n\n**判断できない点**: APIのタイムアウト発生率と応答コード体系、Nとバックオフ間隔の妥当値、通知経路自体の到達保証。これらは実測または仕様確認が必要。",
+                               "modelUsage":  {
+                                                  "claude-haiku-4-5-20251001":  {
+                                                                                    "inputTokens":  1539,
+                                                                                    "outputTokens":  20,
+                                                                                    "cacheReadInputTokens":  0,
+                                                                                    "cacheCreationInputTokens":  0,
+                                                                                    "webSearchRequests":  0,
+                                                                                    "costUSD":  0.001639,
+                                                                                    "contextWindow":  200000,
+                                                                                    "maxOutputTokens":  32000,
+                                                                                    "thinkingTokens":  0,
+                                                                                    "canonicalModel":  "claude-haiku-4-5",
+                                                                                    "provider":  "firstParty",
+                                                                                    "costBasis":  "list"
+                                                                                },
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  2418,
+                                                                            "cacheReadInputTokens":  0,
+                                                                            "cacheCreationInputTokens":  1115,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.07161000000000001,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  1377,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           },
+                           {
+                               "name":  "case2-yes-specific",
+                               "session_id":  "8621e3f0-1e19-497e-a6b4-b073d28acc5d",
+                               "parent":  "5eb669e8-b991-4daf-8a64-91684c979973",
+                               "seconds":  32.2885594,
+                               "cost":  0.0747475,
+                               "characters":  1196,
+                               "result":  "## 変更の有無と理由\n\n**小幅に修正**。骨子(状態機械＋既存DBへの状態保存)は要求を満たし、費用対効果も妥当なので維持する。ただし①不明状態からの復帰手順が曖昧で運用が回らない、②行の定期削除を保守作業として抱えるのは不要な将来費用、③再試行のバックオフでバッチ実行時間が読めない、の3点を修正する。\n\n## 設計案\n\n既存DBに送信状態テーブルを追加。キーは「対象日付＋レポート種別」で一意。カラムは状態・試行回数・最終更新時刻。\n\n状態: 未送信 / 送信中 / 送信済 / 未受理 / 不明\n\n1. 開始時に当日分の行を「未送信」で作成。送信済なら何もせず終了。不明なら自動処理せず通知のみ。\n2. API呼び出しの**直前**に「送信中」へ更新しコミット。応答が失われても試行の存在が残る。\n3. 成功→送信済。既知のエラーコード許可リストに一致する明示的な未受理→未受理。それ以外(タイムアウト・未知の応答)はすべて不明へ倒す。\n4. 未受理のみ上限N回(仮にN=3、指数バックオフ)まで同一実行内で自動再試行。**再試行の総所要時間にも上限(仮に5分)を設け**、超過時は打ち切って通知。\n5. 不明は自動再送しない。既存通知経路へ「成否不明・要確認」を通知。担当者が宛先を確認し、未達なら状態を「未送信」に戻す手動操作を行う。**この操作だけが再送のトリガ**で、バッチ再実行時に通常経路で送られる。既達なら「送信済」に更新して完了。\n6. 再起動後に「送信中」で残る行は不明として扱い通知。翌日分は前日状態に関わらず実行。\n7. **行は削除せず無期限に保持**(1日1行のため容量負荷はない)。\n\n## 要求との対応\n\n- 再実行作業の削減: 明示的な未受理は無人で上限付き再試行。\n- 二重到達の回避: 不明時は自動再送せず、人の確認を挟む。\n- 状態の永続: 既存DBに保持し再起動後も引き継ぐ。\n- 資産を増やさない: テーブル1つとバッチ内ロジックのみ。常駐プロセス・管理画面・新規契約なし。\n- **完全な一度だけの送信は保証できない**。冪等性キーと状況照会がない以上、不明は人の確認でしか解消できず、自動処理の範囲は「重複しないが未達が残りうる」至多一回。\n\n## 補足\n\n**懸念**: 未受理の分類をAPI応答から誤ると重複送信になるため、許可リストは保守対象。通知経路自体の到達保証は本設計の範囲外。\n\n**費用**: 導入はテーブル追加・状態遷移・通知連携の小規模改修で、新規の月額費用なし。保守費用は許可リストの見直しと手動是正手順書の維持、および不明発生時の人手確認。不明の発生率が高い場合は運用負荷が主コストになるため件数を定期確認する。\n\n**判断できない点**: タイムアウト発生率、応答コード体系、Nと時間上限の妥当値。実測が必要。",
+                               "modelUsage":  {
+                                                  "claude-opus-5[1m]":  {
+                                                                            "inputTokens":  2,
+                                                                            "outputTokens":  1924,
+                                                                            "cacheReadInputTokens":  1115,
+                                                                            "cacheCreationInputTokens":  2608,
+                                                                            "webSearchRequests":  0,
+                                                                            "costUSD":  0.0747475,
+                                                                            "contextWindow":  1000000,
+                                                                            "maxOutputTokens":  64000,
+                                                                            "thinkingTokens":  768,
+                                                                            "canonicalModel":  "claude-opus-5",
+                                                                            "provider":  "firstParty",
+                                                                            "costBasis":  "list"
+                                                                        }
+                                              }
+                           }
+                       ],
+    "blind_evaluation_mapping":  {
+                                     "value":  [
+                                                   {
+                                                       "answer_id":  "answer-01",
+                                                       "source":  "case1-yes-initial"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-02",
+                                                       "source":  "case2-yes-initial"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-03",
+                                                       "source":  "case1-yes-specific"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-04",
+                                                       "source":  "case2-yes-general"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-05",
+                                                       "source":  "case1-no-initial"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-06",
+                                                       "source":  "case2-yes-specific"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-07",
+                                                       "source":  "case1-yes-general"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-08",
+                                                       "source":  "case2-no-initial"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-09",
+                                                       "source":  "case1-no-specific"
+                                                   },
+                                                   {
+                                                       "answer_id":  "answer-10",
+                                                       "source":  "case2-no-specific"
+                                                   }
+                                               ],
+                                     "Count":  10
+                                 },
+    "blind_evaluation":  {
+                             "value":  [
+                                           {
+                                               "answer_id":  "answer-01",
+                                               "topic":  1,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "既存検査の対象と統合阻止条件の維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "検査ロジック・対象範囲・合否判定・統合条件は一切変更しない（出力層のみの改修）",
+                                                                        "reason":  "判定に触れず出力層限定と明言し、既存CIの失敗＝統合不可をそのまま利用している。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "失敗時に元の文書とリンク先を表示",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "「元文書＋リンク先」の組を、失敗時に全件一覧出力する",
+                                                                        "reason":  "題材が保持済みと述べる組をそのまま提示。先頭N件＋全件ログの二段構えでも全件が参照可能。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "過去記録の例外を維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "形式・内容ともに現状維持。過去記録の列挙はそのまま通す",
+                                                                        "reason":  "例外ファイル無変更を明示。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "現用文書の例外新規登録禁止",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "登録手段を増やさない",
+                                                                        "reason":  "追記も登録経路の新設もせず、機械的禁止チェックの見送りは新たな失敗条件を作らない選択として理由付きで示されている。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "毎回の手動点検・台帳更新を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "台帳や定期作業を新設せず、既存検査の副産物を提示するだけ",
+                                                                        "reason":  "pre-pushフックは任意配布で強制せず、恒常的な手作業を要求していない。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "CI成果物としてのログファイル保存が可能という前提（本文で仮定と明記）",
+                                                                             "pre-pushフック雛形の配布と各自環境での実行（題材に記述のない運用要素）",
+                                                                             "導入1〜2人日という工数見積（仮定と明記）"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "検査が行番号を保持するか不明と自認",
+                                                                     "検査の実装言語・出力先制約・例外ファイル形式が不明と自認",
+                                                                     "任意導入のため提案前ローカル実行の実行率は不定（本文も実行漏れを懸念として記載）"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-02",
+                                               "topic":  2,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "明示的な未受理だけ上限付きで自動再試行",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "未受理のみ上限N回(仮にN=3、指数バックオフ)まで同一実行内で自動再試行",
+                                                                        "reason":  "再試行対象を明示的未受理に限定し、回数上限と上限超過時の通知終了を規定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "成否不明は自動再送せず既存通知経路で知らせる",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "不明は自動再送しない。既存通知経路へ「成否不明・要確認」を通知し",
+                                                                        "reason":  "タイムアウト・分類不能を不明へ倒し、人手確認に委ねている。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "日付別の永続状態と送信中断後の扱い",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "再起動後に「送信中」で残る行は不明として扱い通知",
+                                                                        "reason":  "対象日付をキーに既存DBへ保持し、API呼出直前のコミットで中断を検出可能にしている。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "翌日分の送信を止めない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "翌日分の処理は前日状態に関わらず実行する",
+                                                                        "reason":  "日付単位で独立処理すると明記。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "新規サービス・常駐プロセス・管理画面を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "テーブル1つとバッチ内ロジックのみ。通知は既存経路",
+                                                                        "reason":  "追加資産を既存DBのテーブルに限定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "完全な一度だけの送信の保証限界を明記",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "完全な一度だけの送信は保証できない",
+                                                                        "reason":  "冪等性キー・状況照会の不在を理由に、自動処理は至多一回にとどまると説明。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "キーに「レポート種別」を含める設計（題材は1日1回同一レポートのみ）",
+                                                                             "指数バックオフとN=3（仮定と明記）",
+                                                                             "手動是正用SQL手順書の維持を保守費として計上"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "明示的未受理を応答から誤りなく分類できるかを前提と自認",
+                                                                     "上限超過で未受理のまま終了した日付を翌日以降どう扱うかの記述がない",
+                                                                     "タイムアウト率・応答コード体系・N/間隔の妥当値が不明と自認"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-03",
+                                               "topic":  1,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "既存検査の対象と統合阻止条件の維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "検査ロジック・対象範囲・合否判定・統合条件・例外ファイルの扱いはすべて現状維持で、変更は出力層のみに閉じる",
+                                                                        "reason":  "判定不変を明示し、公開前防止は既存CIの統合ブロックで達成としている。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "失敗時に元の文書とリンク先を表示",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "「元文書＋リンク先」の組を、失敗時に全件そのまま出力する",
+                                                                        "reason":  "件数上限なしで全件提示、形式も具体的。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "過去記録の例外を維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "現状維持。過去記録の列挙はそのまま通す",
+                                                                        "reason":  "例外ファイル無変更。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "現用文書の例外新規登録禁止",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "登録手段を増やさない",
+                                                                        "reason":  "追記せず、新たな合否条件も追加しない。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "毎回の手動点検・台帳更新を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "新規の定期作業・台帳・配布物を一切増やさない",
+                                                                        "reason":  "追加作業ゼロを明示。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "導入0.5〜1人日という工数見積（仮定と明記）",
+                                                                             "失敗メッセージ文字列を機械参照している箇所が存在しうるという想定（仮定と明記）"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "行番号の保持有無が不明と自認",
+                                                                     "実装言語・出力先制約・失敗文字列の参照箇所が不明と自認",
+                                                                     "提案作成前に気づけずCIで初めて判明する点を自認（題材の要求はCI時点の防止で足りる）"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-04",
+                                               "topic":  2,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "明示的な未受理だけ上限付きで自動再試行",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "未受理のみ上限N回(仮にN=3、指数バックオフ)まで同一実行内で自動再試行",
+                                                                        "reason":  "対象を明示的未受理に限定し上限を設定。次回実行での試行回数リセットも未達確定を根拠に説明している。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "成否不明は自動再送せず既存通知経路で知らせる",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "不明は自動再送せず、至多一回側に倒す",
+                                                                        "reason":  "不明は通知のみで人手確認に委ね、通知内容も状態別に区別。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "日付別の永続状態と送信中断後の扱い",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "再起動後に「送信中」で残る行は不明として扱い通知",
+                                                                        "reason":  "対象日付キーの状態行を既存DBに保持し、呼出直前コミットで中断を検出。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "翌日分の送信を止めない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "翌日分の処理は前日状態に関わらず実行する",
+                                                                        "reason":  "日付単位の独立処理を明記。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "新規サービス・常駐プロセス・管理画面を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "テーブル1つとバッチ内ロジックのみ。通知は既存経路",
+                                                                        "reason":  "追加資産なしと明示。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "完全な一度だけの送信の保証限界を明記",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "完全な一度だけの送信は保証できない",
+                                                                        "reason":  "至多一回にとどまる理由を機能欠如から説明。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "キーに「レポート種別」を含める設計（題材は同一レポート1種）",
+                                                                             "指数バックオフ・N=3（仮定と明記）",
+                                                                             "手動是正用SQL手順書"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "明示的未受理の判定精度を安全性の前提と自認",
+                                                                     "次回実行時のリセットにより日をまたぐ再送回数の総上限は規定されていない",
+                                                                     "タイムアウト率・応答コード体系・通知経路の到達保証が不明と自認"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-05",
+                                               "topic":  1,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "既存検査の対象と統合阻止条件の維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "合否判定には使わないため統合条件は不変",
+                                                                        "reason":  "移動先候補の併記を助言に限定し、対象（外部URL・見出しは対象外）も不変と明記。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "失敗時に元の文書とリンク先を表示",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "元文書パス／記述どおりのリンク文字列／解決後のパス／（取得できれば）行番号",
+                                                                        "reason":  "元文書とリンク先の組を失敗時に一覧化。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "過去記録の例外を維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "現状のまま（過去記録のリンク切れのみ）。読み方も対象も変えず",
+                                                                        "reason":  "例外の読み込み・内容とも不変。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "現用文書の例外新規登録禁止",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "例外ファイルへ一切追記しない設計",
+                                                                        "reason":  "登録経路を作らず、機械的禁止判定も統合条件維持を理由に見送り。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "毎回の手動点検・台帳更新を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "CI実行時にGit差分から自動生成し、恒常的な管理対象を作らない",
+                                                                        "reason":  "常設台帳・定期作業を作らない。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "基底コミットの取得とリネーム検出付き差分が使えるという前提（仮定と明記）",
+                                                                             "「提案の結果要約」への出力面が存在するという前提",
+                                                                             "月1回の検出が同一提案内の移動を主因とするという想定（仮定と明記）"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "例外ファイルの照合方式（完全一致か模様一致か）が不明と自認",
+                                                                     "結果要約の出力分量上限が不明と自認",
+                                                                     "移動先候補併記は補助機能であり、リネーム検出不成立時の挙動は表示のみに影響と説明"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-06",
+                                               "topic":  2,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "明示的な未受理だけ上限付きで自動再試行",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "未受理のみ上限N回(仮にN=3、指数バックオフ)まで同一実行内で自動再試行",
+                                                                        "reason":  "許可リストに一致する未受理のみを再試行対象とし、回数上限に加え総時間上限も設定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "成否不明は自動再送せず既存通知経路で知らせる",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "不明は自動再送しない。既存通知経路へ「成否不明・要確認」を通知",
+                                                                        "reason":  "タイムアウト・未知応答をすべて不明へ倒し、再送は人手操作のみをトリガとする。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "日付別の永続状態と送信中断後の扱い",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "再起動後に「送信中」で残る行は不明として扱い通知",
+                                                                        "reason":  "対象日付キーで既存DBに保持し、呼出直前コミットで中断を検出。行は無期限保持。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "翌日分の送信を止めない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "翌日分は前日状態に関わらず実行",
+                                                                        "reason":  "前日状態に依存しないと明記。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "新規サービス・常駐プロセス・管理画面を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "テーブル1つとバッチ内ロジックのみ。常駐プロセス・管理画面・新規契約なし",
+                                                                        "reason":  "追加資産を限定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "完全な一度だけの送信の保証限界を明記",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "完全な一度だけの送信は保証できない",
+                                                                        "reason":  "不明は人の確認でしか解消できず至多一回にとどまると説明。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "キーに「レポート種別」を含める設計",
+                                                                             "総所要時間上限5分・N=3・指数バックオフ（いずれも仮の値と明記）",
+                                                                             "1日1行のため容量負荷がないとする無期限保持の判断"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "許可リストの誤分類が重複送信につながる点を懸念として自認",
+                                                                     "通知経路自体の到達保証は範囲外と明記",
+                                                                     "タイムアウト率・応答コード体系・N/時間上限の妥当値が不明と自認"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-07",
+                                               "topic":  1,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "既存検査の対象と統合阻止条件の維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "検査対象、合否判定、統合条件、例外ファイルの扱いは一切変更しない",
+                                                                        "reason":  "出力層のみの改修で、公開前防止は既存CIの統合不可条件をそのまま利用。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "失敗時に元の文書とリンク先を表示",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "「元文書＋リンク先」の組を、失敗時に全件そのまま出力する",
+                                                                        "reason":  "リポジトリ相対パスでの表記形式まで規定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "過去記録の例外を維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "例外ファイルは形式・内容とも現状維持",
+                                                                        "reason":  "無変更を明示。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "現用文書の例外新規登録禁止",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "登録手段を増やさない",
+                                                                        "reason":  "追記せず、新たな合否条件も作らない。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "毎回の手動点検・台帳更新を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "新設作業ゼロ、既存検査の副産物を提示するのみ",
+                                                                        "reason":  "台帳・定期点検・登録手段を作らないと明記。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "導入0.5〜1人日という工数見積（仮定と明記）",
+                                                                             "担当者がCIの標準出力を参照できるという前提（仮定と明記）"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "行番号保持の有無が不明と自認",
+                                                                     "検査の実装言語・出力箇所・例外ファイル形式が不明と自認",
+                                                                     "原因が移動か否かは分類せず事実の組のみ示すと限定"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-08",
+                                               "topic":  2,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "明示的な未受理だけ上限付きで自動再試行",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "明示的な未受理 → `FAILED`。`attempts \u003c 3`(仮定)なら固定間隔(例:30秒、仮定)で待機し 4 へ戻る",
+                                                                        "reason":  "再試行対象を明示的未受理に限り、上限到達時は通知して終了。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "成否不明は自動再送せず既存通知経路で知らせる",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "タイムアウト/応答喪失 → `UNKNOWN` に確定し、即座に運用通知して異常終了。以後この日付は自動送信しない",
+                                                                        "reason":  "不明の自動再送を明確に禁じ、人手確認で状態を是正する手順を規定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "日付別の永続状態と送信中断後の扱い",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "API 呼び出しの直前に `attempts` を +1 して確定コミット",
+                                                                        "reason":  "report_dateを主キーに既存DBへ保持し、中断時は安全側でUNKNOWNへ倒す規則を用意。ただし検出規則の識別性は本文でも留保されている。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "翌日分の送信を止めない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "日付ごとに行が独立しているため、前日が `UNKNOWN` でも当日分の送信は実行する",
+                                                                        "reason":  "過去日の未解決が当日分を妨げないと明記。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "新規サービス・常駐プロセス・管理画面を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "テーブル 1 つの追加のみ。常駐プロセス・管理画面・外部サービスは増やさない",
+                                                                        "reason":  "人手復旧も既存DB操作手順で行うとしている。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "完全な一度だけの送信の保証限界を明記",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "完全な「一度だけ」の保証について:保証できません。",
+                                                                        "reason":  "at-most-onceであること、exactly-onceは人手を含む運用で近似する旨を明示。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "再試行上限3回・待機30秒（仮の値と明記）",
+                                                                             "DBのstatusを人手で直接更新できる既存運用手順の存在（仮定と明記）",
+                                                                             "実行IDの記録等による中断判別の仕組み（有無不明として代替規則を提示）"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "明示的未受理が一時的か恒久的か区別できるか不明と自認",
+                                                                     "attemptsは正常な再試行でも増えるため、手順6の「attemptsが進んでいる＝中断」規則は単独では中断と再試行を識別しにくい（本文も検出可否を判断できない事項として記載）",
+                                                                     "UNKNOWN行の当日処理は異常終了となるが、その終了コードが後続運用に与える影響は未記述"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-09",
+                                               "topic":  1,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "既存検査の対象と統合阻止条件の維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "判定・検査対象・例外・統合条件はすべて不変",
+                                                                        "reason":  "変更を出力部と結果要約表示に限定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "失敗時に元の文書とリンク先を表示",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "元文書パス／記述どおりのリンク文字列／解決後のパス／（取得できれば）行番号",
+                                                                        "reason":  "組を失敗時に出力し、多件時も総件数提示＋ログ参照で全件到達可能。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "過去記録の例外を維持",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "現状維持（過去記録のリンク切れのみ）。読み方も対象も変えず",
+                                                                        "reason":  "例外ファイル無変更。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "現用文書の例外新規登録禁止",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "例外ファイルへ一切追記しない",
+                                                                        "reason":  "登録経路を設けず、機械的禁止判定も統合条件維持を理由に除外。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "毎回の手動点検・台帳更新を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "常設の管理対象を作らない",
+                                                                        "reason":  "追加の定期作業・台帳なし。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "「提案の結果要約」への表示面が存在するという前提",
+                                                                             "浅い複製ではリネーム検出が不成立という環境上の想定",
+                                                                             "移動先はGit履歴で追えるという運用前提（題材のGit管理からは自然だが手順は未検証）"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "出力部を改修できる・内部の組にリンク文字列が含まれるという仮定を自認",
+                                                                     "例外ファイルの照合方式と結果要約の分量上限が不明と自認",
+                                                                     "1件の移動で切れるリンクの典型件数が不明と自認（件数上限の設定値に影響）"
+                                                                 ]
+                                           },
+                                           {
+                                               "answer_id":  "answer-10",
+                                               "topic":  2,
+                                               "requirements":  [
+                                                                    {
+                                                                        "requirement":  "明示的な未受理だけ上限付きで自動再試行",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "明示的な未受理 → `FAILED` に戻す。`attempts\u003c3` なら30秒後に再試行、上限到達で通知し異常終了",
+                                                                        "reason":  "再試行対象を明示的未受理に限定し、上限と上限超過時の扱いを規定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "成否不明は自動再送せず既存通知経路で知らせる",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "タイムアウト → `UNKNOWN` に確定、即通知して異常終了。自動再送はしない",
+                                                                        "reason":  "UNKNOWNは通知のみで、再送は人手による状態更新後の通常実行に限定。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "日付別の永続状態と送信中断後の扱い",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "`SENDING` の行があれば「呼出中に落ちた=結果不明」とみなし `UNKNOWN` へ更新し通知",
+                                                                        "reason":  "SENDING状態を独立に持たせ、呼出前コミットにより中断を再試行と区別して検出できる。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "翌日分の送信を止めない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "過去日の `UNKNOWN` は通知に列挙するだけで、当日分の送信可否・終了コードには影響させない",
+                                                                        "reason":  "過去日の未解決が当日実行を阻害しないことを明示。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "新規サービス・常駐プロセス・管理画面を増やさない",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "テーブル1つのみ。契約・常駐プロセス・管理画面は増やさない",
+                                                                        "reason":  "人手復旧も既存DB操作手順で実施。"
+                                                                    },
+                                                                    {
+                                                                        "requirement":  "完全な一度だけの送信の保証限界を明記",
+                                                                        "verdict":  "満たす",
+                                                                        "quote":  "完全な一度だけの送信は保証できません。",
+                                                                        "reason":  "冪等性キー・状況照会の不在を理由に at-most-once と限界を説明。"
+                                                                    }
+                                                                ],
+                                               "unsupported_additions":  [
+                                                                             "上限3回・待機30秒（仮の値と明記）",
+                                                                             "既存手順でDBのstatusを手動更新できるという前提（仮定と明記）",
+                                                                             "現状は全失敗を毎回手動再実行しているとする運用像（題材はバッチが失敗終了する旨のみ記載）"
+                                                                         ],
+                                               "uncertainties":  [
+                                                                     "明示的未受理が一時的か恒久的か区別できるか不明と自認",
+                                                                     "UNKNOWNの発生頻度が不明で人手確認の運用負荷が見積もれないと自認",
+                                                                     "上限超過でFAILEDのまま終了した日付を翌日以降の実行でどう扱うかは未記述"
+                                                                 ]
+                                           }
+                                       ],
+                             "Count":  10
+                         },
+    "main_assessment":  {
+                            "conclusion":  "追加検討を含む問い直しの改善例はある。具体的な問いの固有の優位、事前指示の代替可能性、一般的な再現性は今回だけでは未確定。",
+                            "corrections":  [
+                                                "case2-no-initialの中断検出は前回attemptsの比較元が未定義。評価役は満たすとしたが、主担当は記述不足として扱う。case2-no-specificでSENDINGを独立させた点は改善。",
+                                                "case2-no-specificの過去UNKNOWNが翌日を止めていたという自己批判は、初期案が翌日送信を明示しており改善に数えない。",
+                                                "case1-yes-generalとcase1-yes-specificの文書80件から出力件数の上限を推論する説明は成立しない。リンク数の上限は題材にない。削減理由として採用しない。"
+                                            ],
+                            "observations":  [
+                                                 "文書題材: 指示なし初期案の移動先候補提示を、具体追送が削除。指示あり初期案のローカルコマンド・フックを一般追送と具体追送の両方が削除。",
+                                                 "日次題材: 指示なし初期案の中断判別を具体追送が明確化。指示あり初期案には送信中状態が既にある。",
+                                                 "指示あり具体追送は時間上限や無期限保持も追加。追加は常に有益とは判定せず、仮定・条件を要する。"
+                                             ]
+                        }
+}

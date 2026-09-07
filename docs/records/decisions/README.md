@@ -95,7 +95,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0087](0087-handoff-pruning-trigger-system.md) | handoff の剪定・移設はサイズ実測トリガーで発火させる | Accepted | 2026-08-13 |
 | [0088](0088-handoff-section-volume-norms.md) | handoff の節別記載規範を定める（内容限定・字数目安・列挙外の節への既定規則・圧縮記録の残置禁止） | Accepted | 2026-08-13 |
 | [0089](0089-placement-definition-vs-skill-procedure-boundary.md) | 情報の配置定義は folder-structure.md を正本とし、スキルは分類名で参照する | Accepted | 2026-08-13 |
-| [0090](0090-version-bump-required-for-plugin-redistribution.md) | スキル改定の配布反映にはプラグインのバージョン更新を必須手順とする | Accepted | 2026-08-14 |
+| [0090](0090-version-bump-required-for-plugin-redistribution.md) | スキル改定の配布反映にはプラグインのバージョン更新を必須手順とする（ADR-0132で部分修正） | Accepted | 2026-08-14 |
 | [0091](0091-session-handoff-doc-clarity-fixes.md) | session-handoff 文書の解釈揺れ 5 点は規範を変えない明確化改定として解消する | Accepted | 2026-08-14 |
 | [0092](0092-cycle-wide-consistency-check-before-adr-promotion.md) | 仕様・規範文書を編集したサイクルでは、決定の Accepted 昇格前に AI 自身によるサイクル全体整合検査を必須とする | Accepted | 2026-08-14 |
 | [0093](0093-destructive-verification-dispatch-isolation-constraints.md) | 破壊的検証の委譲には、隔離の作り方の指定・絶対パスの使用・前後状態比較・委譲側の独立確認を課す | Accepted | 2026-08-15 |
@@ -136,3 +136,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0128](0128-investigate-removing-human-involvement-cost-axis.md) | 人間の関与を独立した費用項目から外す案を検討する | Accepted | 2026-09-06 |
 | [0129](0129-use-lightweight-estimates-in-objective-design.md) | 判断観点の設計はAIの軽い概算を通常とし、見積もり専用の会話を増やさない | Accepted | 2026-09-06 |
 | [0130](0130-apply-cost-guidance-through-local-discretion.md) | 共通の概算方針をAGENTS.mdに置き、スキルでは必要な成果と裁量を具体化する | Accepted | 2026-09-06 |
+| [0131](0131-connect-completed-work-to-integration.md) | 実装完了と終了依頼を既存の統合・引き継ぎ工程へ接続する | Accepted | 2026-09-07 |
+| [0132](0132-complete-distribution-with-version-update.md) | 配布内容が整ったら版を更新し、公開後の修正は次の版で出す | Accepted | 2026-09-07 |

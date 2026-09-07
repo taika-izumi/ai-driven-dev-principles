@@ -1,6 +1,6 @@
 # Issue-0122: 推奨が一致する承認ゲート（レビュー指摘の採否・反復提示・ADR 承認）に「事前宣言による既定実行 + 差し戻し窓」が無く、番号回答待ちが配布先の壁時計の最大費用になる
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-09-04
 - **起票元**: LoopForAlpha#Issue-0168 の申し送り（以後の正本は本ファイル）。配布先の「開発の進め方の見直し」レビュー（`LoopForAlpha:docs/records/reviews/2026-09-04-dev-process-review/report.md` 所見 U1・U2・提案 A'）に由来する構造観察型の課題
 - **関連**: ADR-0072（確定前レビューはユーザー指示時のみ発動）/ ADR-0080（確定点での提示は毎回行う）/ ADR-0005（セッション開始時の継続確認）/ ADR-0024（選択肢 + 推奨の提示）/ ADR-0107 決定 2（反復の停止は指摘の分類）/ Issue-0107（反復推奨規範の乖離。逆選択の実例が蓄積）/ Issue-0118（情報到達の体系設計）/ `skills/decision-log`（ADR 承認）/ `skills/pre-finalization-review/references/review-procedure.md` 手順 5（採否の裁定）/ `docs/overview/principles.md` 原則 4（適用強度はリスク・可逆性で調整）
@@ -56,8 +56,17 @@
 
 ## 検討状況（委譲後・本リポジトリ）
 
+- 2026-09-07: 6件採用・差分再確認をユーザー承認。新規担当が全件解消・新規指摘0を確認し仕様は収束。記録は`docs/records/minutes/2026-09-07-issue-0122-spec-review-r1.md`、実装計画は`docs/working/plans/2026-09-07-issue-0122-delegated-decisions.md`。実装未着手。
+
+- 2026-09-07: 初回は独立1体4観点兼務（gpt-5.6-sol）。Critical 0・Major 6を受領し、補完案を仕様へ反映。採否・反復方式の確認待ち。記録: `docs/records/minutes/2026-09-07-issue-0122-spec-review-r0.md`。
+
+- 2026-09-07: ユーザーが判断の分担と影響を基準とする案を承認。ADR-0133と`docs/current/specs/2026-09-07-delegated-decision-workflow/00-overview.md`へ具体化。詳細仕様の独立レビューは未実施、スキル改修は未着手。元の「推奨一致」案は本サイクルの採用案ではない。
+
+- 2026-09-07: ユーザーが本課題への着手を承認。LoopForAlphaの`docs/working/handoff/master.md`のCurrent Phaseを読み、第131回も事前宣言なし・計測0サイクルと確認。先行運用の効果・差し戻し率は未検証であり、0件の成功実績として扱わない。
+- 2026-09-07: 現行`skills/pre-finalization-review/references/iteration-norms.md`は反復の発動と採否確定をユーザー回答に、`skills/decision-log/references/adr-authoring.md`はADR確定をユーザー確認に接続。対策候補の採用は未決。事前宣言の対象・有効範囲と、新たに確認が必要な判断の切り分けが設計論点。
+
 - 2026-09-04: LoopForAlpha#Issue-0168 から申し送り（課題管理定義 §4 の申し送り経路。実施方式は ADR-0118 に準拠 = 全文コピー・出所ヘッダ・本文無改変。単一ファイルの課題のため Issue-0121 と同じく本ファイル内へ収めた）。委譲元は同日 close し、以後の正本は本ファイル。対策は未着手（着手はユーザー判断）。**検討難易度 = 中〜高（規範改定型。上位モデル + 確定前レビュー推奨）**。配布先の先行運用の差し戻し率が届いてから設計に入るのが安い
 
 ## 結論
 
-（open）
+ADR-0133により実装・検証を完了し、2026-09-07にclose。配布予定版0.1.23、統合・公開は別途の到達状態としてhandoffに記録する。検証記録: docs/records/minutes/2026-09-07-issue-0122-implementation-verification.md。

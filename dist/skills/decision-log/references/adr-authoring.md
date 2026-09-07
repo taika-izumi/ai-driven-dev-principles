@@ -98,6 +98,8 @@ git commit -m "adr: NNNN - タイトル"
 
 ## ユーザーへの確認
 
+`start-work` の `references/decision-delegation.md` に照らし、委任範囲内の決定、または同じ内容への個別回答がある決定は許可を取り直さない。「ユーザーの個別承認」または「委任に基づくAI判断」と根拠の所在をContextまたはConsequencesへ短く記録し、既存の確定チェックポイントと `status-updates.md` の検査を経て確定する。分担の拡張自体は委任を根拠に確定しない。委任外・調査後も不明、または根拠のない判断には以下の確認を行う。
+
 ADR作成後（Proposed）、ユーザーに以下を提示する:
 
 「ADR-NNNN を作成しました（Status: Proposed）。内容を確認して以下から選んでください:

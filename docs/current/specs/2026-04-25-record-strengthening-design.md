@@ -1,5 +1,7 @@
 # 設計: 記録の強化（サブプロジェクトA）
 
+判断の分担を合意した作業の承認・再開には、`skills/start-work/references/decision-delegation.md` を適用する。既存の個別承認は同じ分担に照らし、検証・記録・操作権限は維持する。詳細仕様は `docs/current/specs/2026-09-07-delegated-decision-workflow/00-overview.md` を参照（ADR-0133）。
+
 - **Date**: 2026-04-25
 - **Status**: Draft
 - **Scope**: サブプロジェクトA — ADRゲート + セッション継続ハンドオフ

@@ -1,5 +1,7 @@
 # ハンドオフ剪定規約と Status 整合の設計（Issue-0049 / Issue-0051 対処）
 
+判断の分担を合意した作業の承認・再開には、`skills/start-work/references/decision-delegation.md` を適用する。既存の個別承認は同じ分担に照らし、検証・記録・操作権限は維持する。詳細仕様は `docs/current/specs/2026-09-07-delegated-decision-workflow/00-overview.md` を参照（ADR-0133）。
+
 - **Date**: 2026-08-06
 - **対象課題**: Issue-0049（ハンドオフ肥大・剪定規約なし・外部参照が節名で不安定）/ Issue-0051（`retrospective` の Status 値 `ready-for-next-cycle` が `session-handoff` 未定義）
 - **関連 ADR**: ADR-0074（受け皿は git 履歴のみ）/ ADR-0075（二段階剪定）/ ADR-0076（Status 4 値化）/ ADR-0077（外部参照は安定識別子）

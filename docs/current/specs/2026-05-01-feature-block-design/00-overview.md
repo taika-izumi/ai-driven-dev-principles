@@ -1,5 +1,7 @@
 # サブプロジェクトB「機能ブロック駆動の設計＋仕様書分割」設計仕様
 
+判断の分担を合意した作業の承認・再開には、`skills/start-work/references/decision-delegation.md` を適用する。既存の個別承認は同じ分担に照らし、検証・記録・操作権限は維持する。詳細仕様は `docs/current/specs/2026-09-07-delegated-decision-workflow/00-overview.md` を参照（ADR-0133）。
+
 - **作成日**: 2026-05-01
 - **対象**: 本リポジトリ `taika-izumi/ai-driven-dev-principles`
 - **ステータス**: Draft（ユーザーレビュー待ち）

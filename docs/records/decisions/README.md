@@ -138,3 +138,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0130](0130-apply-cost-guidance-through-local-discretion.md) | 共通の概算方針をAGENTS.mdに置き、スキルでは必要な成果と裁量を具体化する | Accepted | 2026-09-06 |
 | [0131](0131-connect-completed-work-to-integration.md) | 実装完了と終了依頼を既存の統合・引き継ぎ工程へ接続する | Accepted | 2026-09-07 |
 | [0132](0132-complete-distribution-with-version-update.md) | 配布内容が整ったら版を更新し、公開後の修正は次の版で出す | Accepted | 2026-09-07 |
+| [0133](0133-delegate-decisions-by-agreed-impact-boundaries.md) | 自動進行は初期設計で合意した判断の分担と変更の影響で決める | Accepted | 2026-09-07 |

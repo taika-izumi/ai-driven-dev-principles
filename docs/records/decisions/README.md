@@ -143,3 +143,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0135](0135-defer-retrospective-timing-change.md) | 振り返り時点の変更は費用対効果の裏付けが不足するため今回は見送る | Accepted | 2026-09-07 |
 | [0136](0136-examine-post-proposal-reconsideration-method.md) | 次の作業として初期案提示後の問い直しの検証方法を検討する | Accepted | 2026-09-08 |
 | [0137](0137-prepare-small-reconsideration-comparison.md) | 問い直しの検証は事前指示なしを含む2題材・5条件で具体化する | Accepted | 2026-09-08 |
+| [0138](0138-use-existing-worklogs-for-reconsideration-observations.md) | 問い直しの事例は既存のworklogに蓄積しIssue-0132再着手時に確認する | Accepted | 2026-09-08 |

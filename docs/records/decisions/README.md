@@ -141,3 +141,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0133](0133-delegate-decisions-by-agreed-impact-boundaries.md) | 自動進行は初期設計で合意した判断の分担と変更の影響で決める | Accepted | 2026-09-07 |
 | [0134](0134-pass-wording-rules-to-document-subagents.md) | 文書の作成・編集を委譲するときに表現のルールと置き換え表の所在を渡す | Accepted | 2026-09-07 |
 | [0135](0135-defer-retrospective-timing-change.md) | 振り返り時点の変更は費用対効果の裏付けが不足するため今回は見送る | Accepted | 2026-09-07 |
+| [0136](0136-examine-post-proposal-reconsideration-method.md) | 次の作業として初期案提示後の問い直しの検証方法を検討する | Accepted | 2026-09-08 |
+| [0137](0137-prepare-small-reconsideration-comparison.md) | 問い直しの検証は事前指示なしを含む2題材・5条件で具体化する | Accepted | 2026-09-08 |

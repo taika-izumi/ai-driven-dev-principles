@@ -142,3 +142,5 @@
 | [0128](flow/0128-completion-not-connected-to-merge.md) | Issueクローズ・実装完了からマージを含む終了処理への接続が明確でない | closed | 2026-09-07 |
 | [0129](flow/0129-distributed-skill-version-bump-missing-from-completion.md) | 配布スキル変更時のバージョン更新が完了処理から抜ける | closed | 2026-09-07 |
 | [0130](flow/0130-publication-check-and-session-completion-mismatch.md) | 完了認識と次セッションの公開状態確認が食い違う | open | 2026-09-07 |
+| [0131](flow/0131-retrospective-recording-around-merge.md) | 振り返り記録をマージ前後のどこで作成・確定すると管理しやすいか未比較 | open | 2026-09-07 |
+| [0132](flow/0132-post-proposal-design-reconsideration-effect.md) | 初期設計案の提示後に懸念と将来費用を問い直す方法は、事前の点検指示より有効か未検証 | open | 2026-09-07 |

@@ -141,3 +141,4 @@
 | [0127](flow/0127-codex-collaboration-mode-question-format.md) | Codexのモード指示によりガイドラインの選択肢提示が行われない | closed | 2026-09-06 |
 | [0128](flow/0128-completion-not-connected-to-merge.md) | Issueクローズ・実装完了からマージを含む終了処理への接続が明確でない | closed | 2026-09-07 |
 | [0129](flow/0129-distributed-skill-version-bump-missing-from-completion.md) | 配布スキル変更時のバージョン更新が完了処理から抜ける | closed | 2026-09-07 |
+| [0130](flow/0130-publication-check-and-session-completion-mismatch.md) | 完了認識と次セッションの公開状態確認が食い違う | open | 2026-09-07 |

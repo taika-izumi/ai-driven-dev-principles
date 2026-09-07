@@ -1,6 +1,6 @@
 # Issue-0128: Issueクローズ・実装完了からマージを含む終了処理への接続が明確でない
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-09-07
 - **起票元**: Issue-0126の完了報告・作業ブランチpush後、ユーザーが未マージを指摘し、手順の不足があれば起票するよう指示した。
 - **関連**: Issue-0084、Issue-0129、ADR-0106、skills/start-work/SKILL.md
@@ -58,4 +58,4 @@ start-workには「次手ナビゲーションへ復帰: Phase 2へ戻る」「�
 
 ## 結論
 
-未決。起票のみで、start-workの手順変更は未着手。
+ADR-0131で対策を確定。superpowersの既存接続を優先し、未マージ時の案内とマージ後の振り返りをstart-workへ接続した。設計レビュー・実装レビュー・変更前後の手順確認・配布検証を完了。詳細は`docs/records/minutes/2026-09-07-completion-flow-verification.md`。リモート公開の状態はhandoffで別に管理する。

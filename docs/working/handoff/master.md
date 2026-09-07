@@ -20,6 +20,7 @@ Issue-0132について、初期案提示後に懸念・将来費用を問い直�
 - Plan: `docs/working/plans/2026-09-07-issue-0125-wording-dispatch.md`（実装・検証・レビュー比較の記録）
 - 振り返り: `docs/records/retrospectives/system/2026-09-07-wording-dispatch.md` と同名のflow記録。
 - 新規課題: Issue-0131（振り返りとマージ境界）、Issue-0132（初期案提示後の問い直し効果）。課題一覧に登録済み。
+- 配布先 LoopForAlpha からの申し送り（2026-09-08・配布先セッション第134回で受け入れ）: 新設 3 = Issue-0133〈LoopForAlpha#Issue-0165 = 多段レビューの型のスキル化。フォルダ昇格型〉・Issue-0134〈#0126 = 委譲後の配布先側の状態遷移。ADR-0118 の保留の解消を含む〉・Issue-0135〈#0105 = コマンド許可運用規範 6 項目の汎用の置き場〉。Issue-0124 へ進展追記 1 行〈ADR-0125 の費用比較が配布先で発火しなかった実例〉のうえ**利用者判断で再 open**（closed 2026-09-05 → open 2026-09-08）。課題一覧に登録済み。着手はユーザー判断。
 - モデル選択の検討材料: `docs/working/issues/flow/0114-quality-investment-marginal-utility-and-stratified-defaults/0114-quality-investment-marginal-utility-and-stratified-defaults.md`
 
 ## 完了済みタスク
@@ -38,6 +39,7 @@ Issue-0132について、初期案提示後に懸念・将来費用を問い直�
 ## 未着手のタスク
 
 - 利用環境への導入は未実施。今回の記録の送信は未実施。必要な場合に操作承認を確認する。
+- **Issue-0124（再 open・2026-09-08）**: 配布先 LoopForAlpha で ADR-0125 の費用比較が確定前レビューの採否に適用されず 27 件全採用 → 設計縮小になった実例。論点は手順 5 後段の発火点を採否表の様式へ組み込むか。着手はユーザー判断。同日受け入れの新設 Issue-0133〜0135（配布先からの申し送り）も着手はユーザー判断。
 - Issue-0114は後続の着手候補。Issue-0131は費用対効果により保留（ADR-0135）。再着手はユーザー判断。Issue-0130の原因調査は引き続き後回し。
 
 ## 既知のブロッカー・懸念

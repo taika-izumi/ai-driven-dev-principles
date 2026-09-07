@@ -135,7 +135,7 @@
 | [0121](flow/0121-subfolder-split-trigger-missing-in-placement-norm.md) | 配置の正本に「種別サブフォルダをいつ作るか」の判定則が無く、同じ議論が分類フォルダごとに再演する（LoopForAlpha#Issue-0140 申し送り） | open | 2026-09-03 |
 | [0122](flow/0122-consistent-recommendation-approval-gates-lack-default-execution-with-rollback.md) | 推奨が一致する承認ゲート（レビュー指摘の採否・反復提示・ADR 承認）に「事前宣言による既定実行 + 差し戻し窓」が無く、番号回答待ちが配布先の壁時計の最大費用になる（LoopForAlpha#Issue-0168 の申し送り） | closed | 2026-09-04 |
 | [0123](flow/0123-recurring-friction-clusters-checklist-injection-into-dispatch-and-plan-verification.md) | 躓き型 5 クラスタ（そのまま書き写すコードの写しずれ・PowerShell の落とし穴・対象の総数の引き写し・検証コマンドの未実行・標本の退化）の 1 行チェックリストを委譲制約と計画検証ステップへ注入する（LoopForAlpha の worklog-extract 走査由来・skillify の受け皿） | open | 2026-09-04 |
-| [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | closed | 2026-09-05 |
+| [0124](flow/0124-review-driven-mechanism-growth-lacks-cost-side-evaluation.md) | レビュー指摘の採否が「何を防ぐか」だけで判断され、足した機構の運用・保守・副作用という費用側を数えないため、確定前レビューの反復で恒久資産が増え続ける | open | 2026-09-05 |
 | [0125](flow/0125-vocabulary-norm-not-wired-into-subagent-dispatch.md) | 語彙の規範がサブエージェントへの委譲制約に接続されておらず、委譲先が文書を編集する経路では規範が届かない（委譲元が毎回プロンプトへ手で書き写している） | closed | 2026-09-05 |
 | [0126](flow/0126-quality-constrained-total-cost-objective-not-integrated.md) | 品質の最低線を満たす範囲で総費用を抑える判断原則が、開発フロー全体に接続されていない | closed | 2026-09-06 |
 | [0127](flow/0127-codex-collaboration-mode-question-format.md) | Codexのモード指示によりガイドラインの選択肢提示が行われない | closed | 2026-09-06 |
@@ -144,3 +144,6 @@
 | [0130](flow/0130-publication-check-and-session-completion-mismatch.md) | 完了認識と次セッションの公開状態確認が食い違う | open | 2026-09-07 |
 | [0131](flow/0131-retrospective-recording-around-merge.md) | 振り返り記録をマージ前後のどこで作成・確定すると管理しやすいか未比較 | open | 2026-09-07 |
 | [0132](flow/0132-post-proposal-design-reconsideration-effect.md) | 初期設計案の提示後に懸念と将来費用を問い直す方法は、事前の点検指示より有効か未検証 | open | 2026-09-07 |
+| [0133](flow/0133-design-review-lacks-cleanroom-stage/0133-design-review-lacks-cleanroom-stage.md) | 設計レビューで全文読みのレビュアーが既存決定に係留され「評価対象の妥当性」を問えない — クリーンルーム段と反証段を持つ多段レビューの型をスキル化する（LoopForAlpha#Issue-0165 の申し送り） | open | 2026-09-08 |
+| [0134](flow/0134-distributee-close-rule-conflicts-with-delegation-adr-open-retention.md) | 配布先の課題を委譲した後、配布先の「申し送り済みで close」と委譲 ADR の「対策実装まで open 維持」が矛盾する — 委譲後の配布先側の状態遷移を定める（LoopForAlpha#Issue-0126 の申し送り） | open | 2026-09-08 |
+| [0135](flow/0135-command-permission-norms-need-a-generic-home.md) | 配布先の CLAUDE.md から削除した「コマンド許可運用」規範 6 項目に汎用の置き場が無い — 常時指示のサイズ制約とツール差を織り込んで受け皿を設計する（LoopForAlpha#Issue-0105 の申し送り） | open | 2026-09-08 |

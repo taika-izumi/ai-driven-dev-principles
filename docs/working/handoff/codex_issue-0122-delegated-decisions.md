@@ -2,8 +2,8 @@
 
 - **Branch**: codex/issue-0122-delegated-decisions
 - **Last Updated**: 2026-09-07 15:15 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装・検証・配布0.1.23準備完了 / 統合方法の選択待ち
+- **Status**: completed
+- **Current Phase**: 3ca2746でmasterへ統合済み / push対応はmasterのhandoffへ
 
 ## 作業の目的・背景
 
@@ -23,11 +23,11 @@
 
 ## 進行中のタスク
 
-- [ ] 統合方法の選択待ち。masterへのローカルマージ（慣行は--no-ff）、push＋PR、作業ブランチの保持を提示する。
+- [x] ユーザー指示により3ca2746でmasterへマージ済み。以後の送信状態はmasterのhandoffを参照。
 
 ## 未着手のタスク
 
-- masterへの統合、マージ後の振り返り、外部へのpush。実装を繰り返さない。
+- 本ブランチでの残作業なし。masterでpush承認待ち。実装・マージを繰り返さない。
 
 ## 既知のブロッカー・懸念
 

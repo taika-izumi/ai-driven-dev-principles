@@ -1,52 +1,58 @@
-# Handoff: 完了工程と配布バージョン更新
+# Handoff: Issue-0122 統合済み・push承認待ち
 
 - **Branch**: master
-- **Last Updated**: 2026-09-07 09:18 (Asia/Tokyo)
-- **Status**: ready-for-next-cycle
-- **Current Phase**: ローカル完了・振り返り済み / 公開状態はGit参照で確認
+- **Last Updated**: 2026-09-07 15:47 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: マージ・検証済み / 自動承認レビューによるpush拒否への対応
 
 ## 作業の目的・背景
 
-Issue-0128・0129を対策し、完了工程への接続と版更新3原則を実装。03ada3aでmasterへ取り込み、マージ後検証・新規起票なしの振り返りまで完了。配布版は0.1.22。公開状態はリモート参照で確認し、次サイクルの着手は未定。
+Issue-0122を実装・検証し、3ca2746でmasterへマージした。配布予定版はユーザー指定の0.1.23。ユーザーはマージとpushを依頼済みだが、自動承認レビューが宛先と送信内容の具体的な承認不足としてpushを拒否した。送信は未実施であり、単なる公開状態の確認待ちではない。
 
 ## 関連ドキュメント
 
-- 振り返り: `docs/records/retrospectives/system/2026-09-07-completion-flow-and-version-update.md`。
-- 決定: ADR-0131・0132（Accepted）。ADR-0090への部分修正注記済み。
-- 検証: `docs/records/minutes/2026-09-07-completion-flow-verification.md`。
-- 配布手順: `CONTRIBUTING.md`の「配布プラグインの版更新」。
-- 完了ブランチの記録: `docs/working/handoff/codex_issue-0128-0129-completion-flow.md`。
+- Plan: `docs/working/plans/2026-09-07-issue-0122-delegated-decisions.md`
+- Spec: `docs/current/specs/2026-09-07-delegated-decision-workflow/00-overview.md`
+- ADR-0133（Accepted）
+- 検証: `docs/records/minutes/2026-09-07-issue-0122-implementation-verification.md`
+- 振り返り: `docs/records/retrospectives/system/2026-09-07-delegated-decisions.md`（追加課題のユーザー確認待ち）
 
 ## 完了済みタスク
 
-- [x] 過去サイクルは振り返り一覧とgit履歴を参照。
+- [x] Issue-0122の実装、仕様・実装の独立レビュー、指摘修正、配布0.1.23生成。
+- [x] 3ca2746で--no-ffマージ、マージ後の両配布Checkと差分検査合格。
+- [x] Issue-0130をad2d912で保存。元ツリーの重複草案はstash 6e959892b6e00600006456172237f27d7957fa01へ保全。
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 公開状態の確認。
-  - 状態: 実装・レビュー・生成検証・ローカルマージ・振り返りは完了。公開済みかはfetch後のorigin/masterとmasterを比較して判断する。
-  - 残り: 未送信差分があれば、その送信内容への承認を得てpushする。差分がなければ公開済みとして次サイクルへ進む。
+- [ ] **現在の作業**: 宛先と送信内容を示してpushの承認を得る。
+  - 宛先: `https://github.com/taika-izumi/ai-driven-dev-principles.git` の `master`。
+  - 内容: Issue-0122実装・0.1.23配布物、Issue-0130起票、仕様・ADR・検証・振り返り・引き継ぎ記録。
+  - 残り: 具体的な承認後にpushし、リモート先端と送信したコミットを照合する。実装とマージは繰り返さない。
 
 ## 未着手のタスク
 
-- 新規起票なし。次サイクルは既存のopen課題から選ぶ。以前の候補はIssue-0122で、着手は未承認。
+- Issue-0130の原因調査。Issue-0122の再実装は不要。
 
 ## 既知のブロッカー・懸念
 
-- pushは実行ごとに宛先・ブランチ・送信内容を示して承認を得る。以前の承認は流用しない。
-- `.claude/`、`docs/conversation_log.md`、inbox3件は既存未追跡の手動整理対象。編集・ステージしない。
-- 配布版は0.1.22。公開前の微修正は同じ予定版へ含め、公開後の微修正は次版で出す。公開境界はCONTRIBUTING.mdを参照。
-- タグ・GitHub Release・利用側再導入は今回の依頼範囲外。
+- 自動承認レビューがpushを拒否。理由は具体的な宛先と送信内容の明示承認がないこと。回避手段で送信しない。
+- `.claude/`、`docs/conversation_log.md`、inbox3件は既存の手動整理対象で未送信。
+- 重複草案のstashと作業worktreeは保全している。完成版の代わりに古い草案を適用しない。
 
 ## 節目ごとの確認記録
 
+- 2026-09-07 spec 確定点: ADR=0133 / worklog=棄却（既存手順） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・1回・実質的な収束）
+- 2026-09-07 plan 確定点: ADR=0133 / worklog=棄却（通常の計画作成） / review=見送り（ユーザーが本人実装を選択）
+- 2026-09-07 ADR-0133 Accepted 昇格: ADR=0133 / worklog=棄却（既存の完了記録） / cyclecheck=実施（修正: ADR-0133）
+- 2026-09-07 マージとマージ後検証: ADR=0133 / worklog=棄却（既存の統合手順）
+
 ## 次セッション開始時のアクション
 
-1. git statusを確認してfetchし、origin/masterとの差分で公開状態を判断する。差分がない場合はpushを繰り返さない。
-2. 公開後は次サイクルの対象を確認する。新規課題はなく、Issue-0128・0129はclosed。設計レビュー・実装を繰り返さない。
-3. 実行中プラグインの更新は配布先への公開と別。利用側更新を依頼された場合だけその環境の手順へ進む。
+1. pushに関する具体的な承認の有無を確認し、許可された同じ内容を送信する。
+2. push成功後は送信済みコミットとリモート先端を照合し、未送信の記録を放置しない。
+3. 振り返りの追加候補は現在なし。ユーザーの追加意見があれば記録してから次サイクルへ進む。
 
 ## 重要な意思決定の履歴
 
-- ADR-0131: superpowersの既存経路を優先し、未接続時の完了案内を補う。
-- ADR-0132: 配布内容が整ったら版更新、公開前は同じ予定版、公開後は次の版。
+- ADR-0133: 判断の分担と影響を自動進行の基準にする。

@@ -34,6 +34,7 @@
 | [0108](system/0108-build-dist-review-deferred-findings-backlog.md) | build-dist.ps1 のコード品質レビューで採用を見送った指摘 4 群が未対応（条件付き backlog） | open | 2026-08-25 |
 | [0111](system/0111-merge-practice-duplicate-intro.md) | merge-practice.md 冒頭の導入文が移設条文の書き出しと重複している | closed | 2026-08-29 |
 | [0117](system/0117-split-completion-criteria-lacks-reachability-check.md) | references 型分割の完了基準に参照表の到達元の実在確認が無い | open | 2026-09-03 |
+| [0139](system/0139-tool-condition-matrix-grows-per-version-without-pruning-rule.md) | 検査委譲の保護規範の「ツール別に確認する条件」の表が、ツール・版・起動方式ごとに行を増やす一方で古い行を落とす基準が無い | open | 2026-09-08 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 
@@ -150,3 +151,4 @@
 | [0136](flow/0136-inspection-delegation-does-not-fire-destructive-verification-row/0136-inspection-delegation-does-not-fire-destructive-verification-row.md) | 検査・監査の委譲で委譲先が変異実験を行うと「破壊的検証」行が発火せず、リポジトリ外の破壊が `git status` で検出できない — 発火条件の重なりと展開項目の射程を広げる（LoopForAlpha#Issue-0172 の申し送り） | open | 2026-09-08 |
 | [0137](flow/0137-implementation-consistency-review-lacks-plan-check-vs-example-run.md) | 確定前レビューの実装整合性観点に「計画内の検査を同じ計画の実装例へ当てて通るか」の手順が無く、検査と実装例の不整合が委譲直前まで残る（LoopForAlpha#Issue-0179 の申し送り） | open | 2026-09-08 |
 | [0138](flow/0138-plan-deviation-defaults-lack-branch-for-defects-voiding-completion-criteria.md) | 計画逸脱判断の既定に「射程外の既存欠陥が完了基準・close 条件を満たせなくする」場合の分岐が無く、利用者が既定を覆した（LoopForAlpha#Issue-0180 の申し送り） | open | 2026-09-08 |
+| [0140](flow/0140-confirmation-cost-outgrows-work-in-small-norm-updates.md) | 規範文書への小さな事実追記でも確定点が立つため、確定前レビューの費用が主作業の費用を上回る | open | 2026-09-08 |

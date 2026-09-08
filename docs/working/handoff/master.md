@@ -1,67 +1,57 @@
-# Handoff: Claude Code標準サブエージェントの追加検証
+# Handoff: 次サイクル待ち（直近サイクル: Claude標準サブエージェントの追加検証）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-08 23:45 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: Claude標準サブエージェントの追加検証 / 権限チェック無効の起動まで確定、残るは対話セッションと別OS・別版
+- **Last Updated**: 2026-09-08 23:55 (Asia/Tokyo)
+- **Status**: ready-for-next-cycle
+- **Current Phase**: 振り返り完了 / 次サイクルの着手待ち
 
 ## 作業の目的・背景
 
-直近サイクルでは検査委譲の共通保護手順と限定構成の実証を完了し、11cf3edでmasterへ統合した。配布予定版0.1.25はローカルのみで、公開・導入は未実施。
+直近サイクルではClaude Code標準のサブエージェント機能を実測し、子の許可リストから書き込み可能な内蔵ツールを外す構成でのみ保護が成立すること、権限モードと作業ディレクトリの境界は保護の代わりにならないこと、固定検査1操作だけを渡せば実行を伴う検査も成立することを確定した（ADR-0143、d98b47b〜5e72fd0）。振り返りでIssue-0139・0140を起票し、Issue-0135・0130へ事例を追記した。
 
-本セッションでClaude Code 2.1.263の標準サブエージェント機能（Agent/Taskツールから子の担当を起動する仕組み）を実測し、確定した範囲をd98b47bで反映した。子の許可リストから書き込み可能な内蔵ツールを外す構成で保護が成立すること、権限モードは保護の代わりにならないこと、固定検査1操作だけを渡せば実行を伴う検査も成立すること、再委譲は既定で成立することを確認した（ADR-0143）。続けてエージェント定義ファイル側の制限も実測し、拒否リストは効くこと、接続の限定公開は成立するが明示接続だけを使う起動オプションとは併用できないことを確認してcf46d94で反映した。さらに親の権限チェックを無効にした起動でも実測し、その起動では作業ディレクトリの境界も保護にならないことを確認した。残る未確認は対話セッションでの実挙動と別OS/別版で、Issue-0136にopenで残る。
+次サイクルは未着手。候補はIssue-0136の残る未確認（対話セッションでの実挙動、別OS・別版）、今回起票したIssue-0139・0140、および既存のロードマップ項目である。
 
 ## 関連ドキュメント
 
-- 実測の記録: `docs/records/experiments/2026-09-08-claude-native-subagent.json`（run別の実ツール一覧・結果・ハッシュ照合・限界）。生ログは `.tmp/issue-0136-claude-native-20260908/records/`（未追跡・保全対象）。
-- 今回の決定: ADR-0143（Accepted）。規範は `skills/subagent-dispatch/references/inspection-isolation.md` のツール別の表と確認例、参照知識は `docs/reference/inspection-isolation-costs.md` 第10節。
-- 追加検証の入口: `docs/working/issues/flow/0136-inspection-delegation-does-not-fire-destructive-verification-row/0136-note-claude-native-followup.md`。依頼文・確認済みと未確認・着手順・制約。
-- Issue本体・ログ・判断の分担: 同フォルダのIssue-0136本体、`0136-log.md`、`0136-note-common-protection-design.md`「承認記録」。Issueはopen。
-- 実証と限界: `docs/reference/inspection-isolation-costs.md` 第8・9節。過去の限定構成の実装計画は `docs/working/plans/2026-09-08-issue-0136-inspection-protection.md`。
-- 振り返り: `docs/records/retrospectives/system/2026-09-08-issue-0136-inspection-protection.md` と同名のflow記録。新規起票0件、既存Issue-0052・0123へ追記済み。
-- 決定: ADR-0141・0142（Accepted、限定した実証済み範囲）。既存の判断を標準サブエージェントの実証済みへ読み替えない。
-- 後続の課題: `docs/current/development-roadmap.md`、`docs/working/issues/README.md`。
+- 直近サイクルの振り返り: `docs/records/retrospectives/system/2026-09-08-claude-native-subagent-verification.md` と同名のflow記録。
+- 直近サイクルの決定と実測: ADR-0143（Accepted）、`docs/records/experiments/2026-09-08-claude-native-subagent.json`、`docs/reference/inspection-isolation-costs.md` 第8〜10節。
+- 継続中の課題: Issue-0136（未確認2項目でopen。入口は同フォルダの `0136-note-claude-native-followup.md`）、Issue-0139、Issue-0140。
+- 後続の課題候補: `docs/current/development-roadmap.md`、`docs/working/issues/README.md`。
 
 ## 完了済みタスク
 
-- 過去サイクルは上記の振り返り記録とgit履歴（実装e906534・8a15d6d、統合11cf3ed）を参照。
+- 過去サイクルは `docs/records/retrospectives/` の記録とgit履歴を参照。
 
 ## 進行中のタスク
 
-- **現在の作業**: 標準サブエージェントの実測と反映はd98b47b、定義ファイル側はcf46d94、権限チェック無効の起動は本コミットで完了。確定前レビューはフル実施1回と差分再確認2回で、いずれも終了し反復は継続していない。
-- 残り: 未確認分の追加検証（下記「未着手のタスク」）。実施するかはユーザー判断。
-- 有効な許可: Issue-0136の追加検証。局所文言・無害な試験・既存引数の具体化は委任範囲。新必須依存・環境移行・保護緩和・既存データ変更は相談。push・公開・導入は未承認。
+- なし（次サイクルの着手待ち）。
 
 ## 未着手のタスク
 
-- 対話セッション（autoモード）で子を起動したときの実挙動。`--print` 実行では `--permission-mode auto` が反映されず default になったため未測定。試験用の定義 `.claude/agents/` の3件（`issue0136-static`＝Readのみ、`issue0136-nowrite`＝拒否リスト、`issue0136-mcponly`＝接続の限定公開。いずれも未追跡）を残してあり、次セッション起動時に読み込まれる。
-- 別OS・別版での確認（環境準備が要るため今回の承認範囲外）。
-- 配布本文への反映要否の判断。直前の公開状況を確認し、未公開なら同じ予定版0.1.25を使用できるか判断する（現時点で公開元は0.1.24）。
-- Issue-0052・0123の恒久対策は未着手。今回の事例追記を対策着手や規範変更の承認へ広げない。
+- Issue-0136の残る未確認: 対話セッション（autoモード）で子を起動したときの実挙動。試験用定義3件が `.claude/agents/` にある（未追跡）。別OS・別版の確認は環境準備が要る。
+- Issue-0139（規範の表の増え方）、Issue-0140（確認工程の費用と粒度）。着手はユーザー判断。
+- 配布予定版0.1.25の公開判断。公開元は最後の確認時0.1.24で、ローカルには規範更新3件が入っている。
 
 ## 既知のブロッカー・懸念
 
-- プラグイン導入版とリポジトリ版は別。追加検証メモに従いローカルの保護手順を読み、マージだけで導入済み本文が更新されたと判断しない。
+- プラグイン導入版とリポジトリ版は別。導入済みは0.1.24、リポジトリは0.1.25。ローカルの本文を直接読み、マージだけで導入済み本文が更新されたと判断しない。
 - 未追跡の `.tmp/`、`docs/conversation_log.md`、inbox3件を保全。inboxは手動整理予定。一括ステージ・削除しない。
-- 今回作成した未追跡物: `.tmp/issue-0136-claude-native-20260908/`（代用品・生ログ・レビュー記録・実行スクリプト）と `.claude/agents/` の試験用定義3件。いずれも次の検証の材料として残す。削除は名指しでユーザー承認を得てから行う。代用品はrun-dで書き換わった1件を復元済み（SHA256が基準と一致）。
+- 直近サイクルで作成した未追跡物: `.tmp/issue-0136-claude-native-20260908/`（代用品・生ログ・レビュー記録・実行スクリプト）と `.claude/agents/` の試験用定義3件。次の検証の材料として残す。削除は名指しでユーザー承認を得てから行う。
 - 他のissue-0122 worktreeとstash `6e959892b6e00600006456172237f27d7957fa01` は操作しない。古い草案を適用しない。
-- リモート操作・Claude認証の状況は新セッションで確認する。重い検証は1件ずつ。既存成功試験をセッション切替だけでやり直さない。
+- 子プロセスの起動などAI側から承認を求められない操作がある（Issue-0135）。重い検証は1件ずつ、ユーザー実行を前提に組む。
 - ADR-0139・0140はProposed。ロードマップ全体の実装・公開は未承認。保留事項はADR-0135／Issue-0131、ADR-0138／Issue-0132を参照。
 
 ## 節目ごとの確認記録
 
-- 2026-09-08 振り返り終了後の引き継ぎ確定: ADR=なし（承認済み事例追記と次作業への引き継ぎ） / worklog=棄却（既存Issueへの記録と既存終了手順）
-- 2026-09-08 標準サブエージェント追加検証の反映・spec 確定点・ADR-0143 Accepted 昇格: ADR=0143 / worklog=`MakeAiInstructions-2026-09-08-03` / review=フル実施（claude-sonnet-5・1 回・実質的な収束） / cyclecheck=実施（指摘なし）
-- 2026-09-08 定義ファイル側の制限の追加実測と反映・spec 確定点: ADR=0143（改訂記録つき更新。Status は Accepted 維持） / worklog=`MakeAiInstructions-2026-09-08-04` / review=差分再確認（claude-sonnet-5・1 回・改訂なし確定）
-- 2026-09-08 権限チェック無効の起動の実測と反映・spec 確定点: ADR=0143（改訂記録を 2 回目へ更新。Status は Accepted 維持） / worklog=棄却（既存手順どおりで delta なし） / review=差分再確認（claude-sonnet-5・1 回・改訂なし確定）
+（本サイクルの記録はまだありません。直近サイクル分は `docs/records/retrospectives/` とgit履歴を参照）
 
 ## 次セッション開始時のアクション
 
-1. start-workで本handoffとADR-0143・`docs/records/experiments/2026-09-08-claude-native-subagent.json` を読む。確定済みの結論を測り直さない。
-2. 未確認分を進める場合は、対話セッションでの実挙動から始める（`.claude/agents/` の試験用定義がAgentツールの一覧に出るかを確認し、書き込み可能なツールを持たない子から測る。autoモードの分類器が書き込みをどう判断するかが焦点）。実効構成を確認できるまで実行ありの子を起動しない。
-3. 結果は確認した構成に限定して記録する。既存物を保全し、公開・導入は別承認。前サイクルの振り返りは終了済みで、再実施しない。本サイクルの振り返りはmasterへの直接作業のため、ユーザーが区切りを指示した時点で判断する。
+1. start-workで本handoffを読み、着手対象をユーザーと決める。直近サイクルの結論は確定済みで、測り直さない。
+2. 抽出した課題は起票済み（Issue-0139・0140。着手はユーザー判断）。優先度の目安は、Issue-0136の残る未確認（対話セッションでの実挙動）＞ Issue-0140（確認工程の費用と粒度）＞ Issue-0139（規範の表の増え方）。
+3. Issue-0136の追加検証を選ぶ場合は、`.claude/agents/` の試験用定義がAgentツールの一覧に出るかを確認し、書き込み可能なツールを持たない子から測る。実効構成を確認できるまで実行ありの子を起動しない。
+4. 公開・導入は別承認。既存の未追跡物を保全する。
 
 ## 重要な意思決定の履歴
 
-- 既存の限定構成の決定はADR-0141・0142。追加検証の依頼はIssue-0136のログと追加検証メモを参照。
 - ADR-0143: Claude標準サブエージェントの保護は書き込み系ツールの除去で成立させ権限モードに依存しない（2026-09-08、Accepted）

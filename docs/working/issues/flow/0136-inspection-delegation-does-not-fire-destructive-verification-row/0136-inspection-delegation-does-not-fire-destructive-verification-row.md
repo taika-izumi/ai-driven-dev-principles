@@ -30,10 +30,17 @@
 
 ## 現在地の要約
 
-- 2026-09-08: 申し送りで起票。対策は未着手（着手はユーザー判断）。Issue-0123（同じ判定表への注入）と同じ機会に扱う。着手時は事象 3 件が別々の穴（発火条件 / 展開項目の射程 / 削除対象の選び方）であることを踏まえ、対策 1〜3 を 1 行ずつの費用で先に入れ、対策 4 の要否を別に判断する
+- 2026-09-08: 承認済み設計に初回F-01を反映し、第2回フルレビューは新規指摘0・前回指摘解消。設計確定済み。次は実装準備と両ツールの実経路検証。Claude起点の実証・実装は未着手。ADR-0141はProposed。詳細は `0136-log.md`。
 
 ## 関連資料
 
+- `0136-log.md` — 設計承認後のレビュー実施と判断の経緯。
+- `docs/records/reviews/2026-09-08-issue-0136-design-r1.md` — 初回フルレビューの結果、主担当の照合、F-01の修正案。
+- `docs/records/reviews/2026-09-08-issue-0136-design-r2.md` — 第2回フルレビューの指摘なしと設計確定の記録。
+- `0136-note-common-protection-design.md` — 共通の保護条件、ツール別完了条件、判断の分担の設計案。
+- `docs/records/decisions/0141-keep-inspection-protection-tool-independent.md` — 方針のADRドラフト。
+- `docs/reference/inspection-isolation-costs.md` — 公式調査と16GB環境での実測。
+- `docs/records/experiments/2026-09-08-inspection-isolation.json` — Codexの隔離・直列性能の実行記録。
 - `lfa-0172-review-delegation-with-mutations-does-not-fire-the-destructive-verification-row.md` — 委譲元の課題ファイル全文（事象・原因 3 層・影響・復旧・対策の方向・現在地）
 - `lfa-0172-log.md` — 委譲元の検討経緯ログ全文（事象 2・3 の一次記録と含意）
 - 配布先側の一次記録（コピーしない。LoopForAlpha リポジトリで参照）: `docs/records/retrospectives/system/2026-09-06-issue-0135-0167-launch-resilience.md` §3 / `docs/reference/implementation-lessons/issue-0135-0167-launch-resilience-checks.md` 項番 17（隔離プロトコルの手順）

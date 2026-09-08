@@ -1,0 +1,458 @@
+{
+  "date": "2026-09-08",
+  "scope": "Codex Windows local isolation feasibility, sequential measurements",
+  "environment": {
+    "os": "Windows 11 Home 25H2 build 26200",
+    "cpu": "Intel Core i7-12700H",
+    "cores": 14,
+    "logicalProcessors": 20,
+    "visibleMemoryKiB": 16395420,
+    "initialFreeMemoryKiB": 4197148,
+    "codexVersion": "0.153.4",
+    "claudeVersion": "2.1.261",
+    "wslVersion": "2.7.10.0",
+    "dockerServerVersion": "29.6.1"
+  },
+  "boundary": {
+    "beforeHash": "14FE9B1FC8613DF243813F3EDCBBF3EB82E4DEFBBD04DFCFE087AB186AA5D797",
+    "afterHash": "14FE9B1FC8613DF243813F3EDCBBF3EB82E4DEFBBD04DFCFE087AB186AA5D797",
+    "unchanged": true,
+    "exitCode": 0,
+    "output": [
+      "{\"scope\":\"allowed\",\"write\":\"allowed\"}",
+      "{\"scope\":\"parent\",\"write\":\"denied\",\"error\":\"System.UnauthorizedAccessException\"}",
+      "{\"scope\":\"child\",\"write\":\"denied\",\"error\":\"System.UnauthorizedAccessException\"}"
+    ]
+  },
+  "microbenchmark": {
+    "timestamp": "2026-09-08T10:53:41.1920597+09:00",
+    "memoryBefore": {
+      "TotalVisibleMemorySize": 16395420,
+      "FreePhysicalMemory": 4304884
+    },
+    "memoryAfter": {
+      "TotalVisibleMemorySize": 16395420,
+      "FreePhysicalMemory": 4267300
+    },
+    "samples": [
+      {
+        "round": 1,
+        "mode": "direct",
+        "totalMs": 351.3,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 32644,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 156.6,
+          "peakWorkingSetMiB": 76.3,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 1,
+        "mode": "sandbox",
+        "totalMs": 639.5,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 22612,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 196.7,
+          "peakWorkingSetMiB": 75.6,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 2,
+        "mode": "direct",
+        "totalMs": 289.9,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 32168,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 116.9,
+          "peakWorkingSetMiB": 76.4,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 2,
+        "mode": "sandbox",
+        "totalMs": 632.7,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 5312,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 204.1,
+          "peakWorkingSetMiB": 75.6,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 3,
+        "mode": "direct",
+        "totalMs": 294.0,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 27736,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 121,
+          "peakWorkingSetMiB": 76.2,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 3,
+        "mode": "sandbox",
+        "totalMs": 628.4,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 13868,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 202,
+          "peakWorkingSetMiB": 75.6,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 4,
+        "mode": "direct",
+        "totalMs": 292.6,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 14888,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 119.2,
+          "peakWorkingSetMiB": 76.5,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 4,
+        "mode": "sandbox",
+        "totalMs": 631.6,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 26184,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 195.7,
+          "peakWorkingSetMiB": 75.7,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 5,
+        "mode": "direct",
+        "totalMs": 292.9,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 29988,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 121.3,
+          "peakWorkingSetMiB": 76.2,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      },
+      {
+        "round": 5,
+        "mode": "sandbox",
+        "totalMs": 644.4,
+        "exitCode": 0,
+        "measurement": {
+          "pid": 20888,
+          "workload": "128 x SHA256 of a 1MiB in-memory buffer",
+          "workloadMs": 200.8,
+          "peakWorkingSetMiB": 75.9,
+          "resultHex": "30E14955EBF1352266DC2FF8067E68104607E750ABB9D3B36582B8AF909FCB58"
+        }
+      }
+    ]
+  },
+  "repositoryCheck": [
+    {
+      "round": 1,
+      "mode": "direct",
+      "totalMs": 7182.8,
+      "exitCode": 0,
+      "output": [
+        "[build-dist] Scanning 37 source files...",
+        "[build-dist] Convention violations: 0",
+        "  ✓ skills/decision-log/references/adr-authoring.md (12 identifiers removed)",
+        "  ✓ skills/decision-log/references/cycle-consistency-check.md (2 identifiers removed)",
+        "  ✓ skills/decision-log/references/status-updates.md (8 identifiers removed)",
+        "  ✓ skills/decision-log/SKILL.md (1 identifiers removed)",
+        "  ✓ skills/extend-guidelines/SKILL.md (3 identifiers removed)",
+        "  ✓ skills/feature-block-design/SKILL.md (5 identifiers removed)",
+        "  ✓ skills/organize-inbox/SKILL.md (2 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/examples-and-evidence.md (27 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/iteration-norms.md (14 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/review-procedure.md (10 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/SKILL.md (14 identifiers removed)",
+        "  ✓ skills/retrospective/flow-template.md (3 identifiers removed)",
+        "  ✓ skills/retrospective/SKILL.md (29 identifiers removed)",
+        "  ✓ skills/retrospective/template.md (3 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-cycle-reset.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-finalize.md (11 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-read.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-update.md (8 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-map.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-procedure.md (1 identifiers removed)",
+        "  ✓ skills/session-handoff/references/review-field-values.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/section-volume-norms.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/SKILL.md (4 identifiers removed)",
+        "  ✓ skills/start-work/references/decision-delegation.md (1 identifiers removed)",
+        "  ✓ skills/start-work/references/plan-deviation-defaults.md (4 identifiers removed)",
+        "  ✓ skills/start-work/SKILL.md (25 identifiers removed)",
+        "  ✓ skills/subagent-dispatch/SKILL.md (35 identifiers removed)",
+        "  ✓ skills/worklog-extract/scripts/check-store-health.py (2 identifiers removed)",
+        "  ✓ skills/worklog-extract/SKILL.md (9 identifiers removed)",
+        "  ✓ skills/worklog-record/references/store-format.md (16 identifiers removed)",
+        "  ✓ skills/worklog-record/SKILL.md (15 identifiers removed)",
+        "  ✓ skills/worklog-skillify/references/skill-authoring-techniques.md (1 identifiers removed)",
+        "  ✓ skills/worklog-skillify/SKILL.md (6 identifiers removed)",
+        "[build-dist] Up to date."
+      ]
+    },
+    {
+      "round": 1,
+      "mode": "sandbox",
+      "totalMs": 9102.8,
+      "exitCode": 0,
+      "output": [
+        "[build-dist] Scanning 37 source files...",
+        "[build-dist] Convention violations: 0",
+        "  ✓ skills/decision-log/references/adr-authoring.md (12 identifiers removed)",
+        "  ✓ skills/decision-log/references/cycle-consistency-check.md (2 identifiers removed)",
+        "  ✓ skills/decision-log/references/status-updates.md (8 identifiers removed)",
+        "  ✓ skills/decision-log/SKILL.md (1 identifiers removed)",
+        "  ✓ skills/extend-guidelines/SKILL.md (3 identifiers removed)",
+        "  ✓ skills/feature-block-design/SKILL.md (5 identifiers removed)",
+        "  ✓ skills/organize-inbox/SKILL.md (2 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/examples-and-evidence.md (27 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/iteration-norms.md (14 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/review-procedure.md (10 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/SKILL.md (14 identifiers removed)",
+        "  ✓ skills/retrospective/flow-template.md (3 identifiers removed)",
+        "  ✓ skills/retrospective/SKILL.md (29 identifiers removed)",
+        "  ✓ skills/retrospective/template.md (3 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-cycle-reset.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-finalize.md (11 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-read.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-update.md (8 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-map.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-procedure.md (1 identifiers removed)",
+        "  ✓ skills/session-handoff/references/review-field-values.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/section-volume-norms.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/SKILL.md (4 identifiers removed)",
+        "  ✓ skills/start-work/references/decision-delegation.md (1 identifiers removed)",
+        "  ✓ skills/start-work/references/plan-deviation-defaults.md (4 identifiers removed)",
+        "  ✓ skills/start-work/SKILL.md (25 identifiers removed)",
+        "  ✓ skills/subagent-dispatch/SKILL.md (35 identifiers removed)",
+        "  ✓ skills/worklog-extract/scripts/check-store-health.py (2 identifiers removed)",
+        "  ✓ skills/worklog-extract/SKILL.md (9 identifiers removed)",
+        "  ✓ skills/worklog-record/references/store-format.md (16 identifiers removed)",
+        "  ✓ skills/worklog-record/SKILL.md (15 identifiers removed)",
+        "  ✓ skills/worklog-skillify/references/skill-authoring-techniques.md (1 identifiers removed)",
+        "  ✓ skills/worklog-skillify/SKILL.md (6 identifiers removed)",
+        "[build-dist] Up to date."
+      ]
+    },
+    {
+      "round": 2,
+      "mode": "direct",
+      "totalMs": 6731.9,
+      "exitCode": 0,
+      "output": [
+        "[build-dist] Scanning 37 source files...",
+        "[build-dist] Convention violations: 0",
+        "  ✓ skills/decision-log/references/adr-authoring.md (12 identifiers removed)",
+        "  ✓ skills/decision-log/references/cycle-consistency-check.md (2 identifiers removed)",
+        "  ✓ skills/decision-log/references/status-updates.md (8 identifiers removed)",
+        "  ✓ skills/decision-log/SKILL.md (1 identifiers removed)",
+        "  ✓ skills/extend-guidelines/SKILL.md (3 identifiers removed)",
+        "  ✓ skills/feature-block-design/SKILL.md (5 identifiers removed)",
+        "  ✓ skills/organize-inbox/SKILL.md (2 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/examples-and-evidence.md (27 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/iteration-norms.md (14 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/review-procedure.md (10 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/SKILL.md (14 identifiers removed)",
+        "  ✓ skills/retrospective/flow-template.md (3 identifiers removed)",
+        "  ✓ skills/retrospective/SKILL.md (29 identifiers removed)",
+        "  ✓ skills/retrospective/template.md (3 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-cycle-reset.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-finalize.md (11 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-read.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-update.md (8 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-map.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-procedure.md (1 identifiers removed)",
+        "  ✓ skills/session-handoff/references/review-field-values.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/section-volume-norms.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/SKILL.md (4 identifiers removed)",
+        "  ✓ skills/start-work/references/decision-delegation.md (1 identifiers removed)",
+        "  ✓ skills/start-work/references/plan-deviation-defaults.md (4 identifiers removed)",
+        "  ✓ skills/start-work/SKILL.md (25 identifiers removed)",
+        "  ✓ skills/subagent-dispatch/SKILL.md (35 identifiers removed)",
+        "  ✓ skills/worklog-extract/scripts/check-store-health.py (2 identifiers removed)",
+        "  ✓ skills/worklog-extract/SKILL.md (9 identifiers removed)",
+        "  ✓ skills/worklog-record/references/store-format.md (16 identifiers removed)",
+        "  ✓ skills/worklog-record/SKILL.md (15 identifiers removed)",
+        "  ✓ skills/worklog-skillify/references/skill-authoring-techniques.md (1 identifiers removed)",
+        "  ✓ skills/worklog-skillify/SKILL.md (6 identifiers removed)",
+        "[build-dist] Up to date."
+      ]
+    },
+    {
+      "round": 2,
+      "mode": "sandbox",
+      "totalMs": 8888.7,
+      "exitCode": 0,
+      "output": [
+        "[build-dist] Scanning 37 source files...",
+        "[build-dist] Convention violations: 0",
+        "  ✓ skills/decision-log/references/adr-authoring.md (12 identifiers removed)",
+        "  ✓ skills/decision-log/references/cycle-consistency-check.md (2 identifiers removed)",
+        "  ✓ skills/decision-log/references/status-updates.md (8 identifiers removed)",
+        "  ✓ skills/decision-log/SKILL.md (1 identifiers removed)",
+        "  ✓ skills/extend-guidelines/SKILL.md (3 identifiers removed)",
+        "  ✓ skills/feature-block-design/SKILL.md (5 identifiers removed)",
+        "  ✓ skills/organize-inbox/SKILL.md (2 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/examples-and-evidence.md (27 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/iteration-norms.md (14 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/review-procedure.md (10 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/SKILL.md (14 identifiers removed)",
+        "  ✓ skills/retrospective/flow-template.md (3 identifiers removed)",
+        "  ✓ skills/retrospective/SKILL.md (29 identifiers removed)",
+        "  ✓ skills/retrospective/template.md (3 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-cycle-reset.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-finalize.md (11 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-read.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-update.md (8 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-map.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-procedure.md (1 identifiers removed)",
+        "  ✓ skills/session-handoff/references/review-field-values.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/section-volume-norms.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/SKILL.md (4 identifiers removed)",
+        "  ✓ skills/start-work/references/decision-delegation.md (1 identifiers removed)",
+        "  ✓ skills/start-work/references/plan-deviation-defaults.md (4 identifiers removed)",
+        "  ✓ skills/start-work/SKILL.md (25 identifiers removed)",
+        "  ✓ skills/subagent-dispatch/SKILL.md (35 identifiers removed)",
+        "  ✓ skills/worklog-extract/scripts/check-store-health.py (2 identifiers removed)",
+        "  ✓ skills/worklog-extract/SKILL.md (9 identifiers removed)",
+        "  ✓ skills/worklog-record/references/store-format.md (16 identifiers removed)",
+        "  ✓ skills/worklog-record/SKILL.md (15 identifiers removed)",
+        "  ✓ skills/worklog-skillify/references/skill-authoring-techniques.md (1 identifiers removed)",
+        "  ✓ skills/worklog-skillify/SKILL.md (6 identifiers removed)",
+        "[build-dist] Up to date."
+      ]
+    },
+    {
+      "round": 3,
+      "mode": "direct",
+      "totalMs": 6652.6,
+      "exitCode": 0,
+      "output": [
+        "[build-dist] Scanning 37 source files...",
+        "[build-dist] Convention violations: 0",
+        "  ✓ skills/decision-log/references/adr-authoring.md (12 identifiers removed)",
+        "  ✓ skills/decision-log/references/cycle-consistency-check.md (2 identifiers removed)",
+        "  ✓ skills/decision-log/references/status-updates.md (8 identifiers removed)",
+        "  ✓ skills/decision-log/SKILL.md (1 identifiers removed)",
+        "  ✓ skills/extend-guidelines/SKILL.md (3 identifiers removed)",
+        "  ✓ skills/feature-block-design/SKILL.md (5 identifiers removed)",
+        "  ✓ skills/organize-inbox/SKILL.md (2 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/examples-and-evidence.md (27 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/iteration-norms.md (14 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/review-procedure.md (10 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/SKILL.md (14 identifiers removed)",
+        "  ✓ skills/retrospective/flow-template.md (3 identifiers removed)",
+        "  ✓ skills/retrospective/SKILL.md (29 identifiers removed)",
+        "  ✓ skills/retrospective/template.md (3 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-cycle-reset.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-finalize.md (11 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-read.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-update.md (8 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-map.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-procedure.md (1 identifiers removed)",
+        "  ✓ skills/session-handoff/references/review-field-values.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/section-volume-norms.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/SKILL.md (4 identifiers removed)",
+        "  ✓ skills/start-work/references/decision-delegation.md (1 identifiers removed)",
+        "  ✓ skills/start-work/references/plan-deviation-defaults.md (4 identifiers removed)",
+        "  ✓ skills/start-work/SKILL.md (25 identifiers removed)",
+        "  ✓ skills/subagent-dispatch/SKILL.md (35 identifiers removed)",
+        "  ✓ skills/worklog-extract/scripts/check-store-health.py (2 identifiers removed)",
+        "  ✓ skills/worklog-extract/SKILL.md (9 identifiers removed)",
+        "  ✓ skills/worklog-record/references/store-format.md (16 identifiers removed)",
+        "  ✓ skills/worklog-record/SKILL.md (15 identifiers removed)",
+        "  ✓ skills/worklog-skillify/references/skill-authoring-techniques.md (1 identifiers removed)",
+        "  ✓ skills/worklog-skillify/SKILL.md (6 identifiers removed)",
+        "[build-dist] Up to date."
+      ]
+    },
+    {
+      "round": 3,
+      "mode": "sandbox",
+      "totalMs": 8133.1,
+      "exitCode": 0,
+      "output": [
+        "[build-dist] Scanning 37 source files...",
+        "[build-dist] Convention violations: 0",
+        "  ✓ skills/decision-log/references/adr-authoring.md (12 identifiers removed)",
+        "  ✓ skills/decision-log/references/cycle-consistency-check.md (2 identifiers removed)",
+        "  ✓ skills/decision-log/references/status-updates.md (8 identifiers removed)",
+        "  ✓ skills/decision-log/SKILL.md (1 identifiers removed)",
+        "  ✓ skills/extend-guidelines/SKILL.md (3 identifiers removed)",
+        "  ✓ skills/feature-block-design/SKILL.md (5 identifiers removed)",
+        "  ✓ skills/organize-inbox/SKILL.md (2 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/examples-and-evidence.md (27 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/iteration-norms.md (14 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/references/review-procedure.md (10 identifiers removed)",
+        "  ✓ skills/pre-finalization-review/SKILL.md (14 identifiers removed)",
+        "  ✓ skills/retrospective/flow-template.md (3 identifiers removed)",
+        "  ✓ skills/retrospective/SKILL.md (29 identifiers removed)",
+        "  ✓ skills/retrospective/template.md (3 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-cycle-reset.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-finalize.md (11 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-read.md (5 identifiers removed)",
+        "  ✓ skills/session-handoff/references/op-update.md (8 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-map.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/relocation-procedure.md (1 identifiers removed)",
+        "  ✓ skills/session-handoff/references/review-field-values.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/references/section-volume-norms.md (2 identifiers removed)",
+        "  ✓ skills/session-handoff/SKILL.md (4 identifiers removed)",
+        "  ✓ skills/start-work/references/decision-delegation.md (1 identifiers removed)",
+        "  ✓ skills/start-work/references/plan-deviation-defaults.md (4 identifiers removed)",
+        "  ✓ skills/start-work/SKILL.md (25 identifiers removed)",
+        "  ✓ skills/subagent-dispatch/SKILL.md (35 identifiers removed)",
+        "  ✓ skills/worklog-extract/scripts/check-store-health.py (2 identifiers removed)",
+        "  ✓ skills/worklog-extract/SKILL.md (9 identifiers removed)",
+        "  ✓ skills/worklog-record/references/store-format.md (16 identifiers removed)",
+        "  ✓ skills/worklog-record/SKILL.md (15 identifiers removed)",
+        "  ✓ skills/worklog-skillify/references/skill-authoring-techniques.md (1 identifiers removed)",
+        "  ✓ skills/worklog-skillify/SKILL.md (6 identifiers removed)",
+        "[build-dist] Up to date."
+      ]
+    }
+  ],
+  "probeFiles": [
+    {
+      "path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\inspection-probe-host-20260908\\run\\boundary-probe.ps1",
+      "sha256": "D6FBB9EE131291C047D158A7D76CB8141EDFFE7BAD9D333DA404C4DFFF4CFA9F"
+    },
+    {
+      "path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\inspection-probe-host-20260908\\run\\child-probe.ps1",
+      "sha256": "04ADC29838703B57949D00A430AFBC1DA74B3A8358578FACD551D64BD59D0B13"
+    },
+    {
+      "path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\inspection-probe-host-20260908\\run\\workload.ps1",
+      "sha256": "6C97E9AFB2DBF6E7DF63F574F134D07DC3C479BEE0CA8CFE1B430746EB35D345"
+    }
+  ],
+  "limitations": [
+    "No total process-tree peak memory measurement",
+    "No cold machine boot or first-ever sandbox setup measurement",
+    "No parallel load test",
+    "No Claude-to-Codex integration test",
+    "No Docker container benchmark",
+    "No Pester-specific mutation test"
+  ]
+}

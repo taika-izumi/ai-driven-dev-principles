@@ -146,3 +146,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0138](0138-use-existing-worklogs-for-reconsideration-observations.md) | 問い直しの事例は既存のworklogに蓄積しIssue-0132再着手時に確認する | Accepted | 2026-09-08 |
 | [0139](0139-reuse-official-agent-runtimes-for-development-pilots.md) | AI組織の実証は公式実行基盤を利用し、開発手順と必要な接続だけを整備する | Proposed | 2026-09-08 |
 | [0140](0140-stage-guideline-improvements-before-agent-pilots.md) | ガイドライン整備は重要な先行修正から開発実証へ進み、実証後に汎用化する | Proposed | 2026-09-08 |
+| [0141](0141-keep-inspection-protection-tool-independent.md) | 検査委譲の保護条件を共通化し、対応可否はツール別の実行経路で確認する | Proposed | 2026-09-08 |

@@ -30,10 +30,14 @@
 
 ## 現在地の要約
 
-- 2026-09-08: 承認済み設計に初回F-01を反映し、第2回フルレビューは新規指摘0・前回指摘解消。設計確定済み。次は実装準備と両ツールの実経路検証。Claude起点の実証・実装は未着手。ADR-0141はProposed。詳細は `0136-log.md`。
+- 2026-09-08: 現行判断試験は3件合格・1件不合格。実装計画の自己確認済み。ユーザーの希望で新セッションへ引き継ぐ。計画レビューの選択は未回答、共通スキル実装は未着手。再現入力をGit保存し、完了済み基線試験を再実行せず続行できる状態。
 
 ## 関連資料
 
+- `docs/working/plans/2026-09-08-issue-0136-inspection-protection.md` — 実装準備の計画草案、試験ケースと残る条件。
+- `docs/records/experiments/2026-09-08-claude-readonly.json` — 画面操作なしでのClaude Code読取試験の実行記録。
+- `docs/records/experiments/2026-09-08-inspection-dispatch-baseline.json` — 現行スキルの4ケースの判断と主担当の評価。
+- `scripts/experiments/inspection-dispatch/` — 現行判断試験のプロンプトとケース。改定前スキルの版は計画と実行記録に記載。
 - `0136-log.md` — 設計承認後のレビュー実施と判断の経緯。
 - `docs/records/reviews/2026-09-08-issue-0136-design-r1.md` — 初回フルレビューの結果、主担当の照合、F-01の修正案。
 - `docs/records/reviews/2026-09-08-issue-0136-design-r2.md` — 第2回フルレビューの指摘なしと設計確定の記録。

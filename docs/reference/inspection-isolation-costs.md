@@ -98,3 +98,17 @@ ClaudeのBashサンドボックスも親子で設定を共有する。Windowsバ
 - [M2: Microsoft・Windows Sandbox設定](https://learn.microsoft.com/en-us/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-configure-using-wsb-file)
 - [M3: Microsoft・Windows Sandbox構造](https://learn.microsoft.com/en-us/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-architecture)
 - [M4: Microsoft・WSL設定](https://learn.microsoft.com/en-us/windows/wsl/wsl-config)
+
+## 7. リモート操作中に進められたClaude Codeの確認
+
+2026-09-08、ユーザーはリモート操作中でClaude Code画面を操作できないと説明した。既存CLIの認証状態はログイン済みで、画面操作なしの読み取り専用試験が成立した。`--restricted`、`--safe-mode`、`--tools Read`、空のMCP構成と `--strict-mcp-config`、MCP拒否、フック無効化、承認プロンプトなしを組み合わせた。既存セッションの再開や認証設定の変更は行っていない。
+
+実行開始イベントの利用可能ツールはReadのみ、MCPは0件。試験ファイルの値734921をReadで取得し、前後SHA256は一致した。所要4.51秒、2ターン、利用モデルはCLI既定の `claude-opus-5[1m]`。CLI表示費用は0.0377995米ドルで、請求額や契約枠消費の実測ではない。[実行記録](../records/experiments/2026-09-08-claude-readonly.json)
+
+これは書き込み操作を持たない静的確認の経路を試した結果であり、実行を伴う検査の保護や通常のプラグイン読み込みの実証ではない。今回使った制限モードとツール指定の意味は [AnthropicのCLI公式文書](https://code.claude.com/docs/en/cli-reference) でも確認した。
+
+続く現行スキル本文と架空4ケースの判断試験は、最初は自動承認レビューにより外部送信の承認不足として拒否された。通常のClaudeモデル利用であることを説明し、ユーザーがこの2ファイルの送信を明示承認した後に実行した。入力は `.tmp/claude-readonly-probe-20260908/baseline-skill.md` と `cases.json`。
+
+結果は3件合格・1件不合格。広い権限を継承する検査担当のケースでは、現行スキルの発火条件から「隔離準備は不要」として起動する判断が返り、共通改定の対象となる不足が再現した。明示的変異、時刻が近い既存記録の除外、静的確認の負担抑制は期待どおりだった。これら3件には今回の結果から改善効果を主張しない。約49.17秒・3ターン、CLI表示費用0.1666435米ドル。[現行判断試験の記録](../records/experiments/2026-09-08-inspection-dispatch-baseline.json)
+
+試験はReadだけの机上判断であり、実際に広い権限の子を起動したりファイルを壊したりしたものではない。共通改定と実経路の確認は [実装計画](../working/plans/2026-09-08-issue-0136-inspection-protection.md) に整理した。

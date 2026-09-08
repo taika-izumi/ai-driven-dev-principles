@@ -1,7 +1,7 @@
 # Handoff: 検査委譲の保護改定
 
 - **Branch**: codex/issue-0136-inspection-protection
-- **Last Updated**: 2026-09-08 19:14 (Asia/Tokyo)
+- **Last Updated**: 2026-09-08 20:43 (Asia/Tokyo)
 - **Status**: completed
 - **Current Phase**: 限定構成の実装をmasterへ統合済み。追加検証はmaster.mdへ引き継ぎ
 
@@ -70,3 +70,6 @@ Issue-0136の検査委譲で、指示外の変更実験・範囲外書き込み�
 - ADR-0141: 保護条件を共通化し対応可否をツール別実経路で確認。実装・検証・レビュー後にAcceptedへ昇格済み。
 
 追加依頼（2026-09-08）: Claude Code標準サブエージェントの追加検証を新規セッションで行う。Issue-0136はopenへ戻した。次の入口はmaster.mdと0136-note-claude-native-followup.md。本ブランチの限定構成の成果は維持し、引き継ぎ後のローカルマージをユーザーが明示承認済み。
+
+
+振り返り終了（2026-09-08）: ユーザー承認に従いIssue-0052・0123へ追記し、新規起票0件で正式記録を保存。記録はdocs/records/retrospectives/system/2026-09-08-issue-0136-inspection-protection.mdと同名flow。masterのcycle-resetと終了引き継ぎを実施。Claude Codeの追加検証は未着手。

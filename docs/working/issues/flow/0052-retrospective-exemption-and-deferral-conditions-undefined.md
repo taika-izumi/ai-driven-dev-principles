@@ -21,6 +21,8 @@
 
 ## 検討状況
 
+- 2026-09-08: Issue-0136を11cf3edでmasterへ統合後、AIがセッション切替の依頼を延期として扱い、retrospectiveをPhase 0で止めた。延期の明示承認はなく、ユーザーの再確認で正式記録・仕上げへ戻った。規範不足とは断定せず既存手順の実行漏れとして区別し、ユーザー承認により事例を追記。詳細はdocs/records/retrospectives/flow/2026-09-08-issue-0136-inspection-protection.mdの事例1。
+
 - 2026-08-05: `LoopForAlpha#Issue-0008` を構造観察型として取り込み（ADR-0061 の経路）。詳細は起票元 issue と、その起票元 `LoopForAlpha` の `docs/records/retrospectives/flow/2026-07-12-jquants-v2-migration.md` 課題#2 が正
 
 ## 結論

@@ -80,6 +80,7 @@
 | 2026-09-07 | 判断の分担に基づく自動進行の終了記録送信（追記） | [system](system/2026-09-07-delegated-decisions.md) | codex/issue-0122-delegated-decisions（取り込み方式: マージコミット 3ca2746） | 終了記録をc116400でpush・リモート照合済み。承認待ち・未送信を解消し次サイクル待ち |
 | 2026-09-07 | 文書編集の委譲先へ表現のルールを渡す（Issue-0125） | [system](system/2026-09-07-wording-dispatch.md) / [flow](flow/2026-09-07-wording-dispatch.md) | feature/issue-0125-wording-dispatch（取り込み方式: マージコミット 3549ea7） | 0.1.24ローカル統合・未公開。Issue-0114へモデル選択の観測を追記し、承認済みのフロー課題2件をIssue-0131・0132として起票。振り返り記録の内容確認・仕上げ待ち |
 | 2026-09-07 | 文書編集の委譲への語彙規範接続の振り返り終了（追記） | [system](system/2026-09-07-wording-dispatch.md) / [flow](flow/2026-09-07-wording-dispatch.md) | feature/issue-0125-wording-dispatch（取り込み方式: マージコミット 3549ea7） | ユーザーが記録内容とローカルコミットを承認。作業ログ2件を補完・検証し、Issue-0114・0131・0132へ引き継ぎ。0.1.24は未公開、pushなし |
+| 2026-09-08 | 検査委譲の保護改定と限定実行経路の検証（Issue-0136） | [system](system/2026-09-08-issue-0136-inspection-protection.md) / [flow](flow/2026-09-08-issue-0136-inspection-protection.md) | codex/issue-0136-inspection-protection（取り込み方式: マージコミット 11cf3ed） | ユーザー承認済みの既存Issue-0052・0123へ追記。新規起票0件。Issue-0136はClaude標準サブエージェントの追加検証待ち。振り返り終了、公開・導入なし |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

@@ -217,6 +217,113 @@
       },
       "costUsdDisplayed": 0.04234955000000001,
       "durationMs": 34844
+    },
+    {
+      "tag": "e1",
+      "purpose": "定義ファイルのfrontmatterに書いた接続を子だけへ公開できるか（--strict-mcp-config 併用）",
+      "parentTools": [
+        "Task",
+        "Bash",
+        "Edit",
+        "Read",
+        "Write"
+      ],
+      "childTools": [
+        "mcp__inspection__run_inspection"
+      ],
+      "agentDefinition": ".claude/agents/issue0136-mcponly.md",
+      "permissionMode": "dontAsk",
+      "mcp": [],
+      "result": {
+        "status": "子の起動を拒否",
+        "error": "Agent 'issue0136-mcponly' would be spawned with zero tools — refusing. Its tools list resolved to nothing: unrecognized [mcp__inspection__run_inspection]",
+        "note": "定義ファイル自体は認識されている（開始イベントの agents 一覧に存在）"
+      },
+      "costUsdDisplayed": 0.021974600000000004,
+      "durationMs": 16091
+    },
+    {
+      "tag": "e1b",
+      "purpose": "同じ定義を --strict-mcp-config なしで起動し、原因を分離する",
+      "parentTools": [
+        "Task",
+        "Bash",
+        "Edit",
+        "Read",
+        "Write"
+      ],
+      "childTools": [
+        "mcp__inspection__run_inspection"
+      ],
+      "agentDefinition": ".claude/agents/issue0136-mcponly.md",
+      "permissionMode": "dontAsk",
+      "mcp": [
+        {
+          "name": "claude.ai Google Drive",
+          "status": "needs-auth"
+        },
+        {
+          "name": "claude.ai Google Calendar",
+          "status": "needs-auth"
+        },
+        {
+          "name": "claude.ai Gmail",
+          "status": "needs-auth"
+        }
+      ],
+      "disallowedTools": "mcp__claude_ai_Gmail,mcp__claude_ai_Google_Drive,mcp__claude_ai_Google_Calendar",
+      "result": {
+        "childLaunched": true,
+        "childToolCount": 1,
+        "parentHasMcpTool": false,
+        "parentToolsNote": "親の開始イベントは Task,Bash,Edit,Read,Write の5件のみで接続は含まれない",
+        "googleToolsInParent": 0,
+        "googleServerStatus": "needs-auth",
+        "normalPassed": 1,
+        "mutatedFailed": 1,
+        "mutatedFailureMessage": "Expected: {5} But was: {-1}",
+        "restoredPassed": 1,
+        "protectedDenials": 4,
+        "childProcess": {
+          "allowedWrite": "ok",
+          "protectedWrite": "child-denied",
+          "exitCode": 0
+        },
+        "childBash": "ツール一覧に無く呼び出せない"
+      },
+      "costUsdDisplayed": 0.04174875,
+      "durationMs": 50870
+    },
+    {
+      "tag": "e2",
+      "purpose": "定義ファイルの拒否リストで書き込み系ツールと再委譲を外せるか",
+      "parentTools": [
+        "Task",
+        "Bash",
+        "Edit",
+        "Read",
+        "Write"
+      ],
+      "childDisallowed": [
+        "Write",
+        "Edit",
+        "Bash",
+        "PowerShell",
+        "Agent"
+      ],
+      "agentDefinition": ".claude/agents/issue0136-nowrite.md",
+      "permissionMode": "dontAsk",
+      "result": {
+        "childRead": "成功。probe-readable-value-734981 を回収",
+        "childBash": "No such tool available: Bash",
+        "childWrite": "No such tool available: Write",
+        "childEdit": "No such tool available: Edit",
+        "childAgent": "No such tool available: Agent",
+        "childTask": "No such tool available: Task",
+        "note": "子が Agent と Task を実際に呼び出したため、再委譲の遮断は自己申告ではなく実測"
+      },
+      "costUsdDisplayed": 0.06927465000000001,
+      "durationMs": 5063
     }
   ],
   "stateVerification": {
@@ -229,16 +336,32 @@
     "sessionLogUnchanged": "5F13DD3442DFA78888CEF98D747BD6015CA5E054360186C51C9BC47DB2102C36",
     "probeUnchanged": "85E5D79B6F1EE9C89A683F053150B0DEE1B11E8153B84D597BEEB727BC8D144D",
     "mutationEvidence": "records/mutated-original-evidence.txt",
-    "note": "変異したのは今回作成した代用品のみ。原本・共有ツール・実セッション記録は対象にしていない"
+    "note": "変異したのは今回作成した代用品のみ。原本・共有ツール・実セッション記録は対象にしていない",
+    "protectedUnchangedAfterFrontmatterRuns": true
   },
-  "totalCostUsdDisplayed": 0.421657,
-  "costNote": "CLI表示値の合計であり、請求額や契約枠の消費の実測ではない",
+  "totalCostUsdDisplayed": 0.554655,
+  "costNote": "CLI表示値の合計で、実測の run 分のみ（確定前レビューの費用は reviews 側に別記）。請求額や契約枠の消費の実測ではない",
   "limitations": [
     "確認範囲はClaude Code 2.1.263・Windows 11・--print実行に限る。別OS・別版・対話セッションへ一般化しない",
     "--permission-mode auto は --print 実行で反映されず、開始イベントは default だった。autoモードの継承は未確認",
-    "エージェント定義ファイルのfrontmatterによるmcpServers・disallowedToolsは未確認（--agents JSONはmcpServers非対応）",
     "親が bypassPermissions の場合は未確認",
     "子のツール一覧の不在は、a1で実呼び出しのエラーを実測した以外は子の自己申告である",
-    "run b2 の実行はCodexサンドボックス経由であり、CodexなしのClaude単独環境の対応例ではない"
+    "run b2 の実行はCodexサンドボックス経由であり、CodexなしのClaude単独環境の対応例ではない",
+    "定義ファイルの `mcpServers` は `--strict-mcp-config` と併用できない（併用時は子の起動が拒否される）。併用しない場合は設定済みの他の接続も読み込まれるため、拒否リストで外す運用が要る"
+  ],
+  "reviews": [
+    {
+      "type": "確定前レビュー（フル実施・4観点・1担当）",
+      "model": "claude-sonnet-5",
+      "tools": [
+        "Glob",
+        "Grep",
+        "Read"
+      ],
+      "findings": 1,
+      "adopted": 1,
+      "costUsdDisplayed": 1.3277,
+      "record": ".tmp/issue-0136-claude-native-20260908/records/review-r1-report.md"
+    }
   ]
 }

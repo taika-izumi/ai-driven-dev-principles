@@ -31,7 +31,7 @@
 ## 現在地の要約
 
 - 2026-09-08: 共通改定と限定構成の実証は完了。ユーザーはClaude Codeの新規セッションで標準サブエージェントの追加検証を依頼したため、Issueをopenへ戻して継続。別プロセスClaude＋固定MCPの成功と標準サブエージェントの制限継承を区別する。入口は0136-note-claude-native-followup.md。
-- 2026-09-08: Claude Codeの新規セッションで標準のサブエージェント機能を実測し、ツール制限・実行を伴う検査・再委譲の成立と、権限モードが保護の代わりにならないことを確認（ADR-0143、`docs/records/experiments/2026-09-08-claude-native-subagent.json`、`docs/reference/inspection-isolation-costs.md` 第10節）。規範は `skills/subagent-dispatch/references/inspection-isolation.md` のツール別の表へ反映済み。対話セッションでの実挙動、定義ファイルのfrontmatterによる接続の限定公開と拒否リスト、親bypassPermissions、別OS・別版は未確認のため open を継続する。
+- 2026-09-08: Claude Codeの新規セッションで標準のサブエージェント機能を実測し、ツール制限・実行を伴う検査・再委譲の成立と、権限モードが保護の代わりにならないことを確認（ADR-0143、`docs/records/experiments/2026-09-08-claude-native-subagent.json`、`docs/reference/inspection-isolation-costs.md` 第10節）。規範は `skills/subagent-dispatch/references/inspection-isolation.md` のツール別の表へ反映済み。定義ファイルのfrontmatterによる拒否リストと接続の限定公開も同日に実測し、成立条件（`--strict-mcp-config` とは併用不可）まで確認した。対話セッションでの実挙動、親bypassPermissions、別OS・別版は未確認のため open を継続する。
 
 ## 関連資料
 
@@ -60,7 +60,7 @@
 
 ## 結論
 
-追加検証の一部を完了し、残りは未確認のため open。2026-09-08にClaude Code 2.1.263・Windows 11の `--print` 実行で標準のサブエージェント機能を実測し、子の許可リストから書き込み可能な内蔵ツールを外す構成で保護が成立すること、固定検査1操作だけを渡せば実行を伴う検査も成立すること、権限モードは保護の代わりにならないこと、再委譲は既定で成立することを確認した（ADR-0143）。対話セッションでの実挙動、定義ファイルのfrontmatterによる接続の限定公開と拒否リスト、親bypassPermissions、別OS・別版は未確認として残る。
+追加検証の一部を完了し、残りは未確認のため open。2026-09-08にClaude Code 2.1.263・Windows 11の `--print` 実行で標準のサブエージェント機能を実測し、子の許可リストから書き込み可能な内蔵ツールを外す構成で保護が成立すること、固定検査1操作だけを渡せば実行を伴う検査も成立すること、権限モードは保護の代わりにならないこと、再委譲は既定で成立することを確認した（ADR-0143）。対話セッションでの実挙動、親bypassPermissions、別OS・別版は未確認として残る。
 
 以下は先行して完了した限定構成の結論で、上記とは別の確認である。
 

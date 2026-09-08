@@ -32,6 +32,7 @@
 
 - 2026-09-08: 共通改定と限定構成の実証は完了。ユーザーはClaude Codeの新規セッションで標準サブエージェントの追加検証を依頼したため、Issueをopenへ戻して継続。別プロセスClaude＋固定MCPの成功と標準サブエージェントの制限継承を区別する。入口は0136-note-claude-native-followup.md。
 - 2026-09-08: Claude Codeの新規セッションで標準のサブエージェント機能を実測し、ツール制限・実行を伴う検査・再委譲の成立と、権限モードが保護の代わりにならないことを確認（ADR-0143、`docs/records/experiments/2026-09-08-claude-native-subagent.json`、`docs/reference/inspection-isolation-costs.md` 第10節）。規範は `skills/subagent-dispatch/references/inspection-isolation.md` のツール別の表へ反映済み。定義ファイルのfrontmatterによる拒否リストと接続の限定公開も同日に実測し、成立条件（`--strict-mcp-config` とは併用不可）まで確認した。親の権限チェックを無効にした起動でも実測し、この起動では作業ディレクトリの境界も保護にならないことを確認した。対話セッションでの実挙動、別OS・別版は未確認のため open を継続する。
+- 2026-09-09: 対話セッション（autoモード）での実挙動を実測し、この未確認を解消。許可リスト方式の子は書き込み系ツールを持たず後から取得もできない一方、拒否リスト方式の子には列挙外の書き込み可能ツールが残り NotebookEdit が保護対象を承認要求なしで上書きした。保護は許可リスト方式に限ると決定し規範へ反映（ADR-0144、`docs/records/experiments/2026-09-09-claude-native-subagent-interactive.json`、`docs/reference/inspection-isolation-costs.md` 第10節の追加実測）。残る未確認は別OS・別版、外向きツール（Artifact・SendMessage）と状態変更系ツールの実効性、固定検査の対話セッション実行のため open を継続する。検査で派生した論点は Issue-0141、フロー課題は Issue-0142 として起票済み。
 
 ## 関連資料
 

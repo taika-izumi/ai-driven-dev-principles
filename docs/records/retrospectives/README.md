@@ -82,6 +82,7 @@
 | 2026-09-07 | 文書編集の委譲への語彙規範接続の振り返り終了（追記） | [system](system/2026-09-07-wording-dispatch.md) / [flow](flow/2026-09-07-wording-dispatch.md) | feature/issue-0125-wording-dispatch（取り込み方式: マージコミット 3549ea7） | ユーザーが記録内容とローカルコミットを承認。作業ログ2件を補完・検証し、Issue-0114・0131・0132へ引き継ぎ。0.1.24は未公開、pushなし |
 | 2026-09-08 | 検査委譲の保護改定と限定実行経路の検証（Issue-0136） | [system](system/2026-09-08-issue-0136-inspection-protection.md) / [flow](flow/2026-09-08-issue-0136-inspection-protection.md) | codex/issue-0136-inspection-protection（取り込み方式: マージコミット 11cf3ed） | ユーザー承認済みの既存Issue-0052・0123へ追記。新規起票0件。Issue-0136はClaude標準サブエージェントの追加検証待ち。振り返り終了、公開・導入なし |
 | 2026-09-08 | Claude標準サブエージェントの追加検証（Issue-0136） | [system](system/2026-09-08-claude-native-subagent-verification.md) / [flow](flow/2026-09-08-claude-native-subagent-verification.md) | master（取り込み方式: 既定ブランチへの直接コミット。対象 d98b47b〜5e72fd0） | Issue-0139・0140 起票。Issue-0135・0130 へ追記。worklog 送り2件。ADR-0143 Accepted |
+| 2026-09-09 | Claude標準サブエージェントの対話セッションでの保護確認（Issue-0136） | [system](system/2026-09-09-claude-native-subagent-interactive.md) / [flow](flow/2026-09-09-claude-native-subagent-interactive.md) | master（取り込み方式: 既定ブランチへの直接コミット。対象 40068bc〜951e3fd） | Issue-0141・0142 起票。Issue-0135・0136・0139・0140 へ追記。現行方針前提の課題2件は起票見送り。worklog 送り1件。ADR-0144 Accepted、ADR-0143 へ部分修正注記 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

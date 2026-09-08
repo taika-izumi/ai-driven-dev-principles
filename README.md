@@ -20,6 +20,8 @@ AI駆動開発ガイドライン — AIエージェントと協働して開発�
 
 ドキュメントの配置規範（情報の5分類体系）は [`docs/overview/folder-structure.md`](docs/overview/folder-structure.md) で定義される（ADR-0025）。
 
+今後の整備案は[開発ガイドライン整備のロードマップ](docs/current/development-roadmap.md)を参照。公式ツールを使ったループ／AI組織の実証と、先行Issue対応の順序を整理している（提案・確認待ち）。
+
 ## 5つの原則
 
 1. **意思決定の追跡可能性** — 「なぜそうしたか」を記録する

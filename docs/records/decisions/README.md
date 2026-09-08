@@ -149,3 +149,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0141](0141-keep-inspection-protection-tool-independent.md) | 検査委譲の保護条件を共通化し、対応可否はツール別の実行経路で確認する | Accepted | 2026-09-08 |
 | [0142](0142-verify-claude-through-existing-codex-sandbox.md) | 既存CodexのあるWindows環境でClaudeの限定実行経路を検証する | Accepted | 2026-09-08 |
 | [0143](0143-protect-claude-native-subagents-by-removing-write-tools.md) | Claude標準サブエージェントの保護は書き込み系ツールの除去で成立させ権限モードに依存しない | Accepted | 2026-09-08 |
+| [0144](0144-protect-claude-native-subagents-with-allowlist-only.md) | Claude標準サブエージェントの書き込み系ツールの除去は許可リスト方式で行い拒否リスト方式を用いない | Proposed | 2026-09-09 |

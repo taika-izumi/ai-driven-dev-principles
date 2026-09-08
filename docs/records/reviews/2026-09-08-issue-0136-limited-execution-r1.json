@@ -1,0 +1,127 @@
+{
+  "mcpServers": [],
+  "date": "2026-09-08",
+  "inputHashes": [
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-limited-review\\decision.md",
+      "Hash": "2C9E64922F7144F2FA3EE76233B1DE9E32AD8CE1566066D68029009251334C0F"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-limited-review\\design.md",
+      "Hash": "C1A2F507629B2BFA1EC96D3E55BA680B5042B38E26A144CD105619E05C043751"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-limited-review\\evidence.json",
+      "Hash": "77D4A01C8775D333515465AFD7BCBBA33F897328EB103BE01447CCADAFCF9F8F"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-limited-review\\probe.ps1",
+      "Hash": "C83E16D286E77ED23A6330A74560292B95EFD754D782882088EF909CC17896BC"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-limited-review\\README.md",
+      "Hash": "71863BF6B82BCBE4E3483787D107A1FAC57815889D52960FA181F286249FF487"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-limited-review\\reference.md",
+      "Hash": "26543F134D78B4DD644CA249C9C1646425400F8E532A0668DE328049133AE0C1"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-limited-review\\server.ps1",
+      "Hash": "083753C15C798990527F7D6C71BCFB6F54FDC9E84DC506DACA3C679407315D06"
+    }
+  ],
+  "reportedCostUsd": 0.5152395,
+  "result": {
+    "totalFiles": 7,
+    "findings": [
+      {
+        "severity": "中",
+        "file": "probe.ps1",
+        "line": "26（関連: reference.md:45, README.md:5）",
+        "problem": "書き込み拒否の実測対象は4件で、controller/probe.ps1 と controller/manifest.json を含まない。一方で文書は「接続プログラム・設定・固定検査本体…検査側が変更できないことを代用品で確認した」と3種すべてを実測済みのように書いている。",
+        "evidence": "probe.ps1:26 の対象は protected/original.txt・protected/shared-tool.txt・run/session-log.json・controller/server.ps1 の4件。evidence.json:59 の denials も同4件。probe.ps1・manifest.json は evidence.json:44-54 の前後ハッシュ一致（未変更）のみで、拒否試行の記録はない。",
+        "impact": "同一 controller 配下・同一プロファイル（server.ps1:8 で run のみ write）のため実害の可能性は低いが、確認済み範囲が実測より広く読める。",
+        "suggestion": "拒否対象へ2件を追加するか、reference.md:45/README.md:5 を「server.ps1 で実測、probe.ps1・manifest.json は同一許可領域外の配置と前後ハッシュ一致で担保」と書き分ける。",
+        "classification": "事実誤り・期待値の陳腐化の訂正"
+      },
+      {
+        "severity": "中",
+        "file": "probe.ps1",
+        "line": "9, 44（関連: server.ps1:34, 45）",
+        "problem": "作成物の記録が実際の作成物を網羅していない。server.ps1 が作る run/temp と controller/last-result.json が cleanupCandidates に含まれない。",
+        "evidence": "probe.ps1:9 の $created は subject.ps1・subject.Tests.ps1・child-allowed.txt の3件のみ。server.ps1:34 で CreateDirectory(\"$run/temp\")、45行で last-result.json を書き出す。evidence.json:59 の cleanupCandidates も3件。reference.md:18 は「今回作成したパスを記録する」と要求。",
+        "impact": "後片付け対象の名指しが不完全で、Pester の TestDrive 残骸を含む run/temp が記録外に残る。last-result.json は README.md:13 に言及があるが作成物一覧には無い。",
+        "suggestion": "server.ps1 側の作成物2件を結果 JSON の作成物一覧へ合流させる（削除は従来どおり行わない）。",
+        "classification": "計画不適合"
+      },
+      {
+        "severity": "低",
+        "file": "probe.ps1",
+        "line": "9-13",
+        "problem": "run 配下の3ファイルを事前存在確認なしで上書きし、それを「今回の作成物」として名指しする。",
+        "evidence": "probe.ps1:11,13 が無条件 WriteAllText、9行で同じパスを $created に登録。reference.md:18 は「その配下に既存物が混在していないことも確認する」と要求。README.md:7 の「既存物があるルートへ上書きで準備しない」は手順側の注意にとどまる。",
+        "impact": "既存物が混在するルートで再実行した場合、既存ファイルを作成物として後片付け候補に載せうる。今回の実行では試験ルートが新規のため実害なし。",
+        "suggestion": "書き込み前に Test-Path で3件を確認し、存在時は候補に載せず停止する（無害な引数追加の範囲）。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "低",
+        "file": "evidence.json",
+        "line": "13-67（関連: README.md:11, reference.md:44）",
+        "problem": "「未知のツール名・追加引数が拒否される」ことの実測記録が証拠に無い。",
+        "evidence": "evidence.json の claude 節は tools 一覧（14-17）、servers connected（61-66）、固定検査1回の成功出力（56-59）のみ。拒否試行の入出力は無い。README.md:11 は事前確認として要求し、reference.md:44 は「任意コマンド・パス・権限指定を拒否する」と状態として断定。",
+        "impact": "拒否の根拠が server.ps1:24 のコード読解に依存する。なお引数は実行へ一切流れず（37行の引数列は固定値と manifest 由来のみ）、抜け道は確認できなかった。",
+        "suggestion": "拒否応答2件を evidence へ追記するか、文言を「コード上固定・実測は固定検査1件」と書き分ける。",
+        "classification": "事実誤り・期待値の陳腐化の訂正"
+      },
+      {
+        "severity": "低",
+        "file": "server.ps1",
+        "line": "51-52",
+        "problem": "catch 節が $request に依存するため、JSON 解析自体が失敗すると id が前回要求の値または null になる。",
+        "evidence": "16行の ConvertFrom-Json が例外を投げると 52行の $request.id は前ループの値（初回は $null）。$ErrorActionPreference='Stop'（2行）で例外は catch へ入る。",
+        "impact": "不正入力時に応答 id が取り違わる。今回の固定台本では発生していない。",
+        "suggestion": "ループ先頭で $request=$null を初期化し、id が取れない場合は応答を出さない。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "低",
+        "file": "design.md",
+        "line": "3, 35",
+        "problem": "Claude 経路の記載が実測後も更新されておらず陳腐化している。",
+        "evidence": "design.md:35 の「現在の証拠」は「公式機能の調査のみ。Codexの試験は代用不可」のまま。evidence.json:13-67 と reference.md:36 は Claude 起点の実測を記録済み。3行の状態欄も ADR-0142（decision.md）に言及していない。",
+        "impact": "設計文書だけを読むと未実証に見え、reference.md の記載と食い違う。",
+        "suggestion": "35行の証拠欄へ限定構成での実測を追記し、3行の状態へ ADR-0142 を参照追加する（設計本文を凍結扱いにするなら、その旨を明記）。",
+        "classification": "事実誤り・期待値の陳腐化の訂正"
+      },
+      {
+        "severity": "低",
+        "file": "decision.md",
+        "line": "3",
+        "problem": "Status が Proposed のまま、README.md:3 が ADR-0142 を実施根拠として参照している。",
+        "evidence": "decision.md:3 は Status: Proposed。8行にユーザーの選択回答が引用され、evidence.json は当該方式の実施結果を保持。README.md:3 は「Issue-0136・ADR-0142の試験補助」と記載。",
+        "impact": "承認状態と実施実績の表記が不整合。",
+        "suggestion": "Status の更新可否を主担当へ戻す（本レビューでは原本を変更しない）。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "低",
+        "file": "probe.ps1",
+        "line": "36",
+        "problem": "子プロセス検査が Windows PowerShell 5.1 の絶対パス固定に依存するが、前提依存の記載に現れない。",
+        "evidence": "probe.ps1:36 は 'C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' を直接起動。親は server.ps1:37 の $config.pwsh 経由。reference.md:42 の前提は「PowerShell」とのみ、README.md:9 の manifest 項目も codex・pwsh のみ。",
+        "impact": "再現時に子検査の実行系が不明確。Windows 限定の短命台本のため実害は限定的。",
+        "suggestion": "README.md:9 か reference.md:42 に「子検査は Windows PowerShell 5.1 既定パスを使用」と1文追記。",
+        "classification": "実体に合わせる調整"
+      }
+    ],
+    "assessment": "5つの判定対象いずれも重大な破綻は見つからなかった。(1) tools/call は名前一致と空引数のみを通し（server.ps1:24）、実行引数列（同37）は固定値と manifest 由来のみで、任意コマンド・パス・権限へ抜ける経路は確認できなかった。(2) 許可プロファイル（同8）は run のみ write・session-log.json は read で、controller 配下の接続プログラム・設定・台本は許可域外という前提と、evidence.json の denials・前後ハッシュは一致する（ただし実測拒否は server.ps1 のみ＝指摘1）。TEMP 転送（同33-36）は許可域内への限定であり、reference.md:46 が緩和でないと正しく明示している。(3) 正常1成功・変異1失敗（実アサーション赤 Expected {5}/But was {-1}）・復元1成功・保護4件拒否・子の許可書き込みと拒否は出力で区別でき、deleted は空・session-log.json は cleanupExcluded として保全されている。(4) 文書の主張はおおむね証拠内だが、拒否対象3種の断定（指摘1）と引数拒否の実測欠落（指摘4）が証拠をわずかに超える。(5) 差分は実証補助と記載に収まり、新必須依存・環境移行・保護緩和・常設基盤は見当たらない（decision.md:20 が明示的に否認）。指摘は文言の証拠超過・作成物記録の不足・文書の陳腐化に集中し、いずれも修正候補として主担当へ返す。",
+    "limitations": "Read のみで対象7件を走査し、書き込み・コマンド実行・再試験は行っていない。したがって本レビューは OS 上の実行挙動・codex sandbox の実効権限・Claude CLI 各フラグの実在を検証したものではなく、evidence.json は提示された記録として読んだだけで自ら再現していない。README.md:17 の docs/records/experiments/2026-09-08-claude-codex-limited.json、claude-prompt.txt、manifest.json 実体、SKILL.md 本体、レビュー記録 r1/r2 は対象外で未確認。前回レビュー済みの基礎設計・共通手順は再検査していない。"
+  },
+  "numTurns": 9,
+  "tools": [
+    "Read"
+  ],
+  "model": "claude-opus-5[1m]"
+}

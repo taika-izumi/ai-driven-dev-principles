@@ -30,9 +30,17 @@
 
 ## 現在地の要約
 
-- 2026-09-08: 現行判断試験は3件合格・1件不合格。実装計画の自己確認済み。ユーザーの希望で新セッションへ引き継ぐ。計画レビューの選択は未回答、共通スキル実装は未着手。再現入力をGit保存し、完了済み基線試験を再実行せず続行できる状態。
+- 2026-09-08: 共通改定と限定構成の実証は完了。ユーザーはClaude Codeの新規セッションで標準サブエージェントの追加検証を依頼したため、Issueをopenへ戻して継続。別プロセスClaude＋固定MCPの成功と標準サブエージェントの制限継承を区別する。入口は0136-note-claude-native-followup.md。
 
 ## 関連資料
+
+- 0136-note-claude-native-followup.md — Claude Code新規セッションでの追加検証の入口・確認済み範囲・制約。
+
+- 0136-note-implementation-verification.md — 共通改定、実行環境の確認結果と残る判断。
+- docs/records/reviews/2026-09-08-issue-0136-implementation-r1.md — 独立レビュー10指摘の実体照合と採否。
+- docs/records/experiments/2026-09-08-inspection-dispatch-after.json — 改定後の判断試験。
+- docs/records/experiments/2026-09-08-codex-inspection-agent.json — Codex検査担当による代用品試験。
+- docs/records/experiments/2026-09-08-wsl-inspection-inventory.json — WSLの既存依存照会。
 
 - `docs/working/plans/2026-09-08-issue-0136-inspection-protection.md` — 実装準備の計画草案、試験ケースと残る条件。
 - `docs/records/experiments/2026-09-08-claude-readonly.json` — 画面操作なしでのClaude Code読取試験の実行記録。
@@ -51,4 +59,9 @@
 
 ## 結論
 
-（open）
+追加検証待ち（open）。2026-09-08のユーザー依頼により、Claude Code標準サブエージェントでの実証を続ける。以下は既に完了した限定構成の結論で、標準機能の実証済みを意味しない。
+
+ADR-0141に従って共通の保護条件を実装し、ADR-0142で選択した既存Codex併用の限定接続を含む両ツールの実経路を確認した。
+禁止文だけの委譲から、起動前の実効確認・不能時の限定または停止・受取時の照合へ改定した。
+再利用する知見はdocs/reference/inspection-isolation-costs.md第8・9節。設計ノート・実装経緯・移譲元の原本は時点資料として本フォルダに残す。
+無効化設定の内部原因は対応条件にせず、実際の制限継承で確認。Claude単独環境や全OS対応、公開・導入は今回の完了に含めない。

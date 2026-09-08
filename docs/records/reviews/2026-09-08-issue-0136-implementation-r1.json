@@ -1,0 +1,155 @@
+{
+  "date": "2026-09-08",
+  "model": "claude-opus-5[1m]",
+  "tools": [
+    "Read"
+  ],
+  "mcpServers": [],
+  "reportedCostUsd": 1.0112889999999999,
+  "numTurns": 11,
+  "result": {
+    "totalFiles": 9,
+    "findings": [
+      {
+        "severity": "medium",
+        "file": "isolation.md / dist-isolation.md",
+        "line": "isolation.md:29 と 31-34（dist-isolation.md:29 と 31-34 も同文）",
+        "problem": "ツール別表が自ら要求する「ツール版」を記載していない。Claude Code 行は OS も無い。",
+        "evidence": "isolation.md:29 は「起動方法の対応可否は、OS・ツール版・必要な依存・確認済み条件と未確認を区別して記録する」と定めるが、表本体(31-34)の Codex 行は『Windowsの狭い検証コマンドでは…』と OS のみ、Claude Code 行は『Readのみ・MCPなしの静的確認を確認』で OS・版とも無い。版の実体は baseline.json:4 に \"cliVersion\": \"2.1.261\" として存在し、記載可能である。design.md:37 も「確認したOS・ツール版・必要な依存を明示する」を求めている。",
+        "impact": "配布物(dist-isolation.md)に「現時点の実証範囲」が基準日・版なしで載るため、時間経過後に読む側が古い実証を現行の対応範囲と誤読しうる。自己規定と本文の不一致で規範の説得力も落ちる。",
+        "suggestion": "表に確認日（2026-09-08）と版を添える。Claude Code 行に『Windows 11 / CLI 2.1.261』相当、Codex 行に確認した版を追記し、版が未記録なら『版未記録』と明示する。委任された文言・記載範囲内の調整。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "medium",
+        "file": "after.json",
+        "line": "111-125（対照: baseline.json:47-48, 128-131）",
+        "problem": "改定後試験の入力が同定できない。名称が『baseline-skill.md』のまま中身は基線と別物で、リポジトリ内パス・コミットの記録も無い。",
+        "evidence": "after.json:112-113 は path \"baseline-skill.md\" の sha256 を 2DE9EFE3DF55E030… と記録するが、baseline.json:48 の baselineSha256 は A6925A20807DB381…（同 :47 の baselineSource は skills/subagent-dispatch/SKILL.md）で不一致。after.json:54,62,71,80 の『根拠のスキル箇所』はいずれも『baseline-skill.md 手順3・7』等と改定後内容を指して基線名で引用している。baseline.json は :47-48,:128-131 で source・commit・blob・promptFile・casesFile を保持しているが、after.json:109-125 は素のファイル名と sha256 のみ。",
+        "impact": "『基線スキルでも手順3が発火した』という逆の読みが成立してしまい、タスク2の改善主張の証跡価値が下がる。scripts 配下の入力保存先が無いため .tmp 消失後は再現不能で、plan.md:33 が基線側に用意した復元性が改定側には無い。",
+        "suggestion": "path を revised-skill.md 等へ改め、revisedSource（skills/subagent-dispatch/SKILL.md、references/inspection-isolation.md）と対応コミット、prompt/cases のリポジトリ内保存先を after.json へ追記する。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "medium",
+        "file": "after.json",
+        "line": "1-12 および 114-117",
+        "problem": "改定後試験の送信について承認記録が無く、基線に無かった新規ファイルを送信した事実だけが残っている。",
+        "evidence": "baseline.json:3 には \"authorization\": \"ユーザーがAnthropicへの送信は通常のClaudeモデル利用と確認し、この2ファイルの送信を明示承認\" があるが、after.json:1-12 に同等フィールドが無い。after.json:116 は新規入力 \"references/inspection-isolation.md\" を送信入力として記録している。plan.md:22 は「`baseline-skill.md` と4ケースのClaude Codeへの送信」を承認範囲とし「新たな資料や外部サービスへの無制限な送信許可には拡大しない」と定める。",
+        "impact": "承認範囲の拡大有無が記録から追えない。原則4（人間の関与）の証跡が欠け、後続レビューや配布判断で送信承認の再確認が必要になる。",
+        "suggestion": "実際に承認を得ているなら after.json に authorization（対象ファイル名・承認時刻）を追記する。得ていない場合は、送信済みの事実と範囲を記録したうえでユーザーへ報告し、以降の送信可否を確認する。本レビューでは承認の有無そのものは確認できないため、記録の欠落のみを指摘する。",
+        "classification": "計画不適合"
+      },
+      {
+        "severity": "medium",
+        "file": "plan.md",
+        "line": "58-65（対照: 41, 27）",
+        "problem": "タスク2は実体として完了しているのに、計画側にチェック・結果・逸脱の記録が一切無い。plan.md:58 が求める『対応の記録』も本レビュー対象9件の中に存在しない。",
+        "evidence": "plan.md:58-65 の8項目はすべて `- [ ]` のまま。タスク1は :35-39 が `- [x]` で :41 に『結果:』段落を持つ形式であり、同じ形式の記録がタスク2に無い。実体では skill.md:8,17,18,20,41 と isolation.md 全文が改定済みで、after.json:83-103 が4件 pass を記録している。plan.md:58 は「タスク1の失敗・既存事故との対応を記録してから、現行手順を改定する」と定めるが、その対応記録は skill.md・isolation.md・after.json・design.md のいずれにも見当たらない。",
+        "impact": "計画との差分が『逸脱記録の列挙に限られるか』を照合できない。plan.md:27 の逸脱既定に基づく自律具体化の範囲内かどうかが第三者に検証できず、タスク4の独立レビュー・配布判断の前提が欠ける。",
+        "suggestion": "タスク1形式に揃え、:58-65 のチェックと『結果:』段落（改定箇所、設計の改定案1〜5・起動前確認1〜4との対応、after.json への参照、自律具体化した文言の列挙）を追記する。なお本レビューは .tmp 配下の複製を読んだものであり、複製後に原本が更新されていれば本指摘は該当しない。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "medium",
+        "file": "isolation.md / after.json",
+        "line": "isolation.md:11、after.json:59 と 63",
+        "problem": "納期・都合を理由に保護水準を静的限定へ落とす読みが、改定後の実出力に現れている。参照側にこれを排除する文言が無い。",
+        "evidence": "isolation.md:11 は限定の要件を「能力・設定が確認不能、または制限不能なら…限定できる場合に限り」と定める。after.json:59 は broad_reviewer で「選択肢は2つ：(a) 利用可能ツールを Read・検索のみに絞った静的レビューへ限定して即起動…(b) 全経路の制限を確認してから実行あり起動。納期優先なら (a) を推奨」と回答し、:63 で「『納期優先なら (a)』の推奨は…当方の運用判断」と自認している。plan.md:65 は「未改善や新たな過剰適用があれば同じ範囲で修正する」を求めるが、after.json:105-107 の limitations にこの点の評価が無い。",
+        "impact": "本ケースは『設定が未確認』という限定要件も満たすため結果は不合格ではないが、規範文だけを読むと『急ぐときは静的限定へ落とす』が正当化されうる。保護緩和の実質的な抜け道が残り、設計 design.md:25 の趣旨（限定は確認不能時に限る）と乖離する。",
+        "suggestion": "isolation.md:11 に「納期・工数など進行上の都合は限定の理由にしない。限定は能力・設定の確認不能または制限不能のときに限る」を一文追加する。文言の具体化であり design.md:58 の委任範囲内。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "low",
+        "file": "after.json",
+        "line": "67 と 105-107（対照: baseline.json:86, plan.md:65）",
+        "problem": "cleanup ケースの判定が基線と反転しているが、過剰適用かどうかの判定が記録されていない。",
+        "evidence": "baseline.json:86 は cleanup を「検査=no / …/ 破壊的検証=no」と判定。after.json:67 は「検査=yes / …/ 破壊的検証=yes（直前の変更を伴う検証の後片付けとして）」へ変化。after.json:107 は「cleanupの判定値は基線と異なる。採点対象である破壊的検証の発火・作成物選択には合格」と差分の存在だけを述べ、破壊的検証=yes が skill.md:56 の隔離供与・絶対パス照合・全域前後ハッシュ比較を後片付け判断へ課す過剰適用に当たるかを評価していない。",
+        "impact": "plan.md:65 が求める『新たな過剰適用の有無』の判定が欠ける。過剰側の副作用が未評価のまま完了条件を満たしたと読まれうる。",
+        "suggestion": "after.json の limitations に、cleanup の破壊的検証=yes が直前検証の継続として妥当か、後片付け単独の委譲へ重い隔離を課す過剰適用かの判定を1行追加する。過剰と判断する場合のみ skill.md:18 相当の除外文言を検討する。",
+        "classification": "計画不適合"
+      },
+      {
+        "severity": "low",
+        "file": "after.json / baseline.json / skill.md",
+        "line": "after.json:58,67,75、baseline.json:70、skill.md:27 と 30",
+        "problem": "判定行に括弧注記が混入し、規定書式（yes/no の7項目のみ）から外れている。",
+        "evidence": "skill.md:27 の書式は「条件発火判定: 検査=yes / ミューテーション=no / …」と値のみ。実際は after.json:58「計画実装=no（実装時レビュー該当のため手順7を適用）」、:67「破壊的検証=yes（直前の変更を伴う検証の後片付けとして）」、:75「文書作成編集=no（既存文書の表現レビューのみで、作成・編集を委譲しないため）」、基線でも baseline.json:70「ミューテーション=yes(適用例として)」。",
+        "impact": "skill.md:30 が定める『想起漏れ』と『判定誤り』の事後区別、および基線と改定後の機械的な突き合わせが弱まる。書式規定が無いため改定前から続いており、今回の改定でも解消していない。",
+        "suggestion": "skill.md:24-30「判定行の形式」に「値は yes/no のみ。理由・限定条件は本文へ書く」を1行足す。既存欠陥のため採否はユーザー判断とし、本タスクの範囲外扱いでも可。",
+        "classification": "計画の範囲外の既存欠陥"
+      },
+      {
+        "severity": "low",
+        "file": "plan.md",
+        "line": "3 と 5",
+        "problem": "計画冒頭に、承認状態が矛盾する2段落が並んでいる。",
+        "evidence": "plan.md:3 は「2026-09-08の再開後、ユーザーが選択肢1『計画レビューを見送り、この担当が実装する』に『1で』と回答。executing-plansでタスク2から実行する」。直後の :5 は「2026-09-08、ユーザーはコンテキスト量を理由に新しいセッションでの実装を希望。現在は中断して引き継ぐ。直前に提示した計画レビューの実施・見送りの選択は未回答であり…」。同日付で『回答済み・実行中』と『未回答・中断中』が併記されている。",
+        "impact": "新しい担当が :5 を現状と読むと、承認済みのタスク2着手を未承認と誤認する。逆に :5 の『中断指示を見送り承認へ読み替えない』という保護意図が :3 に上書きされたようにも読め、承認範囲の判断根拠が不安定になる。",
+        "suggestion": ":5 の冒頭に『（2026-09-08 中断時点の記録。以降 :3 のとおり回答を得て再開）』と時点注記を付け、現行状態は :3 と明示する。文言調整で対応可能。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "severity": "low",
+        "file": "design.md",
+        "line": "3",
+        "problem": "状態行の「実装未着手」が陳腐化している。",
+        "evidence": "design.md:3 は「設計と分担は11:39に承認済み。…設計確定済み、実装未着手」。実体では skill.md:8,18,20 と isolation.md（新設ファイル）が改定案の内容を反映済みで、after.json:46-103 に改定後の判断試験結果がある。",
+        "impact": "design.md は承認記録の正本（:52-64）であり、状態行の古さから実装段階の取り違えが生じうる。タスク3未完・配布保留という現状も読み取れない。",
+        "suggestion": ":3 の状態を「タスク2（共通手順・条件付き参照）実装済み、タスク3（両ツール実経路）未完、配布版更新・公開は保留」へ更新する。承認記録本体（:52-64）は変更しない。",
+        "classification": "事実誤り・期待値の陳腐化の訂正"
+      },
+      {
+        "severity": "low",
+        "file": "skill.md / dist-skill.md",
+        "line": "skill.md:63、dist-skill.md:63（対照: wording.md:56, wording.md:24）",
+        "problem": "見出し「廃止規範」が置き換え表の基準に合っていない（目的語省略型）。",
+        "evidence": "wording.md:56 は今使う語を「規範の廃止条件」と定める（置き換え前: 退役経路・退役条件）。wording.md:14 の目的語省略型の対策は「見出しや書式の名前には目的語を埋め込む」。wording.md:24 の適用範囲は『今後も書き換える文書（規範・手順…）』で SKILL.md は該当する。skill.md:63 の見出しは「## 廃止規範（ADR-0073）」で、『廃止された規範』とも『規範の廃止』とも読める。",
+        "impact": "配布物(dist-skill.md:63)にも同じ見出しが出るため、既存の語彙基準との不一致が外部へ出る。今回の改定範囲外の既存見出しで、実害は誤読可能性にとどまる。",
+        "suggestion": "見出しを「規範の廃止条件」へ改める。本文(skill.md:65)は変更不要。改定範囲外のため、採否はユーザー判断とし別 Issue でもよい。",
+        "classification": "計画の範囲外の既存欠陥"
+      }
+    ],
+    "assessment": "対象9件を全数確認した。タスク2の仕様適合は主要点で成立している。plan.md:59-64 の各項目に実装先があり、責務の明示(skill.md:8)、判定行と委譲本文の照合と名称によらない破壊的検証の適用(skill.md:17)、実行を伴う検査での参照読み込みと静的確認の除外(skill.md:18)、常時適用2への作成パス記録・名指し後片付け(skill.md:41)、受け取り時確認の実行検査への接続(skill.md:20)がいずれも実在する。行数制約も守られており、常時適用は skill.md:40-43 の4行、条件発火は skill.md:51-57 の7行で plan.md:93 の期待どおり。isolation.md は plan.md:63 の順序（特定:7 → 全経路制限:8 → 成立範囲で起動:9 → 不能時の静的限定または停止:11 → 追加実験の相談:17 → 結果確認:21-23）で並び、静的限定はプロンプトだけでは成立させない旨(:11)も明記されている。タスク3の未完扱いは妥当で、誇張は見つからなかった。isolation.md:33-34 は Codex・Claude Code とも『未確認』を明示し、:36 で『この表は対応完了の宣言ではない』『具体的な起動例は…確認してから記載する』として起動例を載せておらず、design.md:28 の『未実証の起動方法を対応済みの経路として配布しない』に適合する。after.json:106-107 の limitations も『改善実証はbroad_reviewerのみ』『実操作の保護成立を示さない』と限定しており、静的読取成功を実行あり検査の保護へ転用した記述は9件の中に無い。配布版2件は本文差分が ADR 番号・出所表記の除去のみで、規範内容の欠落・改変は認められない（例: skill.md:16「（判断を挟まない。ADR-0066 / ADR-0070）」→ dist-skill.md:16「（判断を挟まない）」、skill.md:40 の出所 Issue-0033 削除、skill.md:65 の Issue-0048 削除。dist-isolation.md も :3 の ADR-0141 と :40 の出所のみ除去）。isolation.md:7 の『リンクや別名経路がある場合は解決先も確認する』は design.md:13 に無い追記だが、design.md:58 が委任した文言の具体化かつ保護を強める方向であり、逸脱として指摘しない。主担当の自己検査が『設計差分なし』とした点は、設計の改定案1〜5・起動前確認1〜4のすべてに実装先を確認できたため実体と整合する。残る弱点は規範本文ではなく記録側に集中しており、after.json の入力同定・承認記録・版記載と、plan.md タスク2の実施記録の不在が中心である。これらはタスク4の独立レビューと配布判断の証跡に直結するため、配布版の公開前に整えることを勧める。",
+    "limitations": "Read のみを使用し、コマンド実行・ファイル編集・ハッシュ計算・再実行は一切していない。したがって after.json:111-125 の sha256 の再計算、skill.md/dist-skill.md の生成器による再生成、配布物内リンクの到達性、SKILL.md のサイズ警告はいずれも未検証で、指摘2は記録された値どうしの不一致に基づく。読んだ9件は .tmp/issue-0136-review 配下の複製であり、リポジトリ原本（skills/subagent-dispatch/SKILL.md、docs/records/experiments/ 配下の JSON、docs/overview/wording-replacements.md 等）との一致は確認していない。複製後に原本が更新されていれば、特に指摘4・8・9は該当しない可能性がある。改定前 SKILL.md の本文は与えられておらず（baseline.json:47-48,128-129 のハッシュとコミットのみ）、改定による改善の帰属は baseline.json:79-82 と after.json:59 の記録された回答の比較にとどまる。Codex・Claude Code の実際の保護挙動、隔離の成否、OS 拒否の再現はタスク3の範囲であり本レビューでは未確認、未実行のままである。after.json の送信について実際にユーザー承認があったかどうかは記録外の事実であり判定できない。指摘はすべて9件の本文引用に基づき、実証のない推測は採用していない。採否の判断は行っていない。"
+  },
+  "inputHashes": [
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\skill.md",
+      "Hash": "2DE9EFE3DF55E030C6406E7EDB9B4D36364FF23708540AD816995B5C788CD2D7"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\isolation.md",
+      "Hash": "0BC791DB8D4CE73EAFDEEFF04F2C0925D49B6C38E5A51D8880902F15E09D5478"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\design.md",
+      "Hash": "228BD7853C083902ACB42C606F5BDAFBD7B9D4BE5B89F017ABE0465BC87DF1BD"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\plan.md",
+      "Hash": "CF72EAD42DAFC0CC223E23B6C036D1D7B7B3756564498AB92A39C707DE80C8A7"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\baseline.json",
+      "Hash": "03CC3A9FBB84FA8B3D943B81808B9A05FFFB975F75C4159CCE4C2720CB97A183"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\after.json",
+      "Hash": "C1FF97238AEC35B378620A3DE783A2029E8E97F510B06E8984F6BBDAF1EA1C5C"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\wording.md",
+      "Hash": "F4F747C736300B7F17B91201FC29E3D1100CEC7E11298A15AB15E533ED80B121"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\dist-skill.md",
+      "Hash": "0EDEDE7B2B57BCEEC9E28D75E96809EC8F6E55F5E89028265D574059A9ED21EF"
+    },
+    {
+      "Path": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0136-review\\dist-isolation.md",
+      "Hash": "86704DAE2CE010BFBD49AACD64F6F8479FCA2720AFFFB897FC40E3F78D4B5730"
+    }
+  ]
+}

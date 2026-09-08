@@ -2,8 +2,8 @@
 
 - **Branch**: codex/issue-0136-inspection-protection
 - **Last Updated**: 2026-09-08 19:14 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: Issue-0136 / 限定構成を検証済み、Claude Codeへの引き継ぎ後のマージを承認済み
+- **Status**: completed
+- **Current Phase**: 限定構成の実装をmasterへ統合済み。追加検証はmaster.mdへ引き継ぎ
 
 ## 作業の目的・背景
 
@@ -28,6 +28,8 @@ Issue-0136の検査委譲で、指示外の変更実験・範囲外書き込み�
 - Issue-0136 plan 確定点: 再開後のユーザー「1で」により計画レビュー見送り・主担当実装を選択。
 - 計画タスク2: 共通手順・参照を改定。4ケースの期待判断に合格、broad_reviewerのみ改善実証。常時4件・条件7行を維持。
 - 共通改定の独立レビュー: Read限定担当で9件を確認。指摘の採否と補正は実装レビュー記録を参照。
+
+統合結果: 11cf3edでmasterへ--no-ffマージ。マージ後の両Check合格。公開・導入は未実施。以下の経過は統合前の記録であり、次作業の現在地はmaster.mdを参照する。
 
 ## 進行中のタスク
 

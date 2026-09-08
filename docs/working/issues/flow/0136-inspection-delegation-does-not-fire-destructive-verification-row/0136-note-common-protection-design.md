@@ -1,6 +1,6 @@
 # 検査委譲の保護条件を各ツールでどう実現するか
 
-- 状態: 設計と分担は11:39に承認済み。承認されたF-01修正後の第2回レビューは新規指摘なし（12:15受領）。設計確定済み、実装未着手。レビュー記録は `docs/records/reviews/2026-09-08-issue-0136-design-r2.md`。
+- 状態: 設計と分担は11:39に承認済み。承認されたF-01修正後の第2回レビューは新規指摘なし（12:15受領）。設計確定済み。共通手順と条件付き参照を実装し、改定後の判断試験4件は合格。両ツールの実経路確認は未完、配布版更新・公開は保留。レビュー記録は `docs/records/reviews/2026-09-08-issue-0136-design-r2.md`。
 - 問い: CodexとClaude Codeの利用を維持し、変更実験と後片付けによる既存物の破損をどこで防ぐか。
 - 方針案: [ADR-0141](../../../../records/decisions/0141-keep-inspection-protection-tool-independent.md)。調査・実測は [隔離方法と負担](../../../../reference/inspection-isolation-costs.md)。
 

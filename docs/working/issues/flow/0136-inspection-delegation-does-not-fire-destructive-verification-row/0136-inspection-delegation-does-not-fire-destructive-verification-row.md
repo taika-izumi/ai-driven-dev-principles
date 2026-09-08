@@ -30,9 +30,15 @@
 
 ## 現在地の要約
 
-- 2026-09-08: 現行判断試験は3件合格・1件不合格。実装計画の自己確認済み。ユーザーの希望で新セッションへ引き継ぐ。計画レビューの選択は未回答、共通スキル実装は未着手。再現入力をGit保存し、完了済み基線試験を再実行せず続行できる状態。
+- 2026-09-08: 再開後、計画レビュー見送り・主担当実装をユーザーが選択。共通手順と参照を改定し、判断試験4件合格、独立レビューの記録補正済み。Codexのシェル・内蔵編集・子PowerShellの保護は確認。副担当の経路とClaudeの実行あり検査は未確認で、追加環境・接続方式の相談待ち。配布版更新・公開は保留。
 
 ## 関連資料
+
+- 0136-note-implementation-verification.md — 共通改定、実行環境の確認結果と残る判断。
+- docs/records/reviews/2026-09-08-issue-0136-implementation-r1.md — 独立レビュー10指摘の実体照合と採否。
+- docs/records/experiments/2026-09-08-inspection-dispatch-after.json — 改定後の判断試験。
+- docs/records/experiments/2026-09-08-codex-inspection-agent.json — Codex検査担当による代用品試験。
+- docs/records/experiments/2026-09-08-wsl-inspection-inventory.json — WSLの既存依存照会。
 
 - `docs/working/plans/2026-09-08-issue-0136-inspection-protection.md` — 実装準備の計画草案、試験ケースと残る条件。
 - `docs/records/experiments/2026-09-08-claude-readonly.json` — 画面操作なしでのClaude Code読取試験の実行記録。

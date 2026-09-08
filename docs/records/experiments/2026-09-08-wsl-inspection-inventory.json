@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-08",
+  "distribution": "Ubuntu",
+  "kernel": "Linux",
+  "command": "wsl -d Ubuntu -- sh /mnt/d/Dev/002_AiDev/MakeAiInstructions/.tmp/issue-0136-wsl-inventory.sh",
+  "script": "scripts/experiments/inspection-dispatch/wsl-inventory.sh",
+  "exitCode": 0,
+  "result": {
+    "node": "missing",
+    "home_claude": "missing",
+    "pwsh": "missing",
+    "bwrap": "/usr/bin/bwrap",
+    "socat": "missing",
+    "claude": "missing"
+  },
+  "limitations": [
+    "PATHとホームの既定実行ファイルだけの照会。ディスク全体の不在証明ではない。",
+    "インストール・認証・設定変更は実施していない。"
+  ]
+}

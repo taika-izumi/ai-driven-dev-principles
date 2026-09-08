@@ -1,6 +1,6 @@
 # ADR-0144: Claude標準サブエージェントの書き込み系ツールの除去は許可リスト方式で行い拒否リスト方式を用いない
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-09
 
 ## Context

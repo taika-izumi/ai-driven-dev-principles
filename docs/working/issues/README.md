@@ -152,3 +152,4 @@
 | [0137](flow/0137-implementation-consistency-review-lacks-plan-check-vs-example-run.md) | 確定前レビューの実装整合性観点に「計画内の検査を同じ計画の実装例へ当てて通るか」の手順が無く、検査と実装例の不整合が委譲直前まで残る（LoopForAlpha#Issue-0179 の申し送り） | open | 2026-09-08 |
 | [0138](flow/0138-plan-deviation-defaults-lack-branch-for-defects-voiding-completion-criteria.md) | 計画逸脱判断の既定に「射程外の既存欠陥が完了基準・close 条件を満たせなくする」場合の分岐が無く、利用者が既定を覆した（LoopForAlpha#Issue-0180 の申し送り） | open | 2026-09-08 |
 | [0140](flow/0140-confirmation-cost-outgrows-work-in-small-norm-updates.md) | 規範文書への小さな事実追記でも確定点が立つため、確定前レビューの費用が主作業の費用を上回る | open | 2026-09-08 |
+| [0141](system/0141-static-confirmation-exemption-lacks-decision-criterion.md) | 検査委譲の実行準備の免除条項「書き込み可能な操作を持たない静的確認」に判定基準が無く、委譲元の誤判定で保護確認の経路ごと発火しない — 判定基準をツール非依存に定めるか免除条項を見直す | open | 2026-09-09 |

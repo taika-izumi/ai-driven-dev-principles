@@ -1,0 +1,55 @@
+# 通信なし環境での修正前後の再実行
+
+## 対象と責務
+
+scripts/verification/Replay.psm1、replay-record.schema.jsonを所有する。Invoke-VerificationReplay(PreparedRunV3, ProposalResultV3) -> ReplayResultV3を提供する。VMの作成・exec・停止は02のSbxRuntimeの公開操作だけを呼ぶ。CLI実装や設定schemaを複製しない。
+
+## 入力と基準版
+
+ProposalResultV3.status=ready、runId一致、manifestHash一致を要求する。origin=generatedはstopState=stopped、origin=reused-testsはsandbox=nullかつstopState=not-createdを要求する。acceptedの現物を再検査し、一覧にないファイルやハッシュの変化があれば拒否する。baselineは01の全ファイルmanifestと、PreparedRunV3に保持したmanifest期待hashに照合する。子の作業ディレクトリを再実行入力にしない。
+
+外側がreplay-inputs/beforeとafterを新規に作る。beforeはbaselineの作業ファイル、afterは同じ作業ファイルへ検査済みreplacementsを適用したもの。両方の.verification-testsへ同じtestsを配置する。.gitは再実行には不要なので搬入しない。基準Gitは外側に保全したまま、比較対象のsourceManifestHashを記録する。標準ライブラリのみで成立しない題材はblockedとし、実行中に依存を取得しない。
+
+修正候補がない初回はbeforeのみ実行し、再現のみという結果を返す。主担当が原本を修正した後のrecheckでは前回の固定テストを現在版へ適用する。前回before記録が完全なら、前回runIdと今回結果を関連付けるが、同一runのbefore/after実行を捏造しない。
+
+## コマンドと環境
+
+役割ごとに新しいVMを作る。再実行設定の同一templateDigest、CPU/メモリ、通信拒否、共有なし、認証なしを使う。before終了・停止確認後にafterを作る。停止済みbeforeをafterへ再利用しない。両者はCodexの提案VMとも別id。
+
+入力先は/home/agent/workspace/source、作業ディレクトリも同じ。搬入したコピーだけagent所有へ調整する。固定argvは次の配列とし、子にホストコマンドや任意のsbxフラグを指定させない。
+
+搬入はCopy-VerificationSandboxInput、実体照合はConfirm-VerificationSandboxInputを呼ぶ。実行はWorkingDirectory=/home/agent/workspace/source、Environmentは当該profileで固定した最小辞書、RunBudgetはPreparedRunV3から引き継いだ値を渡す。新規VMのactivationRecordに現在runId/idと実効設定が対応したことを確認してから搬入する。
+
+`["python3", "-m", "unittest", "discover", "-s", ".verification-tests", "-p", "test_*.py", "-v"]`
+
+テストはプロジェクトのモジュールを作業ディレクトリからimportできる。環境は同じ固定イメージ・入力と最小の明示変数に固定し、ホストの環境変数・資格情報を継承しない。テストや修正は未信頼コードなので、VM内でsudoや任意操作を試みることを想定し、通信拒否・ホスト隔離・資源/時間制限をVM外側で成立させる。VM内のchmodだけを保護にしない。
+
+## 外側の実行記録
+
+各コマンドに外側でcommandIdを発行。control/replay/<role>/<commandId>.jsonへschemaVersion、runId、role、sandboxId、profileHash、templateDigest、sourceManifestHash、inputManifestHash、testsManifestHash、argv、workingDirectory、startedAt、finishedAt、exitCode、stdoutPath、stderrPath、stdoutHash、stderrHash、timedOut、outputExceeded、stopVerified、transportVerifiedを保存する。時刻はUTCのISO8601。失敗時に得られなかった時刻・終了コードはnull。
+
+schemaVersionは3。runtimeの実効設定hashとlimitsも記録し、profileHashだけで資源条件を照合したことにしない。testsManifestHashは02の定義で計算する。実機の資源制限・通信等の照会証拠はcontrol/runtime内のパス・ハッシュで関連付ける。
+
+当該VMのactivationRecordPath/activationRecordHashを記録に含め、runId/sandboxId/daemonInstanceと実効設定を照合する。能力試験の古いprofile証拠だけで現在の実行を承認しない。
+
+入力manifestは外側で作った全搬入ファイルのパス・サイズ・SHA256。搬入終了後、実行開始前にVM内の実体一覧を固定コマンドで照合する。相違・欠落・予定外ファイルならblocked。子のproposal VMが返したmanifestを代用しない。実行中にテストが自分を書き換える可能性はあり、開始時の入力と実行後の内容を混同しない。
+
+sbx CLIの出力・終了コードを外側で捕捉する。開始/終了がローカル接続失敗と区別できることを、正常0・固定7・存在しないコマンド・切断・時間超過の実機対照で確認したruntime設定だけを使う。区別できない終了はexitCodeを採否へ用いずtransportVerified=false。存在しないEngine execIdを生成しない。stdout中の成功宣言で外側記録を上書きしない。
+
+全体deadlineと各replaySecondsを外側で監督する。上限超過時は対象VMを名指しstop、cleanupSeconds内に同一idの停止を照会する。CLIを終了させるだけでVM停止扱いしない。出力上限超過もコマンドを止めてincomplete。停止未確認ならafterへ進まず返す。作成途中でVM識別不能の場合も成功にせず、既存VMを広く停止する操作で代替しない。
+
+## ReplayResultV3
+
+schemaVersion=3、runId、status、mode、sandboxes、before、after、allStopped、failureを持つ。statusはcompleted/blocked/failed/timed_out/incomplete/not_run。modeはcandidate-comparison/reproduction-only/recheck。sandboxesは作成を確認したSandboxHandleの配列で、コマンド開始前に失敗したVMも含める。before/afterは記録の外側パスとSHA256、SandboxHandleを含む参照、未実施時null。recheckはbefore=nullでafterが現在版の記録。過去の記録は03のpreviousRunIdへ別に関連付ける。allStoppedは作成済みVMについてtrue/false、作成0台ならnull。
+
+提案がreadyでない場合はCLIがNew-VerificationReplayNotRun(PreparedRunV3, Failure)を呼ぶ。この関数はReplay.psm1が所有し、status=not_run、sandboxes=[]、before/after/allStopped=null、元の失敗段階を持つfailureを返す。VMやモデルを起動しない。作成成否・IDが不明な失敗はnot_runへ丸めず、failure.reason=creation-unresolvedかつincompleteとする。
+
+New-VerificationSandboxの例外では02のruntimeFailureを捕捉し、createdの部分handleもsandboxesへ追加して停止状態を引き継ぐ。activation失敗でコマンド記録がない場合、before/after=nullでも作成済みVMの記録は残す。停止成功時はallStopped=true、未確認はfalse、作成成否不明はfailure.reason=creation-unresolvedとし、空配列だけを理由にnot_runへ変換しない。
+
+completedは必要な実行・外側記録・停止が確認できたという意味で、合格を意味しない。candidate-comparisonのbefore/afterは同じtestsManifestHashでなければならない。通常の0以外の終了はfailedではなく観測値としてcompletedにできるが、開始未確認・transportVerified=false・出力超過はincomplete。
+
+## 検証
+
+V4/V5/V6の実行側を担当。既知の小さな欠陥でbefore非0/after0、before0の非再現、after非0、テスト変更、別イメージ、前段停止未確認、偽成功文字列、CLI切断、出力洪水、時間超過、他VMの継続を確認する。各役割の実行環境が新規であることをidで照合する。悪意あるテストの意味上の偽装まで機械検査で排除したとは主張しない。
+
+関連ADR: 0157、0158。準備は01、runtime契約は02、最終判定は03。

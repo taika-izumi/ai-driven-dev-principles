@@ -1,53 +1,72 @@
-# 検証結果・実行証拠・再現テストの回収
+# 原本・再実行記録・提案の照合と結果返却
 
 ## 対象と責務
 
-- `scripts/verification/Result.psm1`: v2の応答・実行記録・原本状態・成果物の照合。
-- `result.schema.json`: v1先行部品とv2の結果を識別する。
+scripts/verification/Result.psm1、result.schema.jsonを所有する。Complete-VerificationRun(PreparedRunV3, ProposalResultV3, ReplayResultV3) -> VerificationResultV3を提供する。既存v1の2引数呼出しは維持して内部のComplete-LegacyVerificationRunへ分岐し、v3は3引数を必須とする。版の混在と未実装v2を拒否する。
 
-`Complete-VerificationRun(PreparedRunV2, ExecutionResultV2) -> VerificationResultV2`。既存v1の原本・パス・ハッシュ照合を再利用する。現在のcommand_execution専用処理へMCPの記録を偽装して流し込まない。
+正常なPreparedRunV3を作れない場合は、同モジュールのNew-VerificationFailureResult(RequestContext, Failure)をCLIが呼ぶ。RequestContextは確定したrunId/runRoot/sourceRootまたは各null、Failureはstatus/stage/reason。無効な準備結果を通常の照合関数へ渡さない。
 
-Result.psm1が版の振り分けを所有する。既存v1処理は内部関数Complete-LegacyVerificationRunとして保持し、v2はComplete-LinuxVerificationRunへ分岐する。PreparedRunV2とExecutionResultV2の片方だけがv2の場合は拒否する。v2の成果物には新しいGet-LinuxWorkArtifactを使用し、workRoot内の相対パスとして解決する。既存Get-VerificationArtifactはv1のrunRoot相対パスと証拠ファイル用なので、包含先だけを変えて共用しない。
+PreparedRunV3が正常なら、Proposalの失敗も通常の3入力照合へ渡す。CLIはProposalの非ready結果を保持し、04のNew-VerificationReplayNotRunで未実行結果を作る。例外は該当ブロックが作成済みVMと停止状態を含む型付き失敗結果へ変換する。準備後に結果を組み立てられない例外はNew-VerificationFailureResultへ判明済みのVM/停止情報を追加したRequestContextを渡し、未起動扱いに戻さない。
 
-## 出力契約
+VM作成後のactivation失敗は02のruntimeFailureにある確定済みIDと停止状態を照合対象に含める。activationRecordがnullであることを未作成の根拠にしない。停止できた起動失敗はblocked、作成不明・停止未確認はincompleteとし、時間超過は既定の優先順位を適用する。
 
-VerificationResultV2は`schemaVersion=2, runId, status, summary, sourceState, agentVerdict, checks, findings, artifacts, unverified, execution, runRoot, sourceManifestPath, recheckManifestPath`を持つ。sourceStateはunchanged/changed/unreadable。schemaVersionの混在・未知キー・不正な型を受理しない。
+## 結果の契約
 
-準備未成立の場合はResult.psm1の失敗応答生成処理をCLIが呼び、無効なPreparedRunを通常の照合関数へ渡さない。未確定のrunId・runRoot・manifestパス・execution・agentVerdictはnull、checks/artifactsは空配列とし、statusとunverifiedに失敗段階を残す。実行領域が存在すれば失敗結果をcontrolへ保存し、保存自体が失敗した場合はその旨も標準出力のJSONへ記載する。存在しない保存先を返さない。
+VerificationResultV3はschemaVersion=3、runId、status、summary、sourceState、baselineState、proposalVerdict、replayVerdict、checks、findings、artifacts、unverified、execution、previousRunId、runRoot、sourceManifestPathを持つ。未知キーを禁止し、子の応答へ外側のstatusを設定させない。
 
-| status | 意味 | CLI終了コード |
+- sourceStateはunchanged/changed/unreadable。誰が原本を変更したかを推測しない。
+- baselineStateはunchanged/changed/unreadable。基準版とmanifestの両方を照合する。
+- proposalVerdictはreference-only（正常な提案）またはnull。子のpass宣言を採否に使わない。
+- replayVerdictはcandidate-supported/not-reproduced/still-failing/reproduced/current-pass/current-fail/undetermined。意味は下表。
+- checksは外側のrole/commandId/sandboxId/記録パス・SHA256/終了値の配列。架空の子内部commandIdを作らない。
+- findingsは未信頼の子の説明、artifactsはkind/path/size/sha256の検査済み一覧。再検証では前回からのテストも由来を明記する。
+- executionはproposalCreated、replayCreatedCount、proposalStopped、replayAllStoppedと失敗段階。未作成の停止値はnull、作成した対象はtrue/false。作成不明は失敗理由として保持してincomplete。previousRunIdは再検証時だけ値を持ち、それ以外null。
+
+| status | 意味 | CLI終了 |
 |---|---|---|
-| completed | 応答・実行・停止・対象版・成果物を照合できた | agentVerdict=passは0、failは1 |
-| incomplete | 証拠欠落、応答不正、一部未検証、停止未確認等 | 2 |
-| blocked | 依頼・設定・権限・起動・準備が成立しない | 2 |
-| source_changed | 準備後の原本ファイル・HEAD・headRef・全参照が更新された | 2 |
-| timed_out | 全体またはコマンドの時間上限に達した | 2 |
+| completed | 必要な証拠と停止を照合できた | 下記判定により0または1 |
+| blocked | 依頼・準備・起動前条件が成立しない | 2 |
+| timed_out | 全体または実行上限に到達 | 2 |
+| source_changed | 原本が対象版から変わった | 2 |
+| incomplete | 基準版改変、証拠不正、出力超過、停止未確認、その他の未完 | 2 |
 
-複数の問題はunverifiedとexecutionへすべて残す。優先するstatusはtimed_out、blocked（未起動、または作業解放前の確認不成立）、source_changed、incompleteの順とし、completedは他の未解決条件が無い場合だけ。completed自体はテスト合格を意味しない。
+優先順位はtimed_out→incomplete（作成不明・作成済み対象の停止未確認または基準版改変）→blocked→source_changed→incomplete（その他）→completed。未作成のnull停止値を事故扱いしない。Proposal/Replayのfailedはincomplete、blockedはblocked、timed_outはtimed_outに写像する。not_runは原因となる上流結果に従い、単独でcompletedにしない。複数問題はすべてunverifiedへ残す。CLIはJSON1件をstdoutへ、診断をstderrへ返す。
 
-## 回収の条件
+## 観測からの判定
 
-1. effectiveConfigPathが当該control/execution/activation.jsonを指すことと、その存在・schemaVersion・runId・verified判定・証拠ハッシュを検査する。実行側が保存した設定・実行体・実効ツール一覧との一致も確認する。作業解放前の不成立を示す`execution.failure.stage=activation`ならblocked。作業解放後の回収で初めて欠落・不一致・verdict=blocked/unverifiedが判明した場合はincompleteとし、起動時に止められたことにはしない。続いてagent・MCP・コンテナの実行ID、開始・終了、processTreeStoppedとcontainerStoppedを確認する。停止未確認なら作業コピーを安定した成果物として採用しない。
-2. Codexの開始・終了・失敗イベントと最終応答のschemaVersion・runIdを照合する。終了コード0だけでは完了としない。
-3. checksの各commandIdを、ホストが保存したCommandRecordとMCPの実呼び出しへ一意に対応付ける。実MCPイベントのツール名・入力command・出力commandId、Docker側execIdと実終了コードを照合する。同じコマンドの反復でも別commandIdとして扱い、内容一致だけで過去の実行を流用しない。
-4. MCPイベントの具体的なフィールド名は、対象CLI版の実記録から抽出器とfixtureへ固定する。現時点では未取得。イベントを取得できない版や実際の呼び出しへ対応できない記録はincomplete。read_outputは検査の実行回数に数えない。
-5. CommandRecordの出力パスは当該control/execution内のホストが生成したものだけを解決し、ファイル・ハッシュ・出力保存完了・exec開始と終了を確認する。中断や出力上限を検査成功へ読み替えない。checksは少なくとも1件の実行が必要。
-6. artifactsはworkRoot内の相対パスに限定し、存在・再解析ポイント・範囲外参照・サイズ・SHA256を検査する。`.git`と予約制御領域は成果物に含めない。成功した回収結果には`path, size, sha256`を載せる。検証担当の文字列をホストで実行・importしない。
-7. 原本をコピー準備と同じ選択規則で再列挙・再計算し、ファイル・HEAD・headRef・historyRefsを比較する。更新があれば、その旧版についての結果と明記する。誰が変更したかを根拠なく断定しない。失敗・未起動でも可能な範囲で保全状態を返す。
-8. `control/result.json`を一度だけ作成する。既存の結果を上書きせず、再試行は新しいrunId。CLIはJSON1件と終了コードを返し、診断を標準出力へ混ぜない。
+| modeと観測 | replayVerdict | completed時のCLI終了 |
+|---|---|---|
+| candidate-comparison: before非0、after0 | candidate-supported | 0 |
+| candidate-comparison: before0 | not-reproduced | 1 |
+| candidate-comparison: before非0、after非0 | still-failing | 1 |
+| reproduction-only: before非0 | reproduced | 1 |
+| reproduction-only: before0 | not-reproduced | 1 |
+| recheck: 現在版after0 | current-pass | 0 |
+| recheck: 現在版after非0 | current-fail | 1 |
+| transport・停止・記録等が不成立 | undetermined | statusに応じ2 |
 
-各checkの回収結果にはcommandId・MCPイベント参照・execId・実コマンド・終了コード・出力の相対パスとハッシュを含める。機械照合が証明するのは実行と対象の対応であり、任意の出力の意味やテストの十分性ではない。意図した欠陥を拒否する検査は、依頼の合格条件に照らして評価する。
+これらは終了値の観測分類であり、期待する欠陥に由来する失敗か、テストが十分かを自動認定しない。import失敗や悪意あるテストも非0になりうる。主担当が目的・合格条件・テスト内容・診断を照合して採否を判断する。検証器自身の異常をreproducedにしない。
 
-## 修正と再検証の往復
+## 照合手順
 
-主担当は指摘・未検証・実行証拠を読み、再現テストの採否を判断する。採用するテストは前回のartifactsに掲載されたパスで指定し、修正は通常の作業工程で原本側へ行う。元の合格条件を都合よく変更しない。
+1. 3入力のschemaVersion/runIdと外側で保存した元データを一致確認する。非ready/not_runなら未実施の証拠を要求せず、成立している段階の記録と失敗理由から上記優先順位で返す。proposal.ready、replay.completedでも単独で信頼しない。実行設定の能力証拠と当該VMのactivationRecordをprofileHash/runId/sandboxId/起動世代で照合する。
+2. PreparedRunV3の各manifest期待hashを現物と先に照合し、sourceManifestを用いて原本files/head/headRef/historyRefsを再取得・比較。baseline全体とmanifest自身のハッシュも比較。期待hashを現物から作り直さない。不読も記録し、更新された原本へ古い結果を適用しない。
+3. Proposalのmanifest、accepted現物、各replay input、実行開始前の入力照合、testsManifestHashを照合する。beforeとafterのテスト集合・バイトが同じであること、afterの変更がreplacement一覧に限られることを確認する。
+4. 外側記録のrunId/role/VM id/profile/template/argv/対象版/時刻/出力パス・ハッシュ/transportVerified/停止状態を確認する。証拠パスは当該control内だけ。複数回の実行は別commandIdとし、過去の同一コマンドを流用しない。
+5. 作成したproposalとすべての再実行VMの停止記録を必要とする。reused-testsのproposalは未作成として区別し、停止を架空に記録しない。結果照合からexecを呼んで停止VMを起動しない。作成済み対象の停止未確認の提案やテストを次回recheckへ渡さない。
+6. 上表の観測分類を作り、自己申告と外側の観測、未確認事項を別々に返す。原本への自動適用は行わない。
+7. control/result.jsonをCreateNewで一度だけ保存。既存結果へ上書きしない。失敗でも保存先がある場合は記録する。
 
-次回のRequestV2へrecheckを付ける。準備側が前回resultと現物のハッシュ・停止状態を確認し、修正版のコピーへ再現テストを追加する。子はそのテストをコンテナ内で再実行する。結果には前回runIdと原本の新しいmanifestを保持し、再現テストの未実行・改変・入力不足を成功にしない。初回試作ではこの往復を主担当2種から確認する。
+準備前失敗はrunId/runRoot/sourceManifestPath/previousRunId=null、sourceState/baselineState=unreadable、proposalVerdict=null、replayVerdict=undetermined、checks/findings/artifactsは空配列、executionはproposalCreated=false、replayCreatedCount=0、停止値nullと未起動理由を持つ。作成済みのrunRootだけ存在パスとして返す。未起動は停止未確認事故と区別し、blockedの優先順位を不当に上げ下げしない。
 
-利用者には指摘・採否・結果と必要な判断を提示する。依頼JSON・結果JSON・ファイル本文の通常の受け渡しを手動転記させない。既存物の削除・導入・公開はこの往復に含めない。
+## 主担当の修正と再検証
+
+主担当は検証されたテストを採用するか判断し、原本への修正を通常の権限で行う。次回RequestV3.recheckで前回結果とtestPathsを指定する。ファイル本文を手で転記せず、準備処理がハッシュを確認して搬入する。前回がreproduced/still-failingでも実行・停止・テスト保存が完全なら再利用できる。タイムアウト・停止未確認・証拠欠落の結果からは再利用しない。
+
+再検証では同じテストの改変を拒否する。子が別のテストを提案した場合は当該recheckの成功へ混ぜず、別の依頼・runIdにする。新しい原本版のcurrent-passと前回の再現結果を並べて提示する。過去のテスト結果を今回の実測として表示しない。
 
 ## 検証
 
-V5・V6・V7の回収側を担当する。AIなしのfixtureで、応答欠落・不正JSON・別runId・架空commandId・MCPとの入力不一致・Docker実行未開始・重複対応・出力欠落・停止未確認・範囲外成果物・原本更新・既存結果の保全を検査する。activationの欠落・古い設定・改変された証拠、v2成果物への`.git`・`../control`等の参照、準備失敗時のnull項目も含める。正常と既知の不合格の対照を含める。
+V6/V7を担当。架空の記録、自己申告pass、別VM/版/runId、基準Git改変、出力欠落、同一テストでない比較、開始不明、停止未確認、原本更新、失敗時null書式、既存結果保全をfixtureで検査する。Claude CodeとCodex双方からの実往復は別承認の最小題材で検証する。
 
-関連ADR: 0145〜0147、0150〜0152。実行側のCommandRecordとExecutionResultV2は`02-isolated-execution.md`、再検証入力とPreparedRunV2は`01-request-and-copy.md`を正とする。
+関連ADR: 0157、0158。入力は01、提案は02、再実行は04。

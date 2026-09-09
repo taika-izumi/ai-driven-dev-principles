@@ -1,61 +1,65 @@
-# 依頼と独立コピーの準備
+# 依頼・基準版・提案用コピーの準備
 
 ## 対象と責務
 
-- `scripts/verification/Invoke-IsolatedVerification.ps1`: CLI受付と3ブロックの呼び出し（未実装）。
-- `RequestCopy.psm1`: 入力検査・ファイル・Git履歴・再検証入力のコピー。
-- `request.schema.json`: v1とv2の識別可能な依頼書式。
-- `README.md`: 実装済み範囲・導入条件・呼び出し例。
+scripts/verification/Invoke-IsolatedVerification.ps1、RequestCopy.psm1、request.schema.json、settings.schema.json、README.mdを所有する。CLIは4ブロックの順序だけを調整する。New-VerificationRun(RequestV3, SettingsV3) -> PreparedRunV3を提供する。
 
-`New-VerificationRun(RequestV2, SettingsV2) -> PreparedRunV2`。既存v1のコピー処理を共用するが、v2の新しいキーを既存の厳密なv1検査へそのまま渡さない。v1部品試験は維持し、Linux共通CLIはv2のみ受け付ける。
+既存New-VerificationRunのv1はNew-LegacyVerificationRunへ抽出し、挙動と公開契約を維持する。v3はNew-ProposalReplayRunへ分岐する。ファイル列挙・独立履歴作成の下位処理を共有し、ホストcodexPathを必要とする旧v1起動検査をv3へ流用しない。追加の型・未知キー検査はv3側が所有する。
 
-版の振り分けと変換はRequestCopy.psm1が所有する。公開関数New-VerificationRunから、v1は既存処理を保持する内部関数New-LegacyVerificationRun、v2は新しい内部関数New-LinuxVerificationRunへ分岐する。v2側がRequestV2・SettingsV2を検査した後、Requestの共通6キー（schemaVersionだけ1へ設定）とSettingsの`codexPath, pwshPath, runsRoot, model, timeoutSeconds`を明示的に選んでv1内部処理を呼ぶ。recheckやDocker設定をv1検査へ流さない。
+## 依頼の契約
 
-v1内部処理が返した同一runId・作業領域・manifestを再利用し、v2側で再検証入力と最後の原本照合を行う。PreparedRunV2には元のRequestV2・SettingsV2を保持する。Get-VerificationSourceManifestを呼ぶ際は必要なsourceRoot・extraInputPaths・runsRootを使い、外部の版検査をこの低水準関数へ任せない。現在のrequest.schema.jsonはschemaVersion=1に固定されており、この分岐・v2検査は未実装である。
+RequestV3はschemaVersion=3、caller、sourceRoot、objective、acceptanceCriteria、extraInputPathsを必須とし、任意キーはrecheckだけ。callerはclaude-code/codex。sourceRootはGit作業ツリーの絶対パス。目的と合格条件は空不可。extraInputPathsは原本内の相対パス配列。数字の文字列表現、未知キー、不正型、重複JSONキーを拒否する。
 
-## 依頼と設定
+recheckはpreviousResultPath、testPathsを持つ。前回のホスト確定結果とテストだけを再利用する。前回の子のGit・修正候補・自己申告の実行結果は自動採用しない。主担当が通常の工程で原本を修正した後、新しいrunIdで再検証する。テストの同一性は前回結果のハッシュから固定する。
 
-RequestV2の必須キーは`schemaVersion=2, caller, sourceRoot, objective, acceptanceCriteria, extraInputPaths`。callerは`claude-code / codex`。目的と条件は空不可。sourceRootはGit作業ツリーの絶対パス。extraInputPathsは原本内の相対パスで、通常Gitが無視するデータ等を明示追加する。未知のキー・型違いを拒否する。
+SettingsV3はschemaVersion=3、sbxPath、pwshPath、runsRoot、model、proposalProfilePath、replayProfilePath、limitsを必須とする。実行ファイルと各パスは絶対、modelは明示した空でない識別子。モデルを自動変更しない。プロファイルは外側の実行設定とその成立証拠で、02の契約に従う。認証値は設定へ含めない。
 
-任意の`recheck`は`previousResultPath, artifactPaths`を持つ。前者は前回のcontrol/result.jsonの絶対パス、後者はその結果に掲載された再現テストの相対パス配列。前回がfailであることは再検証の妨げではない。結果が実行未成立・停止未確認なら受理しない。
+recheckのときだけmodel/proposalProfilePathはnullを許す。指定されていても提案段階を起動せず、再実行のためにモデル認証や提案profileの成立を要求しない。replayProfilePathは常に必須。
 
-SettingsV2は`schemaVersion=2, runtime=linux-docker, codexPath, pwshPath, dockerPath, runsRoot, model, timeoutSeconds, commandTimeoutSeconds, imageId, limits`を持つ。limitsは`memoryMiB, cpus, pids, outputBytesPerCommand`。パスは絶対、時間・資源・容量は正、commandTimeoutSecondsは全体上限以下。imageIdはローカルの完全な不変IDを指定し、latestタグのまま実行しない。子へ汎用のDockerフラグ・接続先・ホストパスを指定する欄を公開しない。導入設定自体は通常の入力コピーに含めない。
+limitsはtotalSeconds、proposalSeconds、replaySeconds、cleanupSeconds、cpus、memoryMiB、pids、maxProposalFiles、maxFileBytes、maxProposalBytes、maxWireBytes、maxOutputBytesを持つ。すべて正の整数、proposalSecondsとreplaySecondsはtotalSeconds以下。cpus=2、memoryMiB=2048、pids=128を初回の基準とする。上限は全体1800秒、提案600秒、各再実行120秒、停止猶予30秒、100ファイル、1ファイル1MiB、合計8MiB、転送全体16MiB、1コマンドstdout/stderr合計16MiBを初期値とする。利用者が設定を明示し、上限変更を子へ委ねない。資源制約の実効性は02の成立条件で検証する。全体時間到達後は新しい作業を開始せず、停止処理だけcleanupSecondsを別枠で許す。
 
-小さな試作用の設定例は全体600秒・1操作60秒・メモリ1024MiB・CPU1・pids128・1操作出力合計16MiB。これらは性能保証値ではなく、正常例が通るか試験で確認する。必要量を超える題材へ無断で範囲を広げない。
+## PreparedRunV3
 
-## 出力データ
+必須キーはschemaVersion=3、runId、sourceRoot、runRoot、baselineRoot、proposalInputRoot、acceptedRoot、controlRoot、request、settings、sourceManifestPath、baselineManifestPath、recheckManifestPath。recheckManifestPathは再検証なしの場合null。他は正常準備時に存在する実体を指す。失敗時は例外のstage/status/runRootをCLIが捕捉し、03の失敗結果を返す。
 
-PreparedRunV2は`schemaVersion=2, runId, sourceRoot, runRoot, workRoot, tempRoot, controlRoot, request, settings, sourceManifest, recheckManifest`を持つ。sourceManifestの`files, head, headRef, historyRefs, total, exclusions`は既存処理を共用する。recheckManifestには前回runId・結果ファイルのハッシュ・元artifactパス・コピー先パス・サイズ・SHA256を記録し、原本由来のファイルと区別する。
+追加の必須キーはstartedAt、deadlineAt、sourceManifestHash、baselineManifestHash、recheckManifestHash、recheckArtifacts。startedAtはCLI受付時、deadlineAtはstartedAt＋totalSeconds（UTC ISO8601）。準備時間も含め、後段で起点を更新しない。CLIは同時に単調増加時計で残時間を監督し、全体を継続するプロセスを再起動して期限を延長する機能は持たない。manifestHashは書込み完了後に外側が計算して呼出し状態に保持するSHA256。recheckなしならそのhashはnull、recheckArtifactsは空配列。recheckArtifactsの要素はkind=test、path（acceptedからの相対）、size、sha256、previousRunId。これらの期待値を後段でファイルから再生成して置き換えない。
 
 ```
 runsRoot/runId/
-  work/                 # 原本の独立コピー、子が変更できる
-  temp/                 # ホスト制御処理専用の一時領域
-  control/              # 子へ直接公開しない
+  baseline/             # 外側が保全。原本の選択ファイルと独立.git
+  proposal-input/       # baselineの独立コピー。これだけ子へ搬入
+  quarantine/           # 未信頼の転送データ。VMに共有しない
+  accepted/             # 外側が検査した通常ファイル
+  replay-inputs/        # 修正前/修正後の独立入力
+  temp/                 # 外側だけの一時領域
+  control/
+    request.json
     source-manifest.json
+    baseline-manifest.json
     recheck-manifest.json
-    history.bundle
-    execution/          # 実行ブロックの記録
-    result.json         # 回収ブロックが一度だけ作成
+    runtime/            # 02の成立証拠・作成したVM識別情報
+    proposal/           # 外側の受信・検査記録
+    replay/             # 外側の各実行記録
+    result.json
 ```
+
+baselineとcontrolをVMにマウントしない。ホスト側で読み取り専用属性を付けたことだけを強制隔離と扱わない。子への到達経路を渡さず、開始・終了時のハッシュ照合も行う。
 
 ## 準備手順
 
-1. 入出力・祖先・選択対象のリンクと再解析ポイント、原本を包含するrunsRootを拒否する。新しいUUIDのrunIdだけを使用し、既存物へ上書きしない。
-2. `git ls-files -z --cached --others --exclude-standard`とextraInputPathsでファイルを選ぶ。runsRoot全体、原本のGit管理領域、導入設定、起動設定（.codex/.claude/.agents/.mcp.json）を除外し理由を残す。一般の仕様・課題・記録を親の判断で選び抜かない。サブモジュール等のディレクトリ入力は初回対象外として拒否する。
-3. コピー前の一覧・サイズ・SHA256・HEADコミット・headRef・全参照を記録し、ファイル内容を実体コピーする。削除済みを復活させない。ハードリンクで共有しない。
-4. 空テンプレートで原本と同じオブジェクト形式のGit領域を作る。全参照と入力worktreeのHEADを`bundle create --single-worktree --all`で移す。verify・unbundle・参照復元・fsckを行う。原本の設定・フック・オブジェクト外部参照を持ち込まない。
-5. ブランチ名またはdetached状態を復元する。HEADがあればread-treeでインデックスだけを作り、checkoutで作業ファイルを上書きしない。原本のステージ済み／未ステージの区別は再現しない。空履歴・コミット前のブランチも扱う。
-6. 再検証入力がある場合、前回結果を現在のrunsRoot内で解決し、結果のrunId・停止状態・artifact一覧を照合する。選ばれたファイルが今も掲載ハッシュと一致し、リンクでないことを確認する。`work/.verification-recheck/<previousRunId>/`へコピーし、既存原本の同名領域と衝突したら拒否する。子への短い依頼にコピー先を記載する。元の記録は変更せず、テストをホスト上で実行しない。
-7. コピーのハッシュと原本状態を再照合する。ファイル・HEAD・headRef・全参照が変わればsource_changed。再検証ファイルも前後ハッシュを照合し、不一致ならblocked。Gitのルートと管理領域がコピー自身を指すことを確認する。
-8. manifestをcontrolへ保存する。子からのGit変更禁止は実行ブロックが実効権限として成立させ、コピーしただけで保護成功とはしない。
+1. sourceRoot/runsRootの包含関係と祖先の再解析ポイントを検査。runsRootがsourceRootを包含する設定を拒否する。原本内runsRootは列挙から全除外する。UUIDの新runRootだけを作り、既存物を上書きしない。
+2. 既存Get-VerificationSourceManifestで選択版を取得する。Git追跡・対象未追跡・extraInputPathsを含め、導入設定・.codex/.claude/.agents/.mcp.json・原本の.git・run出力を除外し理由を保存する。原本内の予約パス.verification-testsと.verification-controlの衝突は拒否する。
+3. baselineへ実体コピーする。リンクやハードリンクによる共有はしない。Git履歴は既存Initialize-VerificationHistoryのbundle/verify/unbundle/参照復元/fsckを使う。原本のGit設定・フック・リモート接続・共有オブジェクト参照は移さない。HEAD・ブランチ・全参照と作業中ファイルを別々に保持する。
+4. baseline内全通常ファイル（.gitを含む）の相対パス・サイズ・SHA256をbaseline-manifestへ保存。子や再実行環境にbaselineそのものを渡さず、ファイル単位の独立コピーを作る。提案用.gitが自分のproposalInputRoot内を指すことを検査する。
+5. recheckがある場合、前回resultを現在のrunsRoot内で解決し、schemaVersion/runId/停止/掲載テスト/ハッシュを確認する。選択テストを当該runのaccepted/testsへ通常ファイルとしてコピーし、recheckManifestとrecheckArtifactsに由来とハッシュを記録する。提案用VMは使わず、proposal-inputへのテスト搬入もしない。通常の原本ファイルと区別する。
+6. 原本を再列挙し、準備前後のfiles/head/headRef/historyRefsを比較。変化はsource_changed。baselineの全ファイルハッシュも照合する。コピー中の入力変更を成功扱いしない。
 
-途中で失敗した実行領域は診断用に保持し、自動削除しない。作成済みならrunRootと失敗段階をCLIへ返し、未作成ならrunRoot=nullとする。CLIは回収ブロックの失敗応答書式で1件のJSONを返す。保存できたファイルやmanifestと未完成のものを区別し、存在しない記録を成功扱いしない。不要になったものの削除は、既存の名指し承認の手順に従う。新しい一覧化サービスや自動清掃は追加しない。
+空履歴も扱う。浅い履歴・部分クローン・サブモジュール・入力リンクは拒否。reflogだけの履歴、到達不能オブジェクト、LFS外部実体は対象外。Git各処理30秒、対話認証・遅延取得を禁止する既存方針を維持する。
 
-## 制約と検証
+## 不変条件と検証
 
-Git全参照から到達できる履歴を対象とする。reflogだけの履歴、到達不能オブジェクト、LFSの外部実体は含めない。浅い履歴・部分クローンは停止する。親のGit環境変数・ユーザー全体とシステム設定を継承せず、遅延取得と対話認証を無効にする。Git各処理は30秒を上限とする。大きな履歴や長いWindowsパスへの無条件対応を主張しない。
+baseline・sourceManifest・recheckManifestは提案側から更新不能。manifest自体のSHA256を外側の呼出し状態に保持し、実行後に照合する。ハッシュは子の申告値から作らない。エラー時の作成済み領域は残し、存在しないパスを成功結果に記載しない。
 
-V1・V2を担当する。既存のコピー・履歴試験に加え、v2の型と未知キー、再検証元の範囲外・改変・未停止・runId違い・衝突、元ファイルの変更とコピー先の一致を検査する。原本内外のrunsRootと、同一コミットへのブランチ切り替えを含む。
+V1とV6の準備側を検証する。v1既存試験に加え、版混在・未知キー・予約名衝突・入力中変更・原本内runsRoot・基準版と提案入力の独立性・再検証テスト改変/範囲外/停止未確認を扱う。対象外構成へ黙って縮退しない。
 
-関連ADR: 0145〜0148、0150〜0152。
+関連ADR: 0150、0157、0158。実行設定は02、結果は03、再実行入力は04を参照。

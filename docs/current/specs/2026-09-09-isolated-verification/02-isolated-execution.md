@@ -1,81 +1,85 @@
-# ホスト上の検証担当とLinuxコンテナの制限付き実行
+# sbx内Codexの提案作成と安全なファイル回収
 
 ## 対象と責務
 
-- `scripts/verification/Execution.psm1`: v2実行の起動・監督・終了、既存のWindowsプロセス管理。
-- `ProcessHost.ps1`: 既存のホストプロセス出力回収。コンテナ停止の代替にはしない。
-- `ContainerRuntime.psm1`: 新規。コンテナとexec実行の作成・照会・停止、Docker接続を所有。
-- `VerificationMcp.ps1`: 新規。実行ごとのSTDIO MCP受付と限定ツール。既存の`scripts/experiments/inspection-dispatch/limited-execution/server.ps1`の通信例を参照するが、固定試験専用の実行処理をそのまま流用しない。
-- `agent-result.schema.json`: v1とv2の応答を区別する。
+scripts/verification/Proposal.psm1、SbxRuntime.psm1、proposal.schema.json、runtime-profile.schema.json、proposal-export.py、およびExecution.psm1/ProcessHost.ps1のv3用拡張を所有する。ProposalはInvoke-VerificationProposal(PreparedRunV3) -> ProposalResultV3を提供する。SbxRuntimeはこのブロックが所有し、04は公開操作を利用する。既存プロセス管理には対象stdin転送・合算出力上限がまだないため、後述の拡張が必要。時間制限とWindowsジョブ管理を再利用し、VM停止の代わりにはしない。
 
-`Start-VerificationExecution(PreparedRunV2) -> ExecutionResultV2`。コピー準備は前段、最終の合否照合は回収側が行う。
+SbxRuntimeの公開操作はTest-VerificationRuntimeProfile(Profile, Role)、New-VerificationSandbox(PreparedRunV3, Role, Profile)、Copy-VerificationSandboxInput(SandboxHandle, TrustedInputRoot, Destination, ExpectedManifest, RunBudget)、Confirm-VerificationSandboxInput(SandboxHandle, Destination, ExpectedManifest, RunBudget)、Invoke-VerificationSandboxCommand(SandboxHandle, Argv, StdinBytes, WorkingDirectory, Environment, RunBudget)、Stop-VerificationSandbox(SandboxHandle, CleanupSeconds)。Roleはproposal/replay-before/replay-after。SandboxHandleはrunId、role、name、id、createdAt、profileHash、activationRecordPath、activationRecordHash。子が返した名前や接頭辞一致だけで停止対象を選ばない。
 
-## 起動可否の前提
+New-VerificationSandboxの正常返却は成立確認済みSandboxHandle。失敗時は標準例外のData['runtimeFailure']へ、schemaVersion=3、runId、role、stage、reason、creationState、handle、stopStateを持つJSONを格納して投げる。creationStateはnot-created/created/unknown、stopStateはnot-created/stopped/unverified。作成前の拒否はhandle=null・not-created。作成要求送信後に作成成否を確認できない場合はunknown・unverifiedとし、未作成へ推定しない。
 
-ホストCodexの通常シェルだけでなく、内蔵編集・別のコード実行・画像等を通じた範囲外読み取り・外部アプリ・MCP・再委譲・フック等の全操作経路を確認する。許可するデータ操作は今回のMCPツールだけ。単なる計画表示等を残す場合も、入出力や再委譲を持たないことを確認して一覧へ記録する。
+ID確定後はactivation確認より先に、そのIDを持つhandleを外側の呼出し状態とcontrol/runtimeの作成記録へ保存する。activation未完の部分handleではactivationRecordPath/Hashをnull可とする。以後のactivation生成・記録保存・実効値照会が失敗しても、SbxRuntimeは確定済みhandleを保持し、当該IDの停止をcleanupSeconds内で試み、その結果をruntimeFailureへ載せる。作成記録の保存に失敗しても、メモリ上のIDを捨てず停止を試みる。部分handleは停止にのみ使い、搬入・execには渡さない。
 
-`features.shell_tool=false`は候補設定の一部であり、`unified_exec`や`code_mode_host`等を含む実効ツール集合の制限の証拠にはしない。設定・実行ファイルの版・実効ツール一覧・無害な拒否試験を対応付けた確認記録が必要。同じ版でも構成が変われば再確認する。利用可能なツールをモデルの自己申告だけで確定しない。
+Proposal/ReplayはruntimeFailureを捕捉し、createdの場合はhandleを結果のsandbox/sandboxesへ必ず残す。stopState=stoppedでも元の起動失敗を成功にしない。unknownまたは停止未確認はincomplete（時間超過ならtimed_outを優先）へ返す。runtimeFailureの欠落・不正を作成済みの可能性がある呼出しで検出した場合も、creation-unresolvedを含むincompleteにして未作成へ戻さない。
 
-最初の適用確認は、ユーザーが実行範囲を承認した無害な固定入力・代用品で行う。入力リポジトリや自由な作業依頼を渡す前に、信頼する起動側がツール構成を取得・検査できることを必要とする。その取得経路が無い、または許可外のツールが残る場合はblocked。未検証の状態で自由な作業を依頼したり、保護を外して再試行したりしない。ホスト保護をOS側にも適用するが、未成立の通信制限だけに依存しない。
+Copyは外側で検査済みの通常ファイルだけを固定Destinationへ搬入する操作で、未信頼VMからの回収には使わない。Confirmは入力一覧・所有者調整後のハッシュを固定コマンドで照会し、外側のExpectedManifestと比較した証拠参照を返す。WorkingDirectoryは固定VM内絶対パス、Environmentは外側で定めた明示変数だけの辞書。子の任意ホストパス・環境設定・CLIフラグを受理しない。RunBudgetはPreparedRunV3のstartedAt/deadlineAtとlimitsを持ち、各呼出しが残時間と出力上限を適用する。
 
-Codex execは明示的な引数配列と標準入力で呼ぶ。モデルと認証はホスト側。プロジェクト・ユーザーの広い設定、プラグイン・接続・フックを無条件に合成しない。親の現在のツール群を引き継いだ通常サブエージェントを代用しない。主担当の恒久設定を書き換えず、実行用設定をcontrolに作る。
+プロセス拡張はInvoke-VerificationProcessV3(StartInfo, StdinBytes, OutputPaths, RunBudget)として追加し、v1の既存呼出しを維持する。ProcessHostの制御要求を版で区別して対象stdinへバイト列を転送し、送信後にEOFを渡す。制御JSONを対象stdinへ混ぜない。外側でstdout/stderrの合計を監視する上限付きコピーへ変更し、超過時はoutputExceeded=trueでプロセスを止め、SbxRuntimeが当該VMを停止する。無制限CopyToAsyncを容量制限済みと扱わない。stdin詰まり・出力洪水・非0終了・時間超過をAIなしで検証する。
 
-この前提確認の記録はExecution.psm1が`control/execution/activation.json`へ保存し、ExecutionResultV2の既存項目effectiveConfigPathで指す。記録は`schemaVersion=1, runId, checkedAt, binaries, effectiveSettingsHash, toolInventory, evidence, verdict`を持つ。binariesはCodex・接続処理の版とSHA256、toolInventoryは起動側が観測した実効一覧、evidenceは拒否試験等の種別・対象・結果・証拠パス・SHA256。verdictはverified/blocked/unverified。モデルの申告からverifiedを作らない。
+## 実行設定と起動前確認
 
-effectiveSettingsHashは`control/execution/effective-settings.json`のSHA256とする。同ファイルには、実際に適用するツール・権限・接続先・imageId・マウントの設定を保存する。認証値は保存しない。起動側が生成した設定と実機で取得した実効情報の対応を検査し、設定予定を書いただけのファイルを確認証拠にしない。
+runtime-profile.schema.jsonはschemaVersion=3、role（proposal/replay）、sbxVersion、templateDigest、agent、startupArgv、executableInVm、policyExpectation、mountExpectation、activationEvidencePath、activationEvidenceHashを必須とする。proposalのagentはcodex、replayはshell。タグの自動追随・実行時のイメージ更新はしない。digestと実体の対応を確認し、不明ならblocked。
 
-起動側は証拠の内容・設定・実行体・対象範囲との対応を確認してから記録を確定する。別の版・設定・対象範囲に対する古い証拠を流用しない。再利用する証拠も当該controlへコピーして照合し、外部パスへの可変参照だけを残さない。自由な作業依頼を解放する前にverifiedの記録を作れなければblocked。回収側でも記録と実行を照合する。これは既に要求した確認の保存先を具体化するもので、独立した常設承認台帳は設けない。
+profileHashはactivationEvidencePath/activationEvidenceHashを除いた設定値を、キーの辞書順・UTF-8・空白なしJSONで正規化したSHA256。証拠への相互参照でハッシュが循環しないようにする。templateDigest、資源上限等の実行条件を含めた実効設定hashを別に記録し、異なるlimitsへ証拠を流用しない。Roleのreplay-before/replay-afterは検査時だけprofile.role=replayへ対応付け、記録上の役割は統合しない。
 
-activationの欠落、verdict=blocked/unverified、設定や証拠の不一致を作業解放前に検出した場合、Execution.psm1は自由な作業依頼とrun_command受付を開始せず、作成済みの当該コンテナ・プロセスを停止して返す。既存のfailure項目に`stage=activation`とreasonを記録し、回収結果はblockedとする。startedはCodexプロセスが実際に開始したかを示すため、初期化済みならtrueのまま記録する。起動前停止を、回収時の事後判定だけで代替しない。
+実行設定は外側で作成・確認する。任意フラグや認証値を子から受け取らない。startupArgvは対象テンプレートで非対話のstdin入力・終了・出力を実証したargv配列を固定し、モデル指定をSettingsV3と照合する。画像内Codexの版と実行ファイルを確認する。未実証のホストCLIのargvを画像内CLIへ流用しない。
 
-## コンテナ
+activationEvidenceはcheckedAt、binaries、profileHash、checksを持つ。checksは各条件のverdictと外側の証拠パス/ハッシュを持つ。次をすべて確認した設定だけをverifiedとする。
 
-信頼する起動側だけがDockerへ接続する。ローカルDocker接続を使用し、接続先は導入設定の確認時に固定する。子からソケットやHTTP要求を受け取る汎用代理機能は作らない。
+再利用可能なactivationEvidenceは、固定版・固定設定に対する能力試験の記録に限定する。実行時の許可そのものには使わない。New-VerificationSandboxはVM作成後・資料搬入前に、runId、sandboxId、role、daemonInstance、profileHash、effectiveSettingsHash、checkedAt、policy/mount/resource/credentialExposureの実効値と証拠hashを持つactivationRecordを外側で生成する。daemonInstanceは起動識別情報と接続先を対応付けた値。起動世代を特定できなければblocked。
 
-- 実行ごとに新しいコンテナを作り、不変のimageId・runIdを記録する。名前の接頭辞だけで所有権を判定しない。
-- `workRoot`を`/work`へ書き込み可能でマウントし、`workRoot/.git`を`/work/.git`へ読み取り専用で重ねる。コンテナ内ユーザーは非rootとし、Windowsバインドマウントで書き込みが成立するか実測する。成立しない場合に原本やホスト全体へ権限を広げない。
-- root filesystemは読み取り専用、`/tmp`だけを実行専用tmpfsとして与える。必要な書き込み先は作業コピー内へ固定する。ホストのtempRootはコンテナへ渡さない。
-- `network=none`、特権なし、ホストPID/IPC等の共有なし、Dockerソケットなし、不要capabilityなし、no-new-privileges、既定seccompを維持。memoryとmemory-swapは同値、CPU・pids・時間の上限を適用する。
-- ホストのホーム・認証・プロキシ設定をコンテナの環境変数へ持ち込まない。原本・control全体をマウントしない。起動後のinspectで実効マウントと設定を確認する。
-- Git・Python・テスト実行体は固定イメージ内に準備する。実行中に依存をダウンロードしない。Gitは読み取り専用管理領域でlog/show/blameを利用できることを確認する。
+各実コマンド直前にも、同じVM id・デーモン起動世代・実効設定が維持されているか確認する。変化・取得不能・保護状態を検知できない競合があれば作業を解放せず停止する。古いcheckedAtや同じ製品版だけで現在VMの許可を証明しない。実行中の保護変更は外側で検知して停止することを能力試験に含め、監視不能な経路がある場合はverifiedにしない。固定の有効日数を増設する代わりに、実体と起動世代への対応で失効させる。
 
-この構成では、コンテナ内から作業コピーは変更できる。コピー以外のホストファイルが守られることを、別々の代用品で確認する。
+- 通常起動済みデーモンの健康、内部イメージ照会、版・テンプレート一致。
+- workspaceなし、no-share-skills、MCP登録なし、ホスト原本/home/control/Dockerへの接続なし。
+- クリップボード書込、SSHエージェント転送等、ファイル共有以外のホスト作用の拒否。実体設定と無害な否定試験を対応付ける。方法が特定できなければblocked。
+- 外側で設定したCPU/メモリ/pids上限と当該VMの実効値。子のsudoで緩和できない境界を必要とする。sbxでpids制限を強制する方法は未実証のため成立確認項目とし、確認できなければblocked。fork等でVM停止を妨げないか負荷を限定した試験で確認する。
+- proposalは承認されたモデル接続先だけの許可、raw認証値を子へ渡さない認証方式。認証・モデルの実試験は個別承認後。
+- replayは外向き通信・hostへの通信・他VM通信を拒否し、モデル認証を一切供給しない。
+- time/output上限、外側CLI異常、デーモン切断、対象VMの停止と他VMの非停止、停止中の自動再起動防止。
 
-## MCPの外部契約
+初回はAIなし保護検証の後、別承認の認証・最小モデル試験でproposal設定を完成させる。実モデル検証が必要な項目を未実施のままverifiedにしない。設定hash、実体、証拠が不一致なら作業解放前にblocked。ホスト資格情報を読む検査はしない。否定試験は固定の代用品を使用する。
 
-既存PowerShell 7でSTDIO接続を実装する。標準出力はMCPメッセージのみ、診断は標準エラー。initialize・通知・ping・tools/list・tools/callの扱いは実クライアントと相互確認し、未対応プロトコルを黙って受理しない。新しい常駐サービスやMCP用の追加パッケージを必須にしない。実装上必要になれば相談する。
+作成直前の一覧に同名があれば停止。createの応答と一覧からidを確定し、control/runtimeへ記録する。照会や停止で自動起動するCLI挙動は実証対象とし、外側が制御できなければ当該アダプターは不適合とする。デーモンの起動・退避・resetはランナーの責務に含めない。
 
-| ツール | 入力 | 出力・境界 |
-|---|---|---|
-| `run_command` | `command`（空でない文字列） | `/work`を開始位置にコンテナ内シェルで実行。返値はcommandId・started・exitCode・timedOut・stdout/stderrの先頭とtruncated・未確認理由 |
-| `read_output` | `commandId, stream, offset, maxBytes` | 当該実行の記録済みstdoutまたはstderrの指定範囲だけ返す。パスを引数で受け取らず、他実行や制御ファイルを読めない |
+## 提案作成
 
-run_commandのcommand以外のキーを拒否する。子がコンテナID・実行ユーザー・マウント・Dockerフラグ・ホストパスを指定する欄は無い。commandはコンテナ内の`/bin/sh -lc`の引数としてだけ使用し、ホストのPowerShell等では評価しない。任意の検索・編集・テストはこの入口の中で行える。
+recheckなら本節のモデル実行を省略する。Invoke-VerificationProposalはPreparedRunV3.recheckArtifactsとmanifest期待hashを読み直し、前回の固定テストだけからreadyの結果を外側で作る。origin=reused-tests、sandbox=null、stopState=not-createdとし、生成した提案や停止成功を装わない。モデル設定・認証の成立確認は不要で、再実行側の成立確認は省略しない。
 
-commandIdは受付側が発行する一意の値。read_outputは完了したコマンドの記録だけを対象とし、streamはstdout/stderr、offsetは非負、maxBytesは1〜65536。UTF-8の分割境界と次のoffsetを返し、切り詰めを明示する。出力全体はcontrol側に保存し、子は書き換えられない。
+1. proposalInputRootだけを当該VMへ搬入する。宛先は/home/agent/workspace/source。baseline/controlはマウントしない。
+2. cp後に所有者を照会し、搬入した独立コピーだけagent所有へ調整する。ホストの所有者やglobal Git設定を変えない。
+3. 目的・合格条件・作業先・提案書式を短い依頼として標準入力へ渡す。本文資料はコピーから子が探索する。ホストのユーザー設定・プラグイン・フック・MCPを自動継承しない。コピー内の設定除外は01に従う。
+4. 子の作業は提案用VM内で行う。子が編集したGit・実行ログ・コマンド履歴は証拠にしない。実行イベントや最終応答は診断用の未信頼データとして保管する。
+5. 子プロセス終了、または時間超過時に外側が受信処理へ進む。失敗・時間超過で正常提案を確定しない。回収中も全体時間・転送容量を制限する。
 
-1実行につきコマンドを直列処理する。同時要求はbusyとして返し、無制限キューを持たない。MCPの接続先はrunIdとコンテナIDを起動時に束縛した新規プロセスで、別の実行へ切り替えられない。
+## 提案書式と回収
 
-## 実行証拠
+ProposalEnvelopeV3はschemaVersion=3、runId、summary、findings、files。findingsはdescriptionとsourcePathsの配列で、自己申告として扱う。filesの各項目はkind、path、contentBase64。kind=test/replacement。削除・rename・実行コマンドの提案は初回は受理しない。replacementは既存の基準版にある.py通常ファイルだけ、testはtest_*.pyと__init__.pyだけ。少なくともtest1件を必須とする。replacement0件は再現のみとして扱う。
 
-Docker Engineのexec作成・開始・照会を利用し、execId、ContainerID、実際の開始状態、Running、ExitCodeを記録する。Dockerクライアントの終了コードだけでコマンドの開始・終了を認定しない。Engineの応答が確認できない場合は未確認として返す。APIへの接続実装と対応版は最初のAIなし試験で確かめる。
+提案ファイルは子の作業先から外側の固定エクスポーターでデータ列へ変換する。sbx cpで未信頼のディレクトリやtarをホストに展開してから検査する方式は禁止。エクスポーター自体も子に改変されうるため、その出力は全面的に検査する。出力上限は外側で強制し、base64復号前にもwire容量を確認する。子のハッシュ・ファイル種別・サイズ申告は信用しない。
 
-各操作について`CommandRecord`をcontrol/execution/commandsへ保存する。キーは`runId, commandId, mcpRequestId, containerId, execId, command, started, startedAt, endedAt, exitCode, timedOut, stdoutPath, stderrPath, stdoutSha256, stderrSha256, outputComplete, failure`。パスはホストが生成し、出力ハッシュを終了後に確定する。子の自己申告をこの記録へ代入しない。
+外側で次を検査してからacceptedへFileMode.CreateNewで通常ファイルを生成する。
 
-出力合計がoutputBytesPerCommandを超えた場合は受付を停止し、当該コンテナを停止する。未保存の出力があることを記録し、成功にはしない。コマンドやテスト自体が出力を偽る可能性は別問題であり、実行記録はテスト内容の妥当性を保証しない。
+- JSONの深さ/重複キー/未知キー/型/runId/件数/総wireバイト。上限超過時は切詰めて成功にせず拒否。
+- pathはUTF-8のPOSIX相対表記。絶対、ドライブ、UNC、空成分、.、..、バックスラッシュ、コロン、NUL、末尾空白/ドット、Windows予約名を拒否。大文字小文字を無視した重複、親子ファイル衝突も拒否。
+- .git、.codex、.claude、.agents、.mcp.json、予約制御パスへ書かない。replacementはbaselineに存在し、削除済みや非.pyなら拒否。testの入力pathはtests/を先頭に持たず、accepted/tests配下の相対名とする。
+- base64の正規性、復号後1ファイル/総量上限、UTF-8のPythonテキスト。内容が無害である保証はしない。ホストでimport/実行しない。
+- accepted自身と祖先を外側で作り、リンク・再解析ポイント・既存ファイルがあれば拒否。子にacceptedへの接続を渡さない。
 
-## 終了管理と回収への出力
+accepted/tests/<path>とaccepted/replacements/<path>へ格納し、外側がサイズとSHA256を計算する。符号化データだけで通常ファイルを作るため、子のシンボリックリンクや実行属性をホストへ再現しない。回収物は子VMの一貫した全状態スナップショットとは主張せず、受信した提案の固定版として扱う。
 
-ExecutionResultV2は`schemaVersion=2, runId, started, exitCode, timedOut, processTreeStopped, containerStopped, containerId, eventsPath, stderrPath, agentResultPath, effectiveConfigPath, commandRecordsPath, failure`を持つ。agentの開始状態・終了コードとコンテナの停止状態を区別する。
+最後に子VMを停止し、一覧の同一id/statusで確認する。VM停止後にexecで確認しない。停止未確認なら受信できていても提案はreadyにしない。既存VMや試験VMを自動削除しない。
 
-正常終了・時間超過・中断・接続断では、まず新規コマンドを拒否し、当該コンテナを停止して状態を照会する。その後Codex・MCP・起動側の子プロセスを停止確認する。ホストプロセスを先に失う場合も、外側の監督処理が保存済みコンテナIDで停止できるようにする。別実行のコンテナを接頭辞や時刻でまとめて停止しない。
+## ProposalResultV3
 
-コマンド単体の時間超過でもコンテナを停止し、その実行では次のコマンドを受けない。停止確認不能ならcontainerStopped=falseとし、自動再起動・回収成功・合格を返さない。コンテナ自動削除は行わず、停止状態とIDを保存する。不要な実行領域・コンテナの削除は対象を名指しして別に扱う。
+schemaVersion=3、runId、status、origin、sandbox、summary、findings、artifacts、manifestPath、manifestHash、stopState、failureを持つ。statusはready/blocked/failed/timed_out/incomplete/not_run。originはgenerated/reused-tests/none、stopStateはstopped/unverified/not-created。sandboxはSandboxHandleまたは未作成時null、manifestは未確定時null。artifactsはkind、path（acceptedからの相対）、size、sha256。failureはstage/reasonまたはnull。外側が生成し、子のJSONをそのまま返さない。
 
-agentの最終応答は`schemaVersion=2, runId, verdict, summary, checks, findings, artifacts, unverified`。checksは`commandId, command, exitCode`を持つ。artifactsは作業コピー内の再現テスト等の相対パス。前提が未検証ならverdict=passにしない。
+ready条件は有効なtest、外側の検査済みmanifest、時間/出力超過なしに加え、generatedではsandbox実在とstopState=stopped、reused-testsではsandbox=nullかつstopState=not-created。summary/findingsの参考情報とartifactsの機械検査結果を区別する。recheck時の既採用テストは前回ハッシュを維持する。
 
-## 根拠・検証
+recheckでは子の提案を受信せず、testsは前回選択した集合とパス・バイトが完全一致することを要求する。追加・欠落・改変は拒否し、今回は主担当が修正した現在版だけを再実行する。testsManifestHashはtestの相対パス・サイズ・SHA256をパス順で正規化した値であり、ホストの絶対パスや保存日時を含めない。準備段階失敗時のnot_runはorigin=none、sandbox=null、stopState=not-createdとし、failureに省略理由を残す。
 
-V3・V4・V5・V6の実行側を担当する。先にAIなしのMCP契約・コンテナ制限・停止・証拠を検査し、主担当からの実モデル呼び出しは個別承認後に行う。
+## 検証
 
-参照: ADR-0146・0147・0149・0151・0152、[OpenAI設定](https://learn.chatgpt.com/docs/config-file/config-reference)、[MCP接続](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)、[Dockerネットワーク](https://docs.docker.com/engine/network/drivers/none/)、[Docker Engineのexec API](https://docs.docker.com/reference/api/engine/version/v1.46/)。公式仕様と現在の実機での成功は区別する。
+V2/V3/V5を担当。架空runId、リンク相当の提案、パス逸脱、重複、予約名、過大wire、復号後超過、途中切断、提案なし、停止未確認を拒否する。VMなしの受信fixtureと、別承認の実VM試験を分ける。正常提案・不正提案・出力洪水・デーモン停止競合を含む。
+
+関連ADR: 0157、0158。準備は01、照合は03、再実行は04。

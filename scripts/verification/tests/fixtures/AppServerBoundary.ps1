@@ -8,7 +8,8 @@ param(
     [switch]$IdentityOnly,
     [switch]$PauseForWfp,
     [switch]$TokenOnly,
-    [switch]$RiskOnly
+    [switch]$RiskOnly,
+    [switch]$ReadAccessOnly
 )
 # 調査専用。スレッド・モデルを作らず、実機生成スキーマのcommand/execを比較する。
 Set-StrictMode -Version Latest
@@ -66,6 +67,7 @@ try {
     if ($IdentityOnly) { $request.params.command = @((Get-Command whoami.exe).Source, '/user') }
     if ($TokenOnly) { $request.params.command = @($PwshPath,'-NoProfile','-File',(Join-Path $PSScriptRoot 'TokenConditionProbe.ps1')) }
     if ($RiskOnly) { $request.params.command = @($PwshPath,'-NoProfile','-File',(Join-Path $PSScriptRoot 'NetworkRiskClient.ps1'),'-ProbeRoot',$ProbeRoot,'-Port',"$Port") }
+    if ($ReadAccessOnly) { $request.params.command = @($PwshPath,'-NoProfile','-File',(Join-Path $PSScriptRoot 'ReadAccessProbe.ps1'),'-ProbeRoot',$ProbeRoot) }
     if ($PauseForWfp) { $request.params.command += '-PauseForWfp' }
     [IO.File]::WriteAllText((Join-Path $ProbeRoot 'control/app-server-request.json'), ($request | ConvertTo-Json -Depth 12))
     Send-Rpc $request

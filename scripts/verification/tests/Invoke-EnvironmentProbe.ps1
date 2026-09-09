@@ -153,6 +153,11 @@ try {
     } else {
         $limited = Invoke-ProbeProcess $CodexPath ($sandboxArgs + $PwshPath + $argsBase) 'sandbox-boundary'
     }
+    if ($CaptureWfp) {
+        $eventsPath = Join-Path $control 'wfp-immediate-netevents.xml'
+        $eventsOutput = @(& (Join-Path $env:SystemRoot 'System32/netsh.exe') wfp show netevents "file=$eventsPath" protocol=6 remoteaddr=127.0.0.1 "remoteport=$port" "appid=$PwshPath" 'userid=spring\CodexSandboxOffline' 2>&1 | ForEach-Object { "$_" })
+        Save-ProbeJson (Join-Path $control 'wfp-immediate-netevents.json') @{exitCode=$LASTEXITCODE;output=$eventsOutput;path=$eventsPath}
+    }
     # 拒否側失敗でも正の対照を取り、接続先停止による偽の拒否を排除する。
     $after = Invoke-ProbeProcess $PwshPath ($argsBase + '-AllowOnly') 'normal-after'
     Assert-Equal $after.exitCode 0 '試験後の正の対照'

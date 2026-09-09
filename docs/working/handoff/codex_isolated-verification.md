@@ -1,15 +1,15 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-10 00:53 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: SSH転送falseの保存・通常起動後照合済み / 残る動的試験の具体化
+- **Last Updated**: 2026-09-10 00:57 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: ユーザー指示で中断 / SSH設定操作完了、残る能力試験の調査前
 
 ## 作業の目的・背景
 
 Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。スクリプトで原本のファイル・Git履歴を独立コピーし、sbx内Codexが調査・提案する。採否用のテストは別の通信なし環境で再実行し、外側の記録で照合する。資料本文の手動転記は不要にする。
 
-既存worktreeは`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。保存点はv3仕様確定`b7941f3`、試作条件改訂確定`5259d22`。masterへ未統合。今回の中断は作業完了ではなく、承認の撤回でもない。
+既存worktreeは`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。保存点はv3仕様確定`b7941f3`、試作条件改訂確定`5259d22`、SSH設定操作記録`cf853d2`。masterへ未統合。中断は完了・承認撤回・自動再開の許可ではない。
 
 ## 関連ドキュメント
 
@@ -31,6 +31,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 完了済みタスク
 
+- [x] SSH転送falseの保存、daemon停止、利用者の通常起動後の設定・既存VM照合を完了。`cf853d2`、ADR-0162、継続調査記録を参照。動的拒否は未実証。
 - [x] v1のコピー・履歴・プロセス管理・結果照合を先行実装し4群の試験成功。詳細はhistory-copyレビューとscripts/verification/README.md。
 - [x] sbx 0.42.1のユーザー導入・Dockerログイン・global deny-all設定。導入・smoke記録に個別承認を保存。
 - [x] sbx内部socket障害を切り分け、通常PowerShell起動で回避。合成ファイルと履歴の搬入、通常ユーザーで出力、終了7、回収、原本保全、VM停止を確認。smoke記録20:21節参照。
@@ -40,6 +41,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 ## 進行中のタスク
 
 - **現在の作業**: 残る能力試験の具体化。
+  - 中断: ユーザーが「作業は一旦中断」と指示し、ガイドラインの相談へ移行。残る調査は未着手のまま保持し、明示的な再開指示まで進めない。
   - 状態: 利用者の通常起動後、daemon running、転送false/source=override、画像読取false、既存VM同一ID/stoppedを確認。承認された設定操作は完了。動的拒否は未実証。
   - 次の具体作業: 継続調査記録のSSH代用ソケット、非自動起動の接続方法、外側資源・起動世代の取得元を特定し、対象とスクリプトを固定して実機試験を提示する。設定変更の承認は取り直さない。
   - 続く作業: CPU/メモリの実効値、有限負荷中の外側停止、切断/自動起動競合、未信頼回収、Mutex競合と対象hash拒否の試験を計画化する。
@@ -73,10 +75,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 節目ごとの確認記録
 
-- 2026-09-10 通常起動後のSSH設定・既存VM照合: ADR=0162（操作完了、全体整合検査時に昇格） / worklog=棄却（既存の読み直し・保全手順内）
-
-- 2026-09-10 SSH転送設定保存・daemon停止: ADR=0162（個別承認済み、反映確認待ち） / worklog=棄却（既存の承認・読み直し・保全手順内）
-- 2026-09-10 能力試験の継続調査と操作案: ADR=なし（承認済み条件の具体化、設定案は採否待ち） / worklog=棄却（既存の権限差確認・保全手順内で再現可能）
+- 2026-09-10 作業中断の引き継ぎ確定: ADR=なし（ユーザーの中断指示、方針変更なし） / worklog=棄却（既存の中断・保全手順内）
 - 2026-09-09 spec 確定点: ADR=0151・0152 / worklog=棄却（既存の機械検証と確定手順） / review=フル実施（claude-sonnet-5・1回）＋差分再確認（claude-sonnet-5・1回）＋機械検証（1回・提示後確定（実質的な収束に至らず））
 - 2026-09-09 ADR-0151・0152 Accepted 昇格: ADR=0151・0152 / worklog=棄却（既存の昇格手順） / cyclecheck=非該当（実装前昇格）
 - 2026-09-09 履歴レビュー完了・ADR-0150 Accepted 昇格: ADR=0150 / worklog=棄却（既存のレビュー照合・修正・検証手順の範囲） / cyclecheck=実施（修正: Issue-0136）
@@ -91,7 +90,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-1. 指定の既存worktreeでstart-work。本handoffと`docs/records/experiments/2026-09-10-v3-capability-followup.md`を読む。承認されたSSH設定操作と通常起動後の照合は完了済み。
+1. ユーザーの再開指示後、指定の既存worktreeでstart-work。本handoffと`docs/records/experiments/2026-09-10-v3-capability-followup.md`を読む。SSH設定操作と通常起動後照合は完了済み。
 2. 残る試験方法の未特定事項を調査し、実機操作を具体化してから提示する。再照会は通常ユーザー側でrunning確認後に行い、停止中に自動起動する照会をしない。
 3. ADR-0157/0158/0160/0161の承認と保全条件を継承。仕様・試作条件・レビューは再承認不要。設定変更・実機/モデル操作は対象を具体化して確認。旧v2の後続は実行しない。
 

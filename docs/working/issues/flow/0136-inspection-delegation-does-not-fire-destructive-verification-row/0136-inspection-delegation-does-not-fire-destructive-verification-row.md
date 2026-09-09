@@ -30,6 +30,8 @@
 
 ## 現在地の要約
 
+- 2026-09-09: Linux仕様はフル1回・差分再確認1回・機械検証16項目を経て確定。ADR-0151・0152をAcceptedへ昇格。v2実装計画は未作成、実効保護は未実証。`docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`を参照。
+
 - 2026-09-09: Git履歴の独立コピーをレビューし、HEADのブランチ名保持を修正。全4テスト群が成功しADR-0150を確定。実エージェント経路・隔離方式は未完了。`0136-note-history-transfer.md`と`docs/records/reviews/2026-09-09-history-copy.md`を参照。
 - 2026-09-09: 再利用差分と役割間連携を調査。既存CLIの直接利用には原本位置・回収・権限・停止の差分がある。Linux試作先行かWindows対応維持かは未決定。`0136-note-loopforalpha-sandbox-reuse.md`を参照。
 
@@ -43,6 +45,7 @@
 
 ## 関連資料
 
+- `0136-note-linux-python-pilot.md` — Linux試作の構成候補、実機・公式資料の確認、利用者の準備と判断の分担案。
 - `0136-note-history-transfer.md` — Git履歴付きコピーの要求・実装・検証と残る確認。
 - `0136-note-loopforalpha-sandbox-reuse.md` — 既存Docker基盤との重複、再利用候補、Windows・成果物回収・エージェント権限の差分。
 

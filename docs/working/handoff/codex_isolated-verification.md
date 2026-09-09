@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理の実装
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-09 14:21 (Asia/Tokyo)
+- **Last Updated**: 2026-09-09 15:37 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: Git履歴コピーの実装・レビュー完了 / 隔離方式の検討へ復帰
+- **Current Phase**: Linux試作仕様を確定 / v2実装計画の作成前
 
 ## 作業の目的・背景
 
@@ -13,8 +13,8 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 
 ## 関連ドキュメント
 
-- Spec: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md` と詳細3件（確定コミット`1e63e8a`）。
-- Plan: `docs/working/plans/2026-09-09-isolated-verification.md`（本セッションの3択への「１で」で確定）。
+- Spec: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md`と詳細3件はLinux試作v2の確定仕様。v1先行部品の仕様は`049d2eb`で参照可能。仕様確定を実装済みと扱わない。
+- Plan: `docs/working/plans/2026-09-09-isolated-verification.md`はv1の実施記録。未完了部分はv2用計画に更新するまで再開しない。v2実装計画は未作成。
 - 関連ADR: ADR-0145〜0148（Accepted）。包括的な判断の委任は未合意。
 - 進行順序変更: ADR-0149（Accepted）。ユーザーが「リスク評価＋独立した検証を進める」を「1で」で承認。通信受容・通常利用は未承認。
 - 前回の引き継ぎ: `docs/working/handoff/master.md`。
@@ -22,6 +22,11 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - リスク評価: 同Issueフォルダの`0136-note-network-risk-assessment.md`。
 - 再利用の比較材料: 同Issueフォルダの`0136-note-loopforalpha-sandbox-reuse.md`。LoopForAlpha側の参照パスと、未決定の差分を記載。
 - 履歴参照の要求・実装・検証: ADR-0150（Accepted）、同Issueフォルダの`0136-note-history-transfer.md`、`docs/records/reviews/2026-09-09-history-copy.md`。履歴提供と固定資料のClaude送信はユーザーが個別承認。
+- Linux試作の先行選択: ADR-0151（Accepted）。構成案・調査・判断の分担の承認時点の資料は同Issueフォルダの`0136-note-linux-python-pilot.md`。
+- 専用接続の構成承認: ADR-0152（Accepted）。構成と詳細仕様を確定。以後の計画・実起動・外部送信等の承認は別途扱う。
+- 仕様レビューと採否案: `docs/records/reviews/2026-09-09-linux-pilot-spec-r1.md`。固定9ファイルのClaude送信は本会話の「1で」で承認され実行済み。
+- 差分再確認と追加指摘: `docs/records/reviews/2026-09-09-linux-pilot-spec-r2.md`。固定11ファイルと差分の送信はユーザーの「１で」で承認され実行済み。
+- 機械検証・採否確定: `docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`。16項目合格で追加修正なく仕様を確定。
 
 ## 完了済みタスク
 
@@ -33,12 +38,17 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - [x] 再利用差分と役割間の成果物の往復を調査。既存関数の3モードの引数生成を確認。Docker・AIの実起動は行っていない。詳細は`0136-note-loopforalpha-sandbox-reuse.md`。
 - [x] Git履歴の独立コピーを追加。未コミット内容を保持してlog/show/blameを参照し、worktree入力・空のHEAD・不完全な履歴を検査。実行記録は`0136-note-history-transfer.md`。
 - [x] 履歴変更の独立レビューを完了。2指摘を実測し、ブランチ名保持を修正。履歴23項目を含む4群が成功。実リポジトリのコピー、SHA256形式と参照更新も確認。詳細は上記レビュー記録。
+- [x] Linux試作の先行選択を反映し、Dockerサービス・既存イメージを照会。Codexのシェル無効化設定とMCP接続の公式仕様を確認し、構成案を作成。実コンテナ・実エージェントの起動は未実施。
+- [x] 承認済み構成を仕様4件へ具体化。3ブロック、担当ファイル11件の重複0、インターフェース、snapshot見出しを確認。レビュー用に9ファイルの固定本文を準備。
+- [x] 新規1担当の静的レビューで4指摘を照合し、01〜03へ責務・確認記録・失敗保持を反映。APIの読み取り接続も確認。採否は最終確定記録を参照。
+- [x] 差分再確認で前回4件の反映一致を確認。追加R1は停止時点の説明を補完し採用、R2の照合削減とR3の項目追加は不採用で確定。
+- [x] ユーザーが機械検証を選択。16項目に齟齬なく、specとADR-0151・0152を確定。動的実証とv2実装は未着手。
 
 ## 進行中のタスク
 
-- **現在の作業**: 履歴コピーの先行変更を確定し、未決の隔離方式へ戻る。
-  - 状態: 履歴の提供・独立レビューと主担当の修正後検証は完了。ADR-0150を確定。追加の外部レビューは行っていない。隔離方式の比較材料は再利用ノート。
-  - 残り: Linux試作を先行させるかWindows対応を維持するかを判断する。Docker採用・共通化・LoopForAlpha変更・既存試作撤去・実エージェント起動・通信受容・公開は未承認。
+- **現在の作業**: 確定したLinux試作仕様からv2実装計画を作成する段階。
+  - 状態: 仕様と採否は確定。レビューの再質問・再送信は不要。フル1回・差分再確認1回・機械検証1回、提示後確定。詳細は最終記録。
+  - 残り: 最初に全ホスト操作経路を確認できる方法を詰める実装計画を作る。方法が成立しなければ自由な作業依頼を起動しない。動的試験・新しい依存・実起動・外部送信等は具体化後に判断する。
 
 ## 未着手のタスク
 
@@ -53,6 +63,17 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - `.tmp/`の試験・ログ・junctionと他作業の未追跡物を保全する。LoopForAlphaの既存コンテナの起動・停止・再ビルドは行っていない。
 
 ## 節目ごとの確認記録
+
+- 2026-09-09 spec 確定点: ADR=0151・0152 / worklog=棄却（既存の機械検証と確定手順） / review=フル実施（claude-sonnet-5・1回）＋差分再確認（claude-sonnet-5・1回）＋機械検証（1回・提示後確定（実質的な収束に至らず））
+- 2026-09-09 ADR-0151・0152 Accepted 昇格: ADR=0151・0152 / worklog=棄却（既存の昇格手順） / cyclecheck=非該当（実装前昇格）
+
+- 2026-09-09 Linux仕様差分再確認と局所補完: ADR=0151・0152（主要構成変更なし） / worklog=棄却（既存の指摘照合・局所的な仕様補完の範囲）
+
+- 2026-09-09 Linux仕様レビュー受領と対応案反映: ADR=0151・0152（構成を維持した詳細補完） / worklog=棄却（既存の指摘照合・退避・仕様補完の範囲）
+
+- 2026-09-09 Linux詳細仕様案と自己確認: ADR=0151・0152 / worklog=棄却（既存の設計具体化と契約照合の範囲）
+
+- 2026-09-09 Linux試作の構成案と前提確認: ADR=0151 / worklog=棄却（既存の要件確認・実体照合・設計手順の範囲）
 
 - 2026-09-09 履歴レビュー完了・ADR-0150 Accepted 昇格: ADR=0150 / worklog=棄却（既存のレビュー照合・修正・検証手順の範囲） / cyclecheck=実施（修正: Issue-0136）
 
@@ -75,10 +96,11 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 ## 次セッション開始時のアクション
 
 1. start-workで本handoffを読み、専用worktreeとブランチを確認する。実装計画・リスク評価・ADR-0149が最新の正本。master側の古い計画選択から戻らない。
-2. 履歴変更は`docs/records/reviews/2026-09-09-history-copy.md`で完了確認済み。隔離方式の比較は`0136-note-loopforalpha-sandbox-reuse.md`へ戻り、Linux試作先行かWindows対応維持かの判断を続ける。
+2. `docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`で仕様確定を確認し、writing-plansでv2用計画を作る。全実効ツールの取得・制限・検証方法の確認を先頭に置き、旧v1計画を再開しない。
 3. 全体レビュー・CLI結合・V1〜V7は未完了。先行4群の再検証は`Run-IndependentTests.ps1`。履歴レビューの完了を隔離成功へ読み替えず、採用・導入・削除等の承認を拡張しない。
 
 ## 重要な意思決定の履歴
 
+- ADR-0151・0152: Linux試作の設計を先行し、ホスト上の子の操作を専用MCP接続でコンテナ内へ限定する構成（2026-09-09、設計としてAccepted）。
 - ADR-0150: リポジトリのファイルとGit履歴をスクリプトで独立コピーへ渡す（2026-09-09、Accepted）。
 - ADR-0145〜0148: 自律テスト作成、両主担当からCodex検証、共通CLI、独立Git管理領域（2026-09-09）。

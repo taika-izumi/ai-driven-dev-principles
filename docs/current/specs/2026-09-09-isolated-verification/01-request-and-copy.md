@@ -1,52 +1,61 @@
-# 依頼受付と検証用コピーの準備
+# 依頼と独立コピーの準備
 
-## 対象ファイル
+## 対象と責務
 
-- `scripts/verification/Invoke-IsolatedVerification.ps1`: 共通CLIと3ブロックの呼び出し。
-- `scripts/verification/RequestCopy.psm1`: 入力検査・コピー準備。
-- `scripts/verification/request.schema.json`: 依頼の書式。
-- `scripts/verification/README.md`: 両依頼元の呼び出し例、導入設定、失敗時の操作。
+- `scripts/verification/Invoke-IsolatedVerification.ps1`: CLI受付と3ブロックの呼び出し（未実装）。
+- `RequestCopy.psm1`: 入力検査・ファイル・Git履歴・再検証入力のコピー。
+- `request.schema.json`: v1とv2の識別可能な依頼書式。
+- `README.md`: 実装済み範囲・導入条件・呼び出し例。
 
-## 責務とインターフェース
+`New-VerificationRun(RequestV2, SettingsV2) -> PreparedRunV2`。既存v1のコピー処理を共用するが、v2の新しいキーを既存の厳密なv1検査へそのまま渡さない。v1部品試験は維持し、Linux共通CLIはv2のみ受け付ける。
 
-共通CLIは `-RequestPath <JSONの絶対パス> -SettingsPath <導入設定JSONの絶対パス>` を受け取る。受付後は `New-VerificationRun(Request, Settings) -> PreparedRun`、実行、回収の順に処理する。標準出力は最終結果JSON1件、途中の説明は標準エラーへ出す。
+版の振り分けと変換はRequestCopy.psm1が所有する。公開関数New-VerificationRunから、v1は既存処理を保持する内部関数New-LegacyVerificationRun、v2は新しい内部関数New-LinuxVerificationRunへ分岐する。v2側がRequestV2・SettingsV2を検査した後、Requestの共通6キー（schemaVersionだけ1へ設定）とSettingsの`codexPath, pwshPath, runsRoot, model, timeoutSeconds`を明示的に選んでv1内部処理を呼ぶ。recheckやDocker設定をv1検査へ流さない。
 
-依頼のキーは以下に限定し、未知キーと型不一致を拒否する。
+v1内部処理が返した同一runId・作業領域・manifestを再利用し、v2側で再検証入力と最後の原本照合を行う。PreparedRunV2には元のRequestV2・SettingsV2を保持する。Get-VerificationSourceManifestを呼ぶ際は必要なsourceRoot・extraInputPaths・runsRootを使い、外部の版検査をこの低水準関数へ任せない。現在のrequest.schema.jsonはschemaVersion=1に固定されており、この分岐・v2検査は未実装である。
 
-| キー | 型・条件 |
-|---|---|
-| `schemaVersion` | 整数1 |
-| `caller` | `claude-code` または `codex`。実起動の証拠ではなく依頼元の申告 |
-| `sourceRoot` | 存在するGit作業ディレクトリの絶対パス |
-| `objective` | 空でない検証目的の文字列 |
-| `acceptanceCriteria` | 空でない文字列の配列。最低1件 |
-| `extraInputPaths` | Gitで無視されたファイル等を追加する相対パスの配列。空配列可 |
+## 依頼と設定
 
-導入設定は `codexPath`・`pwshPath`・`runsRoot`・`model`・`timeoutSeconds` を持つ。実行ファイルと出力先は絶対パス、時間上限は正の整数。導入設定に汎用の追加コマンド引数を持たせない。権限制限は実行ブロックが生成する。利用者の設定確認を経たファイルを用い、検証担当には更新させない。
+RequestV2の必須キーは`schemaVersion=2, caller, sourceRoot, objective, acceptanceCriteria, extraInputPaths`。callerは`claude-code / codex`。目的と条件は空不可。sourceRootはGit作業ツリーの絶対パス。extraInputPathsは原本内の相対パスで、通常Gitが無視するデータ等を明示追加する。未知のキー・型違いを拒否する。
 
-`PreparedRun`のキーは `runId, sourceRoot, runRoot, workRoot, tempRoot, controlRoot, request, settings, sourceManifest`。パスは解決済みの絶対パス。`sourceManifest`は相対パス・サイズ・SHA256の配列とHEADの値（存在しなければnull）、HEADの参照先を表す`headRef`（detached時はnull）、全参照のオブジェクトIDと名前を名前順に並べた`historyRefs`、対象の総数、除外一覧を含む。
+任意の`recheck`は`previousResultPath, artifactPaths`を持つ。前者は前回のcontrol/result.jsonの絶対パス、後者はその結果に掲載された再現テストの相対パス配列。前回がfailであることは再検証の妨げではない。結果が実行未成立・停止未確認なら受理しない。
 
-## 処理とデータ配置
+SettingsV2は`schemaVersion=2, runtime=linux-docker, codexPath, pwshPath, dockerPath, runsRoot, model, timeoutSeconds, commandTimeoutSeconds, imageId, limits`を持つ。limitsは`memoryMiB, cpus, pids, outputBytesPerCommand`。パスは絶対、時間・資源・容量は正、commandTimeoutSecondsは全体上限以下。imageIdはローカルの完全な不変IDを指定し、latestタグのまま実行しない。子へ汎用のDockerフラグ・接続先・ホストパスを指定する欄を公開しない。導入設定自体は通常の入力コピーに含めない。
 
-1. `git ls-files -z --cached --others --exclude-standard`で追跡済みと未追跡を列挙する。削除済みの追跡ファイルはコピーせず、対象状態には削除を記録する。追加対象と統合し、重複を除く。
-2. `.git`の実体、共通実行領域、起動設定を自動でコピーしない。無視された依存・テストデータが必要な場合は`extraInputPaths`で明示し、除外した結果として未検証なら報告する。
-3. 入力・出力・それらの祖先の再解析ポイントを検査し、リンクを辿らない。追加パスの親移動・絶対パス・原本外への参照を拒否する。
-4. `runsRoot/<runId>/`を新規作成し、`work/`へファイルの内容を複製する。既存ファイルへのリンクやハードリンクを作らない。`temp/`は専用一時領域、`control/`は依頼・設定の非秘密部分・元の対象一覧・実行記録・最終結果の保存先。
-5. 空のテンプレートと原本と同じオブジェクト形式を指定して、`work/`へ新しいGit管理領域を作る。履歴がある場合は`git bundle create --single-worktree --all`と入力側のHEAD指定で`control/history.bundle`を作り、空のコピー側でverify・unbundleを行う。全参照と入力worktreeのHEADから到達できる履歴を移し、原本の設定・フック・リモート設定・共有オブジェクト参照をコピーしない。他worktreeだけのHEAD、reflogだけに残る履歴、到達不能オブジェクト、Git LFSの外部実体は含まない。
-6. 参照先とHEADをコピー内に復元し、元の一覧と一致することを確認する。ブランチ上のHEADは`headRef`で元のブランチ名へ戻し、detached時はコミットを直接指す状態を保つ。コミット前のブランチ名も保持する。HEADがある場合は`read-tree`でコピーのインデックスをHEAD基準にする。checkoutは行わず、複製した未コミット内容と削除状態を上書きしない。原本のステージ済み／未ステージの区別は再現しない。全オブジェクトを`git fsck --full --no-reflogs`で検査する。
-7. ファイルと履歴の準備後に原本を再照合する。入力の増減・内容変更・HEAD・headRef・全参照の更新があれば`source_changed`で止め、半端なコピーを実行しない。同じコミットを指すブランチ間の切り替えも検出する。無制限の自動再試行はしない。
-8. `git rev-parse --show-toplevel`と`git rev-parse --absolute-git-dir`の結果が、それぞれ`work/`と`work/.git`へ一致することを確認する。Git管理領域の読み取り専用化は、`02-isolated-execution.md`の実行ブロックが検証担当の起動時に行う。コピーの準備成功だけでは権限保護の成立としない。
+小さな試作用の設定例は全体600秒・1操作60秒・メモリ1024MiB・CPU1・pids128・1操作出力合計16MiB。これらは性能保証値ではなく、正常例が通るか試験で確認する。必要量を超える題材へ無断で範囲を広げない。
 
-実行領域が原本配下にある場合は、設定した`runsRoot`全体を列挙から除外する。原本と同じ場所、原本を包含する出力先、入力として選択された出力先は拒否する。既存の共有一時領域の内容は変更しない。
+## 出力データ
 
-## 固有の制約と検証
+PreparedRunV2は`schemaVersion=2, runId, sourceRoot, runRoot, workRoot, tempRoot, controlRoot, request, settings, sourceManifest, recheckManifest`を持つ。sourceManifestの`files, head, headRef, historyRefs, total, exclusions`は既存処理を共用する。recheckManifestには前回runId・結果ファイルのハッシュ・元artifactパス・コピー先パス・サイズ・SHA256を記録し、原本由来のファイルと区別する。
 
-新しい実行番号はUUIDで作り、既存領域があれば再利用せず受付エラーにする。失敗した実行の作成物も保存先を報告する。自動削除をしない。コピーの整合性はハッシュ照合で確認するが、コピーしたこと自体を権限制限の証拠にしない。
+```
+runsRoot/runId/
+  work/                 # 原本の独立コピー、子が変更できる
+  temp/                 # ホスト制御処理専用の一時領域
+  control/              # 子へ直接公開しない
+    source-manifest.json
+    recheck-manifest.json
+    history.bundle
+    execution/          # 実行ブロックの記録
+    result.json         # 回収ブロックが一度だけ作成
+```
 
-V1・V2を担当する。未知キー、追加パスの`..`、junction、出力先の入れ子、削除済みファイル、コピー中の変更、未追跡ファイルをテストに含める。原本配下と原本外の両配置でGitの探索先がコピー自身であることを確認する。
+## 準備手順
 
-履歴の準備では、過去の本文・タグ・別ブランチ・detached HEAD・blame・参照先更新・worktree入力・空の履歴を検査する。浅い履歴と部分クローンは、完全な履歴として扱わず準備を停止する。Git操作はユーザー全体・システム設定と親のGit環境変数を継承せず、遅延取得と対話的な認証を無効にする。履歴を外部から自動取得しない。各Git処理は30秒を上限とし、超過時は不成立として返す。
+1. 入出力・祖先・選択対象のリンクと再解析ポイント、原本を包含するrunsRootを拒否する。新しいUUIDのrunIdだけを使用し、既存物へ上書きしない。
+2. `git ls-files -z --cached --others --exclude-standard`とextraInputPathsでファイルを選ぶ。runsRoot全体、原本のGit管理領域、導入設定、起動設定（.codex/.claude/.agents/.mcp.json）を除外し理由を残す。一般の仕様・課題・記録を親の判断で選び抜かない。サブモジュール等のディレクトリ入力は初回対象外として拒否する。
+3. コピー前の一覧・サイズ・SHA256・HEADコミット・headRef・全参照を記録し、ファイル内容を実体コピーする。削除済みを復活させない。ハードリンクで共有しない。
+4. 空テンプレートで原本と同じオブジェクト形式のGit領域を作る。全参照と入力worktreeのHEADを`bundle create --single-worktree --all`で移す。verify・unbundle・参照復元・fsckを行う。原本の設定・フック・オブジェクト外部参照を持ち込まない。
+5. ブランチ名またはdetached状態を復元する。HEADがあればread-treeでインデックスだけを作り、checkoutで作業ファイルを上書きしない。原本のステージ済み／未ステージの区別は再現しない。空履歴・コミット前のブランチも扱う。
+6. 再検証入力がある場合、前回結果を現在のrunsRoot内で解決し、結果のrunId・停止状態・artifact一覧を照合する。選ばれたファイルが今も掲載ハッシュと一致し、リンクでないことを確認する。`work/.verification-recheck/<previousRunId>/`へコピーし、既存原本の同名領域と衝突したら拒否する。子への短い依頼にコピー先を記載する。元の記録は変更せず、テストをホスト上で実行しない。
+7. コピーのハッシュと原本状態を再照合する。ファイル・HEAD・headRef・全参照が変わればsource_changed。再検証ファイルも前後ハッシュを照合し、不一致ならblocked。Gitのルートと管理領域がコピー自身を指すことを確認する。
+8. manifestをcontrolへ保存する。子からのGit変更禁止は実行ブロックが実効権限として成立させ、コピーしただけで保護成功とはしない。
 
-## 関連ADR
+途中で失敗した実行領域は診断用に保持し、自動削除しない。作成済みならrunRootと失敗段階をCLIへ返し、未作成ならrunRoot=nullとする。CLIは回収ブロックの失敗応答書式で1件のJSONを返す。保存できたファイルやmanifestと未完成のものを区別し、存在しない記録を成功扱いしない。不要になったものの削除は、既存の名指し承認の手順に従う。新しい一覧化サービスや自動清掃は追加しない。
 
-ADR-0145・0146・0147・0148・0150。全体の目的と承認範囲は`00-overview.md`を参照する。
+## 制約と検証
+
+Git全参照から到達できる履歴を対象とする。reflogだけの履歴、到達不能オブジェクト、LFSの外部実体は含めない。浅い履歴・部分クローンは停止する。親のGit環境変数・ユーザー全体とシステム設定を継承せず、遅延取得と対話認証を無効にする。Git各処理は30秒を上限とする。大きな履歴や長いWindowsパスへの無条件対応を主張しない。
+
+V1・V2を担当する。既存のコピー・履歴試験に加え、v2の型と未知キー、再検証元の範囲外・改変・未停止・runId違い・衝突、元ファイルの変更とコピー先の一致を検査する。原本内外のrunsRootと、同一コミットへのブランチ切り替えを含む。
+
+関連ADR: 0145〜0148、0150〜0152。

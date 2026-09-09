@@ -1,0 +1,132 @@
+{
+  "result": {
+    "summary": "1.txt/2.txtの追加段落は4.txt承認文案と完全一致。2.txtはADR-0164注記のみ除去し他は原文維持。既存の提示・反復・型・人数条件（2-2, 方式・人数の判断等）に差分は無い。3.txtへのADR-0164部分修正注記も内容はADR-0164のDecision/Consequencesと整合。ただし挿入位置がConsequences内の既存時系列順（ADR-0087→…→0124昇順で末尾追記）から外れ、先頭（ADR-0133注記の前）に置かれている。",
+    "coverage": {
+      "targets": 3,
+      "references": 3,
+      "read_files": 6,
+      "limitations": [
+        "manifestのsha256は未計算（Readのみでハッシュ照合ツールなし）。ファイル内容の目視全数照合に限る。",
+        "git diffは未実行のため、ADR-0133注記が本変更前から存在したか本変更で動いたかは未確認（内容自体は変化なしと推定）。",
+        "時系列順の並びは観察されたパターンであり、明文化された配置規則の存在は確認できていない。"
+      ]
+    },
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "Minor",
+        "file": "3.txt(ADR-0080)",
+        "line": "73",
+        "premise": "Consequences内の部分修正注記はADR-0087→0105→0107×3→0116→0117→0120→0121→0122→0124の順で末尾に昇順追記されてきた観察パターン（明文規則の確認はできず）。",
+        "evidence": "新規のADR-0164注記(73行目)が最新番号にもかかわらずConsequences冒頭、ADR-0133注記(75行目)より前に挿入されている。",
+        "impact": "内容・判断への影響なし。ADR履歴の時系列追跡がしづらくなる可読性上の軽微な影響のみ。",
+        "fix": "ADR-0164注記をConsequences末尾（97行目のADR-0124注記の後）へ移動する。",
+        "cost": "1ブロックの移動のみ、低コスト。"
+      }
+    ],
+    "cases": [
+      {
+        "case": "既禁止操作の同一構成拒否結果1件追記（原記録一致・条件不変）",
+        "result": "一致",
+        "reason": "1.txt line54文言どおり除外対象。他に未レビュー規範なければ通常型で、期待値と矛盾なし。"
+      },
+      {
+        "case": "許可リスト限定手順へ拒否リストも可を追加",
+        "result": "一致",
+        "reason": "「条件・手順を変える内容」に該当し除外されない旨が文言に明記され、期待値どおり対象に数える。"
+      },
+      {
+        "case": "『書き換えなかった』→『書き換えた』の訂正で安全性判断が崩れる",
+        "result": "一致",
+        "reason": "「根拠の訂正が従来の判断を崩す場合…除外しない」と明記、期待値と一致。"
+      },
+      {
+        "case": "観測追記＋新接続オプション使い分け手順の併記",
+        "result": "一致",
+        "reason": "「混在する場合は…事実追記を変更全体の除外理由にしない」に該当、期待値どおり対象。"
+      },
+      {
+        "case": "新OS成功例追記を根拠に対応OS拡大",
+        "result": "一致",
+        "reason": "適用範囲変更であり除外規定の対象外、文言上も除外しないと読める。"
+      },
+      {
+        "case": "原記録なしで条件不変確認不能な観測追記",
+        "result": "一致",
+        "reason": "「原記録と…照合して…確認できる場合に限り」に該当せず、既存の迷い時規定に従う旨と整合。"
+      }
+    ]
+  },
+  "model": "claude-sonnet-5",
+  "tools": [
+    "Read"
+  ],
+  "costUsd": 0.3256526,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 48354,
+    "cache_read_input_tokens": 66408,
+    "output_tokens": 11713,
+    "output_tokens_details": {
+      "thinking_tokens": 9553
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 48354,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1224,
+        "cache_read_input_tokens": 43688,
+        "cache_creation_input_tokens": 10295,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 10295
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "durationMs": 143337,
+  "manifest": [
+    {
+      "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\skills\\pre-finalization-review\\SKILL.md",
+      "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\.tmp\\issue-0140-implementation-r1\\1.txt",
+      "sha256": "6D8426779F2EAB1067AC421D4AA610839BAA31970FF10001EE3A393350DFCDA5"
+    },
+    {
+      "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\dist\\skills\\pre-finalization-review\\SKILL.md",
+      "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\.tmp\\issue-0140-implementation-r1\\2.txt",
+      "sha256": "7938550E64CD7AEAF174BD0FED12DE05D00A1422DD1AF3BAEC8FE5BCA8BC79B0"
+    },
+    {
+      "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\docs\\records\\decisions\\0080-review-presentation-scaled-by-unreviewed-normative-content.md",
+      "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\.tmp\\issue-0140-implementation-r1\\3.txt",
+      "sha256": "A65938A1487A1C5D2E4223871E1316B748C506A1B88D04D912B2D248D5BD5595"
+    },
+    {
+      "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\docs\\working\\issues\\flow\\0140-confirmation-cost-outgrows-work-in-small-norm-updates.md",
+      "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\.tmp\\issue-0140-implementation-r1\\4.txt",
+      "sha256": "A93322CE5914670F96FC20A1DC1C180ABE27D00F37CCC992AAE6C16735A17BB2"
+    },
+    {
+      "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\docs\\records\\decisions\\0164-exclude-behavior-preserving-observations-from-full-review-default.md",
+      "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\.tmp\\issue-0140-implementation-r1\\5.txt",
+      "sha256": "9D4C77E802BF47EA7B5D3E15419E1E4C35C734A2DE08C2EC6574E46FF02786F8"
+    },
+    {
+      "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\skills\\pre-finalization-review\\references\\iteration-norms.md",
+      "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0140-review-cost\\.tmp\\issue-0140-implementation-r1\\6.txt",
+      "sha256": "7AAEFC4445C28D685732984830837271E7C11AF4B26A5C884C07D39DF823EC25"
+    }
+  ],
+  "sourceMismatch": 0
+}

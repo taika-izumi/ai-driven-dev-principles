@@ -30,6 +30,8 @@
 
 ## 現在地の要約
 
+- 2026-09-09: リスク評価とAIなし部品の先行検証を承認（ADR-0149）。外部直接接続1件は拒否、ローカルのデータ往復とコピー外の合成データ読取は成功。コピー・プロセス管理・結果照合の3テスト群は成功。通常利用・実エージェント起動は未承認。`0136-note-network-risk-assessment.md`を参照。
+
 - 2026-09-09: 共通CLIの計画を確定し主担当実装を開始。タスク0で親子の書き込み保護・新規junctionの拒否を確認したが、通信禁止指定でもループバックTCPが成功。後続を止め、通信制御の起動経路の判断待ち。`0136-note-common-cli-runtime.md`を参照。
 
 - 2026-09-08: 共通改定と限定構成の実証は完了。ユーザーはClaude Codeの新規セッションで標準サブエージェントの追加検証を依頼したため、Issueをopenへ戻して継続。別プロセスClaude＋固定MCPの成功と標準サブエージェントの制限継承を区別する。入口は0136-note-claude-native-followup.md。
@@ -37,6 +39,8 @@
 - 2026-09-09: 対話セッション（autoモード）での実挙動を実測し、この未確認を解消。許可リスト方式の子は書き込み系ツールを持たず後から取得もできない一方、拒否リスト方式の子には列挙外の書き込み可能ツールが残り NotebookEdit が保護対象を承認要求なしで上書きした。保護は許可リスト方式に限ると決定し規範へ反映（ADR-0144、`docs/records/experiments/2026-09-09-claude-native-subagent-interactive.json`、`docs/reference/inspection-isolation-costs.md` 第10節の追加実測）。残る未確認は別OS・別版、外向きツール（Artifact・SendMessage）と状態変更系ツールの実効性、固定検査の対話セッション実行のため open を継続する。検査で派生した論点は Issue-0141、フロー課題は Issue-0142 として起票済み。
 
 ## 関連資料
+
+- `0136-note-network-risk-assessment.md` — 通信・読み取りリスクの実測と限定利用の条件案。
 
 - `0136-note-wfp-loopback-diagnostic.md` — 接続直前のWindowsフィルターと制限付きトークンの診断。
 

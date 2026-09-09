@@ -1,15 +1,17 @@
 # Handoff: Issue-0140完了後の次サイクル待ち
 
 - **Branch**: master
-- **Last Updated**: 2026-09-10 02:34 (Asia/Tokyo)
+- **Last Updated**: 2026-09-10 08:50 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: Issue-0140の実装・統合・振り返り完了 / 次作業待ち
 
 ## 作業の目的・背景
 
-利用条件を変えない実測追記の初回レビュー推奨を限定する改定を、45159a9でmasterへ統合した。ADR-0164はAccepted、Issue-0140はclosed。次サイクルは未着手。公開と利用側への導入は行っていない。
+利用条件を変えない実測追記の初回レビュー推奨を限定する改定を、45159a9でmasterへ統合した。ADR-0164はAccepted、Issue-0140はclosed。2026-09-10に0.1.25をGitHubへ公開し、このPCのCodexへ導入・有効化を確認。次サイクルは未着手。
 
 ## 関連ドキュメント
+
+- 公開・導入確認: `docs/records/experiments/2026-09-10-codex-plugin-0.1.25-installation.json`。公開時点e667fa4、導入スキル38ファイルが配布物と一致。
 
 - 直近の振り返り: `docs/records/retrospectives/system/2026-09-10-issue-0140-review-cost.md`。新規起票0件、作業ログ1件。
 - 直近の検証: `docs/records/reviews/2026-09-10-issue-0140-implementation.md`。設計・分担の履歴はIssue-0140、決定はADR-0164。完了した作業の委任を次作業へ流用しない。
@@ -30,13 +32,13 @@
 - Issue-0124の費用比較の適用不全への対処。次の候補であり着手未承認。
 - Issue-0136の残る未確認（別OS・版、外向きツール・状態変更系ツール、子だけへの固定検査公開）は同Issueと専用worktreeを参照。通信・機密性・リンク・両主担当からの実起動の成立は未確認。
 - Issue-0141・0142・0139の対処。Issue-0135は目安10KB超過（前回17.1KB）で、触る際のフォルダ昇格の提案対象。
-- 予定版0.1.25の公開判断と利用側への更新。公開済み版は2026-09-10確認時0.1.24（公開元master 7b8258f）。
+- 他PC・他ツールへのプラグイン更新は依頼時に実施。このPCのCodexは0.1.25を導入済み。
 
 ## 既知のブロッカー・懸念
 
 - 隔離検証の既存資料照合・Git対照試験を、通信拒否や実環境の保護成立へ読み替えない。再開時は専用worktreeの再利用検討ノートを読む。
 - Claude標準の子の制限・検索範囲の実測は `docs/records/retrospectives/system/2026-09-09-claude-native-subagent-interactive.md` とIssue-0136を参照。今回のレビューは別のRead限定CLI。
-- プラグイン導入済み0.1.24とリポジトリ予定版0.1.25は別。ローカルマージだけで利用側が更新されたと判断しない。
+- 現タスクに最初から提示されたスキル一覧は0.1.24。ディスクとCLI登録は0.1.25（installed・enabled）。次のタスクでは新しい導入版を確認する。
 - `.tmp/`、`.claude/agents/`の試験定義、`docs/conversation_log.md`、inbox3件を保全。一括ステージ・削除しない。inboxは手動整理待ち。
 - `.tmp/isolated-verification-review-20260909-01/`・`02/`と外部退避は対応レビュー記録を参照して保全。Issue-0140の`.tmp/issue-0140-review-r1/`・`issue-0140-merge/`、専用worktree内のレビュー証跡も保持。
 - `.worktrees/issue-0140-review-cost`と作業ブランチは統合済みだが、未追跡のレビュー証跡があるため残している。削除は名指しの承認後。

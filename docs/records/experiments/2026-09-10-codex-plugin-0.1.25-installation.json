@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-10",
+  "purpose": "ユーザー依頼に基づく0.1.25のpushとCodexへの最新版導入",
+  "repository": "https://github.com/taika-izumi/ai-driven-dev-principles.git",
+  "branch": "master",
+  "publishedCommit": "e667fa47183cf673b317b7e6e7df60ec6f53a8c4",
+  "previousPublishedVersion": "0.1.24",
+  "version": "0.1.25",
+  "pluginId": "ai-driven-dev-principles@ai-driven-dev-principles",
+  "installed": true,
+  "enabled": true,
+  "installedPath": "C:/Users/d12an/.codex/plugins/cache/ai-driven-dev-principles/ai-driven-dev-principles/0.1.25",
+  "skillFilesCompared": 38,
+  "hashMismatches": 0,
+  "updateMethod": "codex plugin marketplace upgrade ai-driven-dev-principles; codex plugin add ai-driven-dev-principles@ai-driven-dev-principles",
+  "firstFailure": "Git checkout during marketplace upgrade failed: Filename too long",
+  "resolution": "更新プロセスのGIT_CONFIG_COUNT/KEY/VALUE経由でcore.longpaths=trueを子Gitへ渡し、同じCLI操作を再実行。恒久設定は変更していない。",
+  "limitations": ["現タスクの開始時スキル一覧は旧版のまま。新しいタスクでの利用開始は未確認。", "他PC・他ツールへの導入は未実施。"]
+}

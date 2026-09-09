@@ -1,13 +1,15 @@
 # Handoff: 隔離検証の共通起動処理の実装
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-09 12:50 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 限定利用条件の確認 / 条件未達・次の方式の判断待ち
+- **Last Updated**: 2026-09-09 13:06 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: ユーザー指示で中断 / LoopForAlphaの既存基盤の再利用差分を確認する提案まで
 
 ## 作業の目的・背景
 
 Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピー内で追加テストを作成・実行する。仕様確定後の計画草案を再開し、ユーザーが主担当の順次実装と計画レビュー見送りを選択した。
+
+作業場所は`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。実装は専用ブランチにあり、masterへ未統合。通常チェックアウト側の古い計画状態から再実装しない。
 
 ## 関連ドキュメント
 
@@ -18,6 +20,7 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - 前回の引き継ぎ: `docs/working/handoff/master.md`。
 - 実測: `docs/working/issues/flow/0136-inspection-delegation-does-not-fire-destructive-verification-row/0136-note-common-cli-runtime.md`。
 - リスク評価: 同Issueフォルダの`0136-note-network-risk-assessment.md`。
+- 再利用の比較材料: 同Issueフォルダの`0136-note-loopforalpha-sandbox-reuse.md`。LoopForAlpha側の参照パスと、未決定の差分を記載。
 
 ## 完了済みタスク
 
@@ -29,9 +32,9 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 
 ## 進行中のタスク
 
-- **現在の作業**: ホストから分離した環境の比較か、現環境の制限追加の判断。
-  - 状態: 現構成の限定利用条件は未達。認証保存先を読み取り権限の外に置けておらず、ローカルサービスの無害性も確認できない。内容の読み取り・実サービスへの操作はしていない。
-  - 残り: 次の方式を選ぶ。設定変更・利用許容・実エージェント起動は未承認。コードの独立レビューと全体の結合検証も未実施。
+- **現在の作業**: セッション中断。既存基盤との再利用差分を確認するかの再開判断待ち。
+  - 状態: 現構成の限定利用条件は未達。ユーザーがLoopForAlphaの既存Docker基盤との重複を指摘し、仕様・コードを読んで比較材料を保存した。
+  - 残り: 再利用差分の確認から進むかを確認する。Docker採用・共通化・LoopForAlphaの変更・既存試作の撤去は未決定。実エージェント起動・通信受容・公開も未承認。
 
 ## 未着手のタスク
 
@@ -42,6 +45,7 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - 公開・通常導入・既存物の削除は未承認。原本側の未追跡物、他worktreeとstashは`docs/working/handoff/master.md`の保全指示を維持。
 - 導入済みプラグインは0.1.24、リポジトリの予定版は0.1.25。変更内容を自動で導入済みと扱わない。
 - sandboxの通信拒否が未成立。詳細と2実行の証拠パスは`0136-note-common-cli-runtime.md`に保存。保護代用品6件のハッシュは不変。
+- `.tmp/`の試験・ログ・junctionと他作業の未追跡物を保全する。LoopForAlphaの既存コンテナの起動・停止・再ビルドは行っていない。
 
 ## 節目ごとの確認記録
 
@@ -55,12 +59,13 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - 2026-09-09 AIなし部品の先行検証: ADR=0149 / worklog=棄却（既存TDD手順による修正と検証）
 - 2026-09-09 先行範囲の確認・ADR-0149 Accepted 昇格: ADR=0149 / worklog=棄却（既存の確認手順内） / cyclecheck=実施（修正: Issue-0136）
 - 2026-09-09 限定利用条件の実測: ADR=なし（観測のみ、利用許容・方式変更は未決定） / worklog=棄却（既存の限定的な実証手順内）
+- 2026-09-09 セッション中断と再利用材料の保存: ADR=なし（再利用案は未採用） / worklog=MakeAiInstructions-2026-09-09-07
 
 ## 次セッション開始時のアクション
 
-1. 本handoff、実装計画、`0136-note-network-risk-assessment.md`とADR-0149を確認する。
-2. 限定利用条件が未達であることを踏まえ、別環境の比較か現環境の制限追加を判断する。認証ファイルの内容は読まず、サービスを自動で停止しない。
-3. 先行3群の再検証は`Run-IndependentTests.ps1`。全体の独立レビュー・CLI結合・V1〜V7の認定は未完了。
+1. start-workで本handoffを読み、専用worktreeとブランチを確認する。実装計画・リスク評価・ADR-0149が最新の正本。master側の古い計画選択から戻らない。
+2. `0136-note-loopforalpha-sandbox-reuse.md`を読み、既存Docker基盤の再利用差分を確認するか相談する。エージェント本体とAI製コードの隔離、LinuxとWindowsの違いを維持する。
+3. コードの独立レビュー・CLI結合・V1〜V7は未完了。先行3群の再検証は`Run-IndependentTests.ps1`。採用・変更・導入・削除を中断指示から推定しない。
 
 ## 重要な意思決定の履歴
 

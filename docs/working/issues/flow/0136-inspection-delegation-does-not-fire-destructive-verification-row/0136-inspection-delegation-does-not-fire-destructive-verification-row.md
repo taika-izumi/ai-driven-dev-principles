@@ -40,6 +40,8 @@
 
 ## 関連資料
 
+- `0136-note-loopforalpha-sandbox-reuse.md` — 既存Docker基盤との重複、再利用候補、Windows・成果物回収・エージェント権限の差分。
+
 - `0136-note-network-risk-assessment.md` — 通信・読み取りリスクの実測と限定利用の条件案。
 
 - `0136-note-wfp-loopback-diagnostic.md` — 接続直前のWindowsフィルターと制限付きトークンの診断。

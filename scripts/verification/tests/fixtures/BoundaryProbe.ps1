@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory)][string]$ProbeRoot,
     [Parameter(Mandatory)][int]$Port,
     [switch]$AllowOnly,
-    [switch]$Child
+    [switch]$Child,
+    [switch]$PauseForWfp
 )
 # 新規試験領域の代用品だけに書き込む。許可失敗と拒否成功を混同しない。
 Set-StrictMode -Version Latest
@@ -33,6 +34,15 @@ if (-not $AllowOnly) {
         $link.write = Test-ProbeWrite "work/link-$suffix/sentinel.txt"
     } catch { $link.error = $_.Exception.GetType().FullName }
 }
+if ($PauseForWfp) {
+    $ready = Join-Path $ProbeRoot "work/wfp-ready-$suffix.json"
+    [IO.File]::WriteAllText($ready, (@{pid=$PID;sid=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value;port=$Port} | ConvertTo-Json -Compress))
+    $deadline = [DateTime]::UtcNow.AddSeconds(30)
+    while (-not [IO.File]::Exists((Join-Path $ProbeRoot "work/wfp-release-$suffix"))) {
+        if ([DateTime]::UtcNow -gt $deadline) { throw 'WFP採取待ちが時間超過' }
+        Start-Sleep -Milliseconds 100
+    }
+}
 $client = [Net.Sockets.TcpClient]::new()
 $network = @{connected=$false; error=$null}
 try {
@@ -41,7 +51,7 @@ try {
     $network.connected = $client.Connected
 } catch { $network.error = $_.Exception.Message }
 finally { $client.Dispose() }
-$result = @{process=$suffix; writes=$writes; link=$link; network=$network; child=$null}
+$result = @{process=$suffix; writes=$writes; link=$link; network=$network; child=$null; userSid=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value}
 if (-not $Child) {
     $start = [Diagnostics.ProcessStartInfo]::new((Get-Process -Id $PID).Path)
     $start.UseShellExecute = $false
@@ -52,6 +62,7 @@ if (-not $Child) {
         $start.ArgumentList.Add($arg)
     }
     if ($AllowOnly) { $start.ArgumentList.Add('-AllowOnly') }
+    if ($PauseForWfp) { $start.ArgumentList.Add('-PauseForWfp') }
     $process = [Diagnostics.Process]::new()
     $process.StartInfo = $start
     try {

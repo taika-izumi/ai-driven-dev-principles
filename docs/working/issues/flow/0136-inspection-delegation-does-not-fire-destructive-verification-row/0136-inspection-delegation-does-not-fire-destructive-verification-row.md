@@ -38,6 +38,8 @@
 
 ## 関連資料
 
+- `0136-note-wfp-loopback-diagnostic.md` — 接続直前のWindowsフィルターと制限付きトークンの診断。
+
 - `0136-note-common-cli-runtime.md` — 共通CLIのタスク0実測、通信拒否不成立と次の判断。
 
 - 0136-note-claude-native-followup.md — Claude Code新規セッションでの追加検証の入口・確認済み範囲・制約。

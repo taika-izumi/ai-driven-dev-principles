@@ -5,7 +5,9 @@ param(
     [Parameter(Mandatory)][string]$Permissions,
     [Parameter(Mandatory)][int]$Port,
     [ValidateSet('elevated','unelevated')][string]$WindowsSandbox='elevated',
-    [switch]$IdentityOnly
+    [switch]$IdentityOnly,
+    [switch]$PauseForWfp,
+    [switch]$TokenOnly
 )
 # 調査専用。スレッド・モデルを作らず、実機生成スキーマのcommand/execを比較する。
 Set-StrictMode -Version Latest
@@ -61,6 +63,8 @@ try {
         env=@{TEMP=(Join-Path $ProbeRoot 'temp');TMP=(Join-Path $ProbeRoot 'temp')}
     }}
     if ($IdentityOnly) { $request.params.command = @((Get-Command whoami.exe).Source, '/user') }
+    if ($TokenOnly) { $request.params.command = @($PwshPath,'-NoProfile','-File',(Join-Path $PSScriptRoot 'TokenConditionProbe.ps1')) }
+    if ($PauseForWfp) { $request.params.command += '-PauseForWfp' }
     [IO.File]::WriteAllText((Join-Path $ProbeRoot 'control/app-server-request.json'), ($request | ConvertTo-Json -Depth 12))
     Send-Rpc $request
     $response = Receive-Rpc 2

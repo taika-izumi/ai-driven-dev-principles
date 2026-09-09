@@ -5,12 +5,18 @@ param(
     [switch]$IncludeAgentProbe,
     [string]$Model,
     [ValidateSet('elevated','unelevated')][string]$WindowsSandbox,
-    [ValidateSet('sandbox','app-server')][string]$ExecutionPath='sandbox'
+    [ValidateSet('sandbox','app-server')][string]$ExecutionPath='sandbox',
+    [switch]$CaptureWfp
 )
 # タスク0の前提検査。起動失敗は保護成功にならず、証拠を残して非ゼロ終了する。
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'TestSupport.psm1') -Force
+if ($CaptureWfp) {
+    $principal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
+    Assert-True ($principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) 'WFP採取には管理者権限が必要'
+    Assert-Equal $ExecutionPath 'app-server' '今回のWFP採取はAPI経路を対象にする'
+}
 foreach ($path in @($CodexPath,$PwshPath,$ProbeRoot)) {
     Assert-True ([IO.Path]::IsPathFullyQualified($path)) '絶対パスが必要'
 }
@@ -54,6 +60,23 @@ function Invoke-ProbeProcess([string]$File, [string[]]$Arguments, [string]$Name,
         $entry.started = $true
         $out = $process.StandardOutput.ReadToEndAsync()
         $err = $process.StandardError.ReadToEndAsync()
+        if ($CaptureWfp -and $Name -eq 'sandbox-boundary') {
+            $captured = @{}
+            $deadline = [DateTime]::UtcNow.AddSeconds(40)
+            while (-not $process.HasExited -and $captured.Count -lt 2 -and [DateTime]::UtcNow -lt $deadline) {
+                foreach ($kind in @('parent','child')) {
+                    $readyPath = Join-Path $ProbeRoot "work/wfp-ready-$kind.json"
+                    if ($captured.ContainsKey($kind) -or -not [IO.File]::Exists($readyPath)) { continue }
+                    try { $ready = [IO.File]::ReadAllText($readyPath) | ConvertFrom-Json -ErrorAction Stop } catch { continue }
+                    $wfpPath = Join-Path $control "wfp-before-connect-$kind.xml"
+                    $wfpOutput = @(& (Join-Path $env:SystemRoot 'System32/netsh.exe') wfp show filters "file=$wfpPath" protocol=6 remoteaddr=127.0.0.1 "remoteport=$($ready.port)" "appid=$PwshPath" "userid=$($ready.sid)" dir=OUT verbose=ON 2>&1 | ForEach-Object { "$_" })
+                    Save-ProbeJson (Join-Path $control "wfp-before-connect-$kind.json") @{process=$ready;exitCode=$LASTEXITCODE;output=$wfpOutput;filterPath=$wfpPath}
+                    [IO.File]::WriteAllText((Join-Path $ProbeRoot "work/wfp-release-$kind"),'snapshot finished')
+                    $captured[$kind] = $true
+                }
+                Start-Sleep -Milliseconds 100
+            }
+        }
         if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
             $entry.timedOut = $true
             $process.Kill($true)
@@ -124,7 +147,9 @@ try {
     if ($WindowsSandbox) { $sandboxArgs += @('-c', ('windows.sandbox="' + $WindowsSandbox + '"')) }
     if ($ExecutionPath -eq 'app-server') {
         Assert-True (-not [string]::IsNullOrEmpty($WindowsSandbox)) '比較用APIはWindows方式を明示する'
-        $limited = Invoke-ProbeProcess $PwshPath @('-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'fixtures/AppServerBoundary.ps1'),'-CodexPath',$CodexPath,'-PwshPath',$PwshPath,'-ProbeRoot',$ProbeRoot,'-Permissions',$permissions,'-Port',"$port",'-WindowsSandbox',$WindowsSandbox) 'sandbox-boundary' 55
+        $apiArguments = @('-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'fixtures/AppServerBoundary.ps1'),'-CodexPath',$CodexPath,'-PwshPath',$PwshPath,'-ProbeRoot',$ProbeRoot,'-Permissions',$permissions,'-Port',"$port",'-WindowsSandbox',$WindowsSandbox)
+        if ($CaptureWfp) { $apiArguments += '-PauseForWfp' }
+        $limited = Invoke-ProbeProcess $PwshPath $apiArguments 'sandbox-boundary' 55
     } else {
         $limited = Invoke-ProbeProcess $CodexPath ($sandboxArgs + $PwshPath + $argsBase) 'sandbox-boundary'
     }

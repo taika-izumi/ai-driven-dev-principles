@@ -1,6 +1,6 @@
 # Issue-0140: 規範文書への小さな事実追記でも確定点が立つため、確定前レビューの費用が主作業の費用を上回る
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-09-08
 - **起票元**: `retrospectives/flow/2026-09-08-claude-native-subagent-verification.md` 課題#1
 - **関連**: `skills/pre-finalization-review/SKILL.md`「確定点での提示（提示規則）」の推奨判定・2 型分類 / 同 `references/iteration-norms.md`（反復の実施・停止判定）/ Issue-0124（足した機構の費用側評価。射程は機構の増加で、本課題は確認工程自体の粒度と費用）
@@ -36,7 +36,7 @@
 
 ## 2026-09-10 限定改定の設計案
 
-2026-09-10、レビュー後のユーザー回答「1で」で設計確定。ADR-0164（Proposed）、配布未適用。[採否と費用](../../../records/reviews/2026-09-10-issue-0140-design-r1.md)を参照。
+2026-09-10、設計確定後に実装・検証。ADR-0164（Accepted）。[設計レビュー](../../../records/reviews/2026-09-10-issue-0140-design-r1.md)を参照。
 
 ### 変更箇所と文案
 
@@ -69,4 +69,4 @@
 
 ## 結論
 
-（open）
+ADR-0164により実装・検証済み。[実施記録](../../../records/reviews/2026-09-10-issue-0140-implementation.md)。効果は未実測。

@@ -150,3 +150,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0142](0142-verify-claude-through-existing-codex-sandbox.md) | 既存CodexのあるWindows環境でClaudeの限定実行経路を検証する | Accepted | 2026-09-08 |
 | [0143](0143-protect-claude-native-subagents-by-removing-write-tools.md) | Claude標準サブエージェントの保護は書き込み系ツールの除去で成立させ権限モードに依存しない | Accepted | 2026-09-08 |
 | [0144](0144-protect-claude-native-subagents-with-allowlist-only.md) | Claude標準サブエージェントの書き込み系ツールの除去は許可リスト方式で行い拒否リスト方式を用いない | Accepted | 2026-09-09 |
+| [0145](0145-enable-autonomous-test-creation-within-isolation.md) | 検証担当が隔離範囲内で追加テストを作成・実行できる構成を目指す | Accepted | 2026-09-09 |
+| [0146](0146-delegate-verification-from-claude-to-codex.md) | 開発の主担当を維持し、Claude CodeとCodexから共通の検証担当を呼ぶ | Accepted | 2026-09-09 |
+| [0147](0147-use-common-cli-for-isolated-verification.md) | 検証の共通入口をCLIに置き、準備・実行・回収の責務を分ける | Accepted | 2026-09-09 |
+| [0148](0148-initialize-independent-git-metadata-for-verification.md) | 検証用コピーに独立したGit管理領域を作る | Accepted | 2026-09-09 |

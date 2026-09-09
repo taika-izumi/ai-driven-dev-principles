@@ -44,3 +44,30 @@ OpenAIの[Windows sandbox公式説明](https://learn.chatgpt.com/docs/windows/wi
 次に確認する候補は、同じ保護条件を維持したWindowsの実行方式・通信制御の適用経路と、exec用の起動前確認の方法。仕様02が要求する明示的なWindows設定を含め、sandbox単体とexecの違いを切り分ける。設定名の追加だけで成功扱いにしない。
 
 通信要求の緩和、別の隔離機構の導入、ユーザー環境の設定変更は未選択。現行計画は「事前試験が不成立なら後続へ進まない」を要求するため、実装を止めて判断を求める。
+
+## 追加調査（2026-09-09）
+
+ユーザーが「通信遮断できる起動経路を追加調査する」を「１で」で選択。同じ保護条件を保ち、一時的な設定指定とモデルを呼ばないAPIで切り分けた。環境設定やファイアウォール規則は変更していない。
+
+| 調査 | 結果・意味 |
+|---|---|
+| sandboxに`-c windows.sandbox="elevated"`を追加 | 親子ともループバックTCP接続成功。明示指定だけでは通信拒否にならない |
+| CLI 0.153.4からAPIスキーマを生成 | `command/exec`はスレッド・ターンを作らずコマンドを実行でき、`permissionProfile`を受け取る。比較経路として使う。本実装への採用は未決定 |
+| 専用stdio app-serverから同じプロファイルでcommand/exec | Windows方式はelevatedを明示。親子の書き込み制限とjunction拒否は成立したが、親子のループバックTCPは成功。試験終了2 |
+| 同じAPIと設定でwhoami /userだけを実行 | 実行ユーザーは`spring\codexsandboxoffline`。専用オフラインユーザーが使われていることを確認 |
+| 既存Windows通信制御を読み取り | Domain・Private・Publicすべて有効、BFE・mpssvcはRunning。Codex用の3遮断規則は有効・Block・Outboundで、対象SIDはwhoamiと一致。TCP規則は127.0.0.0/8と全ポートを含む |
+
+規則のEnforcementStatusは`ProfileInactive Enforced`。一覧の有効表示・SID・アドレスの一致から、パケット単位の適用成功まで推定しない。通信が通った内部原因は未特定であり、設定漏れやファイアウォール全体の無効化だけでは説明できない。調べた2経路で要求を満たす起動方法は得られなかった。実モデルのexec経路を検証済みとは扱わない。
+
+API比較の途中で、既定プロファイル未指定による起動拒否と、Windowsでは任意の`outputBytesCap`が非対応という2件のエラーを観測した。`default_permissions="inspection"`の明示と任意指定の除去で解消。試験用`AppServerBoundary.ps1`に反映した。サーバーは標準入力を閉じて終了し、専用プロセス以外の停止・常駐登録は行わない。
+
+追加の証拠（上記作業領域からの相対パス）:
+
+- `.tmp/verification-probes/elevated-6243cc02-f736-4512-8e36-2c72fab43d74/control/` — sandboxへのWindows方式明示。
+- `.tmp/verification-probes/appserver-f216affb-a53d-4526-ba2c-b81ea6cfc1b5/control/` — 既定プロファイル未指定の失敗。
+- `.tmp/verification-probes/appserver-0d5fbcad-ff1c-4331-8223-cffd241b1a8e/control/` — 出力上限指定の拒否。
+- `.tmp/verification-probes/appserver-9d1a79e1-7465-4561-8c7a-5a574f64379c/control/` — API比較の要求、全応答、前後対照、保全ハッシュ。
+- `.tmp/verification-probes/identity-04b24aa8-ae09-4220-a298-c57701918a58/control/` — 実行ユーザーの応答と`network-state.json`。
+- `.tmp/codex-protocol-01534/v2/CommandExecParams.json`等 — 当該CLIから生成したAPI定義。現行Web資料から推測した引数ではない。
+
+次の論点はWindows側のパケットフィルターがループバックに適用されない理由の診断か、別の隔離構成の設計である。いずれも未選択。通信禁止要求を緩めて試験を合格へ変更する案は採用していない。

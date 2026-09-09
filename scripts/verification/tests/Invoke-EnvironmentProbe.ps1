@@ -3,7 +3,9 @@ param(
     [Parameter(Mandatory)][string]$PwshPath,
     [Parameter(Mandatory)][string]$ProbeRoot,
     [switch]$IncludeAgentProbe,
-    [string]$Model
+    [string]$Model,
+    [ValidateSet('elevated','unelevated')][string]$WindowsSandbox,
+    [ValidateSet('sandbox','app-server')][string]$ExecutionPath='sandbox'
 )
 # タスク0の前提検査。起動失敗は保護成功にならず、証拠を残して非ゼロ終了する。
 Set-StrictMode -Version Latest
@@ -118,7 +120,14 @@ try {
     Assert-ProbeRows $normal $false
     Assert-Equal $normal.child.exitCode 0 '通常子プロセスの起動'
     Assert-ProbeRows ($normal.child.stdout | ConvertFrom-Json) $false
-    $limited = Invoke-ProbeProcess $CodexPath (@('sandbox','-P','inspection','-C',(Join-Path $ProbeRoot 'work'),'-c',$permissions,$PwshPath) + $argsBase) 'sandbox-boundary'
+    $sandboxArgs = @('sandbox','-P','inspection','-C',(Join-Path $ProbeRoot 'work'),'-c',$permissions)
+    if ($WindowsSandbox) { $sandboxArgs += @('-c', ('windows.sandbox="' + $WindowsSandbox + '"')) }
+    if ($ExecutionPath -eq 'app-server') {
+        Assert-True (-not [string]::IsNullOrEmpty($WindowsSandbox)) '比較用APIはWindows方式を明示する'
+        $limited = Invoke-ProbeProcess $PwshPath @('-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'fixtures/AppServerBoundary.ps1'),'-CodexPath',$CodexPath,'-PwshPath',$PwshPath,'-ProbeRoot',$ProbeRoot,'-Permissions',$permissions,'-Port',"$port",'-WindowsSandbox',$WindowsSandbox) 'sandbox-boundary' 55
+    } else {
+        $limited = Invoke-ProbeProcess $CodexPath ($sandboxArgs + $PwshPath + $argsBase) 'sandbox-boundary'
+    }
     # 拒否側失敗でも正の対照を取り、接続先停止による偽の拒否を排除する。
     $after = Invoke-ProbeProcess $PwshPath ($argsBase + '-AllowOnly') 'normal-after'
     Assert-Equal $after.exitCode 0 '試験後の正の対照'

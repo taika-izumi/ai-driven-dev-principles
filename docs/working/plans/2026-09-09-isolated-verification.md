@@ -104,6 +104,8 @@ $settings = @{
 
 **進捗（2026-09-09）:** 試験3ファイルを作成しAIなしで実行。通常ユーザー側では親子の書き込み保護と新規junctionの拒否を確認したが、`network.enabled=false`でもループバックTCP接続が成功した。タスク0未完了として後続を停止。execのAI試験は未実装・未実行。実測と証拠は`0136-note-common-cli-runtime.md`を参照。途中成果のため、以下の完了チェックは一括で付けない。
 
+**追加調査:** ユーザーの「１で」で通信経路の比較を実施。試験専用に`-WindowsSandbox`、`-ExecutionPath`と`fixtures/AppServerBoundary.ps1`を追加。elevated明示とcommand/exec APIの双方で通信拒否は未成立。調査用APIを共通CLI本体へ採用した決定ではない。実行ユーザー・既存規則の照合結果はruntimeノート「追加調査」を参照。
+
 **作成するファイル:**
 
 - `scripts/verification/tests/TestSupport.psm1`

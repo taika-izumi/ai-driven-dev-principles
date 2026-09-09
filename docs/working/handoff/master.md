@@ -1,17 +1,19 @@
 # Handoff: 自律的にテストを作成・実行する検証担当の隔離環境の構築方針
 
 - **Branch**: master
-- **Last Updated**: 2026-09-09 09:42 (Asia/Tokyo)
+- **Last Updated**: 2026-09-09 13:06 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: ユーザー指示で中断 / 計画レビューまたは実装方式の選択待ち
+- **Current Phase**: ユーザー指示で中断 / 続きはcodex/isolated-verificationの専用worktree
 
 ## 作業の目的・背景
 
 前サイクルのClaude標準サブエージェントの保護検証を受け、検証担当が安全に追加テストを作成・実行する構成を設計した。前サイクルの実測・振り返りはADR-0144と`docs/records/retrospectives/system/2026-09-09-claude-native-subagent-interactive.md`を参照。
 
-検証担当の追加テスト作成・実行、Claude Code・Codex双方から共通CLIで依頼する構成、独立したGit管理領域を含む仕様をユーザーが確定した（ADR-0145〜0148、コミット`1e63e8a`）。5タスクの実装計画を作成した段階で、コンテキスト増大を理由とするユーザーの中断指示を受けた。実装は未着手。
+仕様確定（`1e63e8a`）後の作業は専用worktreeへ移った。AIなし部品を先行実装したが、通信・機密性の条件は未達。最新状態は`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`が正本。本ファイルの過去の計画草案・実装未着手の記載から再開しない。
 
 ## 関連ドキュメント
+
+- **最新の継続先**: `D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`。コードと更新済み計画は同worktree内。masterへの統合は未実施。
 
 - 今回の要求と個別承認: ADR-0145（Accepted）。検証担当の追加テスト作成・実行を含む。実環境への導入や公開の承認は含めない。
 - 初回の担当構成と承認条件: ADR-0146（Accepted）。両主担当から共通の検証担当Codexを呼ぶ。
@@ -36,10 +38,9 @@
 
 ## 進行中のタスク
 
-- **現在の作業**: 実装計画の確定前確認。
-  - 状態: ユーザーがここで中断を指示。5タスクの計画を作成し、V1〜V7との対応とPowerShell16ブロックの構文を自己確認済み。仕様は確定済み、計画は未確定。
-  - 残り: 再開後、主担当が順次実装、サブエージェントによる実装、計画の独立レビューの3択を判断する。前回の推奨は主担当がタスク0から順次実装。ユーザーはまだどれも選択していない。
-  - 対象確定点の型: plan。成果物の型: 通常型。計画の手順・コード例の独立レビューと動作確認は未実施。選択する場合は新規1担当4観点で計画約35KBと仕様等を確認する想定。
+- **現在の作業**: 専用worktreeでの実装・調査を中断し、次セッションへ引き継ぐ。
+  - 状態: 計画確定・主担当実装・計画レビュー見送りは選択済み。AIなし3群を検証し、限定利用の条件が未達と判明した。最新の根拠は上記継続先を参照。
+  - 残り: ユーザーが指摘したLoopForAlphaの既存Docker基盤について、再利用差分の確認から再開するか判断する。Docker採用・共通化・他リポジトリ変更は未決定。
 
 ## 未着手のタスク
 
@@ -61,6 +62,8 @@
 
 ## 節目ごとの確認記録
 
+- 2026-09-09 専用worktreeへの再開先の案内: ADR=なし（実装の統合ではなく参照の更新） / worklog=MakeAiInstructions-2026-09-09-07
+
 （直近サイクル分は `docs/records/retrospectives/` とgit履歴を参照）
 
 - 2026-09-09 セッション終了（直近サイクルの振り返り完了とリセット）: ADR=なし（起票のみで対策の決定なし） / worklog=`MakeAiInstructions-2026-09-09-04`
@@ -75,9 +78,9 @@
 
 ## 次セッション開始時のアクション
 
-1. start-workから本handoff、`docs/working/plans/2026-09-09-isolated-verification.md`、承認済み仕様を読む。仕様の確定は再確認せず、未回答の実装方式または計画レビューの選択から再開する。
-2. 実装が選択されたらworktreeを確認しタスク0から始める。原本配下・原本外のGit探索先は確認済み。新しいexec構成の権限・通信・終了管理・両主担当の実経路は未検証。計画の構文確認を動作確認に読み替えない。
-3. 公開・導入、既存物の削除、他worktree・stashの操作は未承認。前回振り返りの起票見送り2件は新構成に必要か未判断。作業全体は未完了で、今回の中断を自動再開やレビュー見送りの許可と扱わない。
+1. `D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`を最初に読む。こちらが現在の作業の正本である。
+2. 専用worktreeとcodex/isolated-verificationブランチを確認し、同worktree内のIssue-0136の再利用検討ノートに従って再開判断を行う。
+3. 本masterへ実装をマージしたり、古い計画選択を再質問したりしない。Docker採用・公開・導入・削除・LoopForAlphaの変更は未承認。
 
 ## 重要な意思決定の履歴
 

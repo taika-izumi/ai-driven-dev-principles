@@ -158,3 +158,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0150](0150-provide-repository-history-to-verification-agents.md) | 検証担当へリポジトリのファイルとGit履歴をスクリプトで渡す | Accepted | 2026-09-09 |
 | [0151](0151-design-linux-python-verification-pilot-first.md) | 隔離検証はLinux・Python対象の小さな試作設計を先行する | Accepted | 2026-09-09 |
 | [0152](0152-route-verification-operations-through-container-mcp.md) | ホスト上の検証担当の操作を専用MCP接続でコンテナへ限定する | Accepted | 2026-09-09 |
+| [0153](0153-reconsider-isolating-verification-agent-itself.md) | 検証担当Codex本体も隔離する構成の再検討へ進む | Proposed | 2026-09-09 |
+| [0154](0154-compare-existing-isolation-platforms-before-custom-build.md) | 独自の隔離基盤を作り込む前に既存基盤を比較する | Proposed | 2026-09-09 |
+| [0155](0155-initialize-sbx-network-with-deny-all.md) | Docker Sandboxesの全体ネットワーク初期方針をdeny-allにする | Proposed | 2026-09-09 |

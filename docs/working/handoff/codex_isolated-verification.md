@@ -1,106 +1,72 @@
-# Handoff: 隔離検証の共通起動処理の実装
+# Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-09 15:37 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: Linux試作仕様を確定 / v2実装計画の作成前
+- **Last Updated**: 2026-09-09 15:44 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: ユーザー指示でセッション中断 / Linux試作仕様確定後・v2実装計画作成前
 
 ## 作業の目的・背景
 
-Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピー内で追加テストを作成・実行する。仕様確定後の計画草案を再開し、ユーザーが主担当の順次実装と計画レビュー見送りを選択した。
+Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。子Codexはホスト上で動き、専用MCP接続を通じてLinuxコンテナ内で資料検索・Git履歴参照・編集・テストを行う。親が本文を転記せず、スクリプトでファイルと履歴を渡す。
 
-作業場所は`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。実装は専用ブランチにあり、masterへ未統合。通常チェックアウト側の古い計画状態から再実装しない。
+作業場所は`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。既存worktreeを継続使用する。主な保存点は履歴付きコピー`049d2eb`、Linux試作仕様確定`7e8d464`。masterへ未統合で、隔離環境全体は未完成。
 
 ## 関連ドキュメント
 
-- Spec: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md`と詳細3件はLinux試作v2の確定仕様。v1先行部品の仕様は`049d2eb`で参照可能。仕様確定を実装済みと扱わない。
-- Plan: `docs/working/plans/2026-09-09-isolated-verification.md`はv1の実施記録。未完了部分はv2用計画に更新するまで再開しない。v2実装計画は未作成。
-- 関連ADR: ADR-0145〜0148（Accepted）。包括的な判断の委任は未合意。
-- 進行順序変更: ADR-0149（Accepted）。ユーザーが「リスク評価＋独立した検証を進める」を「1で」で承認。通信受容・通常利用は未承認。
-- 前回の引き継ぎ: `docs/working/handoff/master.md`。
-- 実測: `docs/working/issues/flow/0136-inspection-delegation-does-not-fire-destructive-verification-row/0136-note-common-cli-runtime.md`。
-- リスク評価: 同Issueフォルダの`0136-note-network-risk-assessment.md`。
-- 再利用の比較材料: 同Issueフォルダの`0136-note-loopforalpha-sandbox-reuse.md`。LoopForAlpha側の参照パスと、未決定の差分を記載。
-- 履歴参照の要求・実装・検証: ADR-0150（Accepted）、同Issueフォルダの`0136-note-history-transfer.md`、`docs/records/reviews/2026-09-09-history-copy.md`。履歴提供と固定資料のClaude送信はユーザーが個別承認。
-- Linux試作の先行選択: ADR-0151（Accepted）。構成案・調査・判断の分担の承認時点の資料は同Issueフォルダの`0136-note-linux-python-pilot.md`。
-- 専用接続の構成承認: ADR-0152（Accepted）。構成と詳細仕様を確定。以後の計画・実起動・外部送信等の承認は別途扱う。
-- 仕様レビューと採否案: `docs/records/reviews/2026-09-09-linux-pilot-spec-r1.md`。固定9ファイルのClaude送信は本会話の「1で」で承認され実行済み。
-- 差分再確認と追加指摘: `docs/records/reviews/2026-09-09-linux-pilot-spec-r2.md`。固定11ファイルと差分の送信はユーザーの「１で」で承認され実行済み。
-- 機械検証・採否確定: `docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`。16項目合格で追加修正なく仕様を確定。
+- 確定仕様: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md`と詳細01〜03。schemaVersion=2のLinux試作。仕様確定を実装済みと扱わない。
+- 最終レビュー・確定記録: `docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`。第1回・第2回の採否も同ディレクトリのr1/r2記録で復元できる。
+- 方針・承認範囲: ADR-0151（Linux設計先行）、ADR-0152（ホスト上の子と専用接続）。どちらもAccepted。詳細仕様までの分担・承認時点の根拠はADR-0152。
+- コピー実装: ADR-0150、`scripts/verification/README.md`、`docs/records/reviews/2026-09-09-history-copy.md`。Windows側のv1先行部品は実装済み。
+- 旧計画: `docs/working/plans/2026-09-09-isolated-verification.md`はv1の実施記録。未完了タスクをそのまま再開しない。v2計画は未作成。
+- 課題の入口: `docs/working/issues/flow/0136-inspection-delegation-does-not-fire-destructive-verification-row/0136-inspection-delegation-does-not-fire-destructive-verification-row.md`。
+- 同Issueフォルダの`0136-note-network-risk-assessment.md`（Windows通信・読取の限界）、`0136-note-loopforalpha-sandbox-reuse.md`（既存基盤との差分）、`0136-note-linux-python-pilot.md`（承認時の構成案）を必要な論点だけ読む。
+- 元チェックアウトの保全指示: `docs/working/handoff/master.md`。他worktree・stash・未追跡物・inboxの扱いを維持する。
 
 ## 完了済みタスク
 
-- [x] 計画確定、独立レビュー見送り、主担当の順次実装をユーザーが選択。
-- [x] 専用worktreeを作成。既存のbuild-distとsync-templateのCheckが成功。
-- [x] コピー準備26件、プロセス管理7ケース、結果照合15ケースの3テスト群が成功。詳細は実装計画の先行実装結果。
-- [x] 合成データによるリスク評価。ローカルの1バイト往復とコピー外マーカー読取は成功。example.com:443の直接接続は制限側で拒否、通常側の前後は成功。
-- [x] 限定利用条件を確認。認証保存先auth.jsonの読み取りハンドルを取得できた（内容未読）。ChromeDriver等のローカル待受が存在。詳細はリスク評価ノート。
-- [x] 再利用差分と役割間の成果物の往復を調査。既存関数の3モードの引数生成を確認。Docker・AIの実起動は行っていない。詳細は`0136-note-loopforalpha-sandbox-reuse.md`。
-- [x] Git履歴の独立コピーを追加。未コミット内容を保持してlog/show/blameを参照し、worktree入力・空のHEAD・不完全な履歴を検査。実行記録は`0136-note-history-transfer.md`。
-- [x] 履歴変更の独立レビューを完了。2指摘を実測し、ブランチ名保持を修正。履歴23項目を含む4群が成功。実リポジトリのコピー、SHA256形式と参照更新も確認。詳細は上記レビュー記録。
-- [x] Linux試作の先行選択を反映し、Dockerサービス・既存イメージを照会。Codexのシェル無効化設定とMCP接続の公式仕様を確認し、構成案を作成。実コンテナ・実エージェントの起動は未実施。
-- [x] 承認済み構成を仕様4件へ具体化。3ブロック、担当ファイル11件の重複0、インターフェース、snapshot見出しを確認。レビュー用に9ファイルの固定本文を準備。
-- [x] 新規1担当の静的レビューで4指摘を照合し、01〜03へ責務・確認記録・失敗保持を反映。APIの読み取り接続も確認。採否は最終確定記録を参照。
-- [x] 差分再確認で前回4件の反映一致を確認。追加R1は停止時点の説明を補完し採用、R2の照合削減とR3の項目追加は不採用で確定。
-- [x] ユーザーが機械検証を選択。16項目に齟齬なく、specとADR-0151・0152を確定。動的実証とv2実装は未着手。
+- [x] v1先行部品を実装。コピー26件・履歴23項目＋fsck・プロセス7ケース・結果15ケースの4群が成功。証拠は履歴レビュー記録と旧計画。共通CLIやv2の成功ではない。
+- [x] Linux用Dockerサービス・既存イメージと、標準.NETによるGET /version接続を読み取り確認。詳細はLinux試作ノートと仕様レビューr1。コンテナは試作起動していない。
+- [x] Linux仕様4件をフル1回・差分再確認1回・機械検証16項目で確定。ADR-0151・0152を実装前のAcceptedへ昇格。`7e8d464`と最終レビュー記録を参照。
 
 ## 進行中のタスク
 
-- **現在の作業**: 確定したLinux試作仕様からv2実装計画を作成する段階。
-  - 状態: 仕様と採否は確定。レビューの再質問・再送信は不要。フル1回・差分再確認1回・機械検証1回、提示後確定。詳細は最終記録。
-  - 残り: 最初に全ホスト操作経路を確認できる方法を詰める実装計画を作る。方法が成立しなければ自由な作業依頼を起動しない。動的試験・新しい依存・実起動・外部送信等は具体化後に判断する。
+- **現在の作業**: 次セッションへ引き継いで停止。v2の実装計画を作成する前の状態。
+  - 再開点: 確定仕様を読み、ホストの全操作経路の取得・制限・検証方法の確認を最初に置く計画を作る。
+  - 確定済み: Linux先行、子はDocker外、操作は専用接続でDocker内、リポジトリと履歴の探索、主担当2種・検証担当Codex、本文転記不要。構成や終えたレビューを再質問しない。
+  - 未承認: v2計画の確定・実装の進め方、動的試験の具体的範囲、イメージ準備、コンテナと実モデルの起動、新たな外部送信、導入・公開。詳細仕様までの委任をこれらへ拡張しない。
 
 ## 未着手のタスク
 
-- [ ] 制限付きCodex起動設定、共通CLI結合、両主担当からの実証、全体レビュー。先行部品は実装計画の進捗を参照。
+- [ ] v2計画の作成。最初の成立条件を確認できなければ、自由な作業依頼を起動せず方針判断へ戻る。
+- [ ] 専用MCP接続・ContainerRuntime・v2入出力と回収の実装、非rootマウント・通信・停止の実証、両主担当からの検査→回収→修正→再検証の往復、全体レビュー。
+- [ ] 実装完了時のサイクル全体整合検査。設計時昇格のADR-0145〜0148・0151・0152の後追いを含む。マージ・振り返りはまだ対象段階に達していない。
 
 ## 既知のブロッカー・懸念
 
-- 公開・通常導入・既存物の削除は未承認。原本側の未追跡物、他worktreeとstashは`docs/working/handoff/master.md`の保全指示を維持。
-- 導入済みプラグインは0.1.24、リポジトリの予定版は0.1.25。変更内容を自動で導入済みと扱わない。
-- sandboxの通信拒否が未成立。詳細と2実行の証拠パスは`0136-note-common-cli-runtime.md`に保存。保護代用品6件のハッシュは不変。
-- Claudeへの固定10ファイルの送信はユーザーの「1で」で承認され実行済み。原本・証拠は`.tmp/history-review/`に保存。別対象への送信や通常の検証担当の起動へ承認を拡張しない。
-- `.tmp/`の試験・ログ・junctionと他作業の未追跡物を保全する。LoopForAlphaの既存コンテナの起動・停止・再ビルドは行っていない。
+- ホストの全実効ツールを列挙・制限する方法は未確定。features.shell_tool=falseだけを成立根拠にしない。プロトコル定義の調査結果は仕様レビューr2。取得・制限不能ならblocked。
+- Windowsの旧構成はループバック通信とコピー外の読取を許したため、実エージェントの自由な検証に使わない。Issue-0136のリスク評価ノートを参照。
+- 既存Dockerイメージ内のGit等の実体、非rootの書き込み、exec証拠・停止は未実証。Dockerクライアント終了をコンテナ停止の代わりにしない。
+- `.tmp/`の試験・コピー・ログ・junctionを保全する。共有一時領域の一括削除はしない。外部のレビュー退避先は各レビュー記録にある。既存LoopForAlphaのコンテナ等は変更していない。
+- Claude送信承認は各回に固定した資料が対象。実施済みレビューの送信を繰り返さず、未送信の候補資料を承認済みにしない。全レビューの実行は終了済み。
+- 導入済みプラグイン0.1.24とリポジトリ予定版0.1.25を区別する。ローカルの仕様・コードの保存をプラグインへの反映と扱わない。
 
 ## 節目ごとの確認記録
 
 - 2026-09-09 spec 確定点: ADR=0151・0152 / worklog=棄却（既存の機械検証と確定手順） / review=フル実施（claude-sonnet-5・1回）＋差分再確認（claude-sonnet-5・1回）＋機械検証（1回・提示後確定（実質的な収束に至らず））
 - 2026-09-09 ADR-0151・0152 Accepted 昇格: ADR=0151・0152 / worklog=棄却（既存の昇格手順） / cyclecheck=非該当（実装前昇格）
-
-- 2026-09-09 Linux仕様差分再確認と局所補完: ADR=0151・0152（主要構成変更なし） / worklog=棄却（既存の指摘照合・局所的な仕様補完の範囲）
-
-- 2026-09-09 Linux仕様レビュー受領と対応案反映: ADR=0151・0152（構成を維持した詳細補完） / worklog=棄却（既存の指摘照合・退避・仕様補完の範囲）
-
-- 2026-09-09 Linux詳細仕様案と自己確認: ADR=0151・0152 / worklog=棄却（既存の設計具体化と契約照合の範囲）
-
-- 2026-09-09 Linux試作の構成案と前提確認: ADR=0151 / worklog=棄却（既存の要件確認・実体照合・設計手順の範囲）
-
 - 2026-09-09 履歴レビュー完了・ADR-0150 Accepted 昇格: ADR=0150 / worklog=棄却（既存のレビュー照合・修正・検証手順の範囲） / cyclecheck=実施（修正: Issue-0136）
-
-- 2026-09-09 レビュー準備とローカル再検証: ADR=なし（送信承認待ち、方式の採用なし） / worklog=棄却（既存の承認拒否対応・確認手順の範囲）
-
-- 2026-09-09 Git履歴コピーの先行実装: ADR=0150 / worklog=棄却（既存の要求反映・実体照合・テスト修正の範囲）
-- 2026-09-09 再利用差分と連携経路の調査: ADR=なし（方式・対応OSの変更は未選択） / worklog=棄却（既存の前提照合による調査で新たなdeltaなし）
-- 2026-09-09 plan 確定点: ADR=なし（既存仕様と工程の選択、設計変更なし） / worklog=棄却（既存手順内でdeltaなし） / review=見送り
-- 2026-09-09 worktree準備と基準検査: ADR=なし（承認済み計画に従う） / worklog=棄却（既存手順内でdeltaなし）
-- 2026-09-09 タスク0の実測と停止: ADR=なし（計画の停止条件に従う、変更案未選択） / worklog=棄却（計画で要求された正負対照と停止）
-- 2026-09-09 通信経路の追加調査: ADR=なし（比較実測のみ、方式未採用） / worklog=棄却（既存の実体照合・前提検査手順内）
-- 2026-09-09 WFPの状態採取とトークン条件診断: ADR=なし（実測のみ、構成変更なし） / worklog=棄却（既存の実証手順内）
-- 2026-09-09 管理者再試行と直後イベント照会: ADR=なし（同じ保護条件での観測） / worklog=棄却（既存の実証手順内）
-- 2026-09-09 リスク評価と先行検証の方針承認: ADR=0149 / worklog=MakeAiInstructions-2026-09-09-06
-- 2026-09-09 AIなし部品の先行検証: ADR=0149 / worklog=棄却（既存TDD手順による修正と検証）
+- 2026-09-09 plan 確定点: ADR=なし（既存仕様と工程の選択、設計変更なし） / worklog=棄却（deltaなし） / review=見送り
 - 2026-09-09 先行範囲の確認・ADR-0149 Accepted 昇格: ADR=0149 / worklog=棄却（既存の確認手順内） / cyclecheck=実施（修正: Issue-0136）
-- 2026-09-09 限定利用条件の実測: ADR=なし（観測のみ、利用許容・方式変更は未決定） / worklog=棄却（既存の限定的な実証手順内）
-- 2026-09-09 セッション中断と再利用材料の保存: ADR=なし（再利用案は未採用） / worklog=MakeAiInstructions-2026-09-09-07
+- 2026-09-09 セッション終了の引き継ぎ確定: ADR=なし（ユーザーの中断指示、方針変更なし） / worklog=棄却（通常の中断処理で新たなdeltaなし）
 
 ## 次セッション開始時のアクション
 
-1. start-workで本handoffを読み、専用worktreeとブランチを確認する。実装計画・リスク評価・ADR-0149が最新の正本。master側の古い計画選択から戻らない。
-2. `docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`で仕様確定を確認し、writing-plansでv2用計画を作る。全実効ツールの取得・制限・検証方法の確認を先頭に置き、旧v1計画を再開しない。
-3. 全体レビュー・CLI結合・V1〜V7は未完了。先行4群の再検証は`Run-IndependentTests.ps1`。履歴レビューの完了を隔離成功へ読み替えず、採用・導入・削除等の承認を拡張しない。
+1. 本handoffと確定仕様00〜03、`docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`を読む。作業場所は既存の`.worktrees/isolated-verification`、ブランチは`codex/isolated-verification`。
+2. git branch/statusで`7e8d464`以降の状態を確認し、writing-plansと`skills/start-work/references/plan-deviation-defaults.md`に従ってv2計画を作る。全実効ツールの確認方法を先頭に置く。
+3. 旧v1計画を再開せず、仕様確定と実動作の成功を区別する。未確認の保護を前提に実モデルを自由起動しない。実行・外部送信の承認範囲と保全対象を維持する。
 
 ## 重要な意思決定の履歴
 
-- ADR-0151・0152: Linux試作の設計を先行し、ホスト上の子の操作を専用MCP接続でコンテナ内へ限定する構成（2026-09-09、設計としてAccepted）。
-- ADR-0150: リポジトリのファイルとGit履歴をスクリプトで独立コピーへ渡す（2026-09-09、Accepted）。
-- ADR-0145〜0148: 自律テスト作成、両主担当からCodex検証、共通CLI、独立Git管理領域（2026-09-09）。
+- ADR-0145〜0149: 自律テスト作成、主担当2種・検証担当Codex、共通CLIと3責務、独立Git、AIなし部品の先行。
+- ADR-0150: ファイルとGit履歴をスクリプトで独立コピーへ渡す。
+- ADR-0151・0152: Linux試作を先行し、ホスト上の子の操作を専用MCP接続でコンテナ内へ限定する。設計としてAcceptedで、動的実証は後続。

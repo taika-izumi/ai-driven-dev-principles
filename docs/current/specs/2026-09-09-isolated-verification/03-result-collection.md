@@ -14,6 +14,10 @@ VM作成後のactivation失敗は02のruntimeFailureにある確定済みIDと�
 
 VerificationResultV3はschemaVersion=3、runId、status、summary、sourceState、baselineState、proposalVerdict、replayVerdict、checks、findings、artifacts、unverified、execution、previousRunId、runRoot、sourceManifestPathを持つ。未知キーを禁止し、子の応答へ外側のstatusを設定させない。
 
+scopeとlimitationsも必須とし、synthetic-pilot、["clipboard-text-write-possible","pid-count-unbounded"]を外側の実行設定から付与する。これらは承認した既知の制約なのでunverifiedに混ぜて無条件にincompleteとせず、成功時も表示を省略しない。入力検査前の失敗ではscope=null、limitations=[]を許す。CLI開始時にも同じ制約を診断表示し、clipboardの自動操作は行わない。
+
+scopeを付与する前にPreparedRunV3のpilotInputHashと記録現物、sourceRoot/sourceManifestHashの一致を再照合する。未照合・不一致でsynthetic-pilotの正常結果を作らない。executionにpilotInputIdと固定入力記録のパス/hashを載せる。対象版の変更は既存のsource_changedまたはincompleteへ写像し、例外の承認範囲を拡張しない。
+
 - sourceStateはunchanged/changed/unreadable。誰が原本を変更したかを推測しない。
 - baselineStateはunchanged/changed/unreadable。基準版とmanifestの両方を照合する。
 - proposalVerdictはreference-only（正常な提案）またはnull。子のpass宣言を採否に使わない。

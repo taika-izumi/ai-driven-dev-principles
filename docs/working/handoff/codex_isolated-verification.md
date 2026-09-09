@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-09 23:42 (Asia/Tokyo)
+- **Last Updated**: 2026-09-10 00:30 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: v3仕様確定・ADR-0157/0158昇格 / 実装計画の改訂へ
+- **Current Phase**: 試作限定の条件改訂を確定 / 残るSSH等の能力確認へ
 
 ## 作業の目的・背景
 
@@ -16,6 +16,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 - 現行確定仕様: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md`と詳細01〜04。schemaVersion=3、提案と採否用再実行の分離。静的フル1回・差分再確認2回で確定、実装・動的実証は未完。
 - 旧v2のレビュー・確定記録: `docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`。現行v3のレビューに流用しない。v3自己確認は`docs/records/reviews/2026-09-09-proposal-replay-spec-selfcheck.md`。
 - v3確定記録: `docs/records/reviews/2026-09-09-proposal-replay-spec-r3.md`。r1/r2の指摘と採否・修正を同ディレクトリに保存。独立確認は静的のみ、原本・VM・実モデルの動作検証ではない。
+- v3先行計画: `docs/working/plans/2026-09-09-isolated-verification-v3-preflight.md`。全体計画ではなく起動能力確認の先行工程。タスク0〜2は実施、タスク3でblocked。実測は`docs/records/experiments/2026-09-09-v3-runtime-preflight.md`。
 - 方針・承認範囲: ADR-0151（Linux先行）、ADR-0157（案1、0152を置換）、ADR-0158（4責務・補助設計の委任）。旧0152の分担を新構成の包括承認へ流用しない。
 - コピー実装: ADR-0150、`scripts/verification/README.md`、`docs/records/reviews/2026-09-09-history-copy.md`。Windows側のv1先行部品は実装済み。
 - v2計画: `docs/working/plans/2026-09-09-isolated-verification-v2.md`。ユーザーが主担当で進める選択肢1を承認。独立レビューは見送り。タスク0でblocked、後続未実装。
@@ -45,10 +46,14 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 進行中のタスク
 
-- **現在の作業**: 確定したv3仕様から実装計画を改訂する準備。
+- **現在の作業**: v3起動条件の不足について次手を判断する。
   - 状態: 03への退避と通常ターミナルでのsbx起動をユーザーが承認・実行。内部イメージ照会と固定VM作成に成功。合成搬入・履歴参照・出力回収・終了7・原本保全・VM停止を確認。sbx-smoke実施記録20:21節参照。
   - 残り: 通常起動・所有者調整をv3仕様へ反映。クリップボード等、pidsの強制、デーモン停止競合、認証・実Codexは起動前に実証が必要。旧v2計画をそのまま再開しない。
   - 状態補足: ユーザーが選択したN1限定再確認で解消・新規指摘0件。追加修正なしで実質的な収束と判定し、詳細仕様を確定。設計承認の再質問は不要。実装計画と起動前能力確認は後続。
+  - 最新の状態: 実機ヘルプとsettings list --allを読み取り確認。clipboard文字列書込拒否とpids外側強制を確認できずblocked。SSH転送設定はtrue、変更なし。Issue-0136の0136-note-v3-capability-gaps.mdを参照。
+  - 最新の採用: ユーザーが試作限定の意味を確認して推奨案を承認。ADR-0160/0161により厳密pids128を外し、VM割当・外側停止を維持、clipboard文字列書込は例外受容。00〜03仕様へ反映。通常運用・実モデル・設定変更は未承認。
+  - 残り: 条件改訂の差分再確認2回で3指摘解消・新規指摘0件を確認し確定。次はSSH拒否・有限負荷中停止・切断競合等の実機試験具体化。確定記録は2026-09-10-synthetic-pilot-scope-r2.md。2条件と補完契約の承認を再質問しない。
+  - 条件改訂の確定: ADR-0160/0161を設計としてAccepted、再検討方針0159も確定。元v3のレビューと今回の差分2回を区別。改訂前はC:/Users/d12an/.ai-dev-review-snapshots/MakeAiInstructions/20260910-pilot-scope-r1/に保全。設定・VM・モデル変更なし。
   - 改訂前退避: C:/Users/d12an/.ai-dev-review-snapshots/MakeAiInstructions/20260909-v3-spec-r2/（r1も保全）。5仕様とhash一致を確認。N1の最終確認結果はr3記録参照。
   - 維持する要求: Linux先行、リポジトリと履歴の探索、主担当2種・検証担当Codex、本文転記不要。旧仕様の子の配置と専用接続は再検討中。過去の仕様レビューの完了と新構成の未確定を区別する。
   - 承認済み: 主担当方式とv2計画レビュー見送り、既存基盤比較、sbx 0.42.1ユーザー導入、Dockerログイン、全体deny-all。承認時の回答は各ADR・導入記録・試験記録に保存。
@@ -103,11 +108,16 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 - 2026-09-09 4責務承認・v3詳細仕様草案と自己確認: ADR=0158・0157（詳細確定時に昇格整合を確認） / worklog=棄却（既存の設計・整合検証手順内）
 - 2026-09-09 v3 spec 確定点: ADR=0157・0158 / worklog=棄却（既存の独立レビュー・指摘照合手順内） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・2回・実質的な収束）
 - 2026-09-09 ADR-0157/0158 Accepted 昇格: ADR=0157・0158 / worklog=棄却（既存の設計確定手順内） / cyclecheck=非該当（実装前昇格）
+- 2026-09-09 v3実装前の能力読み取り確認blocked: ADR=なし（確定仕様の起動前停止条件を適用） / worklog=棄却（既存の前提実在・実体照合手順内）
+- 2026-09-09 資源保護・clipboard条件の再検討案: ADR=0159（再検討のみ承認、変更案未採用） / worklog=棄却（既存の保護目的・代替案比較手順内）
+- 2026-09-10 試作限定の2条件採用・仕様反映: ADR=0160・0161 / worklog=棄却（既存の個別承認・仕様照合手順内）
+- 2026-09-10 試作条件改訂 spec 確定点: ADR=0160・0161 / worklog=棄却（既存の独立照合・修正手順内） / review=差分再確認（gpt-5.6-sol・2回・実質的な収束）
+- 2026-09-10 ADR-0159〜0161 Accepted 昇格: ADR=0159〜0161 / worklog=棄却（既存の設計確定手順内） / cyclecheck=非該当（実装前昇格）
 
 ## 次セッション開始時のアクション
 
 1. 既存worktreeでstart-workを実行し、本handoff、`docs/records/experiments/2026-09-09-sbx-smoke.md`、Issue-0136の`0136-note-sbx-smoke-proposal.md`を読む。旧仕様00〜03とv2計画は必要箇所だけ参照する。
-2. v3仕様とproposal-replay-spec-r3記録を読み、writing-plansで計画を改訂する。案1・4責務・詳細仕様は確定済み。起動前能力確認を先に扱い、旧v2計画の後続は実行しない。
+2. 2026-09-10-synthetic-pilot-scope-r2記録を読み、SSH拒否等の残る能力試験を具体化する。2条件の試作限定採用と補完契約は確定。設定変更・実機操作・実モデル起動は別に具体化し、旧v2計画は実行しない。
 3. 承認済み範囲と実体に変更がなければ固定試験の許可を再質問しない。構成変更・モデル起動等は別判断。`.tmp/`・他worktree・stashを保全する。別セッション開始はユーザーが指示する。
 
 ## 重要な意思決定の履歴

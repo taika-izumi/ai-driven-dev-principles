@@ -45,6 +45,7 @@
 
 ## 関連資料
 
+- `docs/records/experiments/2026-09-10-v3-capability-followup.md`: SSH転送設定の継続照会、未実施の設定操作案、残る能力試験の方法・判定・未特定事項。
 - `0136-note-linux-python-pilot.md` — Linux試作の構成候補、実機・公式資料の確認、利用者の準備と判断の分担案。
 - `0136-note-history-transfer.md` — Git履歴付きコピーの要求・実装・検証と残る確認。
 - `0136-note-loopforalpha-sandbox-reuse.md` — 既存Docker基盤との重複、再利用候補、Windows・成果物回収・エージェント権限の差分。

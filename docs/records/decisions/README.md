@@ -167,3 +167,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0159](0159-reassess-sbx-resource-and-clipboard-protection.md) | sbxの資源保護とクリップボード条件を目的から再検討する | Accepted | 2026-09-09 |
 | [0160](0160-use-vm-resource-bounds-for-synthetic-pilot.md) | 合成題材の試作ではVM資源割当と外側停止を資源保護の基準にする | Accepted | 2026-09-10 |
 | [0161](0161-accept-clipboard-text-write-for-synthetic-pilot.md) | 合成題材の試作中はクリップボード文字列書込を例外として受容する | Accepted | 2026-09-10 |
+| [0162](0162-disable-sbx-ssh-agent-forwarding.md) | ローカルsbxのSSHエージェント転送を無効化する | Proposed | 2026-09-10 |

@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-10 00:34 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ユーザー希望でセッション中断 / 試作条件まで確定、残る能力試験の具体化前
+- **Last Updated**: 2026-09-10 00:53 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: SSH転送falseの保存・通常起動後照合済み / 残る動的試験の具体化
 
 ## 作業の目的・背景
 
@@ -13,6 +13,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 関連ドキュメント
 
+- 継続調査・操作記録: `docs/records/experiments/2026-09-10-v3-capability-followup.md`。SSH設定false保存・停止・通常起動後の設定と既存VM照合まで完了。動的拒否は未実証。ADR-0162は次の全体整合チェックポイントで昇格するProposed。
 - 現行仕様: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md`と01〜04。schemaVersion=3、4責務。現在の試作条件は`5259d22`。実装・動的実証は未完。
 - 方針と分担: ADR-0157（提案と再実行の分離）、ADR-0158（4責務と補助設計の委任）。両方Accepted。保護の追加変更・新基盤・利用者作業・認証/費用/送信・削除/公開は相談。
 - 試作条件: ADR-0160（厳密pids128を外してVM割当・外側停止へ）、ADR-0161（clipboard文字列書込の限定例外）。両方Accepted。再検討のADR-0159もAccepted。
@@ -38,15 +39,15 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 進行中のタスク
 
-- **現在の作業**: 残る能力試験の具体化から、新セッションで再開する。
-  - 状態: ユーザーがコンテキスト増大を理由に切替を希望。仕様・条件改訂・レビューは区切り済み。未確定のレビュー回答はない。
-  - 次の具体作業: SSH転送を拒否する方法・設定の影響・通常ターミナル再起動の要否を調べ、実機試験案を準備する。現在の全体設定を無断変更しない。
+- **現在の作業**: 残る能力試験の具体化。
+  - 状態: 利用者の通常起動後、daemon running、転送false/source=override、画像読取false、既存VM同一ID/stoppedを確認。承認された設定操作は完了。動的拒否は未実証。
+  - 次の具体作業: 継続調査記録のSSH代用ソケット、非自動起動の接続方法、外側資源・起動世代の取得元を特定し、対象とスクリプトを固定して実機試験を提示する。設定変更の承認は取り直さない。
   - 続く作業: CPU/メモリの実効値、有限負荷中の外側停止、切断/自動起動競合、未信頼回収、Mutex競合と対象hash拒否の試験を計画化する。
   - 全体実装: 現行仕様からRequestCopyのv3、stdin/出力上限、SbxRuntime、Proposal、Replay、Result、CLIと試験の計画を作る。実装は未着手。v1の既存実装・試験は維持。
   - 承認済み: 提案/再実行の分離、4責務、補助設計の分担、試作限定の資源条件とclipboard例外、それらのレビュー採否。詳細はADR-0157〜0161。再開だけを理由に再質問しない。
   - 試作の限度: 名指しした小さな合成題材だけ、CPU2・2048MiB・同時1VM・時間/出力上限・外側停止。clipboard文字列書込の可能性は開始/結果に明示し、画像読取は禁止。
   - 利用者に説明済みの負担: 試作中・直後はclipboardをそのまま貼り付けず、使う前に信頼できる元からコピーし直す。自動読取・復元・消去はしない。通常運用へ自動拡張しない。
-  - 未承認: SSH等のホスト設定変更、新たな実機/負荷試験の具体操作、OpenAI認証・モデル/費用/送信、実プロジェクト、別基盤/別イメージ、追加の保護緩和、reset/削除/版入替え、公開。
+  - 未承認: ADR-0162以外のホスト設定変更、新たな実機/負荷試験の具体操作、OpenAI認証・モデル/費用/送信、実プロジェクト、別基盤/別イメージ、追加の保護緩和、reset/削除/版入替え、公開。
   - 既存の固定smoke承認は撤回されていないが、試験は完了済みで同名VMも存在する。同名を上書き・再作成せず、新しい試験は対象と操作を具体化する。
   - ADR-0153〜0156は既にコミット済みのProposed。選択・操作の根拠は各本文と実験記録にある。次の整合チェックポイントで残る状態を確認し、未保存ドラフトと混同しない。
 
@@ -58,9 +59,11 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 既知のブロッカー・懸念
 
-- 最新照会2026-09-10 00:33: sbx daemonはrunning、iv-sbx-smoke-20260909-01はstopped。IDはde1ba0ac-ebb0-4cc4-a5f6-009dffd8baae。再開時に読み取り再確認する。
+- 最新照会2026-09-10 00:53: 通常ユーザー側でdaemon running、既存smokeは同一ID/stoppedの1台。通常起動後の設定・VM照合まで完了。
+- 非自動起動の実行方法・SSH代用ソケットの実在方式は未特定。事前status確認だけでは停止競合を防げない。`2026-09-10-v3-capability-followup.md`参照。
+- 過去のsbx導入・smokeの個別節目行がhandoffにない。実験記録は存在するが今回の実施扱いで埋めない。既存の確定点・昇格行の必須フィールドは確認済み。
 - sbx実体はC:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe。通常ターミナル起動が有効だった。Codexから自動起動・再起動せず、停止中のsettings/ls/execの自動起動副作用に注意。
-- SSH転送の全体設定は最後の照会でtrue、画像clipboard読取はfalse。未転送を推定せず、拒否を実証する。pids128とclipboard文字列書込遮断の旧ゲートは再導入しない。
+- SSH転送は通常起動後の照会でもfalse/source=override。動的拒否は未確認。画像clipboard読取はfalse。旧pids128・文字列書込遮断条件は再導入しない。
 - .tmpの試験・コピー・ログ・junctionを保全。既存試験VM・取得イメージ・returned.txtも削除しない。原本や他worktreeへ試験変更を加えない。
 - sbx状態の旧退避はC:/Users/d12an/AppData/Local/DockerSandboxes/sandboxes/state/sandboxd-preserved-20260909-02と03。新状態は同親のsandboxd。自動巻き戻し・削除はしない。
 - 外部仕様退避はC:/Users/d12an/.ai-dev-review-snapshots/MakeAiInstructions/配下。各r1/r2記録に名前を保存。レビューはすべて完了済み。過去の送信承認を別資料の送信へ流用しない。
@@ -70,6 +73,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 節目ごとの確認記録
 
+- 2026-09-10 通常起動後のSSH設定・既存VM照合: ADR=0162（操作完了、全体整合検査時に昇格） / worklog=棄却（既存の読み直し・保全手順内）
+
+- 2026-09-10 SSH転送設定保存・daemon停止: ADR=0162（個別承認済み、反映確認待ち） / worklog=棄却（既存の承認・読み直し・保全手順内）
+- 2026-09-10 能力試験の継続調査と操作案: ADR=なし（承認済み条件の具体化、設定案は採否待ち） / worklog=棄却（既存の権限差確認・保全手順内で再現可能）
 - 2026-09-09 spec 確定点: ADR=0151・0152 / worklog=棄却（既存の機械検証と確定手順） / review=フル実施（claude-sonnet-5・1回）＋差分再確認（claude-sonnet-5・1回）＋機械検証（1回・提示後確定（実質的な収束に至らず））
 - 2026-09-09 ADR-0151・0152 Accepted 昇格: ADR=0151・0152 / worklog=棄却（既存の昇格手順） / cyclecheck=非該当（実装前昇格）
 - 2026-09-09 履歴レビュー完了・ADR-0150 Accepted 昇格: ADR=0150 / worklog=棄却（既存のレビュー照合・修正・検証手順の範囲） / cyclecheck=実施（修正: Issue-0136）
@@ -84,12 +91,13 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-1. 指定の既存worktreeでstart-work。本handoff、現行仕様00-overview.md、docs/records/reviews/2026-09-10-synthetic-pilot-scope-r2.mdを読み、必要な詳細だけ追加参照する。
-2. git branch/statusとsbx daemon statusを読み取り確認。SSH拒否等の残る能力試験を具体化し、v3-preflight計画から全体実装計画へつなぐ。停止中に自動起動する照会は実行しない。
+1. 指定の既存worktreeでstart-work。本handoffと`docs/records/experiments/2026-09-10-v3-capability-followup.md`を読む。承認されたSSH設定操作と通常起動後の照合は完了済み。
+2. 残る試験方法の未特定事項を調査し、実機操作を具体化してから提示する。再照会は通常ユーザー側でrunning確認後に行い、停止中に自動起動する照会をしない。
 3. ADR-0157/0158/0160/0161の承認と保全条件を継承。仕様・試作条件・レビューは再承認不要。設定変更・実機/モデル操作は対象を具体化して確認。旧v2の後続は実行しない。
 
 ## 重要な意思決定の履歴
 
+- ADR-0162: ローカルsbxのSSH転送を無効化する操作を個別承認。保存・停止・通常起動後照合済み。全体整合チェックポイントで昇格するProposed。
 - ADR-0145〜0150: 検証担当の追加テスト作成、主担当2種・検証担当Codex、共通CLI、独立コピー、Git履歴提供。
 - ADR-0151: Linux先行。ADR-0152のホスト上子と専用MCP構成は0157により置換済み。
 - ADR-0153〜0156: 子本体隔離の再検討、既存基盤比較、deny-all設定、状態保全による起動復旧。根拠は各ADRとsmoke記録。

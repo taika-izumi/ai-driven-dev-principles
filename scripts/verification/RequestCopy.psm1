@@ -29,6 +29,11 @@ function Invoke-VerificationGit([string]$Root,[string[]]$Arguments) {
     $start.StandardOutputEncoding=[Text.UTF8Encoding]::new($false)
     # 親シェルのGit探索先を継承しない。対象Gitの設定・フックは書き換えない。
     foreach($key in @($start.Environment.Keys)){if($key -like 'GIT_*'){[void]$start.Environment.Remove($key)}}
+    $start.Environment['GIT_CONFIG_GLOBAL']=$(if($IsWindows){'NUL'}else{'/dev/null'})
+    $start.Environment['GIT_CONFIG_NOSYSTEM']='1'
+    $start.Environment['GIT_TERMINAL_PROMPT']='0'
+    $start.Environment['GIT_NO_LAZY_FETCH']='1'
+    $start.Environment['GIT_NO_REPLACE_OBJECTS']='1'
     foreach($a in (@('-c',"safe.directory=$($Root.Replace('\','/'))",'-c','core.fsmonitor=false','-C',$Root)+$Arguments)){$start.ArgumentList.Add($a)}
     $p=[Diagnostics.Process]::new();$p.StartInfo=$start
     try{
@@ -82,10 +87,15 @@ function Get-VerificationSourceManifest([hashtable]$Request,[hashtable]$Settings
         }else{$files.Add(@{path=$name;size=0;sha256=$null;deleted=$true})}
     }
     $head=Invoke-VerificationGit $root @('rev-parse','--verify','HEAD')
-    @{files=@($files.ToArray());head=$(if($head.exitCode -eq 0){$head.stdout.Trim()}else{$null});total=$files.Count;exclusions=@($excluded.ToArray())}
+    $headRef=Invoke-VerificationGit $root @('symbolic-ref','--quiet','HEAD')
+    if($headRef.exitCode -notin @(0,1)){Throw-VerificationFailure 'source HEAD reference unreadable'}
+    $refs=Invoke-VerificationGit $root @('for-each-ref','--sort=refname','--format=%(objectname) %(refname)')
+    if($refs.exitCode -ne 0){Throw-VerificationFailure 'source history references unreadable'}
+    @{files=@($files.ToArray());head=$(if($head.exitCode -eq 0){$head.stdout.Trim()}else{$null});headRef=$(if($headRef.exitCode -eq 0){$headRef.stdout.Trim()}else{$null});historyRefs=$refs.stdout.Trim();total=$files.Count;exclusions=@($excluded.ToArray())}
 }
 function Test-VerificationManifestEqual($Left,$Right) {
-    if($Left.head -cne $Right.head -or $Left.files.Count -ne $Right.files.Count){return $false}
+    if($Left.head -cne $Right.head -or $Left.headRef -cne $Right.headRef -or $Left.files.Count -ne $Right.files.Count){return $false}
+    if($Left.historyRefs -cne $Right.historyRefs){return $false}
     for($i=0;$i -lt $Left.files.Count;$i++){
         foreach($key in @('path','size','sha256','deleted')){if($Left.files[$i][$key] -cne $Right.files[$i][$key]){return $false}}
     }
@@ -94,6 +104,55 @@ function Test-VerificationManifestEqual($Left,$Right) {
 function Copy-VerificationFile([string]$Source,[string]$Destination) {
     [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($Destination))
     [IO.File]::Copy($Source,$Destination,$false)
+}
+function Initialize-VerificationHistory([string]$Source,[string]$Work,[string]$Control,$Manifest) {
+    # bundleで履歴データだけを移す。原本のconfig/hooks/alternatesや共有管理領域は持ち込まない。
+    $shallow=Invoke-VerificationGit $Source @('rev-parse','--is-shallow-repository')
+    $partial=Invoke-VerificationGit $Source @('config','--local','--get-regexp','^(extensions\.partialclone|remote\..*\.promisor)$')
+    if($shallow.exitCode -ne 0 -or $shallow.stdout.Trim() -ne 'false' -or $partial.exitCode -ne 1){Throw-VerificationFailure 'complete local Git history required; shallow/partial repository unsupported'}
+    $format=Invoke-VerificationGit $Source @('rev-parse','--show-object-format')
+    if($format.exitCode -ne 0 -or $format.stdout.Trim() -notin @('sha1','sha256')){Throw-VerificationFailure 'unsupported Git object format'}
+    $init=Invoke-VerificationGit $Work @('init','--quiet',('--object-format='+$format.stdout.Trim()),('--template='+(Join-Path $Control 'empty-template')))
+    if($init.exitCode -ne 0){Throw-VerificationFailure 'copy Git initialization failed'}
+    if(-not$Manifest.head){
+        # コミット前のブランチ名を保持し、他ブランチの取り込みでHEADを作らない。
+        if(-not$Manifest.headRef){Throw-VerificationFailure 'source HEAD has neither commit nor symbolic reference'}
+        $unborn=Invoke-VerificationGit $Work @('symbolic-ref','HEAD',$Manifest.headRef)
+        if($unborn.exitCode -ne 0){Throw-VerificationFailure 'unborn history initialization failed'}
+    }
+    if(-not$Manifest.head -and -not$Manifest.historyRefs){return}
+    $bundle=Join-Path $Control 'history.bundle'
+    # --allだけだと他worktreeのHEADまで列挙される。入力worktreeのHEADと共有refsに限定する。
+    $args=@('bundle','create',$bundle,'--single-worktree','--all')
+    if($Manifest.head){$args+='HEAD'}
+    $create=Invoke-VerificationGit $Source $args
+    if($create.exitCode -ne 0){Throw-VerificationFailure 'history bundle creation failed'}
+    $verify=Invoke-VerificationGit $Work @('bundle','verify',$bundle)
+    if($verify.exitCode -ne 0){Throw-VerificationFailure 'history bundle is incomplete or invalid'}
+    $unpack=Invoke-VerificationGit $Work @('bundle','unbundle',$bundle)
+    if($unpack.exitCode -ne 0){Throw-VerificationFailure 'history import failed'}
+    foreach($line in $unpack.stdout.Trim().Split("`n")){
+        $parts=$line.Trim().Split(' ',2)
+        if($parts.Count -ne 2 -or $parts[0] -notmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$' -or ($parts[1] -ne 'HEAD' -and -not$parts[1].StartsWith('refs/'))){Throw-VerificationFailure 'invalid history reference'}
+        $set=Invoke-VerificationGit $Work @('update-ref','--no-deref',$parts[1],$parts[0])
+        if($set.exitCode -ne 0){Throw-VerificationFailure 'history reference import failed'}
+    }
+    $refs=Invoke-VerificationGit $Work @('for-each-ref','--sort=refname','--format=%(objectname) %(refname)')
+    if($refs.exitCode -ne 0 -or $refs.stdout.Trim() -cne $Manifest.historyRefs){Throw-VerificationFailure 'history references changed during copy' 'source_changed'}
+    if($Manifest.headRef){
+        # bundleのHEAD項目はコミットIDなので、元のブランチとの対応を別に復元する。
+        $attach=Invoke-VerificationGit $Work @('symbolic-ref','HEAD',$Manifest.headRef)
+        if($attach.exitCode -ne 0){Throw-VerificationFailure 'HEAD symbolic reference import failed'}
+    }
+    if($Manifest.head){
+        $head=Invoke-VerificationGit $Work @('rev-parse','HEAD')
+        if($head.exitCode -ne 0 -or $head.stdout.Trim() -cne $Manifest.head){Throw-VerificationFailure 'history HEAD changed during copy' 'source_changed'}
+        # 作業ファイルはcheckoutしない。履歴の基準だけをindexへ入れ、未コミット内容を守る。
+        $index=Invoke-VerificationGit $Work @('read-tree',$Manifest.head)
+        if($index.exitCode -ne 0){Throw-VerificationFailure 'history index initialization failed'}
+    }
+    $valid=Invoke-VerificationGit $Work @('fsck','--full','--no-reflogs')
+    if($valid.exitCode -ne 0){Throw-VerificationFailure 'copied history validation failed'}
 }
 function New-VerificationRun([hashtable]$Request,[hashtable]$Settings) {
     $runRoot=$null
@@ -128,10 +187,9 @@ function New-VerificationRun([hashtable]$Request,[hashtable]$Settings) {
             try{Copy-VerificationFile $src $dst}catch{Throw-VerificationFailure "copy failed: $($file.path)" 'source_changed'}
             if((Get-FileHash -LiteralPath $dst).Hash -cne $file.sha256){Throw-VerificationFailure 'input changed during copy' 'source_changed'}
         }
+        Initialize-VerificationHistory $source $work $control $before
         $after=Get-VerificationSourceManifest $Request $Settings
         if(-not(Test-VerificationManifestEqual $before $after)){Throw-VerificationFailure 'source changed during copy' 'source_changed'}
-        $init=Invoke-VerificationGit $work @('init','--quiet',('--template='+(Join-Path $control 'empty-template')))
-        if($init.exitCode -ne 0){Throw-VerificationFailure 'copy Git initialization failed'}
         foreach($check in @(@{args=@('rev-parse','--show-toplevel');expected=$work},@{args=@('rev-parse','--absolute-git-dir');expected=(Join-Path $work '.git')})){
             $actual=Invoke-VerificationGit $work $check.args
             if($actual.exitCode -ne 0 -or -not([IO.Path]::GetFullPath($actual.stdout.Trim()).Equals($check.expected,[StringComparison]::OrdinalIgnoreCase))){Throw-VerificationFailure 'copy Git points outside copy'}

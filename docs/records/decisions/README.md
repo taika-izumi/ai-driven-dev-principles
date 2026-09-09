@@ -155,3 +155,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0147](0147-use-common-cli-for-isolated-verification.md) | 検証の共通入口をCLIに置き、準備・実行・回収の責務を分ける | Accepted | 2026-09-09 |
 | [0148](0148-initialize-independent-git-metadata-for-verification.md) | 検証用コピーに独立したGit管理領域を作る | Accepted | 2026-09-09 |
 | [0149](0149-advance-independent-verification-while-assessing-network-risk.md) | 通信リスクを評価しながら独立した検証を先に進める | Accepted | 2026-09-09 |
+| [0150](0150-provide-repository-history-to-verification-agents.md) | 検証担当へリポジトリのファイルとGit履歴をスクリプトで渡す | Accepted | 2026-09-09 |

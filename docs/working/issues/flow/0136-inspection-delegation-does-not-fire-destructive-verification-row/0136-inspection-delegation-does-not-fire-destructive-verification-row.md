@@ -30,6 +30,9 @@
 
 ## 現在地の要約
 
+- 2026-09-09: Git履歴の独立コピーをレビューし、HEADのブランチ名保持を修正。全4テスト群が成功しADR-0150を確定。実エージェント経路・隔離方式は未完了。`0136-note-history-transfer.md`と`docs/records/reviews/2026-09-09-history-copy.md`を参照。
+- 2026-09-09: 再利用差分と役割間連携を調査。既存CLIの直接利用には原本位置・回収・権限・停止の差分がある。Linux試作先行かWindows対応維持かは未決定。`0136-note-loopforalpha-sandbox-reuse.md`を参照。
+
 - 2026-09-09: リスク評価とAIなし部品の先行検証を承認（ADR-0149）。外部直接接続1件は拒否、ローカルのデータ往復とコピー外の合成データ読取は成功。コピー・プロセス管理・結果照合の3テスト群は成功。通常利用・実エージェント起動は未承認。`0136-note-network-risk-assessment.md`を参照。
 
 - 2026-09-09: 共通CLIの計画を確定し主担当実装を開始。タスク0で親子の書き込み保護・新規junctionの拒否を確認したが、通信禁止指定でもループバックTCPが成功。後続を止め、通信制御の起動経路の判断待ち。`0136-note-common-cli-runtime.md`を参照。
@@ -40,6 +43,7 @@
 
 ## 関連資料
 
+- `0136-note-history-transfer.md` — Git履歴付きコピーの要求・実装・検証と残る確認。
 - `0136-note-loopforalpha-sandbox-reuse.md` — 既存Docker基盤との重複、再利用候補、Windows・成果物回収・エージェント権限の差分。
 
 - `0136-note-network-risk-assessment.md` — 通信・読み取りリスクの実測と限定利用の条件案。

@@ -174,6 +174,8 @@ if ($LASTEXITCODE -ne 0) { throw '事前試験が成立していない' }
 
 **先行実装結果:** `RequestCopy.psm1`、requestスキーマ、単体試験を作成。26件の検査が成功。JSONファイルを受け取る共通CLI、導入設定ファイルの除外条件の最終確認、全体のV1〜V2認定は後続の結合時に行う。
 
+**履歴提供の追加（ADR-0150）:** ユーザーの個別要求により、全参照・HEADの履歴をbundle経由で独立コピーへ渡す。`History.Tests.ps1`で23項目とfsckを検査する。HEADのブランチ名・detached状態・コミット前の状態を保持し、同じコミットへのブランチ切り替えも対象版変更として扱う。レビューと採否の正本は`docs/records/reviews/2026-09-09-history-copy.md`。
+
 **作成:** `scripts/verification/RequestCopy.psm1`、`scripts/verification/request.schema.json`、`scripts/verification/tests/RequestCopy.Tests.ps1`。
 
 **公開インターフェース:** `New-VerificationRun -Request <hashtable> -Settings <hashtable> -> PreparedRun`。型と全キーは仕様01をそのまま使う。失敗は例外の`Data['status']`に`blocked`または`source_changed`、作成後なら`Data['runRoot']`に絶対パスを保持し、タスク3のCLIで結果へ変換する。
@@ -225,6 +227,12 @@ if ($LASTEXITCODE -ne 0) { throw 'RequestCopy tests failed' }
 **コミット:** このタスクの3ファイルと必要なTestSupport更新だけをステージし、`feat: 検証依頼を検査して独立したコピーを作成`。
 
 逸脱記録: 実体に合わせる調整 / 採用 / RequestCopy内の列挙・パス・manifest照合をResultから共有する補助関数として公開、コピーの契約は維持
+
+逸脱記録: 対象外 / 対象外 / ADR-0150、ユーザーのGit履歴提供の追加要求に基づくスコープ更新
+
+逸脱記録: 昇格に至らない訂正 / 採用 / 履歴レビューF1、元ブランチの参照情報を失う実装を訂正、独立コピーと検証範囲は維持
+
+逸脱記録: 対象外 / 不採用 / 履歴レビューF2、指定された空junction試験は実機で拒否、別の空参照もコピーへ持ち込まれず保護境界の欠陥は未確認
 
 ## タスク2: 制限付き実行とプロセス終了管理
 
@@ -291,7 +299,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Execution tests failed' }
 
 **先行実装結果:** `Result.psm1`、agent-result/resultスキーマと単体試験を作成。応答欠落・不正JSON・別runId・終了コード不一致・重複イベント・範囲外成果物・原本変更・既存結果保全等の15ケースが成功。実エージェントによる出力の照合、成功条件の意味の判断、CLIの終了コードは結合時の残作業。
 
-先行範囲専用の`Run-IndependentTests.ps1`は3テスト群を実行する。元計画のCLI試験を含む4群の`Run-UnitTests.ps1`とは区別し、現時点で全体が通ったとは扱わない。READMEも先行部品だけを説明する。
+先行範囲専用の`Run-IndependentTests.ps1`はコピー・履歴・プロセス・結果の4テスト群を実行する。元計画のCLI試験を含む4群の`Run-UnitTests.ps1`とは構成が異なり、現時点で共通CLIが通ったとは扱わない。READMEも先行部品だけを説明する。
 
 **作成:** `scripts/verification/Result.psm1`、`scripts/verification/result.schema.json`、`scripts/verification/Invoke-IsolatedVerification.ps1`、`scripts/verification/README.md`、`scripts/verification/tests/Result.Tests.ps1`、`scripts/verification/tests/Cli.Tests.ps1`、`scripts/verification/tests/Run-UnitTests.ps1`。
 
@@ -352,7 +360,7 @@ Assert-Equal $result.checks[0].eventId 'item_1' '実イベントを対応付け�
 
 - [ ] CLIでJSON解析・タスク1〜3の呼出と例外変換を行う。受付前の不正JSONではrunを作らず、runId/runRootはnull、status=blocked、agentVerdict=null、sourceState=unreadableとして全キーを持つJSONを返す。作成後の失敗では例外DataのrunRootを返し、作成物の所在を失わない。
 - [ ] CLIのstdoutが結果JSON1件だけであることを、stderrに説明があるケースでも検査する。completed/pass→0、completed/fail→1、それ以外→2の終了コードを実プロセスから読む。
-- [ ] READMEに依存、導入設定の5キー、両主担当で同じ呼出を使うこと、起動拒否時の扱い、モデル利用の費用、保存物と名指し削除、未対応のGit履歴依存検査を説明する。常時読み込むAGENTS.mdや配布スキルを変更しない。
+- [ ] READMEに依存、導入設定の5キー、両主担当で同じ呼出を使うこと、起動拒否時の扱い、モデル利用の費用、保存物と名指し削除、Git履歴の提供範囲と不完全な履歴の停止を説明する。常時読み込むAGENTS.mdや配布スキルを変更しない。
 
 ```powershell
 # READMEに載せる共通呼び出しの形。各パスは主担当が作成・確認した絶対パスを使う。

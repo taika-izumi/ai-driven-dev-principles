@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理の実装
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-09 13:06 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ユーザー指示で中断 / LoopForAlphaの既存基盤の再利用差分を確認する提案まで
+- **Last Updated**: 2026-09-09 14:21 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: Git履歴コピーの実装・レビュー完了 / 隔離方式の検討へ復帰
 
 ## 作業の目的・背景
 
@@ -21,6 +21,7 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - 実測: `docs/working/issues/flow/0136-inspection-delegation-does-not-fire-destructive-verification-row/0136-note-common-cli-runtime.md`。
 - リスク評価: 同Issueフォルダの`0136-note-network-risk-assessment.md`。
 - 再利用の比較材料: 同Issueフォルダの`0136-note-loopforalpha-sandbox-reuse.md`。LoopForAlpha側の参照パスと、未決定の差分を記載。
+- 履歴参照の要求・実装・検証: ADR-0150（Accepted）、同Issueフォルダの`0136-note-history-transfer.md`、`docs/records/reviews/2026-09-09-history-copy.md`。履歴提供と固定資料のClaude送信はユーザーが個別承認。
 
 ## 完了済みタスク
 
@@ -29,12 +30,15 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - [x] コピー準備26件、プロセス管理7ケース、結果照合15ケースの3テスト群が成功。詳細は実装計画の先行実装結果。
 - [x] 合成データによるリスク評価。ローカルの1バイト往復とコピー外マーカー読取は成功。example.com:443の直接接続は制限側で拒否、通常側の前後は成功。
 - [x] 限定利用条件を確認。認証保存先auth.jsonの読み取りハンドルを取得できた（内容未読）。ChromeDriver等のローカル待受が存在。詳細はリスク評価ノート。
+- [x] 再利用差分と役割間の成果物の往復を調査。既存関数の3モードの引数生成を確認。Docker・AIの実起動は行っていない。詳細は`0136-note-loopforalpha-sandbox-reuse.md`。
+- [x] Git履歴の独立コピーを追加。未コミット内容を保持してlog/show/blameを参照し、worktree入力・空のHEAD・不完全な履歴を検査。実行記録は`0136-note-history-transfer.md`。
+- [x] 履歴変更の独立レビューを完了。2指摘を実測し、ブランチ名保持を修正。履歴23項目を含む4群が成功。実リポジトリのコピー、SHA256形式と参照更新も確認。詳細は上記レビュー記録。
 
 ## 進行中のタスク
 
-- **現在の作業**: セッション中断。既存基盤との再利用差分を確認するかの再開判断待ち。
-  - 状態: 現構成の限定利用条件は未達。ユーザーがLoopForAlphaの既存Docker基盤との重複を指摘し、仕様・コードを読んで比較材料を保存した。
-  - 残り: 再利用差分の確認から進むかを確認する。Docker採用・共通化・LoopForAlphaの変更・既存試作の撤去は未決定。実エージェント起動・通信受容・公開も未承認。
+- **現在の作業**: 履歴コピーの先行変更を確定し、未決の隔離方式へ戻る。
+  - 状態: 履歴の提供・独立レビューと主担当の修正後検証は完了。ADR-0150を確定。追加の外部レビューは行っていない。隔離方式の比較材料は再利用ノート。
+  - 残り: Linux試作を先行させるかWindows対応を維持するかを判断する。Docker採用・共通化・LoopForAlpha変更・既存試作撤去・実エージェント起動・通信受容・公開は未承認。
 
 ## 未着手のタスク
 
@@ -45,10 +49,17 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 - 公開・通常導入・既存物の削除は未承認。原本側の未追跡物、他worktreeとstashは`docs/working/handoff/master.md`の保全指示を維持。
 - 導入済みプラグインは0.1.24、リポジトリの予定版は0.1.25。変更内容を自動で導入済みと扱わない。
 - sandboxの通信拒否が未成立。詳細と2実行の証拠パスは`0136-note-common-cli-runtime.md`に保存。保護代用品6件のハッシュは不変。
+- Claudeへの固定10ファイルの送信はユーザーの「1で」で承認され実行済み。原本・証拠は`.tmp/history-review/`に保存。別対象への送信や通常の検証担当の起動へ承認を拡張しない。
 - `.tmp/`の試験・ログ・junctionと他作業の未追跡物を保全する。LoopForAlphaの既存コンテナの起動・停止・再ビルドは行っていない。
 
 ## 節目ごとの確認記録
 
+- 2026-09-09 履歴レビュー完了・ADR-0150 Accepted 昇格: ADR=0150 / worklog=棄却（既存のレビュー照合・修正・検証手順の範囲） / cyclecheck=実施（修正: Issue-0136）
+
+- 2026-09-09 レビュー準備とローカル再検証: ADR=なし（送信承認待ち、方式の採用なし） / worklog=棄却（既存の承認拒否対応・確認手順の範囲）
+
+- 2026-09-09 Git履歴コピーの先行実装: ADR=0150 / worklog=棄却（既存の要求反映・実体照合・テスト修正の範囲）
+- 2026-09-09 再利用差分と連携経路の調査: ADR=なし（方式・対応OSの変更は未選択） / worklog=棄却（既存の前提照合による調査で新たなdeltaなし）
 - 2026-09-09 plan 確定点: ADR=なし（既存仕様と工程の選択、設計変更なし） / worklog=棄却（既存手順内でdeltaなし） / review=見送り
 - 2026-09-09 worktree準備と基準検査: ADR=なし（承認済み計画に従う） / worklog=棄却（既存手順内でdeltaなし）
 - 2026-09-09 タスク0の実測と停止: ADR=なし（計画の停止条件に従う、変更案未選択） / worklog=棄却（計画で要求された正負対照と停止）
@@ -64,9 +75,10 @@ Claude CodeとCodexの主担当から共通CLIを呼び、隔離されたコピ�
 ## 次セッション開始時のアクション
 
 1. start-workで本handoffを読み、専用worktreeとブランチを確認する。実装計画・リスク評価・ADR-0149が最新の正本。master側の古い計画選択から戻らない。
-2. `0136-note-loopforalpha-sandbox-reuse.md`を読み、既存Docker基盤の再利用差分を確認するか相談する。エージェント本体とAI製コードの隔離、LinuxとWindowsの違いを維持する。
-3. コードの独立レビュー・CLI結合・V1〜V7は未完了。先行3群の再検証は`Run-IndependentTests.ps1`。採用・変更・導入・削除を中断指示から推定しない。
+2. 履歴変更は`docs/records/reviews/2026-09-09-history-copy.md`で完了確認済み。隔離方式の比較は`0136-note-loopforalpha-sandbox-reuse.md`へ戻り、Linux試作先行かWindows対応維持かの判断を続ける。
+3. 全体レビュー・CLI結合・V1〜V7は未完了。先行4群の再検証は`Run-IndependentTests.ps1`。履歴レビューの完了を隔離成功へ読み替えず、採用・導入・削除等の承認を拡張しない。
 
 ## 重要な意思決定の履歴
 
+- ADR-0150: リポジトリのファイルとGit履歴をスクリプトで独立コピーへ渡す（2026-09-09、Accepted）。
 - ADR-0145〜0148: 自律テスト作成、両主担当からCodex検証、共通CLI、独立Git管理領域（2026-09-09）。

@@ -1,17 +1,22 @@
-# Handoff: 自律的にテストを作成・実行する検証担当の隔離環境の構築方針
+# Handoff: 確認工程の費用と粒度の改善検討
 
 - **Branch**: master
-- **Last Updated**: 2026-09-09 13:06 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: ユーザー指示で中断 / 続きはcodex/isolated-verificationの専用worktree
+- **Last Updated**: 2026-09-10 01:56 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: Issue-0140の設計確定 / 実装未着手
 
 ## 作業の目的・背景
+
+2026-09-10、ユーザーがIssue-0140の調査・改善案作成を選択。既存実測と現行手順を照合し、事実追記と利用条件変更を区別する限定改定案を提示する。以下の隔離検証は中断を維持。
 
 前サイクルのClaude標準サブエージェントの保護検証を受け、検証担当が安全に追加テストを作成・実行する構成を設計した。前サイクルの実測・振り返りはADR-0144と`docs/records/retrospectives/system/2026-09-09-claude-native-subagent-interactive.md`を参照。
 
 仕様確定（`1e63e8a`）後の作業は専用worktreeへ移った。AIなし部品を先行実装したが、通信・機密性の条件は未達。最新状態は`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`が正本。本ファイルの過去の計画草案・実装未着手の記載から再開しない。
 
 ## 関連ドキュメント
+
+- 今回の設計・承認基準: `docs/working/issues/flow/0140-confirmation-cost-outgrows-work-in-small-norm-updates.md`「2026-09-10 限定改定の設計案」「判断の分担（承認基準）」。2026-09-10のユーザー回答で承認済み。ADR-0164（Proposed）。
+
 
 - **最新の継続先**: `D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`。コードと更新済み計画は同worktree内。masterへの統合は未実施。
 
@@ -27,6 +32,8 @@
 
 ## 完了済みタスク
 
+- [x] Issue-0140の実測・実差分・現行レビュー規範を照合し、比較案3件を同Issueへ保存（2026-09-10）。
+
 - 過去サイクルは `docs/records/retrospectives/` の記録とgit履歴を参照。
 - [x] 検証担当の自律範囲を確認し、ADR-0145のドラフトを作成（2026-09-09）。
 - [x] Claudeから依頼する条件でCodexを初回の検証担当に選び、公式資料・実機ヘルプを確認してADR-0146のドラフトを作成（2026-09-09）。
@@ -38,14 +45,17 @@
 
 ## 進行中のタスク
 
-- **現在の作業**: 専用worktreeでの実装・調査を中断し、次セッションへ引き継ぐ。
+- **現在の作業**: Issue-0140の詳細設計を確認する。
+  - 状態: フルレビュー1回後、指摘3件の採否と文言明確化をユーザーが確定。設計・分担はIssue-0140、結果は`docs/records/reviews/2026-09-10-issue-0140-design-r1.md`。ADR-0164は実装・検証までProposed。
+  - 残り: 確定文案のスキルへの適用と配布生成・検証。今回の依頼範囲は設計確定まで。実装へ進む場合、設計・分担の承認は取り直さない。
+- **中断中の別作業**: 専用worktreeでの隔離検証。
   - 状態: 計画確定・主担当実装・計画レビュー見送りは選択済み。AIなし3群を検証し、限定利用の条件が未達と判明した。最新の根拠は上記継続先を参照。
   - 残り: ユーザーが指摘したLoopForAlphaの既存Docker基盤について、再利用差分の確認から再開するか判断する。Docker採用・共通化・他リポジトリ変更は未決定。
 
 ## 未着手のタスク
 
 - Issue-0136 の残る未確認: 別OS・別版（環境準備が要る）、外向きツール（Artifact・SendMessage）と状態変更系ツール（EnterWorktree・ExitWorktree・TaskStop）の実効性、固定検査の接続を子だけに渡す構成の対話セッションでの実行（前サイクル領域への書き込みが入るため退避が必要）。
-- Issue-0141（静的確認の免除条項に判定基準が無い）、Issue-0142（分担の相談事項が規範の既決事項と重なる）、Issue-0139（規範の表の増え方）、Issue-0140（確認工程の費用と粒度）。着手はユーザー判断。
+- Issue-0141（静的確認の免除条項に判定基準が無い）、Issue-0142（分担の相談事項が規範の既決事項と重なる）、Issue-0139（規範の表の増え方）。着手はユーザー判断。Issue-0140は調査・改善案作成済みで、対策実装は未着手。
 - 配布予定版0.1.25の公開判断。公開元は最後の確認時0.1.24で、ローカルには規範更新が入っている。
 - Issue-0135 のファイルサイズが 17.1KB で目安の 10KB を超えている。フォルダ昇格の提案対象（判断はユーザー）。
 
@@ -62,6 +72,15 @@
 
 ## 節目ごとの確認記録
 
+- 2026-09-10 Issue-0140 spec 確定点: ADR=0164 / worklog=棄却（既存の設計確定手順内） / review=フル実施（claude-sonnet-5・1回・提示後確定（実質的な収束に至らず））
+
+- 2026-09-10 Issue-0140のレビュー受領と文言明確化: ADR=0164（承認済み条件不変） / worklog=棄却（既存の前提照合・委任内修正手順内）
+
+- 2026-09-10 Issue-0140の限定改定設計案作成: ADR=0164（方針選択済み・詳細確認待ち） / worklog=棄却（既存の設計・対照例照合手順内）
+
+- 2026-09-10 Issue-0140の調査と比較案作成: ADR=なし（候補提示のみ、採用未決） / worklog=棄却（既存の原記録・差分照合手順内）
+
+
 - 2026-09-09 専用worktreeへの再開先の案内: ADR=なし（実装の統合ではなく参照の更新） / worklog=MakeAiInstructions-2026-09-09-07
 
 （直近サイクル分は `docs/records/retrospectives/` とgit履歴を参照）
@@ -77,6 +96,8 @@
 - 2026-09-09 セッション中断と引き継ぎ確定: ADR=なし（ユーザーの中断指示） / worklog=棄却（新たなdeltaなし。起動時の問題はMakeAiInstructions-2026-09-09-05に記録済み）
 
 ## 次セッション開始時のアクション
+
+直近はIssue-0140の「2026-09-10 限定改定の設計案」、ADR-0164とユーザー回答から再開する。以下は隔離検証を明示再開する場合だけの手順。Issue-0140への着手を隔離検証の再開指示と扱わない。
 
 1. `D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`を最初に読む。こちらが現在の作業の正本である。
 2. 専用worktreeとcodex/isolated-verificationブランチを確認し、同worktree内のIssue-0136の再利用検討ノートに従って再開判断を行う。

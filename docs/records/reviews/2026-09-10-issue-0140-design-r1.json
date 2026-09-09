@@ -1,0 +1,217 @@
+{
+  "review": {
+    "summary": "対象2件（source-01のIssue-0140限定改定設計案・対照6例、source-02のADR-0164草案）を4観点で検査した。指摘3件（Medium 1・Low 2）。対照6例は文案ロジックとの整合が取れているが、うち1例（例4）は文案本文の指示語が曖昧なため解釈が割れうる。仕組みの新規増設は無く、既存の推奨判定への但し書き追加という設計方針自体への反対は無い。",
+    "coverage": {
+      "targets": 2,
+      "reference_count": 10,
+      "read_files": [
+        "source-01.txt (Issue-0140限定改定設計案・対照6例・承認基準)",
+        "source-02.txt (ADR-0164草案)",
+        "source-03.txt (pre-finalization-review/SKILL.md)",
+        "source-04.txt (iteration-norms.md)",
+        "source-05.txt (review-procedure.md)",
+        "source-06.txt (decision-delegation.md)",
+        "source-07.txt (ADR-0080)",
+        "source-08.txt (ADR-0120)",
+        "source-09.txt (ADR-0124)",
+        "source-10.txt (2026-09-08振り返り)",
+        "source-11.txt (2026-09-09振り返り)",
+        "source-12.txt (CONTRIBUTING.md)"
+      ],
+      "unread_files": [],
+      "limitations": [
+        "docs/overview/wording-replacements.md（規範文書の語彙表の正本）はmanifest外かつサンドボックスの作業ディレクトリ制約により参照不能。文案が導入する新語『原記録』がこの表の置換対象語・許容語のいずれに当たるかは不明のまま報告する（F2）。",
+        "静的な文言・整合性検査に限定しており、配布スキルへの適用後の実地動作・他モデルでの解釈再現性・削減効果は確認していない（対象自体が未適用の設計案であるため）。",
+        "対象2件はコピー版（manifest記載パス）を読んでおり、現用スキル本体（skills/pre-finalization-review/SKILL.md）への適用はまだ行われていない前提で評価した。"
+      ]
+    },
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "Medium",
+        "perspective": "前提実在",
+        "file": "docs/working/issues/flow/0140-confirmation-cost-outgrows-work-in-small-norm-updates.md",
+        "line": "45, 58",
+        "premise": "文案の一文「同じ変更にこれらを変える内容が混在する場合は、その内容を従来どおり判定する」が、混在ケースで規範性のある変更を確実に推奨判定へ含める識別ロジックとして機能すること",
+        "evidence": "L45の文案本文「同じ変更にこれらを変える内容が混在する場合は、その内容を従来どおり判定する」に対し、対照例4（L58）の期待判定は「手順の変更を対象に数える。事実追記があることを全体の除外理由にしない」。『その内容』が『変更全体』を指すのか『混在した規範部分のみ』を指すのかが文案単独から一意に定まらない。前者なら『変更全体を除外せず通常判定に戻す』、後者なら『規範部分のみ対象に数え、他の事実追記部分は除外を維持する』となり、帰結（推奨判定・型判定・記録内容）が変わりうる。",
+        "impact": "主担当が対照例と異なる読み（部分適用）を採用しても文案の文言には反しないため、混在ケースの判定が実装者依存でぶれるリスクが残る。型判定はSKILL.md L64『型は推奨判定への参照で与え、再定義しない』により自動連動するため、誤読は型・体数・分布外検知閾値にも波及しうる。",
+        "minimal_fix": "『その内容』を『その変更全体』のように明示するか、対照例4の説明『事実追記があることを全体の除外理由にしない』の文言をそのまま文案本文へ反映する。",
+        "cost_tradeoff": "文言修正のみで新しい判断ステップ・機構は増えない。導入・運用・保守コストの増加はほぼ無い。"
+      },
+      {
+        "id": "F2",
+        "severity": "Low",
+        "perspective": "実装整合性",
+        "file": "docs/working/issues/flow/0140-confirmation-cost-outgrows-work-in-small-norm-updates.md",
+        "line": "45",
+        "premise": "配布対象ソース（skills/配下の.md）へ追加する文言は、CONTRIBUTING.md『全シナリオ共通: 規範文書の語彙』のwording-replacements.md照合を経ること（source-12 L416のSkill改定チェックリストに明記）",
+        "evidence": "文案（source-01 L45）は『原記録』という語を新規導入するが、この語はiteration-norms.md・review-procedure.md・SKILL.md本文のいずれにも登場しない（source-03〜05を走査して確認）。Issue-0140・ADR-0164のいずれにも語彙点検の実施記載がない。",
+        "impact": "実装時にこの点検を行わないと、分かりにくい語がSKILL.mdへ混入したまま配布される可能性がある。ただしwording-replacements.md自体は本レビューでは参照不能のため、『原記録』が既に許容語か置換対象語かは不明（不明として報告する）。",
+        "minimal_fix": "実装時にwording-replacements.mdと照合し、必要なら『実測runの記録』等の既存語彙へ言い換える。",
+        "cost_tradeoff": "既存の執行点を1回実施するだけで済み、追加コストは小さい。新しい審査工程の新設は不要。"
+      },
+      {
+        "id": "F3",
+        "severity": "Low",
+        "perspective": "実装整合性",
+        "file": "docs/records/decisions/0164-exclude-behavior-preserving-observations-from-full-review-default.md",
+        "line": "20-22",
+        "premise": "推奨判定の但し書き変更は、ADR-0120の2型分類（推奨判定と同一材料で判定）・分布外検知閾値（規範改定型8巡/通常型4巡）・初回体数既定（写像通常型のみ1体兼務）へ自動的に波及すること",
+        "evidence": "ADR-0164 Decision（L20-22）およびIssue-0140本文（source-01 L47）は『初回除外は反復の停止条件・提示の免除にも使わない』と明記するが、型分類・分布外検知閾値・体数既定への波及には言及がない。一方SKILL.md（source-03 L64）は『型は上記2.の推奨判定が真になる確定点＝未レビューの規範・手順内容を含む』『定義は推奨判定への参照で与え、再定義しない』としており、新しい但し書きは型判定にも自動反映される構造になっている。",
+        "impact": "除外により規範改定型から通常型へ移る確定点が生じた場合、分布外検知の閾値は8巡から4巡へ下がる（発火が早まる方向であり、ADR-0120 Decision1が既に受容している向きと同じ＝実害は小さい）。ただしこの波及が意図的な検討を経た記録として残っていないため、意図しない副作用の見落としの余地が残る。",
+        "minimal_fix": "実装時にSKILL.md『型は推奨判定への参照で与え、再定義しない』との整合を確認し、必要なら波及を1文明示する（確認のみで足りる場合は追記不要）。",
+        "cost_tradeoff": "確認のみであれば追加コストなし。新しい機構の増設は不要。"
+      }
+    ],
+    "mechanisms": [
+      {
+        "mechanism": "利用条件不変の実測結果追記を初回フルレビュー推奨の対象から除外する判定規則（新規の型・台帳・スクリプトは伴わない、既存推奨判定への但し書き追加）",
+        "verdict": "増設ではなく既存判定ロジックへの限定的な但し書き追加であり、導入・運用・保守の追加負担は小さい。設計方針自体は妥当。ただしF1（混在ケースの指示語の曖昧性）とF2（未定義語の混入）の是正を経ないと、運用時に解釈がぶれるリスクが残る。",
+        "evidence": "source-01 L37-62, source-02 L18-24"
+      }
+    ],
+    "cases": [
+      {
+        "case": "既に禁止された操作について、同一構成での拒否結果を1件追記。原記録と一致し適用条件も不変",
+        "verdict": "整合",
+        "reason": "文案の除外条件（原記録と一致・成立判断不変）を満たし、Issue記載の期待判定『対象に数えない』と一致する。"
+      },
+      {
+        "case": "許可リスト限定だった手順へ『拒否リストでもよい』を追加",
+        "verdict": "整合",
+        "reason": "許可の成立判断・適用範囲が変わるため文案の除外条件を満たさず、Issue記載の期待判定『対象。未レビューなら規範改定型』と一致する。"
+      },
+      {
+        "case": "『原本を書き換えなかった』を『原本を書き換えた』へ訂正し、従来の安全性判断が崩れる",
+        "verdict": "整合",
+        "reason": "文案に『根拠の訂正が従来の判断を崩す場合は除外しない』と明記されており、Issue記載の期待判定と一致する。"
+      },
+      {
+        "case": "観測結果の追記に、新しい接続オプションの使い分け手順を併記",
+        "verdict": "整合（ただしF1の曖昧性に依存）",
+        "reason": "混在ケースの規定『その内容を従来どおり判定する』を『事実追記は全体の除外理由にしない＝除外しない』と読めば期待判定と一致するが、F1で指摘した指示語の曖昧性により、実装者が異なる読みを採る余地が残る。"
+      },
+      {
+        "case": "新しいOSでの成功例を追記し、その結果を根拠に対応OSを拡大",
+        "verdict": "整合",
+        "reason": "適用範囲の成立判断が変わるため除外条件を満たさず、Issue記載の期待判定『除外しない』と一致する。"
+      },
+      {
+        "case": "観測追記だけに見えるが原記録がなく、条件不変を確認できない",
+        "verdict": "整合",
+        "reason": "文案の除外条件は『原記録と照合して確認できる場合に限り』であり、確認不能なら適用されず既存の迷い時規定（フル推奨側）に戻る。Issue記載の期待判定と一致する。"
+      }
+    ]
+  },
+  "execution": {
+    "model": "claude-sonnet-5",
+    "tools": [
+      "Read"
+    ],
+    "toolCalls": 14,
+    "toolNames": [
+      "Read"
+    ],
+    "exitCode": 0,
+    "costUsd": 0.6168502,
+    "durationMs": 252274,
+    "usage": {
+      "input_tokens": 8,
+      "cache_creation_input_tokens": 99177,
+      "cache_read_input_tokens": 112006,
+      "output_tokens": 19559,
+      "output_tokens_details": {
+        "thinking_tokens": 14439
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 99177,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 3879,
+          "cache_read_input_tokens": 89073,
+          "cache_creation_input_tokens": 14583,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 14583
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "sourceHashes": [
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\docs\\working\\issues\\flow\\0140-confirmation-cost-outgrows-work-in-small-norm-updates.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-01.txt",
+        "sha256": "F9E48DB2EE8CD65DFCDF0E2D92C33F4331F5DA6284457E4BF7014623C9B14CB2"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\docs\\records\\decisions\\0164-exclude-behavior-preserving-observations-from-full-review-default.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-02.txt",
+        "sha256": "D76B42C9FAD0552BD43EE50E3A827E44FFBC719B0A0C3F115B7AF0A4546F5352"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\skills\\pre-finalization-review\\SKILL.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-03.txt",
+        "sha256": "AE64C493AB26987377A65FBF79544C1730CF9AE7500B940BFF33F6D4FF1C7445"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\skills\\pre-finalization-review\\references\\iteration-norms.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-04.txt",
+        "sha256": "7AAEFC4445C28D685732984830837271E7C11AF4B26A5C884C07D39DF823EC25"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\skills\\pre-finalization-review\\references\\review-procedure.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-05.txt",
+        "sha256": "0B436A56F73050C6C190095DDBDD6AB25B5FD8A5379FDA55E2E9D356945A906D"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\skills\\start-work\\references\\decision-delegation.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-06.txt",
+        "sha256": "BC1274C4BA24D3194403F42742662F2CD8F7C11098E1E4D607CA5BEE22E5AD87"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\docs\\records\\decisions\\0080-review-presentation-scaled-by-unreviewed-normative-content.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-07.txt",
+        "sha256": "969F8789F06E61326409668A735CCDE214CDE7BD9D421683C99307FC205B260E"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\docs\\records\\decisions\\0120-stratified-initial-review-bodies-and-round-outlier-detection.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-08.txt",
+        "sha256": "0C8CCD188A1089A1B923ED30F2249B6DA84DAA162FF0DE95E12B964545C05B64"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\docs\\records\\decisions\\0124-review-minimum-as-recommendation-with-user-discretion.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-09.txt",
+        "sha256": "7E8ED14272BFCE554D677098AC1E6EE53F61CFEEBFDB4CEF68236E7C9986DA47"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\docs\\records\\retrospectives\\flow\\2026-09-08-claude-native-subagent-verification.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-10.txt",
+        "sha256": "04D59CBD98AF09DCFB6EF99325B5E6F7169FAF88A6513A283D033453762624BD"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\docs\\records\\retrospectives\\flow\\2026-09-09-claude-native-subagent-interactive.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-11.txt",
+        "sha256": "26090551D9E7BA8F8AE282450E7767FD22DA623731D6D8B265C3E4CA6D0DAC2A"
+      },
+      {
+        "source": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\CONTRIBUTING.md",
+        "copy": "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\issue-0140-review-r1\\source-12.txt",
+        "sha256": "124F72F6D642BE3AB873404A8D5960C2AB86A3FD51B93CE85985BCFEA4BCF0DD"
+      }
+    ],
+    "snapshotRoot": "C:/Users/d12an/.codex/visualizations/2026/09/09/01a086fe-3d6a-7a60-87e5-875a65c90343/issue-0140-review-r1-before",
+    "approval": "2026-09-10: new 1 reviewer 4 perspectives selected; subsequent explicit approval for 12 documents and prompt to Claude API",
+    "sourceChangesBeforeCoordinatorEdits": 0
+  }
+}

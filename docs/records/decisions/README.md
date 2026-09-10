@@ -164,3 +164,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0170](0170-verify-installed-codex-plugin-content-for-comparison.md) | 比較用Codexプラグインは内容一致を条件に導入済みキャッシュから読む | Accepted | 2026-09-10 |
 | [0171](0171-copy-test-dependencies-for-protected-comparison.md) | 保護下の比較で使う検査依存を試験専用フォルダへコピーする | Accepted | 2026-09-10 |
 | [0172](0172-align-common-codex-skills-for-comparison.md) | Codex比較の共通補助スキルを起動設定で明示する | Accepted | 2026-09-10 |
+| [0173](0173-use-accept-edits-for-claude-preflight.md) | Claudeの限定事前確認で親子の編集モードをacceptEditsにする | Accepted | 2026-09-10 |

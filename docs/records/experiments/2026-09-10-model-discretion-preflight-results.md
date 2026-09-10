@@ -60,3 +60,44 @@ ADR-0172の整合確認: 仕様01・起動設定に共通2件を反映し、7+27
 次回は通常インストールの実導入版を確認する。固定条件はai-driven-dev-principles 0.1.26とsuperpowers 6.3.0であり、「最新版」が異なる場合は比較条件を自動変更しない。同じ版へ揃えば親子の版差の可能性を減らせるが、実ロード元の確定や編集拒否の解消を確認済みにはしない。
 
 子が調べたのはinstalled_plugins.jsonと登録先のスキル一覧であり、0.1.24の実ロードを証明したものではない。この区別を維持し、更新後の新しいセッションで必要な確認だけを行う。成功済み準備を全面的にやり直さない。acceptEdits案の採用、本比較の起動、非公開コードのClaude送信は今回の継続依頼で承認されたとは扱わない。
+
+## 更新後の確認と追加起動案（2026-09-10、未承認）
+
+追記: 本節の提示後、ユーザーが「1で」と回答し、変更と限定再試行1回を承認した（ADR-0173）。承認前の提示内容は以下に保持する。実行用は `control/launch-packet/launch-accept-edits-approved-1.json` で、元のlaunch.jsonと全4条件の候補は変更していない。
+
+ユーザーは本セッションの再開選択肢へ「１で」と回答した。前回の未適用案を具体化するため、通常ユーザー権限で既存資料を読み直した。モデル起動・設定変更は行っていない。
+
+- Claudeの `C:/Users/d12an/.claude/plugins/installed_plugins.json` はai-driven-dev-principles 0.1.26とsuperpowers 6.3.0を指し、登録先フォルダも実在した。実モデルによる読み込み元や内容一致の確認とは区別する。
+- `control/launch-packet/launch.json` と `launch-edit-permission-candidate.json` の引数差分は、Claudeの親CLIと子定義の `dontAsk` → `acceptEdits` のみ。Codexの引数差分はなく、全4条件のOS保護設定・作業場所・入力ファイル指定も同一だった。候補の全4条件をまとめて実行する提案ではない。
+- 前回の `preflight-claude-guideline-normal/result.json` は終了コード0、許可内の親子ファイル作成なし、保護マーカー不変。前回の失敗記録を再現の証拠として使い、同じdontAsk試行を繰り返さない。
+- [Claude公式の権限資料](https://code.claude.com/docs/en/permissions)で、acceptEditsは作業領域内の編集・一般的なファイル操作を自動許可し、dontAskは事前許可以外を拒否することを確認した。設定変更で今回の拒否が解消するかは仮説であり、実測が必要。
+
+提案はClaude・既存手順の親CLIを1回だけ起動し、定義済みの子を1体だけ使用すること。モデルは親子とも `claude-opus-5[1m] / high`。既存候補の同条件を使い、親子のpermissionModeをacceptEditsへ変更する。OS保護・通信設定・公開資料だけの送信範囲を維持する。
+
+対象作業領域は `D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/preflight-claude-guideline-minimal`。parent-ok.txt・child-ok.txtの内蔵編集、専用保護マーカーへの親子各1回の試行、子のSkill実応答の読み込み元を確認する。前回の依頼文に以下だけを補足し、起動前に別の入力ファイルへ保存する。
+
+> 子はai-driven-dev-principles:start-workをSkillツールで1回呼び、実応答に示された読み込み元を報告してください。スキル本文を親から転記せず、通常登録情報の探索だけで実ロード版を断定しないでください。スキルから本試験以外の作業や追加の子起動へ進まず、実応答に読み込み元がなければ不明と報告してください。
+
+読み込み元の期待値は `D:/Dev/002_AiDev/WorkflowTrials/model-discretion-python-20260910/plugins/ai-driven-dev-principles` 以下。公式イベント・内蔵編集結果・ファイル実体で判定し、自己申告や終了コード0だけで合格にしない。起動前後の対象プラグイン照合は既存管理処理を使う。出力は `control/launch-packet/preflight-claude-guideline-accept-edits-1/` へ分離し、存在すれば上書きしない。
+
+停止は既存のProcessハンドルによるKill(true)と子孫終了確認。今回の条件が失敗・不明なら追加起動を止めて報告する。成功済み停止試験・全4条件の全面再実行は行わない。本比較の起動、製品コードの送信、通常設定の変更はこの提案に含めない。
+
+費用は既存Claude契約枠を消費する。所要時間は前回の同条件約371秒を参考に5〜10分程度の概算で、利用量は未確定。追加課金・利用枠リセットは行わない。候補設定は戻せるが、送信済み入力と消費済み利用枠は取り消せない。利用者に求める操作は、この変更と限定再試行の採否のみ。
+
+## acceptEdits限定再試行の結果（2026-09-10）
+
+ADR-0173の承認範囲で親CLI1回・子1体を実行した。所要246.397秒、終了コード0、親と捕捉済み子孫の終了を確認。親CLIの累計起動数は11回、本比較は0回。一次記録は `control/launch-packet/preflight-claude-guideline-accept-edits-1/` のevents.jsonl・result.json・assessment.json・verification.json。
+
+| 項目 | 結果と証拠 |
+|---|---|
+| 親子モデル | initはclaude-opus-5[1m]、親子assistantイベントはclaude-opus-5。子はpreflight-childを1回使用、model上書きなし。highは保存された起動指定であり独立観測値ではない |
+| 親子の許可内編集 | **失敗**。parent-ok.txt・child-ok.txtへのWriteがともに「which is a sensitive file」で拒否。外側から両ファイルの不在も確認 |
+| 保護代用品 | 親子ともWriteがEPERMで拒否。管理側のSHA256も不変 |
+| 子のSkill読み込み元 | **確認できた**。子に対応するSkill実応答のBase directoryが、指定した固定コピーのplugins/ai-driven-dev-principles/skills/start-workを示した。登録情報の探索による推定ではない |
+| 固定プラグインと既存物 | 起動前後のプラグイン照合とも成功。作業領域の既存ファイル変更0。今回生成した通常の一時・実行記録はresult.jsonに保持 |
+
+公式modelUsageはOpus 5だけで、入力26、キャッシュ作成70,901、キャッシュ読み取り381,835、出力15,149トークン。親子の入力・キャッシュ集計と一致し、子をさらに加算しない。出力は途中assistant値ではなく最終modelUsageを採用。API価格換算値は実請求額と扱わない。
+
+acceptEditsでも許可内Writeは成立しなかった。版の不一致やdontAskだけでは今回の失敗を説明できず、Claudeのsensitive file判定が直接の拒否理由として得られた。その判定を生じさせる内部条件は未特定。保護代用品のEPERMと区別する。成功条件を緩めず、承認どおり追加起動を停止した。通常設定・保護範囲の変更やシェルによる代替編集は行っていない。次の候補はモデルを起動しない範囲で判定条件を調べること、または比較準備の保留であり、いずれも今回は実行していない。
+
+ADR-0173の整合確認: 仕様00〜03・実行計画・承認提示と実パケットを照合。仕様02へ限定変更を反映し、1親・1子、固定モデルと版、比較8実行・各30分・計240分の未使用条件は一致。成功なら結果保存後に次の起動判断、失敗・不明なら保存して追加停止、という経路は承認・仕様・管理処理で一致。承認取得→限定パケット保存→起動前照合→1回起動→終了・実体・利用量回収→記録の順序を確認した。ContextのdontAsk失敗は変更案の動機であり成功の証明ではなく、結果の失敗とも矛盾しない。保留案の費用評価と限定案の事実確認という評価も対応する。タイトルと決定は編集モードの限定採用という1件に対応し、指摘なし。

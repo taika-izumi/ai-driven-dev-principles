@@ -169,3 +169,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0175](0175-isolate-init-only-runtime-state.md) | フック起動準備は通信を禁止した試験専用設定領域で確認する | Accepted | 2026-09-10 |
 | [0176](0176-permit-single-session-runtime-directory.md) | 通常認証を保つ起動確認では指定セッションの実行時領域だけを書き込み可能にする | Accepted | 2026-09-11 |
 | [0177](0177-verify-write-after-hook-initialization.md) | フック起動準備を整えた条件で無害な同内容Writeを1回確認する | Accepted | 2026-09-11 |
+| [0178](0178-diagnose-plugins-individually.md) | Write拒否を固定プラグインの個別読み込み2回で切り分ける | Accepted | 2026-09-11 |

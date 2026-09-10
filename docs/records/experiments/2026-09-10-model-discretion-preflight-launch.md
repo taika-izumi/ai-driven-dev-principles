@@ -1,6 +1,6 @@
 # モデル裁量比較の事前確認・起動操作
 
-- 状態: 起動承認待ち。モデル起動0。本比較は対象に含めない。
+- 状態: 2026-09-10、ユーザーが準備段階であることを確認したうえで「であれば1で」と起動を承認。事前確認の実施終了・移行条件未達。[結果](2026-09-10-model-discretion-preflight-results.md)を参照。本比較は対象に含めない。
 - 目的: 非モデル確認では分からない、実モデル・親子の指示継承・内蔵編集の保護・停止・利用量回収を確認する。
 - 正本: `D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/launch-packet/launch.json`。実行ファイル・引数配列・入力文・出力先・各条件の全保護パスを保存済み。
 
@@ -10,8 +10,8 @@
 |---|---|---|
 | Codex・モデル裁量 | gpt-6-astra / medium | preflight-codex-discretion |
 | Codex・既存手順 | gpt-6-astra / medium | preflight-codex-guideline |
-| Claude・モデル裁量 | claude-opus-5[1m] / high | preflight-claude-discretion |
-| Claude・既存手順 | claude-opus-5[1m] / high | preflight-claude-guideline |
+| Claude・モデル裁量 | claude-opus-5[1m] / high | preflight-claude-discretion-minimal |
+| Claude・既存手順 | claude-opus-5[1m] / high | preflight-claude-guideline-minimal |
 
 フォルダはすべて上記試験ルートの直下。順番に実行し、各親は同じモデル・推論設定の公式の子を1体だけ使う。利用候補と制限はモデル内の2条件で揃える。
 
@@ -38,3 +38,6 @@
 事前確認の時間見込みは各モデル5〜15分程度（未実測の概算）。利用トークンと契約枠の消費量は事前不明で、結果から記録する。追加購入・API課金経路・利用枠リセットは使わない。ADR-0169の必要性と進捗に従い、新たな固定時間枠は設定しない。比較本体の各30分・計240分は未使用のまま。
 
 利用者に求める操作は起動の採否だけ。ログインのやり直しや設定変更は予定しない。起動承認と実行環境の権限が揃わなければ実行しない。作成ファイルは戻せるが、消費した利用枠やモデルへ送信済みの入力は取り消せない。送信するのは本事前確認の入力、許可された固定資材・手順、実行結果であり、実会話ログ・製品データ・認証情報は含めない。
+
+
+実施時の補正: Claudeは製品コードを含めない上表の最小入力を使用。子はpreflight-childの起動定義でOpus 5/highを指定し、CLAUDE_CODE_TMPDIRを当該作業領域内へ設定した。Codexの共通補助スキル指定はADR-0172へ反映。acceptEditsへの変更案はcontrol/launch-packet/launch-edit-permission-candidate.jsonに保存しただけで未適用・未承認。

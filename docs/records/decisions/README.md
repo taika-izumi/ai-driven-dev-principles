@@ -166,3 +166,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0172](0172-align-common-codex-skills-for-comparison.md) | Codex比較の共通補助スキルを起動設定で明示する | Accepted | 2026-09-10 |
 | [0173](0173-use-accept-edits-for-claude-preflight.md) | Claudeの限定事前確認で親子の編集モードをacceptEditsにする | Accepted | 2026-09-10 |
 | [0174](0174-diagnose-claude-plugin-write-permission.md) | Claudeの編集拒否を同じ作業場所でプラグイン有無の2回診断により切り分ける | Accepted | 2026-09-10 |
+| [0175](0175-isolate-init-only-runtime-state.md) | フック起動準備は通信を禁止した試験専用設定領域で確認する | Accepted | 2026-09-10 |

@@ -241,3 +241,7 @@ ADR-0177確定確認: ユーザーの個別承認とモデル・題材・送信�
 証拠はcontrol/launch-packet/diagnostic-plugin-on-runtime-ready-argv-relayのevents・result・verification、中継の保存引数・本文・コード・help-verificationはruntime-temp/argv-relay。非モデル診断は本リポジトリの.tmp/model-discretion-execution/windows-startup-*.json。初期の起動前失敗2回の実体は保全し、runtime-ready-write-summary.jsonとpreflight.jsonは今回の最終結果へ更新した。通常認証を維持したフック準備は成立したが、許可内Write条件はfailのまま。
 
 今回の補正は承認済み1回を同じ権限・モデル・入力で起動する実装詳細で、新規比較・保護縮小ではない。起動前失敗→無変更反復停止→非モデルの対照確認→中継ヘルプ成功→1回の実モデル→拒否記録・追加停止の順で確認した。ADR-0177に同一決定の実装補正と改訂記録を追記した。
+
+## 中断（2026-09-11）
+
+ユーザーが残作業の見通しを確認し、原因未特定で終了時刻を見積もれないため「ここで区切る」を「１で」と選択した。追加調査・検証・起動を止め、handoff・control/preflight.json・control/budget.jsonを中断状態へ更新した。明示的な再開依頼を待つ。最新到達点はフック正常でもWrite拒否、本比較0回。入力資材・固定検査・認証とフック起動準備を再作成せず、残るWrite拒否とCodex側未確認事項から再開する。既存の限定起動承認は実行済みで、追加起動の包括承認として使わない。

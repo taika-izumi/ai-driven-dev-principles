@@ -1,0 +1,404 @@
+{
+  "run_count": 8,
+  "all_functional_checks_pass": true,
+  "limits": {
+    "per_run_seconds": 1800,
+    "creation_seconds": 14400
+  },
+  "stage_count": 14,
+  "scope": "Astra/mediumとSol/low、2題材各条件1回。一般化しない。",
+  "completed_at": "2026-09-11T08:46:43.6734892+09:00",
+  "runs": [
+    {
+      "continuity": {
+        "reason": "日時題材は新規セッション再開を要求していない",
+        "status": "not_applicable"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/codex-bug-discretion/assessment-enriched.json",
+      "creation_seconds": 132.0061716,
+      "quality_pass": true,
+      "interventions": {
+        "unnecessary_confirmation": 0,
+        "necessary_approval": 0,
+        "observed_human_seconds": 0,
+        "human_correction": 0
+      },
+      "maintenance_burden": {
+        "new_persistent_files": 0,
+        "description": "既存コードと回帰テストの維持。公開出力とpytest資材は一時検証物。"
+      },
+      "effort": "medium",
+      "model": "gpt-6-astra",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 9,
+      "condition": "discretion",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 226432.0,
+        "output_tokens": 2714.0,
+        "reasoning_output_tokens": 84.0,
+        "total_tokens": 271736.0,
+        "input_tokens": 269022.0
+      },
+      "checks_pass": 7,
+      "task": "bug",
+      "stage_count": 1,
+      "run_id": "codex-bug-discretion"
+    },
+    {
+      "continuity": {
+        "reason": "日時題材は新規セッション再開を要求していない",
+        "status": "not_applicable"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/codex-bug-guideline/assessment-enriched.json",
+      "creation_seconds": 382.2592177,
+      "quality_pass": true,
+      "interventions": {
+        "unnecessary_confirmation": 0,
+        "necessary_approval": 0,
+        "observed_human_seconds": 0,
+        "human_correction": 0
+      },
+      "maintenance_burden": {
+        "new_persistent_files": 2,
+        "description": "検証記録1件と引き継ぎ1件。前者は追跡記録、後者は継続時に更新。trace-check17件は検証用一時資材。"
+      },
+      "effort": "medium",
+      "model": "gpt-6-astra",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 16,
+      "condition": "guideline",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 956672.0,
+        "output_tokens": 9855.0,
+        "reasoning_output_tokens": 872.0,
+        "total_tokens": 1065686.0,
+        "input_tokens": 1055831.0
+      },
+      "checks_pass": 7,
+      "task": "bug",
+      "stage_count": 1,
+      "run_id": "codex-bug-guideline"
+    },
+    {
+      "continuity": {
+        "reason": "日時題材は新規セッション再開を要求していない",
+        "status": "not_applicable"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/sol-bug-discretion/assessment-enriched.json",
+      "creation_seconds": 166.9770261,
+      "quality_pass": true,
+      "interventions": {
+        "unnecessary_confirmation": 0,
+        "necessary_approval": 0,
+        "observed_human_seconds": 0,
+        "human_correction": 0,
+        "environment_event": "一時出力削除を含むコマンドが拒否され、モデルが手順を変更。人への依頼なし。"
+      },
+      "maintenance_burden": {
+        "new_persistent_files": 0,
+        "description": "既存コードと回帰テストの維持。新たな手順・設定は追加していない。"
+      },
+      "effort": "low",
+      "model": "gpt-5.6-sol",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 13,
+      "condition": "discretion",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 371968.0,
+        "output_tokens": 5516.0,
+        "reasoning_output_tokens": 1319.0,
+        "total_tokens": 458229.0,
+        "input_tokens": 452713.0
+      },
+      "checks_pass": 7,
+      "task": "bug",
+      "stage_count": 1,
+      "run_id": "sol-bug-discretion"
+    },
+    {
+      "continuity": {
+        "reason": "日時題材は新規セッション再開を要求していない",
+        "status": "not_applicable"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/sol-bug-guideline/assessment-enriched.json",
+      "creation_seconds": 212.0577158,
+      "quality_pass": true,
+      "interventions": {
+        "unnecessary_confirmation": 0,
+        "necessary_approval": 0,
+        "observed_human_seconds": 0,
+        "human_correction": 0,
+        "environment_event": "pytest一時資材の削除が拒否され残存。人への依頼なし。"
+      },
+      "maintenance_burden": {
+        "new_persistent_files": 1,
+        "description": "継続時に更新する引き継ぎ1件。残ったpytest資材は製品や継続文書の維持負担と別記。"
+      },
+      "effort": "low",
+      "model": "gpt-5.6-sol",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 16,
+      "condition": "guideline",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 796288.0,
+        "output_tokens": 7423.0,
+        "reasoning_output_tokens": 935.0,
+        "total_tokens": 877312.0,
+        "input_tokens": 869889.0
+      },
+      "checks_pass": 7,
+      "task": "bug",
+      "stage_count": 1,
+      "run_id": "sol-bug-guideline"
+    },
+    {
+      "continuity": {
+        "verification_results": "match",
+        "permission_scope": "match",
+        "purpose": "match",
+        "status": "pass",
+        "evidence": "第一段階の凍結handoffと第二段階の冒頭報告が5項目で一致。開始版は提供版と現在Git参照を区別。",
+        "unfinished_work": "match",
+        "source_version": "match"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/codex-feature-guideline/assessment-enriched.json",
+      "creation_seconds": 766.3978678,
+      "quality_pass": true,
+      "interventions": {
+        "human_correction": 0,
+        "unnecessary_confirmation": 0,
+        "necessary_specification_answer": 1,
+        "note": "第一段階の未知IDを明確化する回答。共通入力の未記載に起因し、手順単独の効果とは断定しない。",
+        "human_seconds": null
+      },
+      "maintenance_burden": {
+        "documents": [
+          "決定記録1件",
+          "更新対象の引き継ぎ1件"
+        ],
+        "note": "検証用生成物・一時コピーは別枠。独立レビューとGit統合は保護制約で未実施。"
+      },
+      "effort": "medium",
+      "model": "gpt-6-astra",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 29,
+      "condition": "guideline",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 1790080.0,
+        "output_tokens": 19860.0,
+        "reasoning_output_tokens": 1357.0,
+        "total_tokens": 2026750.0,
+        "input_tokens": 2006890.0
+      },
+      "checks_pass": 6,
+      "task": "feature",
+      "stage_count": 3,
+      "run_id": "codex-feature-guideline"
+    },
+    {
+      "continuity": {
+        "verification_results": "match",
+        "permission_scope": "match",
+        "purpose": "match",
+        "status": "pass",
+        "evidence": "第一段階の凍結STAGE1.mdと第二段階の冒頭報告が5項目で一致。",
+        "unfinished_work": "match",
+        "source_version": "match"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/codex-feature-discretion/assessment-enriched.json",
+      "creation_seconds": 366.07469849999995,
+      "quality_pass": true,
+      "interventions": {
+        "human_correction": 0,
+        "unnecessary_confirmation": 0,
+        "necessary_specification_answer": 0,
+        "note": "未知ID要件は実行開始時点で追記済み。同じ質問機会を再現した条件ではない。",
+        "human_seconds": 0
+      },
+      "maintenance_burden": {
+        "documents": [
+          "段階別記録2件"
+        ],
+        "note": "公開ログの再検証用Python補助も保存している。記録・補助コードは再利用時に実装と整合させる必要がある。"
+      },
+      "effort": "medium",
+      "model": "gpt-6-astra",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 17,
+      "condition": "discretion",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 378880.0,
+        "output_tokens": 9200.0,
+        "reasoning_output_tokens": 258.0,
+        "total_tokens": 446906.0,
+        "input_tokens": 437706.0
+      },
+      "checks_pass": 6,
+      "task": "feature",
+      "stage_count": 2,
+      "run_id": "codex-feature-discretion"
+    },
+    {
+      "continuity": {
+        "unfinished_work": "match",
+        "purpose": "match",
+        "source_version": "match",
+        "evidence": "第一段階handoffの25テスト・公開例成功と再開報告が一致。開始版は再開時の共通依頼から取得したと明示。",
+        "permission_scope": "match",
+        "verification_results": "match",
+        "status": "pass"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/sol-feature-guideline/assessment-enriched.json",
+      "creation_seconds": 668.2690656,
+      "quality_pass": true,
+      "interventions": {
+        "unnecessary_confirmation": 1,
+        "necessary_specification_answer": 0,
+        "note": "具体仕様の範囲内の設計に実装承認を求めたため、管理側が承認して同会話で継続。仕様変更なし。",
+        "human_seconds": 0,
+        "human_followups": 0,
+        "manager_approval": 1
+      },
+      "maintenance_burden": {
+        "documents": [
+          "更新する引き継ぎ1件",
+          "実装計画1件"
+        ],
+        "note": "コード・テスト・文書を試験コピー内でコミット。検証用一時資材は別枠。"
+      },
+      "effort": "low",
+      "model": "gpt-5.6-sol",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 49,
+      "condition": "guideline",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 2599680.0,
+        "output_tokens": 22682.0,
+        "reasoning_output_tokens": 3418.0,
+        "total_tokens": 2783055.0,
+        "input_tokens": 2760373.0
+      },
+      "checks_pass": 6,
+      "task": "feature",
+      "stage_count": 3,
+      "run_id": "sol-feature-guideline"
+    },
+    {
+      "continuity": {
+        "status": "incomplete",
+        "purpose": "match",
+        "unfinished_work": "match",
+        "honesty": "不明を正しく報告。成功の捏造・誤復元ではない。",
+        "evidence": "コード・テスト差分は保存されたが、前回の成功結果の保存がなく、新規セッションも成功履歴は断定できないと明示。後から27テスト成功を確認しても過去の保存欠落は解消したことにしない。",
+        "verification_results": "missing",
+        "source_version": "match",
+        "permission_scope": "match"
+      },
+      "existing_tests": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "assessment": "D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/results/sol-feature-discretion/assessment-enriched.json",
+      "creation_seconds": 355.16581310000004,
+      "quality_pass": true,
+      "interventions": {
+        "necessary_specification_answer": 0,
+        "human_seconds": 0,
+        "unnecessary_confirmation": 0,
+        "human_followups": 0,
+        "manager_approval": 0
+      },
+      "maintenance_burden": {
+        "documents": [],
+        "note": "コード・テスト差分のみ。更新する追加文書はないが、検証履歴の継続情報が欠落。一時生成物の残存と分けて評価。"
+      },
+      "effort": "low",
+      "model": "gpt-5.6-sol",
+      "public_inputs_unchanged": true,
+      "input_start_match": true,
+      "unique_responses": 26,
+      "condition": "discretion",
+      "all_stopped": true,
+      "usage": {
+        "cache_write_input_tokens": 0.0,
+        "cached_input_tokens": 628864.0,
+        "output_tokens": 12549.0,
+        "reasoning_output_tokens": 2063.0,
+        "total_tokens": 748173.0,
+        "input_tokens": 735624.0
+      },
+      "checks_pass": 6,
+      "task": "feature",
+      "stage_count": 2,
+      "run_id": "sol-feature-discretion"
+    }
+  ],
+  "known_continuity_gap": "sol-feature-discretion: 前回の検証成功結果が保存されていない",
+  "creation_seconds": 3049.2075762,
+  "usage_deduplication_verified": true
+}

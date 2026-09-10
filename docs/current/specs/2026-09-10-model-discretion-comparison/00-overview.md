@@ -1,6 +1,6 @@
 # モデル裁量と既存手順の初期比較
 
-状態: 2026-09-11、ユーザーの方針転換指示を反映（ADR-0180）。初期比較はAstra/mediumとSol/low（ADR-0181）。日時4実行を完了。小機能第一段階の未知IDはエラー終了とする回答を受け、継続中（ADR-0182）。Claudeの追加診断と今回比較のためのsbx整備は保留。
+状態: 2026-09-11、Astra/mediumとSol/lowの8実行を完了。機能検査は全件合格。Sol/lowのモデル裁量で検証履歴の保存欠落があり、機能合格と継続情報の充足を区別する。結果はdocs/records/experiments/2026-09-10-model-discretion-comparison.mdを参照。
 
 ## この文書の読み方
 
@@ -35,7 +35,7 @@
 
 ## 準備の実体
 
-準備完了の証拠と起動方法は [準備完了記録](../../../records/experiments/2026-09-11-openai-comparison-preparation-complete.md) を参照。試験ルートのcontrol/preflight.jsonは8項目pass・ready_for_comparison=true・launch_approved=true（ADR-0182の回答を反映）。8実行・通常12段階に回答継続1段階を加えた起動資料と、停止・回収・採点用の実行補助を保存済み。
+準備完了の証拠と起動方法は [準備完了記録](../../../records/experiments/2026-09-11-openai-comparison-preparation-complete.md) を参照。試験ルートのcontrol/preflight.jsonは8項目pass・ready_for_comparison=true・launch_approved=false（実行完了、重複起動しない）。8実行・通常12段階に仕様回答と設計承認の継続各1段階を加えた起動資料と、停止・回収・採点用の実行補助を保存済み。
 
 ## 完了基準
 

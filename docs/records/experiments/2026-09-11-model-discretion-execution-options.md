@@ -2,6 +2,8 @@
 
 状態: 2026-09-11、ADR-0179の通常起動成功後、ユーザーの「OKです。進めてください」に基づく実現可能性調査。候補は未採用。インストール・Windows機能変更・VM/コンテナ作成・モデル起動は行っていない。
 
+追記による訂正: 本文の初回調査は別worktreeの既存実証を見落としていた。Windows機能有効化・再起動・初回Dockerログインを次の必須作業とした提案は撤回する。最新の根拠と次手は末尾「子セッション隔離の既存知見との照合」を参照。初回の観測値は当時の記録として残す。
+
 ## 判断に使う事実
 
 通常ユーザー権限では固定プラグイン2件を読み込んでRead/Write成功、従来のCodexサンドボックス付きでは拒否された。通常起動では.claude.jsonが更新されるため、これをそのまま本比較の保護条件成立とは扱わない。結果は `2026-09-10-model-discretion-preflight-results.md` の最終節、条件は比較仕様00〜03を参照。
@@ -48,3 +50,25 @@ Docker公式は[Claude契約のOAuthログイン](https://docs.docker.com/ai/san
 5. その後に無害なRead/Writeと保護拒否を限定実測する。比較条件・新規モデル起動は個別判断のまま。成立が見込めなければ独自構築へ自動移行せず、保留も含めて判断する。
 
 所要時間は機能有効化・再起動・ログイン・テンプレート取得に左右されるため、まだ準備完了時刻を約束しない。今回の調査は約01:00〜01:06に実施し、モデル追加0回。本比較0回、診断累計17回を維持する。公式資料は提供元の仕様であり、このPCでの動作実証とは区別する。
+
+## 子セッション隔離の既存知見との照合（2026-09-11）
+
+ユーザーが9月9〜10日のsbx検討記録の探索を指示した。masterが参照していた `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md` と最新実験記録を読まず、古いコンテナ再検討メモだけを選んで先の再調査を進めたことが見落としの原因。関連タスク「sbx内部接続障害の調査を継続」「能力試験の具体化を継続」も確認した。今回の訂正は既存成果の発見・照合であり、隔離検証プロジェクトの再開ではない。
+
+以下の参照はすべて `.worktrees/isolated-verification/` 内。未統合の知見として所在を固定する。
+
+| 既存資料 | 確認した知見・今回への影響 |
+|---|---|
+| `docs/records/experiments/2026-09-09-sbx-preflight.md` | 9月9日にWHvGetCapabilityがHRESULT=0、HypervisorPresent=1、writtenBytes=4を返した。sbx 0.42.1の署名・ハッシュ検証とユーザー導入も完了。今回のOptionalFeature=2だけで機能変更が必要とは断定できない |
+| `docs/records/experiments/2026-09-09-sbx-smoke.md` 20:21節 | ユーザーの通常PowerShellからデーモンを起動すると内部接続が成立。以後Codex側CLIからVM作成・合成ファイルとGit履歴の搬入・出力回収・停止に成功。Codexから起動したデーモンでは内部socket障害が再発していた |
+| 同smoke記録と `.tmp/sbx-socket-20260909-02/` | CPU2・memory2g・固定shell digest・workspaceなし・共有skillsなしで試験。保存済みvms-final.jsonは既存VM `iv-sbx-smoke-20260909-01` / `de1ba0ac-ebb0-4cc4-a5f6-009dffd8baae` のstopped、expected-seven.exit.txtは7、vm-policy-verified.jsonは当該VMのnetwork deny `*`。元ファイル不変とroundtrip-okの回収hashを記録 |
+| 同smoke記録の補正点 | sbx cp搬入先はroot所有でagentのGit/書き込みに問題が出た。VM内の搬入コピーだけ所有者をagentへ調整して成立。ホストのACLやglobal Git設定を変えていない |
+| `docs/records/decisions/0155-initialize-sbx-network-with-deny-all.md` | Dockerログインと全体network deny-all初期化は実施済み。再ログイン・全体policy再初期化を前提にしない。モデル通信へ必要な許可は現在の実効規則に照らして別途扱う |
+| `docs/records/experiments/2026-09-10-v3-capability-followup.md` 00:53節 | SSH転送false/source=overrideを保存し、停止・利用者による通常起動後にも反映を確認。clipboard画像読取false。既存VM同一ID/stopped。動的なSSH拒否は未実証 |
+| `docs/working/issues/flow/0136-inspection-delegation-does-not-fire-destructive-verification-row/0136-note-sbx-after-smoke-design-options.md` とADR-0157 | VM内のsudo保有・書き換え可能なGit/ログを信頼側記録と同一視しない。提案作成と、外側基準版を使う別の通信なし環境での採否用再実行を分ける方針が合意済み。今回も採点原本・管理ログを作成側へ渡さない検討に使える |
+
+未確認として残っていたものは実モデル認証・モデル通信、負荷中の強制停止、切断と自動起動の競合、その他ホスト経路など。pids128の外側強制とホストclipboard文字列書込の遮断も未確認で、別プロジェクトではCPU/メモリと外側停止、合成題材限定のclipboard例外を承認していた。この例外や過去の実機承認を今回の比較へ自動移植しない。
+
+**今回の次手の訂正**: 初期導入・Windows機能変更へ進まず、過去の成功した通常起動経路と現在の状態を、起動副作用のない読み取りで照合する。過去記録のrunning/stoppedやログイン済みを現在の状態と断定しない。デーモン停止中はsettings/ls/exec等が自動起動する可能性があるため、通常ユーザー側のdaemon statusを先に確認する。必要になった場合の通常PowerShell起動だけを利用者へ具体的に依頼し、AI内部からstart/restart/resetを代行しない。既存VM・取得イメージ・旧状態退避02/03・試験資材は保全する。
+
+今回、既存VM・デーモン・Windows設定への操作はしていない。Windows機能値と既存API/VM成功記録の差の原因も未確定。管理者操作や再起動が不要であるとの逆方向の断定もせず、変更の必要性を先に確認する。ユーザーによる見落としの指摘と訂正は作業ログ `MakeAiInstructions-2026-09-11-01` に記録した。

@@ -159,3 +159,29 @@ ADR-0173の整合確認: 仕様00〜03・実行計画・承認提示と実パケ
 証拠は `D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/control/launch-packet/` 配下の `launch-plugin-diagnostic-approved-1.json`、`plugin-diagnostic-summary.json`、`diagnostic-plugin-off-normal/` と `diagnostic-plugin-on-normal/` のevents・result・verification。詳細ログは試験作業場所のruntime-temp配下。親CLI累計13回、本比較0回。承認済み2回を使い切り、追加起動は行っていない。
 
 ADR-0174の整合検査: 比較仕様00〜03と計画を読み直し、診断は許可内の原因切り分けで、比較の8実行・各30分・合計240分・全preflight合格後に起動という基準を変えないことを確認した。規範の新設なし。診断結果を仕様02と計画へ追記し、未成立を維持。経路は未承認→起動停止、承認後→なしを1回、初回の拒否のみ→ありへ継続、内容変更・指定外操作等→後続停止、2回終了→記録・追加起動停止。各実行後の実体確認を経て結果・引き継ぎを更新するため二重起動や記録先行なし。引用照合は、過去の成功／拒否から原因を断定せず対照診断を選択したContextと案1、利用枠非消費を理由とする案2、実測とDecisionの2回限定が一致。ADRの問いは診断方法の選択1件で、指摘なし。
+
+## プラグイン指定方法と公開情報の再調査（2026-09-10）
+
+ユーザーの確認依頼により、追加モデル起動なしで公式資料・公式リポジトリのIssue・既存ログを照合した。[公式のローカル試験手順](https://code.claude.com/docs/en/plugins#test-your-plugins-locally)はプラグインごとに `--plugin-dir` を繰り返す方法を案内しており、今回の引数はこれに一致する。initの版は両方2.1.267、plugin_errorsはnull、あり側は指定した2プラグインと27スキルの読み込みを記録。形式や読み込み先の単純な誤りを示す証拠はないが、全機能正常の証明ではない。
+
+前回の結果要約で未記載だった起動フック失敗を発見した。あり側の詳細ログ14:30:00.225Zには `Hook failed to run (SessionStart:startup): EPERM: operation not permitted, mkdir 'C:\Users\d12an\.claude\session-env\e9aaa6a9-4397-406a-bd74-5163d3e81807'` がある。固定Superpowersのhooks.jsonはSessionStartフック1件を登録し、ai-driven-dev-principles側にhooksはない。Writeを判定するPreToolUseフックは登録されていない。読み込み自体は成功しても、現在のOS保護下で起動時処理は成立していなかった。これとsensitive file拒否の因果関係は未確認。通常設定や保護を変更して確かめた事実はない。
+
+[公式の保護パス仕様](https://code.claude.com/docs/en/permission-modes#protected-paths)はacceptEditsでも保護対象を自動承認せず、設定のallowルールが上書きしないことを説明する。[Issue-43001](https://github.com/anthropics/claude-code/issues/43001)には同じエラー文の利用者報告があるが、対象は.claude配下であり今回の一般txtとは異なる。Issue本文は報告者の一次観測で、提供元の原因認定として扱わない。
+
+[公式v2.1.265リリース](https://github.com/anthropics/claude-code/releases/tag/v2.1.265)にはWindowsのAppContainer・制限トークン下でRead/Write/Editが全ファイルを拒否する修正がある。ただしエラーはsymlink resolution changedで、今回のsensitive fileとは異なる。今回の2.1.267は同修正より後の版であり、単純な更新で解決すると提案する根拠にしない。公式Issueと変更履歴を検索した範囲では、プラグイン有効化だけで通常txtがsensitive fileになる同条件の報告・確定した原因は見つからなかった。
+
+次の候補はフック初期化失敗とプラグイン読み込み時のパス判定を別々に切り分けること。新たなモデル試行が必要なら、同じ保護のまま片方ずつ読み込む案や中身を最小化した試験用プラグイン案を具体化して判断する。いずれも未採用・未起動で、本比較・追加起動の承認へ読み替えない。
+
+## 起動フック失敗の静的調査（2026-09-10）
+
+ユーザーが「既存ログとコード・公式資料を調べる」方針を承認したため、その範囲を調査した。CLI・モデル・フックの新規実行はない。
+
+- 固定版Superpowersのhooks.json・run-hook.cmd・session-startは、読んだ導入済み6.3.0の同3ファイルとSHA256一致。session-startはusing-superpowers/SKILL.mdを読み、追加コンテキストのJSONを標準出力へ返す。ラッパーはbashを選んで同スクリプトを呼ぶ。session-env・CLAUDE_ENV_FILE・mkdir・permissionDecision・PreToolUseの記述はない。
+- 公式イベントのhook_responseはexit_code=1、stdout空、outcome=errorで、stderrはsession-envディレクトリ作成のEPERM。フック本文に該当処理がなく、[公式のディレクトリ説明](https://code.claude.com/docs/en/claude-directory)はsession-envをClaudeのセッション環境メタデータとする。このためClaude側のフック起動準備で失敗したと推定する。内部呼び出しの制御フロー自体を復元した事実ではない。
+- 起動パケットはread-onlyを基底とし、通常の.claudeやsession-envに書き込み許可を設けていない。CLAUDE_CONFIG_DIRは未指定、CLAUDE_CODE_TMPDIRだけを試験領域へ指定していた。実測でもsession-envは通常の.claude配下を向いており、一時ディレクトリの指定はこの保存先に効いていなかった。[公式環境変数資料](https://code.claude.com/docs/en/env-vars)もTMPDIRと設定ディレクトリの指定を区別する。
+- 成功側にも設定ロック失敗5件・設定の原子的保存失敗5件・受信用キー公開失敗1件がある。失敗側は順に5・6・1件。session-env失敗は失敗側だけで、同じ1件を詳細ログが2行に記録する。共通する設定保存失敗だけではWriteの差を説明できない。
+- [公式フック仕様](https://code.claude.com/docs/en/hooks#other-exit-codes)は終了コード1だけで通常のフックイベントをブロックしないと説明する。今回もReadは成功し、その後Writeだけがsensitive fileで拒否された。起動フックの失敗が編集全般を拒否させるという仕様や、両エラーを直接つなぐ既存ログは得られなかった。
+
+確定できるのは、試験環境の読み取り専用設定がClaudeのフック用実行時領域の作成を拒否しており、Superpowersの起動時コンテキスト出力が得られていないこと。sensitive fileの内部原因は未特定のまま。CLAUDE_CONFIG_DIRの変更は認証・設定・履歴・プラグインの参照にも関わるため、session-envだけの保存先変更として扱わない。通常.claude全体の書き込み許可や固定プラグインの改変は行っていない。
+
+次の実行検証候補は、まず公式の `--init-only`（会話を開始せずSetup/SessionStart後に終了）で起動準備を切り分ける方法。ただしローカル書き込みとフック実行を伴い、今回の静的調査には含めない。起動時処理が成立する条件を特定した後、Write拒否との関係は別の限定モデル試行で確かめる必要がある。候補の根拠は[公式Setup説明](https://code.claude.com/docs/en/hooks#setup)。今回は候補提示まで。

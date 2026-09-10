@@ -1,14 +1,16 @@
 # Handoff: AstraとSolでモデルごとのガイドラインの効果を比較する
 
 - **Branch**: master
-- **Last Updated**: 2026-09-11 07:26 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 準備完了 / 新しいセッションで8実行を逐次実施
+- **Last Updated**: 2026-09-11 07:48 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 本比較 / Astra日時2条件終了、Sol/low日時実行中
 
 ## 作業の目的・背景
 
 モデルに進め方を任せる条件と現行手順の便益・負担を比較し、過剰な指示の見直しを優先する。2026-09-11、ユーザーは環境構築の負担を理由にOpenAIモデルで検証する方針へ変更し、Astraだけへの縮小を訂正してSolとの2モデル比較を指示した（ADR-0180）。既存の2題材・固定検査を再利用し、日時の対比較から始める。Claudeと今回比較のためのsbx整備は保留。他モデルへの一般化と共通指示の一括削減は行わない。
 ## 関連ドキュメント
+
+- 本比較の実行記録: docs/records/experiments/2026-09-11-openai-comparison-execution.md。Sol/lowへの変更はADR-0181。
 
 - 現在の起動手順と証拠: docs/records/experiments/2026-09-11-openai-comparison-preparation-complete.md。以下の過去診断の次手は本比較の次手にしない。
 
@@ -49,13 +51,13 @@
 
 ## 進行中のタスク
 
-- **現在の作業**: 準備完了。本比較は0回。最新のユーザー指示は「新しいセッションで検証」「利用上限が近いため8実行を順番に実施」。今回は引き継ぎだけを行い、起動許可falseを維持する。
+- **現在の作業**: 2026-09-11「引き継ぎに従って検証を開始してください」により起動許可を記録。Astra日時2条件は固定7検査・既存23テスト合格。Solは追加指示でlowに変更し、sol-bug-discretionは固定検査合格、sol-bug-guidelineを実行中。詳細は実行記録。最新利用枠は83%使用済み。
 - **実行順序と利用枠**: 仕様02の8実行を必ず1件ずつ開始する。前の実行の親子停止・結果回収を確認してから次へ進み、一斉起動・比較実行同士の並列化は禁止。小機能は同じ1実行のfirst→resumeを終えてから次の実行へ進む。
 - 開始前と各実行後に取得可能な利用状況・警告を確認する。利用枠到達や続行困難が判明したら次を起動せず、完了分・中断位置・残時間・次のrun_idを保存する。利用量不明を残量十分と解釈せず、追加購入・リセット・別モデル代替はしない。
-- 実行対象: Astra/mediumとSol/medium、2題材・2条件・8実行、各30分・計240分。小機能は新規セッション再開を含むため起動段階は12。
+- 実行対象: Astra/mediumとSol/low（ADR-0181）、2題材・2条件・8実行、各30分・計240分。小機能は新規セッション再開を含むため起動段階は12。
 - 準備の正本: `docs/records/experiments/2026-09-11-openai-comparison-preparation-complete.md`。8確認項目pass、両モデルの親子実起動、8コピーの入力分離、採点の正負対照、外側停止・部分利用量回収を確認済み。
-- 起動資料: 試験ルートの `control/launch-packet/openai-comparison-20260911.json` と `control/runtime/`。`control/preflight.json` はready_for_comparison=true、launch_approved=false。古いAstra単独・Claude診断パケットを実行しない。
-- 残り: 今回の新セッション実施指示を引き継ぎ、次セッションでAstra日時のモデル裁量1件から開始する。最初の対比較の成立を照合してからSol日時と両モデルの小機能へ。実行開始前の状態照合は行うが、同じ方針への許可を取り直さない。
+- 起動資料: 試験ルートの `control/launch-packet/openai-comparison-20260911.json` と `control/runtime/`。`control/preflight.json` はready_for_comparison=true、launch_approved=true。古いAstra単独・Claude診断パケットを実行しない。
+- 残り: 最初のAstra対比較は成立。Sol/low日時と両モデルの小機能を順に実施する。実行開始前の状態照合は行うが、同じ方針への許可を取り直さない。
 - 判断の分担: 仕様00とADR-0180。入力・記録・起動詳細化は委任範囲内。保護縮小・通常設定変更・追加課金・モデル変更・外部公開は含まない。Claudeとsbx整備、Issue-0136は保留を維持。
 ## 未着手のタスク
 
@@ -88,6 +90,12 @@
 - `.worktrees/issue-0124-cost-comparison`とブランチは統合済み。未追跡のレビュー証跡のため保持。最新の完了状態はmaster側handoffを正とする。
 
 ## 節目ごとの確認記録
+
+- 2026-09-11 Sol/low実起動確認・ADR-0181 Accepted 昇格: ADR=0181 / worklog=棄却（ユーザー指定の設定変更と既存の実モデル照合） / cyclecheck=実施（指摘なし）
+
+- 2026-09-11 Astra日時対比較成立・Sol/low変更反映: ADR=0181（ユーザー個別指示） / worklog=MakeAiInstructions-2026-09-11-05
+
+- 2026-09-11 本比較開始: ADR=なし（ADR-0180の実行指示を適用） / worklog=棄却（既存の固定入力照合・逐次起動手順を適用）
 
 - 2026-09-11 新セッション向け引き継ぎ確定: ADR=なし（仕様02の逐次実行を再確認） / worklog=棄却（既存の逐次実行・利用枠停止・引き継ぎ手順を適用）
 
@@ -142,9 +150,9 @@
 
 ## 次セッション開始時のアクション
 
-1. 本handoff、`docs/records/experiments/2026-09-11-openai-comparison-preparation-complete.md`、試験ルートのcontrol/preflight.json・budget.jsonを読む。準備完了、本比較0回。利用上限が近いとのユーザー申告あり。
-2. 今回の新セッション実施指示に基づき利用状況・固定入力を確認し、起動許可を反映してcodex-bug-discretionを1件だけ開始する。仕様02の順に停止・回収を確認しながら進める。8実行の一斉開始は禁止。
-3. 枠到達・続行困難なら次を起動せず、完了分と次のrun_id・再開段階・残時間を保存する。原本・他worktree・stash・未追跡資料を保全し、Claude・sbx整備や成功済み準備を繰り返さない。
+1. 本handoffと`docs/records/experiments/2026-09-11-openai-comparison-execution.md`、試験管理側のrun.json・budget.jsonを読む。Astra日時2条件とSol/low裁量は採点合格。実行中の状態を実体で確認し、重複起動しない。
+2. sol-bug-guidelineの停止・回収・採点後、codex-feature-guideline-firstから仕様02順に逐次実施する。小機能はfirst→resumeの停止・保存を確認して同一30分枠を引き継ぐ。Astra/medium、Sol/low（ADR-0181）。
+3. 各実行後に利用枠を確認。枠到達・続行困難なら次を起動せず、次run_id・段階・残時間を保存する。固定資材と原本・他worktree・未追跡資料を保全し、Claude・sbx整備へ移行しない。
 ## 重要な意思決定の履歴
 
 - ADR-0180: 初期比較をAstraとSolへ変更しClaudeの環境整備を保留（2026-09-11、ユーザーの個別指示）。

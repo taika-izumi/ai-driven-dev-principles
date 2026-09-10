@@ -1,0 +1,30 @@
+{
+  "date": "2026-09-10",
+  "purpose": "ユーザー依頼に基づく0.1.26のpushとこのPCのCodexへの導入",
+  "repository": "https://github.com/taika-izumi/ai-driven-dev-principles.git",
+  "branch": "master",
+  "publishedCommit": "f5229a836156e9a502f2fbde5a5ffddcb2509256",
+  "previousPublishedVersion": "0.1.25",
+  "version": "0.1.26",
+  "codexVersion": "0.153.4",
+  "pluginId": "ai-driven-dev-principles@ai-driven-dev-principles",
+  "installed": true,
+  "enabled": true,
+  "installedPath": "C:/Users/d12an/.codex/plugins/cache/ai-driven-dev-principles/ai-driven-dev-principles/0.1.26",
+  "skillFilesCompared": 38,
+  "installedSkillFileCount": 38,
+  "hashMismatches": 0,
+  "updateMethod": "codex plugin marketplace upgrade ai-driven-dev-principles --json; codex plugin add ai-driven-dev-principles@ai-driven-dev-principles --json",
+  "verification": [
+    "公開前のbuild-dist.ps1 -Checkとsync-template.ps1 -Checkに合格",
+    "GitHub側のmasterをls-remoteで読み直し公開コミットと一致",
+    "plugin listで0.1.26・installed true・enabled trueを確認",
+    "導入先のスキル38ファイルをdist/skillsと照合し件数・SHA256が一致"
+  ],
+  "processOnlyAdjustment": "前回の長いパスによる失敗を踏まえ、更新・導入プロセスへGIT_CONFIG_COUNT/KEY/VALUEでcore.longpaths=trueを追加。恒久Git設定は変更していない。",
+  "limitations": [
+    "開始済みの本タスクへ新しいスキル一覧が再注入されたことは未確認。次のタスクで導入版の利用開始を確認する。",
+    "他PC・他ツールの導入は実施していない。",
+    "別件の未コミット変更はpush対象に含めていない。"
+  ]
+}

@@ -162,3 +162,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0168](0168-compare-two-models-on-process-trace-tasks.md) | 初期比較はログ解析の2題材を代表2モデルで段階実行する | Accepted | 2026-09-10 |
 | [0169](0169-resume-essential-comparison-preparation-with-progress.md) | 比較準備の残作業は必要性と進捗を条件に次セッションで継続する | Accepted | 2026-09-10 |
 | [0170](0170-verify-installed-codex-plugin-content-for-comparison.md) | 比較用Codexプラグインは内容一致を条件に導入済みキャッシュから読む | Accepted | 2026-09-10 |
+| [0171](0171-copy-test-dependencies-for-protected-comparison.md) | 保護下の比較で使う検査依存を試験専用フォルダへコピーする | Accepted | 2026-09-10 |

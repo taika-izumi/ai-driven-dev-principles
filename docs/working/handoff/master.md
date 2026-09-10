@@ -1,9 +1,9 @@
 # Handoff: モデル裁量と既存手順の比較準備
 
 - **Branch**: master
-- **Last Updated**: 2026-09-10 20:00 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: Task 4 / 事前確認実施済み・移行条件未達、編集許可設定の変更案への判断待ち
+- **Last Updated**: 2026-09-10 20:26 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: ユーザー指示による保留 / 明示的な再開依頼まで追加準備・モデル起動を行わない
 
 ## 作業の目的・背景
 
@@ -13,9 +13,7 @@
 
 - 事前確認結果: docs/records/experiments/2026-09-10-model-discretion-preflight-results.md。未適用の編集モード案はcontrol/launch-packet/launch-edit-permission-candidate.json。
 
-
-- 起動操作: docs/records/experiments/2026-09-10-model-discretion-preflight-launch.md。引数・依頼文はcontrol/launch-packet/launch.jsonと関連ファイル。起動承認待ち。
-
+- 起動操作: docs/records/experiments/2026-09-10-model-discretion-preflight-launch.md。引数・依頼文はcontrol/launch-packet/launch.jsonと関連ファイル。事前確認は実施済み・現在保留。
 
 - 比較準備: `docs/reference/model-discretion-comparison-preparation.md`。CLI・認証・日時処理の再現。利用方式と比較設計はADR-0167・0168（Accepted）。
 - 確定した比較仕様: `docs/current/specs/2026-09-10-model-discretion-comparison/00-overview.md` と3ブロック。実行計画: `docs/working/plans/2026-09-10-model-discretion-comparison.md`（ユーザーが追加レビューを見送り確定済み）。
@@ -36,7 +34,6 @@
 
 - [x] Task 1の非モデル準備を完了（2026-09-10）。ADR-0171の依存別配置と保護・既存テストを検証し、起動資料を作成。実モデルの検証はTask 4へ。
 
-
 過去サイクルは `docs/records/retrospectives/` とgit履歴を参照。
 
 - [x] モデル裁量との比較案をロードマップへ反映し、関連ADR・リンク・配布同期を自己確認（2026-09-10）。ロードマップ・関連ADR・本ファイルを終了時コミットに保存。
@@ -45,8 +42,9 @@
 
 ## 進行中のタスク
 
-- ADR-0170・0171は採用反映済み。Task 1の非モデル準備完了。依存630ファイルの別配置、4条件の既存23テスト成功と書き込み拒否を確認。事前確認は通常4条件・補正2回・停止4条件を実施済み。Claude既存手順の親子Write拒否などで移行条件未達。本比較は未承認・未実施。
+- 2026-09-10、ユーザーが「いったん保留する」に「1で」と回答。現在の状態は保留。過去の継続許可や事前確認の起動承認を、自動再開の根拠にしない。設定変更案は未適用、本比較は0件のまま。
 
+- ADR-0170・0171は採用反映済み。Task 1の非モデル準備完了。依存630ファイルの別配置、4条件の既存23テスト成功と書き込み拒否を確認。事前確認は通常4条件・補正2回・停止4条件を実施済み。Claude既存手順の親子Write拒否などで移行条件未達。本比較は未承認・未実施。
 
 - 2026-09-10、ユーザーが「1で」と比較実行案の具体化からの再開を選択。既存方針の再承認は不要。実験起動・設定変更・公開は未承認。
 - 状態: 親CLI10回を実行し追加起動は停止済み。実行プロセス群は終了。結果はdocs/records/experiments/2026-09-10-model-discretion-preflight-results.mdとcontrol/launch-packet/summary.json。
@@ -60,16 +58,14 @@
 ## 未着手のタスク
 
 - 他PC・他ツールへの0.1.26導入は依頼時に実施。
-- 次はTask 4の事前確認への起動承認に従って進む。Task 2・3を重ねて作成しない。Issue-0141・0142・0139は未対処。Issue-0135は目安10KB超過（前回17.1KB）で、触る際のフォルダ昇格の提案対象。
+- Task 4の続行は明示的な再開依頼があるまで保留する。Task 2・3を重ねて作成しない。Issue-0141・0142・0139は未対処。Issue-0135は目安10KB超過（前回17.1KB）で、触る際のフォルダ昇格の提案対象。
 - Issue-0136の残る未確認（別OS・版、外向き・状態変更系ツール、子だけへの固定検査公開）は同Issueと専用worktreeを参照。通信・機密性・リンク・両主担当からの実起動の成立は未確認。
 
 ## 既知のブロッカー・懸念
 
 - Claude既存手順は親子のWriteがdontAskで拒否。子の旧版参照は登録情報の探索であり実ロード未確認。acceptEditsへの変更案は未適用。Codex裁量の保護先試行と補正後の実モデル入力も未確認。結果資料を参照。
 
-
 - 元.venvの拒否は解除していない。ADR-0171の別配置とPython本体の明示readで試験経路は解消。公式サンドボックスのACL適用と手動ACL編集の不実施を区別する。詳細は準備記録。
-
 
 - 隔離検証の既存資料照合・Git対照試験を、通信拒否や実環境の保護成立へ読み替えない。再開時は専用worktreeの再利用検討ノートを読む。
 - Claude標準の子の制限・検索範囲の実測は `docs/records/retrospectives/system/2026-09-09-claude-native-subagent-interactive.md` とIssue-0136を参照。過去のレビュー経路は同記録を参照。
@@ -85,17 +81,15 @@
 
 ## 節目ごとの確認記録
 
-- 2026-09-10 事前確認実施・ADR-0172 Accepted 昇格: ADR=0172 / worklog=MakeAiInstructions-2026-09-10-03 / cyclecheck=実施（指摘なし）
+- 2026-09-10 ユーザー指示で保留・引き継ぎ確定: ADR=なし（作業状態の保留のみ） / worklog=棄却（追加deltaなし）
 
+- 2026-09-10 事前確認実施・ADR-0172 Accepted 昇格: ADR=0172 / worklog=MakeAiInstructions-2026-09-10-03 / cyclecheck=実施（指摘なし）
 
 - 2026-09-10 Task 1非モデル準備完了・ADR-0171 Accepted 昇格: ADR=0171 / worklog=棄却（既存の実体照合・原因調査を適用） / cyclecheck=実施（指摘なし）
 
-
 - 2026-09-10 ADR-0170 Accepted 昇格・起動候補検証: ADR=0170 / worklog=棄却（既存の実体照合・原因調査を適用） / cyclecheck=実施（指摘なし）
 
-
 - 2026-09-10 読み込み元候補の照合: ADR=0170（Proposed） / worklog=棄却（既存の実体照合・承認境界の適用）
-
 
 - 2026-09-10 条件付き継続許可の反映・ADR-0169 Accepted 昇格・終了引き継ぎ: ADR=0169 / worklog=棄却（既存の必要性・進捗確認を適用） / cyclecheck=実施（指摘なし）。時間の扱いを仕様・計画・引き継ぎへ反映し、比較本体の制約は維持。タイトルと本文は残準備の継続条件という単一の決定に対応する。
 - 同検査の経路: 必要な残件は既存記録を読んで次回続行し、実施後に進捗を記録。新しい証拠が増えない反復は停止して原因を報告。比較起動はTask 4で確認・承認後。セッション終了はpausedを維持。各経路の条件はADR-0169・仕様02・計画・本引き継ぎで一致し、再承認の二重要求は設けない。
@@ -114,7 +108,7 @@
 
 ## 次セッション開始時のアクション
 
-1. 事前確認結果の「次の提案」とユーザー回答から続ける。Claude親子のacceptEdits案は未承認。固定版の子継承はSkill実応答で確認する。成功済み検査の全面再実行をしない。本比較は未承認。保存済み時間は下限値として保持。
+1. この比較はユーザーが明示的に保留した。再開依頼がなければ追加の準備・検証・モデル起動をしない。再開依頼時はdocs/records/experiments/2026-09-10-model-discretion-preflight-results.mdの未成立点と未適用案から確認する。
 2. Issue-0140・0124の実装・レビュー・マージ・振り返り、0.1.26の公開とこのPCのCodex導入は完了済み。重ねて実施しない。
 3. 隔離検証は明示再開時のみ専用worktreeへ進む。未コミット変更・stash・レビュー証跡を保全する。
 
@@ -122,12 +116,9 @@
 
 - ADR-0172: Codexの共通補助スキルを明示（Accepted、2026-09-10、起動詳細化の委任範囲内）。
 
-
 - ADR-0171: 検査依存を試験専用フォルダへコピー（Accepted、2026-09-10、ユーザーの個別承認）。
 
-
 - ADR-0170: Codexの導入済みキャッシュを内容一致条件で使用（Accepted、2026-09-10、ユーザーの個別承認）。
-
 
 - ADR-0169: 比較準備の残作業を必要性と進捗を条件に次セッションで継続する（2026-09-10、ユーザーの明示許可）。ADR-0168の準備時間による停止の扱いを部分修正。
 - ADR-0168: ログ解析2題材・代表2モデルでの段階比較（Accepted、2026-09-10）。

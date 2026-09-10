@@ -1,6 +1,6 @@
 # ADR-0165: レビュー指摘の費用比較は既存の採否手順と対応表に組み込み、自動検査は最終手段とする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-10
 
 ## Context

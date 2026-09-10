@@ -39,6 +39,8 @@
 
 ## 関連資料
 
+- [完了時の振り返り](../../../records/retrospectives/system/2026-09-10-issue-0124-cost-comparison.md) — master統合、新規起票なし、外部送信承認の再確認を作業ログへ記録。
+
 - [採否手順の具体化と検証](../../plans/2026-09-10-issue-0124-cost-comparison.md) — 4判断例と配布検査。実装レビューと全体整合検査は[確認記録](../../../records/reviews/2026-09-10-issue-0124-implementation.md)。
 
 - [実装計画と検証結果](../../plans/2026-09-05-review-judgment-and-cost-evaluation.md) — 判断例・実装レビュー・全体整合検査と限界

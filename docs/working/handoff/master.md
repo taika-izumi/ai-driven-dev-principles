@@ -1,15 +1,17 @@
 # Handoff: モデル裁量と既存手順の比較準備
 
 - **Branch**: master
-- **Last Updated**: 2026-09-11 00:59 (Asia/Tokyo)
+- **Last Updated**: 2026-09-11 01:07 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 通常ユーザー権限の対照診断成功 / 本比較の保護方法は未確定
+- **Current Phase**: 実行方法の調査 / Docker Sandboxes候補とWindows機能変更の判断待ち
 
 ## 作業の目的・背景
 
 ユーザーの依頼に基づき、独自手順を詳細化する前にモデルに進め方を任せる比較をロードマップへ反映した。比較条件・代表2モデル・2題材・採点・結果による進路は同文書4.0節が正本。実験は未実施。Issue-0140・0124と0.1.26公開・このPCへの導入は完了済みで、運用効果は未評価。
 
 ## 関連ドキュメント
+
+- 実行方法の候補と導入負担: `docs/records/experiments/2026-09-11-model-discretion-execution-options.md`。Docker Sandboxes 0.42.1導入済み、HypervisorPlatform無効。候補未採用、VM/モデル未起動。
 
 - 事前確認結果: docs/records/experiments/2026-09-10-model-discretion-preflight-results.md。最新は起動経路補正後のWrite確認結果。古い候補や承認済みパケットを再実行しない。
 
@@ -42,7 +44,7 @@
 
 ## 進行中のタスク
 
-- 最新指示（2026-09-11）: 通常ユーザー権限の診断1回に「１で」と個別承認。ADR-0179として実施しRead/Write成功。追加起動なし。詳細は事前確認結果の「通常ユーザー権限での対照診断結果」。
+- 最新指示（2026-09-11）: 通常起動成功後の「OKです。進めてください」に基づき実行方法を調査。Docker Sandboxesを推奨候補として具体化。Windows機能変更・ログインを伴うため判断待ち。候補は実行方法の調査記録を参照。
 - 最新到達点: 外側sandbox付きでは拒否、通常ユーザー権限では固定プラグイン2件込みで成功。元の実行制約との相互作用が候補。settings.json・対象・固定プラグイン・保護マーカーは不変、.claude.jsonは9項目で変化。親と捕捉子孫は終了。
 - 残件: Claudeの編集成立と本比較の保護を両立する実行方法、Codexモデル裁量の保護先試行、補正後Codex一覧の実モデル確認、停止時の部分利用量回収。control/preflight.jsonはready_for_comparison=false。通常起動成功だけで比較開始しない。
 - 状態: モデル診断の親CLI累計17回、init-only3回、本比較0回。Windows起動前失敗2回は別計数。最新証拠はcontrol/launch-packet/diagnostic-normal-user-20260911/verification.json。controlの状態・予算を更新済み。
@@ -57,6 +59,8 @@
 - Issue-0136の残る未確認（別OS・版、外向き・状態変更系ツール、子だけへの固定検査公開）は同Issueと専用worktreeを参照。通信・機密性・リンク・両主担当からの実起動の成立は未確認。
 
 ## 既知のブロッカー・懸念
+
+- sbx 0.42.1はPATH外の既定場所に導入済みだが、HypervisorPlatformは無効。利用には管理者による機能有効化と必要に応じた再起動・ログインを伴う。具体的な候補と未確認は実行方法の調査記録を参照。変更未実施。
 
 - ADR-0179の通常起動で.claude.jsonの9項目が変化し、指定session-envが作成された。値の転記・自動復元なし。詳細は事前確認結果の最終節。通常領域全体の不変や本比較の保護成立とは扱わない。
 
@@ -78,6 +82,8 @@
 - `.worktrees/issue-0124-cost-comparison`とブランチは統合済み。未追跡のレビュー証跡のため保持。最新の完了状態はmaster側handoffを正とする。
 
 ## 節目ごとの確認記録
+
+- 2026-09-11 編集と原本保護を両立する実行方法の調査: ADR=なし（未採用候補の比較・具体化） / worklog=棄却（既存の前提調査・公式資料照合・導入負担提示を適用）
 
 - 2026-09-11 通常ユーザー権限の対照診断完了・ADR-0179 Accepted 昇格: ADR=0179 / worklog=棄却（既存の対照・実体照合・影響範囲確認を適用） / cyclecheck=実施（指摘なし）
 
@@ -146,8 +152,8 @@
 
 ## 次セッション開始時のアクション
 
-1. 事前確認結果の「通常ユーザー権限での対照診断結果」とADR-0179を読む。通常起動はRead/Write成功、同条件の再実行は不要。
-2. 本比較の保護を維持できる実行方法を検討する。通常起動では.claude.jsonが更新されるため、そのまま採用しない。追加起動・保護変更・本比較は未承認。最新証拠はcontrol/launch-packet/diagnostic-normal-user-20260911/verification.json。
+1. docs/records/experiments/2026-09-11-model-discretion-execution-options.mdと直近のユーザー回答を読む。sbx候補・Windows機能変更の判断待ち。未採用のまま有効化・再起動・VM作成を行わない。
+2. 採用された場合はHypervisorPlatformの状態と再起動要否を確認する。sbxはC:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe。通常起動成功の診断は繰り返さず、共有なし・固定条件・認証・通信の成立を段階的に確認する。
 3. 本比較・非公開コード送信・通常設定変更は未承認。時間下限値・未追跡証跡・stash・試験資材を保持する。中断中の隔離検証は再開対象外。
 
 ## 重要な意思決定の履歴

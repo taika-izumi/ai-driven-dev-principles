@@ -167,3 +167,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0173](0173-use-accept-edits-for-claude-preflight.md) | Claudeの限定事前確認で親子の編集モードをacceptEditsにする | Accepted | 2026-09-10 |
 | [0174](0174-diagnose-claude-plugin-write-permission.md) | Claudeの編集拒否を同じ作業場所でプラグイン有無の2回診断により切り分ける | Accepted | 2026-09-10 |
 | [0175](0175-isolate-init-only-runtime-state.md) | フック起動準備は通信を禁止した試験専用設定領域で確認する | Accepted | 2026-09-10 |
+| [0176](0176-permit-single-session-runtime-directory.md) | 通常認証を保つ起動確認では指定セッションの実行時領域だけを書き込み可能にする | Accepted | 2026-09-11 |

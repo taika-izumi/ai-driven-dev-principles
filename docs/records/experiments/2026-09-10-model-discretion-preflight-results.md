@@ -197,3 +197,23 @@ ADR-0174の整合検査: 比較仕様00〜03と計画を読み直し、診断は
 証拠は元試験作業場所のruntime-temp/init-only-1配下のlaunch.json・result.json・verification.json・cli.debug.txt・plugins-before/after.json。再実行用スクリプトは `.tmp/model-discretion-execution/run-init-only.ps1` だが、既存の保存先では停止し自動再試行しない。モデル診断の親CLI13回、本比較0回、init-only1回として別計数し、測定できた実行区間だけをbudgetへ加算した。
 
 ADR-0175確定確認: 通常設定の保護・認証コピーなし・1回限定・モデル送信なしという承認対象と実体が一致。既存仕様00の本比較8実行・各30分・合計240分と認証条件を変更せず、起動準備だけの別診断として結果を保存した。新規規範はなく、前回整合確認後の変更は診断詳細と記録。未作成先→1回起動→60秒で停止または正常終了→実体照合→結果保存、既存先・エラー→追加停止の経路で二重起動を防ぐ。静的調査のフック失敗を仮説の根拠として引用し、成功予測やWrite解消の証拠にはしていない。通常領域へ許可する別案を採らず、タイトルと決定は試験設定領域の選択1件に一致。指摘なし。
+
+## 認証先の照合と通常認証を保つinit-only候補（2026-09-11）
+
+ユーザーの継続指示に基づき、通信禁止の保護下でauth statusだけを2条件で確認した。通常設定先はloggedIn=true・claude.ai・Max、空の試験設定先はloggedIn=false・none。メール・組織ID・トークンは転記せず `.tmp/model-discretion-execution/auth-location-check.json` へ必要な項目だけ保存。[公式認証資料](https://code.claude.com/docs/en/authentication)のとおり、WindowsでCLAUDE_CONFIG_DIRを変更すると.credentials.jsonの参照先も変わる。認証情報をコピーしない空設定のままでは、既存認証の再利用は成立していない。
+
+候補は通常の認証先を維持し、`C:/Users/d12an/.claude/session-env/298b62c9-3d37-48aa-8a04-420b5d049e60` の1セッション領域だけを試験プロセスでwriteにするinit-only1回。通常設定・認証ファイルのread-onlyとネットワーク禁止は維持。モデルへの依頼なし、最大60秒で停止、失敗時の追加起動なし。指定先は未作成、親ディレクトリはリンクでないことを確認済み。起動時も既存なら停止する。
+
+実行候補は `.tmp/model-discretion-execution/run-init-only-normal-auth-candidate.ps1`、引数・保護候補は同所のinit-only-normal-auth-candidate.json。構文確認済みで、起動承認フラグはfalse。結果保存先は試験作業場所のruntime-temp/init-only-normal-auth-1。通常領域の許可範囲を拡大するため既存仕様の相談事項に該当し、今回の継続指示だけでは実行せず採否を提示する。作成物は保持、設定ファイル・認証の移動やリンク作成はしない。成功してもモデルWriteの成立は別確認。
+
+## 通常認証先での起動準備の結果と残件（2026-09-11）
+
+ユーザーは提示した限定検証に「OKです。検証準備段階をこのままやり切ってしまいましょう。」と回答した（ADR-0176）。初回init-only-normal-auth-1は終了0だったが、指定session-envのmkdirがEPERMとなりフック出力なし。未作成先へのwrite指定だけでは成立しなかった。失敗を保存し、同じ許可範囲内のディレクトリを管理側で先に作成してから、別保存先init-only-normal-auth-precreated-2で確認した。
+
+補正後はフックエラー0件、追加コンテキスト3321文字の出力成功、API要求ログ0件、固定プラグイン前後照合成功、通常設定・保護マーカー・対象txtのハッシュ不変。通信禁止と通常認証先を維持したまま起動準備が成立した。起動前に存在しなかった指定セッション領域が残る。新しい許可先は追加せず、既存のACLを手動編集していない。init-only合計3回、モデル診断の親CLI13回、本比較0回。
+
+control/preflight.jsonの古い記述を最新証拠と照合し、更新前をcontrol/preflight-before-reconcile-20260911.jsonへ保全。Claude子の固定コピー読み込みは確認済みへ記述を訂正した。ready_for_comparison=falseは維持。残件は起動準備改善後のClaude親子Write、Codexモデル裁量の保護先試行、補正後Codex一覧の実モデル確認、停止時の部分回収の扱い。初期集約summary.jsonは過去の10回分の記録として保全。
+
+次のモデル診断候補は `.tmp/model-discretion-execution/launch-runtime-ready-write-candidate.json`。Opus 5/high、親CLI1回・子なし、Read1回と同じ無害文字列のWrite1回。既存プラグインあり診断の引数へ、確認済みsession-env許可とsession-idを追加し、ログ先だけ分離。元のOS保護と送信範囲（公開指示・公開手順・無害文字列と操作結果）を維持し、認証・設定をコピーしない。概算1分、既存Max枠を使用。新規保存先はdiagnostic-plugin-on-runtime-ready-normal、対象ハッシュは不変と確認済み。起動フラグfalseで、追加のモデル起動は未実施・個別判断待ち。成功しても親子全体の成立とはせず、残件へ必要な確認だけ進む。
+
+ADR-0176の確定確認: 比較仕様の通常認証・コピーなし・保護維持という条件と、指定した実行時領域1件だけの追加が一致。初回失敗から管理側の事前作成へ補正した理由と追加1回を記録し、無変更の反復と区別。モデルを起動しない準備と、次のモデル送信を分離し、既存先は停止・初回結果は保全・補正後の実体を確認して記録する経路で二重実行なし。既存仕様のモデル・題材・8実行・各30分・計240分は変更なし、新規規範なし。タイトルは通常認証を保つ実行時領域の選択1件に対応し、指摘なし。

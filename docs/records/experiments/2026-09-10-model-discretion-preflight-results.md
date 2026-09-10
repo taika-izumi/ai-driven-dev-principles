@@ -283,3 +283,29 @@ initのモデルは両方Opus 5[1m]、acceptEdits、指定plugin1件。highは�
 control/preflight.jsonとbudget.jsonは診断終了状態へ更新し、更新前を同control内の*-before-single-plugin-20260911.jsonへ保全。ready_for_comparison=falseを維持した。未確認のCodex条件と停止時の部分回収を今回の結果で合格へ変えていない。
 
 ADR-0178の確定確認: 仕様00〜03の固定モデル・題材・8実行・各30分・計240分と本比較の全項目pass条件を維持し、診断2回を比較の8実行へ混ぜていない。新規規範なし。起動前照合→1回目→通常設定・保護・終了確認→2回目→集約の経路を実施し、既存先・起動失敗・保護変化・指定外操作・終了不明は後続停止、通常Write拒否のみ次条件へ進む。引用したフック成功・Write拒否は候補の根拠であり解消予測にはしていない。Contextの個別承認と案1・Decisionが一致し、案2の保留は不採用。タイトルと本文は個別読み込み診断1件に対応する。
+
+## 通常ユーザー権限での対照診断の具体化（2026-09-11）
+
+ユーザーが通常起動との対照確認の具体化を選択したため、ADR-0179の候補を作成した。起動設定・依頼・同一コードの中継・準備確認は `.tmp/model-discretion-execution/normal-user-diagnostic-20260911/`。launch-candidate.jsonはlaunch_approved=false。モデル未起動、累計16回・本比較0回を維持する。
+
+同じCLI・モデル・固定プラグイン2件・ツール・依頼・対象を保持し、外側のcodex sandboxを起動せず、通常ユーザー権限で同じPython中継を動かす案。新規セッションIDはdfa7b7be-01f4-4300-846f-925876107659。ログ・結果・中継の配置も分離する。対象ハッシュ一致、依頼文・中継コード一致、セッション先と結果先が未作成であることを読み直した。
+
+[公式CLI資料](https://code.claude.com/docs/en/cli-reference)でtoolsとallowedToolsの区別、[公式権限資料](https://code.claude.com/docs/en/permission-modes)でacceptEditsの保護パス判定を確認。提供元の仕様説明として参照し、今回の実装の成功を保証するものではない。前回の試験専用OS deny/read-only/writeプロファイルはこの案では適用しない。Claudeの通常実行時保存により.claude.jsonや.claude/session-env・sessions等へ書き込みが起こり得る。この保護差分を実行前に提示し、従来の起動承認を流用しない。
+
+承認後の操作はAIが行い、利用者の端末操作やインストールは不要。Opus 5/high・子なし・1回、無害txtのRead/同内容Write各1回。最大60秒、追加起動なし。通常設定2ファイルのハッシュ差と対象・固定プラグイン・保護マーカー・プロセス終了を確認し、設定を勝手に復元しない。成功なら元の実行制約との相互作用が候補、拒否なら外側sandboxだけを原因とする仮説を支持しない。いずれも本比較を自動起動しない。モデル送信とMax枠消費は未実施。
+
+## 通常ユーザー権限での対照診断結果（2026-09-11）
+
+ユーザーがOS保護差分・通常領域の実行時保存・送信・Max枠消費を明示した「この条件で1回実行する」に「１で」と回答し、ADR-0179の1回を実施した。起動前whoamiはspring/d12an。codex sandboxを経由せず、前回と同じコードのPython中継から同じClaude引数を渡した。依頼本文・対象ハッシュを照合し、session-id・記録先・中継配置だけを新規にした。
+
+結果は24.1041116秒、終了0。initはOpus 5[1m]、acceptEdits、固定ai-driven-dev-principles 0.1.26とsuperpowers 6.3.0の2件。Superpowersフック成功。Read1回・同内容Write1回とも成功し、permission_denialsは空、子0。highは指定値で独立観測ではない。親と捕捉子孫は終了、対象txt・固定プラグイン・保護マーカーは不変。cwd内の既存ファイルの変化はruntime-temp/latestだけで、新規debugログを記録した。
+
+通常.claude/settings.jsonは不変。.claude.jsonはハッシュが変化し、トップレベルのcachedExperimentData、clientDataCacheSlots、groveConfigCache、oauthAccount、additionalModelOptionsAnsweredAt、pluginUsage、cachedGrowthBookFeaturesAt、passesEligibilityCache、cachedGrowthBookFeaturesの9項目で差を確認した。値は転記せずフィールド別ハッシュで照合した。各項目の意味的な差分や他セッションとの因果分離は未検証。指定session-env（dfa7b7be-01f4-4300-846f-925876107659）の作成を確認し保持した。通常領域全体の完全な変更検査ではない。設定の自動復元は行わない。
+
+このCLI条件は通常ユーザー権限で成立する一方、外側sandbox付きでは拒否される。元の実行制約・実行ユーザー・アクセス可能範囲等との相互作用が示唆されるが、特定のACLや内部判定が原因と断定しない。今回の保護マーカー不変は書き込み拒否能力の証明ではなく、通常起動をそのまま本比較へ採用する根拠にはしない。本比較の書き込み境界はfail、ready_for_comparison=falseを維持する。
+
+証拠はcontrol/launch-packet/diagnostic-normal-user-20260911のevents・result・verification、承認パケットはnormal-user-approved-20260911.json。設定の比較用ハッシュは本リポジトリ.tmp/model-discretion-execution/normal-user-diagnostic-20260911/settings-before.json。準備時のJSON解析は大文字小文字違いのキーで失敗し、読み取り側をAsHashtableへ補正して続行した。設定実体は補正していない。モデルは承認どおり1回だけ。
+
+Opus利用量は入力6、キャッシュ作成507、キャッシュ読取27714、出力964。価格表換算0.043057 USDは実請求額ではない。モデル診断累計17回、本比較0回。budgetへ24.1041116秒を加算し、準備時間13193.9186544秒は未計測区間を含まない下限。controlの更新前は*-before-normal-user-20260911.jsonに保全済み。追加起動なし。
+
+ADR-0179確定確認: 前回整合確認以後の差分は通常権限の限定診断・承認・記録のみ。仕様00〜03のモデル・題材・本比較8回・各30分・計240分・保護成立条件は変更なし。通常領域への影響は本比較の例外へ一般化せず、個別診断に限定する。新規規範なし。未作成先と入力の一致→承認パケット保存→1回起動→正常終了または60秒停止→実体・設定差分確認→記録の経路と、既存先・不一致・追加操作・終了不明時の停止を維持した。Contextの個別承認はDecisionの1回と一致し、通常起動成功を本比較成功へ引き写していない。タイトルと本文の決定は通常ユーザー権限の対照1件で、指摘なし。

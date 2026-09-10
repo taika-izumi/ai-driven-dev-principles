@@ -1,9 +1,9 @@
-# Handoff: モデル裁量との比較を先行するロードマップ改訂
+# Handoff: モデル裁量と既存手順の比較準備
 
 - **Branch**: master
-- **Last Updated**: 2026-09-10 11:24 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 最終自己点検・ロードマップの比較先行方針確定済み / 次セッションで比較実行案の具体化
+- **Last Updated**: 2026-09-10 13:28 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 比較準備 / 仕様確定済み・実行計画の確定前レビュー判断待ち
 
 ## 作業の目的・背景
 
@@ -11,10 +11,16 @@
 
 ## 関連ドキュメント
 
+- 比較準備: `docs/reference/model-discretion-comparison-preparation.md`。CLI・認証・日時処理の再現。利用方式と比較設計はADR-0167・0168（Accepted）。
+- 確定した比較仕様: `docs/current/specs/2026-09-10-model-discretion-comparison/00-overview.md` と3ブロック。実行計画: `docs/working/plans/2026-09-10-model-discretion-comparison.md`（対応確認済み・計画確定点の判断待ち）。
+- レビュー準備と停止理由: `docs/records/reviews/2026-09-10-model-discretion-spec-r1-preparation.md`。スナップショット22件、固定検査の結果、資料送信に対する自動承認拒否を記録。
+- 初回レビューと指摘対応: `docs/records/reviews/2026-09-10-model-discretion-spec-r1.md`、原報告は同名JSON。6件採用・4件部分採用、手順・採点・検査を修正済み。モデル・題材・上限は維持。
+- 差分再確認: `docs/records/reviews/2026-09-10-model-discretion-spec-r2.md`、原報告は同名JSON。前回10件の対応は妥当。追加5件を照合し、環境移設の増設案を採らず既存制約と記述の整合を修正。
+- 仕様確定と機械検証: `docs/records/reviews/2026-09-10-model-discretion-spec-finalization.md` と同名JSON。13項目成功、実質的な収束として仕様レビューを終了。
 - 直近の振り返り: `docs/records/retrospectives/system/2026-09-10-issue-0124-cost-comparison.md`。外部送信承認の追加確認を作業ログMakeAiInstructions-2026-09-10-02に記録済み。
 - 直近の実装・検証: `docs/records/reviews/2026-09-10-issue-0124-implementation.md`。設計と承認履歴はADR-0165、計画、設計レビュー記録を参照。完了した作業の許可を次作業へ流用しない。
 - ロードマップ: `docs/current/development-roadmap.md`。以前のInsights・CodeQuest評価の内容を保ち、今回4.0節と関連する順序を更新。0140・0124の完了も反映済み。
-- 判断の分担: `docs/current/development-roadmap.md` 8節、依頼原文と範囲は `docs/records/decisions/0166-compare-model-discretion-before-detailed-workflows.md` Context。今回は文書更新・自己確認まで。実行・設定変更・公開へ流用しない。
+- 判断の分担: 比較仕様00の同名節とADR-0168 Context。人工ログ・検査・配置・記録・起動手順の詳細化は委任済み。モデル・題材・上限・通常環境等の変更と比較起動は個別判断。ロードマップ更新時の旧委任はADR-0166 Contextを参照。
 - 公開・利用側導入確認: `docs/records/experiments/2026-09-10-codex-plugin-0.1.26-installation.json`。公開時点f5229a8、導入スキル38ファイルが配布物と一致。このPCのCodexは0.1.26を導入・有効化済み。
 - 隔離検証の最新状態: `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`。中断を維持し、明示再開時だけ専用worktreeの記録から続ける。
 - 隔離検証の仕様: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md`。ADR-0145〜0148の承認履歴、Issue-0136と専用worktreeの最新計画を参照。masterの旧計画から実装を重ねない。
@@ -24,15 +30,21 @@
 過去サイクルは `docs/records/retrospectives/` とgit履歴を参照。
 
 - [x] モデル裁量との比較案をロードマップへ反映し、関連ADR・リンク・配布同期を自己確認（2026-09-10）。ロードマップ・関連ADR・本ファイルを終了時コミットに保存。
+- [x] 比較仕様4文書をフル1回・差分1回・機械検証1回で確定し、ADR-0167・0168をAcceptedへ昇格（2026-09-10）。実行計画も作成・対応確認済み。
 
 ## 進行中のタスク
 
-今回依頼された文書更新と最終自己点検は完了。ADR-0166は比較先行の方針としてAccepted。ユーザーは次セッションから本ロードマップに沿う再開を指示。比較実行案の具体化と実行は未着手。具体的な題材・モデルの版・予算・操作の承認は今後扱う。隔離検証は中断中。
+- 2026-09-10、ユーザーが「1で」と比較実行案の具体化からの再開を選択。既存方針の再承認は不要。実験起動・設定変更・公開は未承認。
+- 状態: ユーザーが機械検証による仕様確定を承認し、13項目成功。仕様レビューは実質的な収束の第1経路で終了。実行計画は仕様との対応確認を終え、計画確定点の提示待ち。
+- 次の判断: 計画確定点は通常型。仕様レビューで計画のコード例・対応タスクも確認済みのため、追加レビュー見送りを推奨。追加レビューを選ぶ場合は1体4観点・概算5〜10分（未実測）。本番の前提確認と比較実験は計画の後続作業。
+- 退避: r1・r2の改訂前資料は `C:/Users/d12an/.ai-dev-review-snapshots/model-discretion-spec-r1-20260910/` と `model-discretion-spec-r2-20260910/` に保持。詳細は各レビュー記録を参照。
+- レビューの実行: Readと固定検査だけが公開された開始イベントを確認済み。原版の日時不具合とコピーの正常例を固定検査で確認。既存テストは同梱Pythonではpytest不足、通常ユーザー権限の既存仮想環境では23件成功。詳細はレビュー準備記録。
+- 実行状態: 通常ユーザー権限でCodexはChatGPT認証、ClaudeはMax認証を確認済み。追加ログインは不要。試験専用の設定分離・親子停止・固定検査の保護は未実測。人工ログと検査は計画内に具体化済みで、試験用ファイル生成と比較起動は未実施。
 
 ## 未着手のタスク
 
 - 他PC・他ツールへの0.1.26導入は依頼時に実施。
-- 次の候補はロードマップ4.0節・8節の比較実行案の具体化。Issue-0141・0142・0139は未対処。Issue-0135は目安10KB超過（前回17.1KB）で、触る際のフォルダ昇格の提案対象。
+- 次は実行計画の確定とTask 1からの準備。Issue-0141・0142・0139は未対処。Issue-0135は目安10KB超過（前回17.1KB）で、触る際のフォルダ昇格の提案対象。
 - Issue-0136の残る未確認（別OS・版、外向き・状態変更系ツール、子だけへの固定検査公開）は同Issueと専用worktreeを参照。通信・機密性・リンク・両主担当からの実起動の成立は未確認。
 
 ## 既知のブロッカー・懸念
@@ -45,12 +57,18 @@
 - Issue-0135の起動・操作承認の制約を確認してから実機検証を組む。子の書き込みで承認プロンプトが出ない場合があり、許可を保護成立の証拠にしない。
 - 他のissue-0122 worktreeとstash `6e959892b6e00600006456172237f27d7957fa01` は操作しない。古い草案を適用しない。
 - ADR-0139・0140・0163はProposed、0166は比較先行の方針としてAccepted。0139・0140・0163には今回の比較先行の部分修正注記を追加。ロードマップ全体の実装・公開は未承認。保留事項はADR-0135／Issue-0131、ADR-0138／Issue-0132を参照。
-- 以前からのロードマップ・ADR-0140・索引・ADR-0163の変更を保ち、今回の追記とともに終了時コミットへ含める。ロードマップの今回編集前コピーは `.tmp/model-discretion-roadmap/development-roadmap.before.md`。
+- ロードマップと既存ADRの更新は前回コミットda136faに保存済み。今回の比較仕様作成では変更していない。旧編集前コピー `.tmp/model-discretion-roadmap/development-roadmap.before.md` は保全する。
 - Issue-0124統合前の草稿・混在索引5ファイルはstash `0253b7cd8367fc09782674fdbe130102f0677eba`に保全。退避コピーは `.tmp/issue-0124-merge/manifest.json`。旧草稿を一括適用しない。
 - `.worktrees/issue-0124-cost-comparison`とブランチは統合済み。未追跡のレビュー証跡のため保持。最新の完了状態はmaster側handoffを正とする。
 
 ## 節目ごとの確認記録
 
+- 2026-09-10 比較詳細仕様 spec 確定点: ADR=0167・0168 / worklog=棄却（追加deltaなし） / review=フル実施（claude-opus-5・1 回）＋差分再確認（claude-opus-5・1 回）＋機械検証（1 回・実質的な収束）
+- 2026-09-10 ADR-0167・0168 Accepted 昇格: ADR=0167・0168 / worklog=棄却（既存の確定手順内） / cyclecheck=非該当（実装前昇格）
+- 2026-09-10 独立レビューの実行準備・送信承認待ち: ADR=なし（承認済みレビューの準備） / worklog=棄却（既存の権限確認・拒否時対応に該当）
+- 2026-09-10 比較基本設計の承認・詳細仕様と計画草案の作成: ADR=0168 / worklog=棄却（既存の設計・前提確認手順内、追加deltaなし）
+- 2026-09-10 既存契約枠の選択・比較設計案の具体化: ADR=0167 / worklog=棄却（既存の環境確認・原因調査手順内、追加deltaなし）
+- 2026-09-10 比較準備の再開・現環境と題材候補の確認: ADR=なし（ADR-0166に従う調査、候補は未採用） / worklog=棄却（既存の前提確認手順内、追加deltaなし）
 - 2026-09-10 ロードマップへの比較案反映・自己確認: ADR=0166 / worklog=棄却（方針検討をADRへ記録、追加の作業deltaなし）
 - 2026-09-10 利用予定モデルを含む比較条件の補足: ADR=0166 / worklog=棄却（既存のモデル過剰適合点検で扱う要件補足）
 
@@ -58,11 +76,13 @@
 
 ## 次セッション開始時のアクション
 
-1. `start-work` で本ファイル、`docs/current/development-roadmap.md` 4.0節・8節、ADR-0166を読み、比較実行案の具体化から再開する。代表2モデル・題材・指示分離・検査・全体上限を揃え、実行前に必要な判断をまとめて提示する。
+1. 実行計画の確定前レビュー判断から続行。仕様確定・ADR昇格は完了済み。計画確定後はTask 1から準備し、比較起動の具体的操作は承認前に実行しない。各種ファイルのClaude送信は承認済み。
 2. Issue-0140・0124の実装・レビュー・マージ・振り返り、0.1.26の公開とこのPCのCodex導入は完了済み。重ねて実施しない。
 3. 隔離検証は明示再開時のみ専用worktreeへ進む。未コミット変更・stash・レビュー証跡を保全する。
 
 ## 重要な意思決定の履歴
 
+- ADR-0168: ログ解析2題材・代表2モデルでの段階比較（Accepted、2026-09-10）。
+- ADR-0167: 初期比較に既存契約枠を使う（Accepted、2026-09-10）。
 - ADR-0166: 独自手順の詳細化に先立つモデル裁量との比較方針（Accepted、2026-09-10）。今回の文書更新の委任は同ADRのContextを参照。
 - ADR-0165: 前回のレビュー指摘採否への費用比較適用。Accepted、対策・公開済み。

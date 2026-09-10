@@ -1,0 +1,386 @@
+{
+  "review": {
+    "reviewer_model": "Claude Opus 5 (claude-opus-5)",
+    "coverage": {
+      "spec_files": 4,
+      "read_files": [
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/current/specs/2026-09-10-model-discretion-comparison/00-overview.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/current/specs/2026-09-10-model-discretion-comparison/01-inputs.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/current/specs/2026-09-10-model-discretion-comparison/02-execution.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/current/specs/2026-09-10-model-discretion-comparison/03-assessment.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/working/plans/2026-09-10-model-discretion-comparison.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/reference/model-discretion-comparison-preparation.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/current/development-roadmap.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/records/decisions/0166-compare-model-discretion-before-detailed-workflows.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/records/decisions/0167-use-existing-subscriptions-for-workflow-comparison.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/docs/records/decisions/0168-compare-two-models-on-process-trace-tasks.md",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/__init__.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/__main__.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/cli.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/corrections.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/records.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/session.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/subagents.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tools/process_trace/tables.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tests/test_process_trace_records.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tests/test_process_trace_session.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/input/source/tests/test_process_trace_tables.py",
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/model-discretion-review-r1/controller/endpoint-denial.json"
+      ],
+      "read_counts": {
+        "仕様文書": "4/4（00・01・02・03。00の索引表は01〜03のみを列挙するが、00自身を含めて4文書で全数）",
+        "計画草案": "1/1（全167行を通読）",
+        "上流正本": "4/4（development-roadmap.md の4.0節=56〜112行と8節=239〜245行を含む全283行、ADR-0166・0167・0168）",
+        "調査根拠": "1/1（準備メモ）",
+        "実体コード": "8/8モジュール（__init__・__main__・cli・corrections・records・session・subagents・tables。固定検査の archive_files も同一の8件を返した）",
+        "既存テスト": "3/3（records・session・tables）",
+        "合計": "21ファイル＋固定検査の拒否証拠1ファイル。指示中の『入力22ファイル』のうち、上記列挙から特定できたのは21件で、input/README.md は存在せず（Read でエラー）、残り1件は当方に一覧取得手段がないため未特定"
+      },
+      "mechanisms": [
+        {
+          "mechanism": "manifest.json による共通入力の版・SHA256固定（仕様01:43）",
+          "protects": "両条件へ同一入力が渡ったことの事後照合",
+          "verdict": "必要",
+          "evidence": "仕様01:43が schema_version/source_commit/source_files/guideline_version/superpowers_version/task_prompt_hashes/public_fixture_hashes を必須化。ただし guideline_version・superpowers_version を埋める取得手順が計画に無い（R1-06）"
+        },
+        {
+          "mechanism": "固定Git版からの限定取得（archive）",
+          "protects": "作業ツリー混入・実データ混入の防止",
+          "verdict": "必要",
+          "evidence": "固定検査の archive が exit 0 で tools/process_trace の8ファイルと tests 3本のみを返し、計画64行の期待値『8 Pythonファイルと既存テスト3本』と一致。前提は実在"
+        },
+        {
+          "mechanism": "preflight.json の8項目ゲート（仕様02:11-22）",
+          "protects": "認証・分離・書き込み境界・停止・回収・検査識別が未成立のままの起動",
+          "verdict": "必要",
+          "evidence": "仕様02:11『全項目passかつ個別の起動承認が揃うまで本比較を起動しない』。ただし計画側の順序が循環する（R1-07）"
+        },
+        {
+          "mechanism": "BUG-01（Zと+09:00の等価）",
+          "protects": "有効時刻の後退",
+          "verdict": "必要",
+          "evidence": "固定検査 plan_unittest_original の stderr が『.F』で、test_equivalent_offsets は原版でも合格。不具合検出力は無いが後退検知として機能する（原版合格＝欠陥ではない）"
+        },
+        {
+          "mechanism": "BUG-02のうち None・無効文字列の不明扱い",
+          "protects": "無効値の誤変換",
+          "verdict": "重複",
+          "evidence": "records.py:50-54 が既に None を返し、既存テスト test_process_trace_records.py:114-118 が `parse_ts(None) is None` `parse_ts(\"bad\") is None` を検査済み。COMMON-02が同テストを回すため二重。固定検査 plan_unittest_original の失敗は value='2026-08-20T00:00:00' の1件のみで、BUG-02の識別力はタイムゾーンなし値だけに依存する"
+        },
+        {
+          "mechanism": "BUG-03/04（親CLI経路・子経路の混在時刻）",
+          "protects": "例外による集計停止と非時刻集計の欠落",
+          "verdict": "必要",
+          "evidence": "cli_mixed_original が session.py:130 で TypeError（exit 1）、cli_mixed_positive が exit 0 と4CSVを生成。親経路の識別力は実測済み。子経路（subagents.py:55）は同型だが本検査の入力に subagents ディレクトリが無く未実測"
+        },
+        {
+          "mechanism": "BUG-05（全時刻不明セッション）",
+          "protects": "不明時刻レコードの丸ごと破棄",
+          "verdict": "前提誤り",
+          "evidence": "計画133行は人工ログの構成を『全不明時刻の親ログ』としか定めず、invalid・キー欠落だけで構成すると records.py:50-54 により原版でも空欄となり識別力を持たない（R1-08）"
+        },
+        {
+          "mechanism": "FEATURE-04（未知IDで終了コード2・stderr・4出力不変）",
+          "protects": "未知IDでの黙認・既存出力の破壊",
+          "verdict": "前提誤り",
+          "evidence": "feature_option_original が exit 2・stderr『unrecognized arguments: --session-id alpha』・出力生成なしを返した。未実装の原版が同じ3条件を満たすため『未修正例を落とす』前提が成り立たない（R1-02）"
+        },
+        {
+          "mechanism": "COMMON-02（固定開始版の既存テストを省略せず実行）",
+          "protects": "既存契約の後退",
+          "verdict": "必要",
+          "evidence": "3テストとも10行目に `pytest.importorskip(\"tools\", ...)` を持ち、実行形態次第で全件skipして exit 0 になり得る（R1-01）。固定検査 existing_tests は『No module named pytest』で未実行"
+        },
+        {
+          "mechanism": "既存の並び順契約（開始時刻順・同時刻ID順）",
+          "protects": "FEATURE-03の期待値が既存動作と食い違うこと",
+          "verdict": "必要",
+          "evidence": "tables.py:65-71 sort_sessions が `(first_ts is None, first_ts, session_id)` で並べ替え、test_process_trace_tables.py:68 が『時刻のある順、無いものは末尾』を固定。仕様01:37・仕様03 FEATURE-03 の記述は実装と一致し前提は正しい"
+        },
+        {
+          "mechanism": "子記録の配置前提 `<session>/subagents/`",
+          "protects": "人工ログ配置と実装の食い違い",
+          "verdict": "必要",
+          "evidence": "session.py:177 `path.with_suffix(\"\") / \"subagents\"`、subagents.py:73 の `agent-*.jsonl` 収集と、計画84行の `alpha/subagents/agent-fixture.jsonl` が一致。前提は実在"
+        },
+        {
+          "mechanism": "採点原本の隔離と、対象コードを別権限プロセスで実行（仕様03:5,7）",
+          "protects": "生成コードによる採点結果・原本の改変",
+          "verdict": "必要",
+          "evidence": "仕様03:7が『採点原本へ書き込める管理者プロセスで対象を直接実行せず』と明記し、偽装耐性を実測なしに主張しないと限定。今回未実測"
+        },
+        {
+          "mechanism": "採点者への条件名の秘匿",
+          "protects": "継続情報・介入分類など判断項目での条件バイアス",
+          "verdict": "欠落",
+          "evidence": "ロードマップ85行『採点者には可能な範囲で条件名を伏せ、結果を揃えてから差を評価する』に対し、仕様03に対応記述が無く、必須項目 run_id（仕様02:32-41で条件名を内包）が採点入力に直接入る（R1-05）"
+        },
+        {
+          "mechanism": "維持負担・方式別費用の記録",
+          "protects": "追加手順の便益と負担の対応付け（ADR-0166の中心問い）",
+          "verdict": "欠落",
+          "evidence": "ロードマップ93・95・112行が維持負担と準備費用/運用費用の分離、モデルごとの費用見込みを要求するが、仕様03:5の assessment.json 必須項目と仕様00:38の完了基準に対応項目が無い（R1-04）"
+        },
+        {
+          "mechanism": "実験対象ツールを採点器・利用量集計器に使わない（仕様00:19）",
+          "protects": "被験対象による自己採点",
+          "verdict": "必要",
+          "evidence": "仕様00:19に明記。固定検査も tools.process_trace を被験側としてのみ起動しており矛盾なし"
+        }
+      ]
+    },
+    "executions": [
+      {
+        "check": "指定Git版の限定取得（archive）",
+        "result": "成功（exit 0）",
+        "evidence": "86d89a8091de8366161569a7771affb0ff279607 から tools/process_trace と tests 3本を取得。archive_files は8モジュール＋3テストの計11件で、計画64行の期待値と一致",
+        "not_executed": "`git ls-tree -r --name-only` との突き合わせ（計画64行が指示する照合）は固定検査に含まれない"
+      },
+      {
+        "check": "計画99〜129行の test_contract.py を原版へ適用",
+        "result": "失敗を検出（exit 1、2件中1件failure）",
+        "evidence": "FAIL: test_unknown_times (value='2026-08-20T00:00:00') / AssertionError: datetime.datetime(2026, 8, 20, 0, 0) is not None。stderr 先頭が『.F』で test_equivalent_offsets は合格。計画97行『原版ではタイムゾーンなし値の検査が失敗する』は正しく、写経したコードはそのまま実行可能",
+        "not_executed": "なし（原版・正常例の両方を実行）"
+      },
+      {
+        "check": "同 test_contract.py を正常例（scratch）へ適用",
+        "result": "成功（exit 0、Ran 2 tests OK）",
+        "evidence": "正常例では両テスト合格。検査が正常例を落とさないことを確認",
+        "not_executed": "仕様03:25の誤実装例（UTC補完・レコード破棄）に対する不合格判定は未実施"
+      },
+      {
+        "check": "混在時刻ログでのCLI全体経路（原版）",
+        "result": "例外で停止（exit 1）",
+        "evidence": "TypeError: can't compare offset-naive and offset-aware datetimes（session.py:130 build_session）。仕様01:27の『現行の解析関数でZとタイムゾーンなしを混ぜたmin比較が失敗』を親CLI経路でも再現",
+        "not_executed": "子（subagents.py:55）経路での再現。本検査の入力 mixed には subagents ディレクトリが無く、stdout も subagents=0"
+      },
+      {
+        "check": "混在時刻ログでのCLI全体経路（正常例）",
+        "result": "成功（exit 0、4CSV生成）",
+        "evidence": "stdout『sessions=1 subagents=0 commits=0』と sessions.csv/human_turns.csv/skill_segments.csv/subagents.csv。human_turns.csv は4行で3行が timestamp・minute_offset 空欄、sessions.csv は human_turns=4・human_chars_total=60。BUG-03の『非時刻集計を維持』が最小修正で成立することを確認",
+        "not_executed": "全時刻不明ログ（BUG-05）の入力は未実行"
+      },
+      {
+        "check": "現在の指定機能の不在（--session-id）",
+        "result": "拒否（exit 2）",
+        "evidence": "usage: process_trace [-h] --out-dir OUT_DIR [--repo REPO] history_dir / error: unrecognized arguments: --session-id alpha。cli.py:44-46に該当オプションが無いことと一致",
+        "not_executed": "`--session-id alpha --session-id nonexistent` の同時指定（FEATURE-04の実引数）と、その際の既存4CSVのSHA256比較"
+      },
+      {
+        "check": "固定開始版の既存テスト起動（COMMON-02）",
+        "result": "未実行（環境不足、exit 1）",
+        "evidence": "『C:\\...\\python.exe: No module named pytest』。呼び出しは cwd=original で `python -B -m pytest -p no:cacheprovider --confcutdir=<original> tests/test_process_trace_{records,session,tables}.py -q`。件数・合否・skip数のいずれも未取得",
+        "not_executed": "pytest導入後の実行。仕様01:11『パッケージの追加ダウンロードを暗黙に実行しない』により当方では解消しない"
+      },
+      {
+        "check": "固定APIの引数拒否と保護代用品の不変",
+        "result": "拒否を確認",
+        "evidence": "controller/endpoint-denial.json：write_path/content 付き run_inspection 呼び出しが -32602『Only run_inspection with exactly empty arguments is permitted』で拒否され、protected_unchanged=true。今回の run_inspection 応答も source_snapshot_unchanged=true、protection_scope に『OS sandbox setup was unavailable』と明記",
+        "not_executed": "OSサンドボックス境界の成立確認（helper_unknown_errorで失敗済み）。本結果を将来の比較対象モデルの任意コード実行・OS境界の成立へ読み替えない"
+      }
+    ],
+    "findings": [
+      {
+        "id": "R1-01",
+        "severity": "Critical",
+        "perspective": "敵対的・実装整合性",
+        "location": "仕様03:24（COMMON-02）、仕様01:11、計画88行、source/tests/test_process_trace_{records,session,tables}.py:10",
+        "issue": "既存テスト3本はいずれも冒頭で `pytest.importorskip(\"tools\", reason=...)` を実行するため、`tools` がimport不能な起動形態では収集エラーにならず全件skipし、終了コード0の『緑』になる。仕様01:11が元のconftest/pyprojectの流用を禁じているため、import経路を保証する仕組みが試験用環境に無く、`pytest tests/...`（コンソールスクリプト起動）ではリポジトリ直下がsys.pathに入らずskipへ落ちる。COMMON-02の『省略せず実行し』が0件実行で満たされたと記録され得る。",
+        "evidence": "test_process_trace_records.py:8-12 / test_process_trace_session.py:8-12 / test_process_trace_tables.py:10-12 の `pytest.importorskip(\"tools\", reason=\"tools/ が無い環境（サンドボックスコンテナ）では実行しない\")`。各テストは `from tools.process_trace import ...`（records:12、session:12-14、tables:14-15）に依存。固定検査 existing_tests は cwd=original で `python -B -m pytest` を用いており（この形態ならCWDがsys.pathに入る）、pytest未導入のため件数は未取得。計画88行は『件数・終了コードを保存する』『原版からの期待件数を推測で固定しない』とだけ定め、skip件数の扱いと起動形態を定めていないため、原版測定自体が3 skipなら以後すべての候補が同じ値と一致して恒久的に無検出となる。",
+        "violated_requirement": "仕様03:24 COMMON-02『固定開始版の既存テストを省略せず実行し、元の失敗と新しい後退を区別』、仕様03:5『品質合格に必要な検査が未観測ならquality_passはtrueにしない』、ロードマップ158行『既知の不合格例を拒否し、正常例を通す』",
+        "smallest_fix": "仕様03のCOMMON-02に、(1) 起動形態を作業コピー直下を cwd とする `python -B -m pytest`（または PYTHONPATH をコピー直下に固定）と明記、(2) 記録項目に passed/failed/skipped/errors の内訳を追加し skipped>0 または collected=0 を pass にしない、の2点を書く。計画88行の検証にも同じ内訳保存を書く。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（検査・起動手順の詳細化）。ただし pytest 未導入の解消は通常環境への追加インストールに当たるため、導入方法は相談対象（仕様01:11・判断の分担の『通常環境への影響』）"
+      },
+      {
+        "id": "R1-02",
+        "severity": "Major",
+        "perspective": "敵対的",
+        "location": "仕様03:21（FEATURE-04）、計画134行、計画138行、source/tools/process_trace/cli.py:42-47",
+        "issue": "FEATURE-04の3条件（終了コード2／stderrに未知ID／既存4出力がバイト不変）を、指定機能を全く実装していない原版がそのまま満たす。argparseの未知オプションエラーが同じ終了コード2を返し、エラーメッセージが未認識トークンをそのまま列挙し、引数解析時点で終了するため出力は書き換わらない。計画138行の『現行CLIが指定オプションを受け付けないことはFEATURE-02〜04の事前不合格』はFEATURE-04については成り立たない。",
+        "evidence": "固定検査 feature_option_original：exit_code 2、stderr『usage: process_trace [-h] --out-dir OUT_DIR [--repo REPO] history_dir / process_trace: error: unrecognized arguments: --session-id alpha』、出力生成なし。cli.py:47 `args = parser.parse_args(argv)` が write_all（cli.py:53）より前にあるため既存出力は不変。なお終了コード2は cli.py:50 の history_dir 不在時にも使われ、既存テスト test_process_trace_tables.py:128-129 がそれを固定している。",
+        "violated_requirement": "仕様02:22 preflight『固定検査が正常例を通し、未修正例・意図した不合格例を落とす』、仕様03:5『checks は id・pass/fail/unobserved・証拠を持つ』（誤った証拠でpassを記録しない）、ロードマップ158行",
+        "smallest_fix": "FEATURE-04の期待結果に『stderrが未知IDの不受理を示し、かつ argparse の unrecognized arguments でないこと（--session-id が受理された上での終了コード2であること）』を加える。実装としては、同じ実行で `--session-id alpha` 単独が終了コード0で成功することを前提条件（FEATURE-02の成立）にしてからFEATURE-04を評価する、と仕様03へ1文を追記する。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（固定検査の詳細化。合格条件の水準は変えず、判定根拠の識別力を回復するだけ）"
+      },
+      {
+        "id": "R1-03",
+        "severity": "Major",
+        "perspective": "敵対的・実装整合性",
+        "location": "計画109-114行（test_contract.py の setUpClass）、仕様03:13-14（BUG-01/02）、仕様01:23-25",
+        "issue": "BUG-01/02の検査が `tools/process_trace/records.py` の `parse_ts` という内部APIの名前と配置に固定結合しているが、作成側へ渡す依頼文・共通説明はその位置を維持する要求を含まない。維持対象として明示されているのは『既存列と指定なし動作』『str|Noneの型契約』のみ。モデル裁量条件では工程を指定しないため、時刻解析を別モジュールへ切り出す等の妥当な整理が起こり得る。その場合、検査は KeyError/AttributeError で落ち、仕様03:25が求める『元コードの失敗と検査自体の環境エラーの区別』が困難になり、仕様03:5により quality_pass を true にできない結果だけが残る。CLI経路の検査（`-m tools.process_trace`）は公開入口を使っており、この点で非対称。",
+        "evidence": "計画109行 `path = Path(os.environ[\"COMPARISON_CANDIDATE\"]) / \"tools/process_trace/records.py\"`、114行 `cls.parse_ts = staticmethod(module.parse_ts)`。仕様01:23の依頼文は関数名・配置に一切触れず、01:25は型契約のみを限定。仕様01:19の共通説明も『既存列と指定なし動作を維持』までしか要求していない。records.py:47-54 に依存する構造は固定検査 plan_unittest_original/positive の両実行で確認済み。",
+        "violated_requirement": "仕様03:25『正解実装・採点原本は作成者へ渡さない』かつ『固定検査は公開した機能要件を具体化する』（公開していない内部構造を合否条件にしない）、ロードマップ83行『実行前に、期待動作・既存動作の維持…を題材ごとに固定する』",
+        "smallest_fix": "仕様01の共通説明（19行）へ『`tools/process_trace/records.py` の `parse_ts` は外部検査から直接呼ぶため、名前・配置・`str|None` 契約を維持する』を1文追加し、両条件へ同一に渡す。追加しない場合は、BUG-01/02を4CSVのtimestamp列を経由するCLI観測へ置き換える。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（公開済み要件＝既存契約維持の具体化）。ただし両条件へ同一文言で渡すこと（仕様01:19『片方だけ都合よく無効化しない』）が条件で、実質的な合格条件の追加と判断するなら相談対象"
+      },
+      {
+        "id": "R1-04",
+        "severity": "Major",
+        "perspective": "仕様適合",
+        "location": "仕様03:31-41（利用量と介入／結果と次の進路）、仕様00:38（完了基準）、ロードマップ93・95・112行",
+        "issue": "上流正本が求める比較項目5件のうち『維持負担』が仕様へ写像されていない。あわせて『試験用の共通資料・検査準備・採点の費用と、各方式を通常運用する費用は分けて報告する』『片方だけに必要な設定・手順の導入や修正費用はその方式の負担として示す』『実行案ではモデルごとの費用見込みと全体上限を示す』も対応記述が無い。ADR-0166が捕捉したい問題は『追加手順が便益なしに確認・記録・費用を増やすこと』であり、維持負担が空欄のままでは仕様03:39の進路判定（見送り／限定支援／縮小候補）の主要な根拠が欠ける。",
+        "evidence": "ロードマップ93行『維持負担｜追加ファイル・指示・設定の用途と、今後更新する必要。単純なファイル数の少なさだけで評価しない』、95行、112行『代表モデルの追加により実行候補は計8回となるため、実行案ではモデルごとの費用見込みと全体上限を示す』。これに対し仕様03:5の assessment.json 必須項目は run_id・artifact_sha256・checks・quality_pass・continuity・interventions・usage_limitations の7項目で維持負担が無く、仕様00:38の比較完了基準も『合否・未観測・停止理由・利用量・所要時間・介入と適用範囲』止まり。計画Task 5（158-159行）にも該当作業が無い。ADR-0166:36『追加手順が便益なしに確認・記録・費用を増やすこと』。",
+        "violated_requirement": "ロードマップ4.0節『比較する項目』表（87-93行）と95行、112行、ADR-0166 Consequences",
+        "smallest_fix": "仕様03の『結果と次の進路』に、比較表の必須列として『維持負担（既存手順条件で追加・更新が必要な指示・設定・スキルとその今後の更新要否）』と『準備・採点費用と通常運用費用の区分』を1段落追記し、仕様00:38の完了基準へ同項目を追加する。モデルごとの費用見込みは仕様02の起動前提示物（02:24の承認対象）に含める。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（記録様式の詳細化）。ただし提示された見込みが300分上限を超える場合は上限変更＝相談対象"
+      },
+      {
+        "id": "R1-05",
+        "severity": "Major",
+        "perspective": "仕様適合",
+        "location": "仕様03全体（特に03:5の必須項目と03:27-29の継続情報、03:35の介入分類）、仕様02:32-41（run_id命名）、ロードマップ85行",
+        "issue": "上流が要求する『採点者には可能な範囲で条件名を伏せ、結果を揃えてから差を評価する』が仕様に写像されていない。さらに必須項目 run_id 自体が `codex-bug-discretion` のようにモデル名と条件名を内包するため、採点入力が常に条件を露出する。固定検査は機械的で影響が小さいが、継続情報の5項目判定（一致・欠落・誤り・未観測）と介入の3分類（必要な判断／不要な再確認／訂正）は判断を伴い、条件バイアスが直接入る。",
+        "evidence": "ロードマップ85行。仕様03:5『必須項目は run_id…』、仕様02:32-41の実行順表が run_id に条件名を含める。仕様03:29『特定のhandoffやADR様式への準拠は加点しない』、35行『必要な承認・仕様判断、不要な再確認、誤りの訂正に分ける』はいずれも判断項目。仕様00:17の秘匿は『採点原本と相手条件の成果は作成側へ渡さない』という作成側向けの一方向のみ。",
+        "violated_requirement": "ロードマップ4.0節85行（採点の独立性）",
+        "smallest_fix": "仕様03に1段落追加：『判断を伴う項目（継続情報5項目・介入分類）は、run_idを不透明なラベル（例: A1〜H1）へ置換した資料で先に判定し、判定確定後に条件名と対応付ける。機械判定の固定検査には適用しない。不透明化できない情報が残る場合はその範囲を記録する。』",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（記録様式・採点手順の詳細化。合格条件そのものは変更しない）"
+      },
+      {
+        "id": "R1-06",
+        "severity": "Major",
+        "perspective": "実装整合性（仕様→計画の写像漏れ）",
+        "location": "計画Task 2（51-52行のファイル一覧、86行）、仕様01:19、仕様01:43、仕様00:26",
+        "issue": "既存手順条件の中核入力である『固定版のガイドライン一式（0.1.26）と依存スキル（superpowers 6.3.0）』について、取得元・固定方法・配置先・各実行コピーへの渡し方を定めたタスクが計画に無い。Task 2のファイル一覧は manifest.json・source.zip・baseline/・public-fixtures/・prompts/ のみで、Task 4も baseline からのコピーしか述べない。86行が『追加するガイドライン一式のSHA256をmanifestへ記録する』と述べるだけで、記録対象の実体を作る手順が存在しない。結果として manifest 必須項目の guideline_version・superpowers_version をどの実体から決めるかも未定義で、条件差の再現性が担保されない。",
+        "evidence": "計画52行『**ファイル:** `control/manifest.json`、`source.zip`、`baseline/`、`public-fixtures/`、`prompts/`』、計画86行、計画54行『各実行のコピーはTask 4でこのbaselineから作る』、計画147行。仕様01:19『既存手順条件には固定版のガイドライン一式と依存スキルを追加する』、仕様01:43『guideline_version、superpowers_version』、仕様00:26『既存ガイドライン0.1.26とsuperpowers 6.3.0』、仕様02:17（プラグイン・スキルの読み込みと親子継承を記録）。",
+        "violated_requirement": "仕様01:19・01:43、ロードマップ67行『同じ入力と実行条件に、比較開始時に固定した既存ガイドライン一式を追加』",
+        "smallest_fix": "計画Task 2へ成果物 `guidelines/`（0.1.26の配布物または該当タグの取得元・版）と `skills/`（superpowers 6.3.0）を追加し、取得コマンド・配置先・SHA256記録・manifestの guideline_version/superpowers_version への反映を1チェック項目として書く。既存手順条件のコピーにのみ配置することを明記する。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（配置と手順の詳細化）。取得のために通常環境の設定・プラグインを変更する必要が生じた場合のみ相談対象"
+      },
+      {
+        "id": "R1-07",
+        "severity": "Major",
+        "perspective": "敵対的（段取りの循環）",
+        "location": "計画26行・47行（Task 1の受け渡しと完了条件）と計画145-146行（Task 4）、仕様02:11・02:24",
+        "issue": "Task 1は『Task 4は全項目passを要求する』『全passを得られなければTask 4へ進まない』と定めるが、preflightの8項目のうち版とモデル（実モデル名）・指示分離（親子継承）・書き込み境界（親・子とも）・停止（子の消滅）・回収（実モデル名・利用量）の5項目は、仕様02:24が明示するとおりモデル起動を伴い、その起動はTask 4の承認後にしか行えない。したがってTask 1単独では原理的に全passへ到達できず、そのまま読むと計画が進行不能になる。Task 1の44行が未実測をunknownで残すよう指示している点とも、47行の完了条件が矛盾する。",
+        "evidence": "計画26行『Task 4は全項目passと、そこに記録した起動引数のハッシュを要求する』、47行『全passを得られなければTask 4へ進まない』、44行『preflight.json に未実測の項目をunknownとして残す』、45行『実行承認と現在の環境権限が揃うまで依存操作を行わない』、146行『起動承認を得てから、無害な対象で仕様02のpreflight各項目を実測する』。仕様02:24『認証・CLIヘルプの読み取り以外のモデル起動を含む事前確認も利用枠を消費するため、起動操作の承認対象に含める』。",
+        "violated_requirement": "仕様02:11『全項目passかつ個別の起動承認が揃うまで本比較を起動しない』（＝passの取得時点とゲート時点の分離が前提）",
+        "smallest_fix": "計画Task 1の受け渡し・完了条件を『非モデル項目（認証・版・設定読み込み元の静的照合）はpass、モデル起動を要する項目はunknownのまま提示可。Task 4は起動承認後の実測で全項目passになるまで本比較の8実行を開始しない』と書き換える（2文の修正）。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（起動手順の詳細化）。preflightのモデル起動分を承認対象へ含める点は既に仕様02:24で相談前提として扱われている"
+      },
+      {
+        "id": "R1-08",
+        "severity": "Minor",
+        "perspective": "敵対的",
+        "location": "仕様03:17（BUG-05）、計画133行",
+        "issue": "『全て時刻不明の親ログ』の構成が未定義。無効文字列とキー欠落だけで構成すると原版でも first_ts が None のままとなり空欄・件数保持を満たすため、BUG-05は未修正版を落とせない。タイムゾーンなし値を含めて初めて識別力を持つ。",
+        "evidence": "records.py:50-54 は無効文字列とNoneに対して既にNoneを返す（固定検査 plan_unittest_original の失敗は naive 値1件のみ）。session.py:129 の分岐により ts=None の記録は first_ts を設定しない。tables.py:46-51 の `_ts`/`_num` が None を空文字にする。計画133行は『全不明時刻の親ログを別に用意し』としか書かず値の内訳を定めない。",
+        "violated_requirement": "仕様02:22『固定検査が…未修正例・意図した不合格例を落とす』",
+        "smallest_fix": "計画133行に『当該ログの全レコードはタイムゾーンなし値・無効文字列・キー欠落を各1件以上含める』を追記する。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（人工ログの詳細化）"
+      },
+      {
+        "id": "R1-09",
+        "severity": "Minor",
+        "perspective": "仕様適合・実装整合性",
+        "location": "仕様01:33（第一段階の依頼文）、仕様03:19-20（FEATURE-02/03）、source/tools/process_trace/tables.py:159-166",
+        "issue": "`--session-id` で絞り込んだ場合の `seq` 列の採番規則が依頼文にも検査にも定義されていない。既存実装では seq は出力対象の並び順に1から振り直される（tables.py:162 の enumerate）。絞り込み時に『1から振り直す』か『全セッション中の位置を保つ』かで結果が分かれ、どちらも依頼文の『既存列と並び順の規則を維持する』と読める。FEATURE-02/03の期待結果もsession_idの集合と行数しか見ないため差を検出しない。条件間で挙動が割れた場合、実行中に新しい仕様判断が必要になり、仕様03:35により条件変更として扱わざるを得なくなる。",
+        "evidence": "tables.py:159-166 `ordered = sort_sessions(traces)` → `for seq, t in enumerate(ordered, start=1)`。4CSVすべてが seq を持つ（tables.py:24,38,39,41）。仕様01:33『既存列と並び順の規則を維持する』。仕様03:19『単一指定で当該セッションの親・子・人間ターン・スキル区間だけ出力』、03:20『sessionsのID列が alpha,gamma の各1行』。計画132行の検査もsession_id集合と行数のみを見る。",
+        "violated_requirement": "ロードマップ83行『実行前に、期待動作・既存動作の維持…を題材ごとに固定する』、仕様01:39『実行前に第二段階の要求まで採点側で固定し』",
+        "smallest_fix": "仕様01:33の依頼文へ『出力対象に絞った並びの先頭から seq を1から振る』を1句追加し、仕様03のFEATURE-02/03の期待結果に seq 列の値を含める。",
+        "adds_mechanism": false,
+        "approval_boundary": "委任内（既存契約の具体化）だが、実質的な合格条件の追加と判断する場合は共通合格条件の変更として相談対象"
+      },
+      {
+        "id": "R1-10",
+        "severity": "Minor",
+        "perspective": "前提実在",
+        "location": "仕様00:28、仕様02:24、仕様02:47、計画163行",
+        "issue": "『準備の機械確認・外側の検査合計60分』の内訳配分が未定義のまま、(a) モデル起動を伴うpreflight実測（両CLI・親子の書き込み境界・停止・回収）、(b) baselineの既存テスト実行、(c) 11検査の正常例・誤実装例での識別確認、(d) 8実行分の採点、のすべてを同じ枠で賄う設計になっている。計画の『計画自身の検証』（163行）も検査ID数や実行数は突き合わせているが60分枠の配分には触れていない。超過時に何を削るかが未定義で、超過が判明した時点では上限変更＝ユーザー相談となり比較が停止する。",
+        "evidence": "仕様00:28『準備の機械確認・外側の検査合計60分、実行段階全体300分』、仕様02:24『上限は準備・検査60分枠で計数する』、仕様02:47『準備不備による試行も費用・時間から消さない』、仕様03の採点は8実行分。計画163行は『8実行はTask 4の2とTask 5の6。…検査IDは日時5・指定4・共通2の11』までしか照合していない。",
+        "violated_requirement": "ADR-0168:20『各実行30分、作成側240分と準備・採点60分の合計300分を実行段階の上限とする』（上限の実行可能性）、ロードマップ159行『実際に制御できない上限を保証として書かない』",
+        "smallest_fix": "仕様02の時計節へ60分枠の内訳目安（preflight実測／人工ログ・検査の機械確認／8実行の採点）を1行の表で示し、超過見込み時は後続起動を止めて相談する、と明記する。",
+        "adds_mechanism": false,
+        "approval_boundary": "相談対象（上限の変更・再配分はADR-0168 Contextによりユーザー判断。仕様側では内訳の明示までが委任内）"
+      }
+    ],
+    "unverified": [
+      "子（subagents）経路での混在時刻例外の再現。固定検査の入力 mixed には subagents ディレクトリが無く stdout も subagents=0 だったため、BUG-04の識別力は未実測。コード上は subagents.py:55 が session.py:130 と同型のmin/max比較を持つという静的一致までしか確認していない。",
+      "FEATURE-04の実引数での実行。追加実験が必要：cwd=原版コピー、`python -B -m tools.process_trace <feature-fixtures> --out-dir <既に4CSVが存在するdir> --session-id alpha --session-id nonexistent`。期待値は exit 2／stderr に `unrecognized arguments: --session-id alpha --session-id nonexistent`／4CSVのSHA256不変。3つとも成立すればR1-02は確定。今回はexit 2と出力非生成、および単一 `--session-id alpha` でのメッセージ形式までを実測し、未知IDトークンがstderrへそのまま出る点はargparseの挙動からの推定。",
+      "既存テスト3本の件数・合否・skip内訳。pytest未導入のため未取得（COMMON-02とR1-01の定量確認は保留）。",
+      "仕様03:25の誤実装例（タイムゾーンなし値のUTC補完、無効値レコードの破棄、未知IDで成功して空出力）に対する各検査の不合格判定。固定検査は正常例1種のみを通した。",
+      "preflightの実測対象すべて（認証、実モデル名、設定・スキル・メモリの親子継承、書き込み境界、親子停止、利用量回収）。仕様・計画とも未実施と明示しており、今回の指摘対象にしていない。",
+      "OS境界・サンドボックスの成立。Windowsの別サンドボックス起動はhelper_unknown_errorで失敗しており、今回確認できたのは固定APIが引数付き呼び出しを拒否したこと（endpoint-denial.json、code -32602）と source_snapshot_unchanged=true のみ。これを比較対象モデルの任意コード実行に対する保護の成立へ読み替えていない。",
+      "manifest.json・run.json・assessment.json・preflight.json の実体（いずれも未作成。仕様・計画が未実装であることを明示しているため、欠陥として数えていない）。",
+      "指示された『入力22ファイル』のうち1件を特定できていない（列挙された対象からは21件。input/README.md は存在しない）。当方にディレクトリ一覧取得手段が無いため、未読ファイルの有無は主担当のハッシュ照合で確認されたい。"
+    ],
+    "summary": "4観点すべてを1人で確認し、Critical 1件・Major 6件・Minor 3件を挙げた。仕様00〜03の骨格（3ブロック分離、8実行、上限、承認境界の明示、未実測事項をunknownで残す姿勢）は上流ADR-0166〜0168およびロードマップ4.0・8節と概ね整合しており、実体との前提照合でも、sort_sessionsの並び順契約（tables.py:65-71）、子記録の配置 `<session>/subagents/`（session.py:177）、8モジュール＋3テストの構成、`parse_ts` の `str|None` 契約、混在時刻でのmin比較失敗（固定検査でCLI全体経路のTypeErrorを再現）はいずれも仕様の記述どおりで前提誤りは無かった。計画内のPythonコードは写経のまま実行でき、原版で1件失敗・正常例で全件成功という段取りどおりの識別を示した。最も重いのはR1-01で、既存テスト3本が `pytest.importorskip(\"tools\")` を持つため起動形態次第で全件skipのまま終了コード0となり、COMMON-02が0件実行で合格記録になる経路が実在する。仕様01:11がconftest/pyproject流用を禁じている一方でimport経路を保証する代替が無く、計画88行の『原版で件数を実測して固定する』という安全策も原版測定自体がskipなら機能しないため、恒久的な無検出になる。次いでR1-02は、未実装の原版がFEATURE-04の3条件をすべて満たすことを実行証拠で確認したもので、計画138行の『FEATURE-02〜04の事前不合格』という記述が事実と食い違う。R1-03〜R1-06は、公開していない内部API（records.parse_ts）への検査の結合、上流が要求する維持負担・費用区分・条件名秘匿の写像欠落、既存手順条件の入力（ガイドライン0.1.26一式・superpowers 6.3.0）を作る手順そのものの欠落で、いずれも実験の成否ではなく結論の根拠に効く。R1-07はTask 1とTask 4の間の循環で、文言2文で解ける。未実装であること自体は欠陥として数えていない。指摘10件のうち9件は委任範囲内（人工ログ・検査・配置・記録様式・起動手順の詳細化）で修正でき、R1-10（60分枠の再配分）と、R1-03・R1-09を合格条件の追加と解する場合のみユーザーへ戻す。原本は一切変更しておらず、書き込みは固定検査が新規に作った run/attempt-25d7ff316179440b85929489175594b7 配下のみ、source_snapshot_unchanged=true を確認している。"
+  },
+  "execution": {
+    "duration_ms": 716469,
+    "num_turns": 25,
+    "usage": {
+      "input_tokens": 22,
+      "cache_creation_input_tokens": 102590,
+      "cache_read_input_tokens": 458867,
+      "output_tokens": 48137,
+      "output_tokens_details": {
+        "thinking_tokens": 29208
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 102590,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 21729,
+          "cache_read_input_tokens": 91853,
+          "cache_creation_input_tokens": 10737,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 10737
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 2950,
+        "outputTokens": 14,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.00302,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 22,
+        "outputTokens": 48137,
+        "cacheReadInputTokens": 458867,
+        "cacheCreationInputTokens": 102590,
+        "webSearchRequests": 0,
+        "costUSD": 2.4588685,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 29208,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "reported_cost_usd": 2.4618884999999997,
+    "cost_note": "提供元の定価換算出力であり、既存契約の追加請求額ではない。modelUsageにはOpus主担当以外にHaikuの記載があり用途は未特定。主担当の再委譲は0。"
+  },
+  "coordinator_evidence": "../../../.tmp/model-discretion-review-r1/controller/followup-evidence.json"
+}

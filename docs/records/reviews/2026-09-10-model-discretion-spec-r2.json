@@ -1,0 +1,255 @@
+{
+  "review": {
+    "reviewer_model": "claude-opus-5",
+    "coverage": {
+      "changed_files": 5,
+      "prior_findings": 10,
+      "read_files": [
+        "controller/changes.diff",
+        "input/docs/records/reviews/2026-09-10-model-discretion-spec-r1.md",
+        "input/docs/current/specs/2026-09-10-model-discretion-comparison/00-overview.md",
+        "input/docs/current/specs/2026-09-10-model-discretion-comparison/01-inputs.md",
+        "input/docs/current/specs/2026-09-10-model-discretion-comparison/02-execution.md",
+        "input/docs/current/specs/2026-09-10-model-discretion-comparison/03-assessment.md",
+        "input/docs/working/plans/2026-09-10-model-discretion-comparison.md",
+        "input/docs/current/development-roadmap.md",
+        "input/docs/records/decisions/0167-...md",
+        "input/docs/records/decisions/0168-...md",
+        "input/source/tools/process_trace/tables.py",
+        "input/source/tools/process_trace/cli.py",
+        "input/source/tools/process_trace/records.py",
+        "input/source/tests/test_process_trace_records.py",
+        "controller/r1-followup-evidence.json",
+        "controller/r1-revised-test-evidence.json"
+      ],
+      "upper_conditions_checked": [
+        "ロードマップ4.0節 合格条件と評価（維持負担93行・費用区分95行・条件名秘匿85行・条件分離73/75行）",
+        "ロードマップ8節（実行案でモデル別費用見込みと全体上限を示す・元リポジトリと通常環境を変更しない）",
+        "ADR-0167 既存契約枠のみ、請求額換算と契約枠消費の区別",
+        "ADR-0168 承認済み: モデル・題材・合格条件・8実行・30/240/60/300分。委任: 人工ログ・検査・配置・記録・起動手順",
+        "00-overview 完了基準、02-execution 起動前の成立条件と上限"
+      ]
+    },
+    "prior_findings": [
+      {
+        "id": "R1-01",
+        "verdict": "解消（Critical根拠の訂正は妥当）",
+        "evidence": "tests/test_process_trace_records.py:10のpytest.importorskip('tools')が全件skipの実体で、tools欠落時は3 skipped・終了コード5（r1-followup）。今回の固定検査でも正常コピーは23 passed・exit 0。01:13・03:23・計画113の件数内訳記録で『未実行を成功に数えない』が具体化されている"
+      },
+      {
+        "id": "R1-02",
+        "verdict": "解消",
+        "evidence": "固定検査feature_option_originalで原版の`--session-id alpha`単独が exit 2『unrecognized arguments』。よって03:21の成功対照が原版では不成立→FEATURE-04は未観測となり、argparse拒否だけの偽合格経路が閉じた"
+      },
+      {
+        "id": "R1-02付随",
+        "verdict": "quality_passと矛盾なし",
+        "evidence": "FEATURE-04が未観測になるのはFEATURE-02不合格時のみで、03:5の『必要検査が未観測ならquality_pass≠true』と『FEATURE-02 fail』のどちらでもquality_passはfalse。過剰な不合格化も起きない"
+      },
+      {
+        "id": "R1-03",
+        "verdict": "解消",
+        "evidence": "既存テストは`from tools.process_trace import records`（同ファイル:12）で読み、計画136の`importlib.import_module('tools.process_trace.records')`は同じパッケージ入口。相対import整理版で旧単一ファイルloaderのみImportError、package loaderは2件成功・既存23件成功（r1-followup）。__file__のcandidate配下判定で外部同名パッケージも排除"
+      },
+      {
+        "id": "R1-04",
+        "verdict": "解消",
+        "evidence": "維持負担・費用区分がロードマップ93/95行→00:38（完了基準）→03:5（assessment.json必須項目）→03:41（記録方法）→計画184（Task 5実行タスク）まで連結。02:26と計画170でモデル別見込みが8節112行の要求に届く"
+      },
+      {
+        "id": "R1-05",
+        "verdict": "解消（範囲限定は上流に整合）",
+        "evidence": "03:29・計画183が判断を伴う継続情報と介入分類だけを採点用IDで先行判定し、残存情報を限界として記録。ロードマップ85行の『可能な範囲で伏せる』と一致し、機械検査のrun_id非秘匿は決定的検査のため結果に影響しない"
+      },
+      {
+        "id": "R1-06",
+        "verdict": "解消（manifest必須項目のみ未追随＝R2-04）",
+        "evidence": "01:23で3取得元・ハッシュ記録・通常導入先不変・裁量条件へ非配置を規定。計画68-89のコードはplugin.jsonの版一致検証、複製先既存ならthrow、キャッシュ側はGet-ChildItem/Copy-Itemの読取のみで通常キャッシュを変更しない（Readで確認、未実行）"
+      },
+      {
+        "id": "R1-07",
+        "verdict": "解消",
+        "evidence": "計画26/47でTask 1はunknown可・起動案の提示までとし、計画171-172とTask 4で承認後に実測→全pass後に起動。02:11の『全項目pass＋個別承認まで本比較を起動しない』と矛盾せず、循環が解けている"
+      },
+      {
+        "id": "R1-08",
+        "verdict": "解消",
+        "evidence": "03:17・計画158でタイムゾーンなし・無効文字列・キー欠落を各1件以上、空欄対象をfirst_ts/last_ts/wall_minutesに限定。固定検査cli_mixed_originalが原版でsession.py:130のTypeErrorを再現し、検査一式の識別力（03:27）は成立"
+      },
+      {
+        "id": "R1-09",
+        "verdict": "解消（既存契約の再記述で新義務なし）",
+        "evidence": "tables.py:160-166のwrite_allがsort_sessions後に1から採番し4CSVへ同じseqを渡す。固定検査positive出力でsessions seq=1に対しhuman_turns全行seq=1が一致。01:37・03:19-20はこの既存規則の明文化にとどまる"
+      },
+      {
+        "id": "R1-10",
+        "verdict": "不採用は妥当（覆す証拠なし）",
+        "evidence": "02:26は『未実測の概算』と明記し配分を固定せず、各モデル120分は4実行×30分の内訳で240/300分を変えていない。所要の実在を示す実測は今回も存在せず、固定配分表を再提案する根拠がない"
+      }
+    ],
+    "executions": [
+      {
+        "check": "固定検査を1回実行（引数なし）",
+        "result": "exit 0、原本ハッシュ不変",
+        "evidence": "run/attempt-ef0581d8…、source_snapshot_unchanged=true。scratchの正常例のみ変更"
+      },
+      {
+        "check": "git archive の取得範囲",
+        "result": "11ファイル",
+        "evidence": "tools/process_trace 8本＋tests 3本。計画64の期待値と一致"
+      },
+      {
+        "check": "計画のPython検査（原版／正常例）",
+        "result": "原版 exit 1（naive値でAssertionError）、正常例 exit 0（2件）",
+        "evidence": "例外送出ではなく期待値不一致による失敗で、検出実績として成立"
+      },
+      {
+        "check": "CLI混在時刻（原版／正常例）",
+        "result": "原版 exit 1 TypeError、正常例 exit 0・4CSV生成",
+        "evidence": "positive出力でhuman_turns 4行中3行が空時刻、件数保持を確認"
+      },
+      {
+        "check": "原版への `--session-id alpha`",
+        "result": "exit 2 unrecognized arguments",
+        "evidence": "FEATURE-04の成功対照が原版で不成立＝未観測"
+      },
+      {
+        "check": "既存3本のpytest",
+        "result": "23 passed・exit 0",
+        "evidence": "cwd=コピー直下、-p no:cacheprovider。01:13の記述と一致"
+      }
+    ],
+    "new_findings": [
+      {
+        "id": "R2-01",
+        "severity": "Major",
+        "layer": "設計骨格",
+        "location": "計画113・157-159、03-assessment.md:7、計画17（全体制約）",
+        "issue": "採点側が候補コードを実行するPython環境の所在が保護境界に入っていない。計画は実行環境として元リポジトリ内の `D:/Dev/001_Trade/LoopForAlpha/.venv/Scripts/python.exe` を名指ししており、候補生成コードをこの解釈系で走らせると、書き込み可能なsite-packagesを持つ元リポジトリが『変更しない』対象のまま無防備になる",
+        "evidence": "03:7の保護記述は採点原本のみを対象とし、02:18の書き込み境界は作成側の確認項目。計画17と ロードマップ75行は元リポジトリ不変を要求するが、計画113が指す解釈系はその配下にあり、Task 3のCLI検査（計画157）は解釈系を指定していない",
+        "smallest_fix": "03の実行制約に『採点実行に使うPython環境を元リポジトリ・検査原本の外に置く』の一文を足し、02:18の書き込み境界の確認対象へ元リポジトリを明記する",
+        "adds_mechanism": false,
+        "approval_boundary": "AI委任内（起動手順・配置の詳細化）。別の隔離基盤を新設する案になるならユーザーへ戻す"
+      },
+      {
+        "id": "R2-02",
+        "severity": "Minor",
+        "layer": "周辺",
+        "location": "03-assessment.md:20、計画157",
+        "issue": "FEATURE-03の『4CSVで対応が一致』を全CSVにseq 1・2の行が存在する意味に読むと、正しい実装でも不合格になり得る",
+        "evidence": "計画99-109の人工ログでgammaはuser 1行のみ（子・スキル区間なし）。固定検査のpositive出力でもskill_segments.csv・subagents.csvはヘッダのみで、対象セッションの行が存在しないCSVが実際に生じる",
+        "smallest_fix": "『行が存在するCSVについてsession_id→seqの対応が一致し、対象行のないCSVを不一致にしない』と一句補う",
+        "adds_mechanism": false,
+        "approval_boundary": "AI委任内（検査ケースの詳細化）"
+      },
+      {
+        "id": "R2-03",
+        "severity": "Minor",
+        "layer": "周辺",
+        "location": "計画159 対 03-assessment.md:27",
+        "issue": "成功対照の定義が仕様と計画でずれている。仕様は『FEATURE-02が失敗した成果物』を未観測条件とするが、計画は『`--session-id alpha` が成功した後』とだけ書くため、オプションを受理しつつ絞り込みが誤っている実装でFEATURE-04がpassになり得る",
+        "evidence": "03:27はFEATURE-02の合否を基準にし、計画159はコマンドの成功のみを基準にする。両文の差は原版では顕在化しない（exit 2で共に未観測）ため、固定検査では区別できない",
+        "smallest_fix": "計画159を『FEATURE-02が成立した後に評価する』へ揃える",
+        "adds_mechanism": false,
+        "approval_boundary": "AI委任内（記録様式・検査手順の詳細化）"
+      },
+      {
+        "id": "R2-04",
+        "severity": "Minor",
+        "layer": "周辺",
+        "location": "01-inputs.md:47（manifest必須項目）対 01:23・計画89",
+        "issue": "条件用資料の取得元にtemplateのコミットが加わったのに、manifestの必須項目は `guideline_version`・`superpowers_version` のままで、template側の版（コミット）を必須にしていない",
+        "evidence": "01:23は3取得元を規定し計画89は版とSHA256の保存を求めるが、01:47の必須項目一覧は未追随。ロードマップ73行は有効な指示と版の保存を要求する",
+        "smallest_fix": "01:47へ `guideline_template_commit`（またはtemplate取得物のハッシュ）を必須項目として1つ加える",
+        "adds_mechanism": false,
+        "approval_boundary": "AI委任内（記録様式）"
+      },
+      {
+        "id": "R2-05",
+        "severity": "Minor",
+        "layer": "周辺",
+        "location": "00-overview.md:3",
+        "issue": "概要の状態行が『詳細仕様は確定前レビューの判断待ち』のままで、計画11・レビュー記録7行の『初回フル実施と反映済み、反復方式の判断待ち』と読み手への意味が食い違う",
+        "evidence": "今回の差分は00の完了基準のみを変更し、冒頭の状態行を更新していない",
+        "smallest_fix": "00:3を『初回レビュー反映済み、反復方式の判断待ち』へ言い換える",
+        "adds_mechanism": false,
+        "approval_boundary": "AI委任内（記録様式）。実施可否の判断自体はユーザー"
+      }
+    ],
+    "unverified": [
+      "計画68-89のPowerShell複製は未実行（Readのみ）。取得元パスの実在、plugin.jsonの版、templateコミットの10ファイルは主担当申告に依存し、私は照合していない",
+      "設定分離・親子停止・書き込み境界・利用量回収・実モデル名の実測。今回の固定検査はこれらの成立証拠にならない",
+      "採点用IDの運用で条件が推測されない度合い、および維持負担・費用区分を既存ログだけで埋められるかの実地確認",
+      "40〜120分の時間見込みの妥当性（未実測の概算であることのみ確認）",
+      "候補コードが悪意ある挙動を取った場合の採点側の耐性（R2-01は文書上の境界不足の指摘であり、実測ではない）"
+    ],
+    "summary": "R1-01〜R1-10は全て解消または根拠訂正が妥当で、直前修正が上流の合格条件・完了基準・承認境界へ届いていることを文書行と固定検査で確認した（未知ID成功対照の閉鎖、パッケージ入口の一致、維持負担・費用区分・採点用IDの下流連結、Task 1/4の循環解消、seqの既存契約踏襲、上限の非改変）。新規の設計骨格の欠陥は1件のみで、採点側が候補コードを実行するPython環境が元リポジトリ配下に置かれたまま保護境界に列挙されていない点（R2-01）。残る4件は文言の精度・必須項目・状態表記に限られ、いずれも一句追加で足り、新しい機構や上限・保護の変更を必要としない。"
+  },
+  "execution": {
+    "duration_ms": 305722,
+    "usage": {
+      "input_tokens": 16,
+      "cache_creation_input_tokens": 84279,
+      "cache_read_input_tokens": 295896,
+      "output_tokens": 19970,
+      "output_tokens_details": {
+        "thinking_tokens": 12717
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 84279,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 8075,
+          "cache_read_input_tokens": 76974,
+          "cache_creation_input_tokens": 10704,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 10704
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 3166,
+        "outputTokens": 27,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.003301,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 16,
+        "outputTokens": 19970,
+        "cacheReadInputTokens": 295896,
+        "cacheCreationInputTokens": 84279,
+        "webSearchRequests": 0,
+        "costUSD": 1.4900680000000002,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 12717,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "cost_note": "提供元の定価換算は契約の実請求額ではない。"
+  }
+}

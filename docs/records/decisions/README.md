@@ -158,3 +158,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0164](0164-exclude-behavior-preserving-observations-from-full-review-default.md) | 利用条件を変えない実測結果の追記を初回フルレビューの強い推奨から除外する | Accepted | 2026-09-10 |
 | [0165](0165-apply-cost-comparison-before-review-disposition.md) | レビュー指摘の費用比較は既存の採否手順と対応表に組み込み、自動検査は最終手段とする | Accepted | 2026-09-10 |
 | [0166](0166-compare-model-discretion-before-detailed-workflows.md) | 独自の開発手順を詳細化する前にモデルへ進め方を任せる比較を行う | Accepted | 2026-09-10 |
+| [0167](0167-use-existing-subscriptions-for-workflow-comparison.md) | モデル裁量との初期比較は既存のCodex・Claude Codeの契約枠を使う | Accepted | 2026-09-10 |
+| [0168](0168-compare-two-models-on-process-trace-tasks.md) | 初期比較はログ解析の2題材を代表2モデルで段階実行する | Accepted | 2026-09-10 |

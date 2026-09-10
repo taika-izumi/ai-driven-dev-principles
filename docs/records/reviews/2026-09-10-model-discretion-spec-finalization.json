@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-10",
+  "operation": "仕様確定前の機械検証",
+  "checks": {
+    "spec_files_4": true,
+    "unique_checks_11": true,
+    "runs_8_each_model_4": true,
+    "existing_rows_only": true,
+    "positive_control_feature02": true,
+    "template_commit_consistent": true,
+    "approval_order": true,
+    "budgets_unchanged": true,
+    "code_blocks_unchanged": true,
+    "python_json_examples_valid": true,
+    "local_links_valid": true,
+    "product_sources_11_unchanged": true,
+    "shared_environment_constraint_documented": true
+  },
+  "local_links_checked": 12,
+  "missing_links": [],
+  "all_passed": true,
+  "limitations": "実験の起動・保護・停止・利用量回収の成立はこの検証の対象外。"
+}

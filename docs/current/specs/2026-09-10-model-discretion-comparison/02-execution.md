@@ -33,6 +33,8 @@ ADR-0173により、Claude・既存手順の限定事前確認1回では親子�
 
 ## 実行順
 
+2026-09-10、ADR-0174の個別承認で、同じ場所・同内容書き戻しのプラグイン有無診断を親CLI2回・子なしで実施した。なし側はWrite成功、あり側はsensitive file判定で拒否。診断2回は完了し追加起動は停止。本比較の条件・承認・成立基準は変えず、編集境界の未成立を維持する。詳細は `docs/records/experiments/2026-09-10-model-discretion-preflight-results.md` の診断結果を参照。
+
 | run_id | モデル | 題材 | 条件 |
 |---|---|---|---|
 | codex-bug-discretion | GPT-6-Astra | 日時 | モデル裁量 |

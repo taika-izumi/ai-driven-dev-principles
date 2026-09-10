@@ -217,3 +217,27 @@ control/preflight.jsonの古い記述を最新証拠と照合し、更新前をc
 次のモデル診断候補は `.tmp/model-discretion-execution/launch-runtime-ready-write-candidate.json`。Opus 5/high、親CLI1回・子なし、Read1回と同じ無害文字列のWrite1回。既存プラグインあり診断の引数へ、確認済みsession-env許可とsession-idを追加し、ログ先だけ分離。元のOS保護と送信範囲（公開指示・公開手順・無害文字列と操作結果）を維持し、認証・設定をコピーしない。概算1分、既存Max枠を使用。新規保存先はdiagnostic-plugin-on-runtime-ready-normal、対象ハッシュは不変と確認済み。起動フラグfalseで、追加のモデル起動は未実施・個別判断待ち。成功しても親子全体の成立とはせず、残件へ必要な確認だけ進む。
 
 ADR-0176の確定確認: 比較仕様の通常認証・コピーなし・保護維持という条件と、指定した実行時領域1件だけの追加が一致。初回失敗から管理側の事前作成へ補正した理由と追加1回を記録し、無変更の反復と区別。モデルを起動しない準備と、次のモデル送信を分離し、既存先は停止・初回結果は保全・補正後の実体を確認して記録する経路で二重実行なし。既存仕様のモデル・題材・8実行・各30分・計240分は変更なし、新規規範なし。タイトルは通常認証を保つ実行時領域の選択1件に対応し、指摘なし。
+
+## 起動準備後のWrite確認の起動失敗（2026-09-11）
+
+ユーザーがWrite診断1回へ「1で」と回答したため、ADR-0177の承認パケットを保存して起動した。最初の起動処理は1.4590488秒で終了コード1、stderrは `windows sandbox failed: CreateProcessWithLogonW failed: 1783`、events.jsonlは0バイト。Claude開始前の失敗と確認し、同じ承認済みモデル依頼を成立させるため起動処理だけを1度再実行した。再実行も1.4735188秒で同じエラー、モデルログ0バイト。以後の反復を停止した。
+
+Read・Writeとも未実施。sensitive file拒否の再発、フックの失敗、解消のいずれとも判定しない。両起動処理は終了し、捕捉した子孫の未終了0件、固定プラグインの前後照合成功、作業場所の既存ファイル変更0件、保護マーカー不変。今回のモデル開始0回、過去のモデル診断13回・本比較0回・init-only3回を維持し、Windows起動失敗2回を別計数した。
+
+証拠はcontrol/launch-packet/runtime-ready-write-summary.json、diagnostic-plugin-on-runtime-ready-normalとdiagnostic-plugin-on-runtime-ready-startup-retryのresult・stderr・verification。モデル承認パケットはlaunch-runtime-ready-write-approved-1.json。control/preflight.jsonとbudget.jsonを起動前ブロックへ更新した。次はWindowsサンドボックスの起動経路を調べる。同条件でのモデル起動を繰り返したり、保護を外して回避したりしない。
+
+ADR-0177確定確認: ユーザーの個別承認とモデル・題材・送信範囲は一致。起動前に対象内容と保存先を照合し、初回のモデル未開始を実ログで確認後に起動処理を1度再実行、再失敗後は停止して未実施を記録した。新規規範・比較仕様変更なし。モデル診断1回の承認を複数のモデル実行へ拡張していない。Windows起動失敗とClaudeの権限判定を混同せず、タイトルと決定はWrite確認1件に対応する。
+
+## 起動経路補正後のWrite確認結果（2026-09-11）
+
+同条件の直接起動反復を止め、モデルを呼ばない診断へ進んだ。同じ権限・環境のPowerShell即終了コマンドはコメント20文字・9000文字とも終了0、Claude --versionも成功した。診断引数一式に--helpを足しただけでは1783で起動前失敗。単純な長さだけでは説明できず、直接起動時の引数の渡し方が関係する可能性を残す。Windows内部の原因は未特定。短いcmd起動は1783でなく構文エラーだったため、正常起動の対照にはPowerShellを使用した。
+
+元のClaude引数配列と依頼本文を試験作業場所のruntime-temp/argv-relayへ保存し、一致を読み直した。同じサンドボックス内でPythonのsubprocess.runから元の引数・本文を渡す中継を使うと、まず--helpが成功した。OS保護・モデル・入力・認証先は変更せず、承認済みモデル依頼をこの経路で1回実行した。中継は保護外の管理者プロセスからClaudeを直接起動する方法ではない。
+
+結果は18.8731206秒、終了コード0。initはOpus 5[1m]・acceptEdits・指定プラグイン2件、子0。SessionStartはexit_code=0・successで、追加コンテキスト3321文字を受領。Read1回は成功し、同内容Write1回はsensitive file判定で拒否された。**フック起動失敗の解消だけではWrite拒否は解消しない**と判断できる。中継による起動経路も従来と異なるため、より強い単一原因の断定はしない。
+
+対象SHA256は `2A6CB9C043892717562D6253BECD079FD4662ACF2FEAD60A8723AEA4B4CC2567` で不変、保護マーカー不変、固定プラグイン前後照合成功、親と捕捉子孫は終了した。作業場所の既存変更はCLIのruntime-temp/latest参照のみ。モデル利用量はOpusの入力6・キャッシュ作成6180・キャッシュ読取22091・出力789。価格表換算0.0926005 USDは実請求額として扱わない。今回のモデル実行1回、累計14回、本比較0回。
+
+証拠はcontrol/launch-packet/diagnostic-plugin-on-runtime-ready-argv-relayのevents・result・verification、中継の保存引数・本文・コード・help-verificationはruntime-temp/argv-relay。非モデル診断は本リポジトリの.tmp/model-discretion-execution/windows-startup-*.json。初期の起動前失敗2回の実体は保全し、runtime-ready-write-summary.jsonとpreflight.jsonは今回の最終結果へ更新した。通常認証を維持したフック準備は成立したが、許可内Write条件はfailのまま。
+
+今回の補正は承認済み1回を同じ権限・モデル・入力で起動する実装詳細で、新規比較・保護縮小ではない。起動前失敗→無変更反復停止→非モデルの対照確認→中継ヘルプ成功→1回の実モデル→拒否記録・追加停止の順で確認した。ADR-0177に同一決定の実装補正と改訂記録を追記した。

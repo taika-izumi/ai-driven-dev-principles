@@ -1,9 +1,9 @@
 # Handoff: モデル裁量と既存手順の比較準備
 
 - **Branch**: master
-- **Last Updated**: 2026-09-11 00:10 (Asia/Tokyo)
+- **Last Updated**: 2026-09-11 00:24 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 通常認証先での起動準備完了 / モデルWriteの確認候補を提示
+- **Current Phase**: 承認済みWrite診断完了 / フック正常起動でもsensitive file拒否
 
 ## 作業の目的・背景
 
@@ -41,6 +41,10 @@
 - [x] 実行計画を追加レビュー見送りで確定し、Task 2の入力資材とTask 3の固定検査を作成。原版の不合格・正常例の合格・誤実装5例の検出を確認（2026-09-10）。
 
 ## 進行中のタスク
+
+- 最新結果（2026-09-11）: ADR-0177のモデル診断1回を同じsandbox内の引数中継で実行。フック正常・Read成功でもWriteはsensitive file拒否。モデル累計14回、本比較0回。起動前失敗2回は保全。事前確認結果の最終節を参照。
+
+- 最新（2026-09-11）: ユーザーがWrite1回を承認（ADR-0177）。Windows起動処理が2回ともCreateProcessWithLogonW 1783で失敗、Claude開始0・Read/Write未実施。追加反復停止。事前確認結果の起動失敗節とcontrol/launch-packet/runtime-ready-write-summary.jsonを参照。
 
 - 最新指示（2026-09-11）: 利用者が限定init-onlyを承認し検証準備完了を指示。ADR-0176で同じsession-envを事前作成し、フック起動成功。通常認証先・通信禁止を維持。次のモデルWrite1回候補を具体化済み、起動未承認。事前確認結果の最新節を参照。
 
@@ -94,6 +98,10 @@
 - `.worktrees/issue-0124-cost-comparison`とブランチは統合済み。未追跡のレビュー証跡のため保持。最新の完了状態はmaster側handoffを正とする。
 
 ## 節目ごとの確認記録
+
+- 2026-09-11 起動経路補正・Write診断完了: ADR=0177（実装補正の改訂記録） / worklog=棄却（既存の原因切り分け・同一入力照合を適用）
+
+- 2026-09-11 Write診断の起動失敗・ADR-0177 Accepted 昇格: ADR=0177 / worklog=棄却（既存の実ログ照合・同一失敗時停止を適用） / cyclecheck=実施（指摘なし）
 
 - 2026-09-11 通常認証先の起動準備・ADR-0176 Accepted 昇格: ADR=0176 / worklog=棄却（既存の原因別補正・実体照合を適用） / cyclecheck=実施（指摘なし）
 
@@ -149,10 +157,12 @@
 ## 次セッション開始時のアクション
 
 1. 事前確認結果の「同じ作業場所でのプラグイン有無診断の結果」とADR-0174を読む。なし側成功・あり側拒否を出発点とし、実施済み2回を再実行しない。
-2. 事前確認結果の最新節とlaunch-runtime-ready-write-candidate.jsonを読む。通常認証先でのinit-onlyは成功済み。次は親CLI1回・Read/Write各1回のモデル診断を個別判断。親子Write・Codex保護先・補正後一覧等の残件はcontrol/preflight.jsonを参照。
+2. 事前確認結果の最終節を読む。ADR-0177は実行済み。フック成功でもWrite拒否が残るため、フック準備を再検証せず、プラグイン読込とパス判定の残る条件から調べる。追加モデル起動は別判断。残件はcontrol/preflight.jsonを参照。
 3. 本比較・非公開コード送信・通常設定変更は未承認。時間下限値・未追跡証跡・stash・試験資材を保持する。中断中の隔離検証は再開対象外。
 
 ## 重要な意思決定の履歴
+
+- ADR-0177: フック準備後のWrite1回を個別承認（Accepted、2026-09-11）。同一sandbox内の中継で実行済み。フック成功・Write拒否。
 
 - ADR-0176: 通常認証先で指定session-env1件だけwriteとし起動準備を確認（Accepted、2026-09-11）。管理側での事前作成後にフック成功、モデルWrite未確認。
 

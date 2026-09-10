@@ -50,7 +50,7 @@ Claudeの過去診断は `docs/records/experiments/2026-09-10-model-discretion-p
 
 ## 実行資料と採点接続
 
-試験ルートのcontrol/launch-packet/openai-comparison-20260911.jsonに8実行・12段階を保存する。control/runtime/run-openai-comparison.ps1は準備完了・起動許可・依頼とmanifestのハッシュ・未終了の比較・再開の前提を確認し、各実行と全体の残時間を外側で計数する。起動後はcontrol/runtime/analyze-codex-preflight.ps1で子孫の公式記録を回収する。
+試験ルートのcontrol/launch-packet/openai-comparison-20260911.jsonに8実行・通常12段階を保存する。ADR-0182の仕様回答による第一段階の追加継続を1段階加え、今回の起動段階は13。相談前の段階と同じrun_idで時間を合算し、同じ会話の利用量は応答の重複を除く。control/runtime/run-openai-comparison.ps1は準備完了・起動許可・依頼とmanifestのハッシュ・未終了の比較・再開の前提を確認し、各実行と全体の残時間を外側で計数する。起動後はcontrol/runtime/analyze-codex-preflight.ps1で子孫の公式記録を回収する。
 
 採点はcontrol/runtime/grade-openai-comparison.ps1を使う。元のcontrolのdenyを保ち、停止済み成果物・固定検査を採点専用コピーへ複製する。採点コピーだけをwriteとし、原本・相手成果・通常設定・共有Pythonへ変更できない公式サンドボックス経路を使う。ROOTと固定依存の起動先だけをコピーに対応させ、機能の検査条件は変えない。採点コピーの改変に対する偽装耐性を保証しないことは仕様03の限界に含む。
 

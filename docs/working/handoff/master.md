@@ -2,13 +2,15 @@
 
 - **Branch**: master
 - **Last Updated**: 2026-09-11 07:55 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 本比較 / 日時4実行完了、小機能第一段階が仕様回答待ち
+- **Status**: in_progress
+- **Current Phase**: 本比較 / Astra既存手順の小機能第二段階を新規セッションで実行中
 
 ## 作業の目的・背景
 
 モデルに進め方を任せる条件と現行手順の便益・負担を比較し、過剰な指示の見直しを優先する。2026-09-11、ユーザーは環境構築の負担を理由にOpenAIモデルで検証する方針へ変更し、Astraだけへの縮小を訂正してSolとの2モデル比較を指示した（ADR-0180）。既存の2題材・固定検査を再利用し、日時の対比較から始める。Claudeと今回比較のためのsbx整備は保留。他モデルへの一般化と共通指示の一括削減は行わない。
 ## 関連ドキュメント
+
+- 第一段階の未知IDへの回答はADR-0182。追加継続段階はcodex-feature-guideline-first-answer。起動段階13・実行数8。
 
 - 本比較の実行記録: docs/records/experiments/2026-09-11-openai-comparison-execution.md。Sol/lowへの変更はADR-0181。
 
@@ -90,6 +92,8 @@
 - `.worktrees/issue-0124-cost-comparison`とブランチは統合済み。未追跡のレビュー証跡のため保持。最新の完了状態はmaster側handoffを正とする。
 
 ## 節目ごとの確認記録
+
+- 2026-09-11 第一段階の仕様回答反映・ADR-0182 Accepted 昇格: ADR=0182 / worklog=棄却（個別回答と既存の条件照合。起動補正は実行記録に保存） / cyclecheck=実施（指摘なし）
 
 - 2026-09-11 日時4実行完了・小機能仕様回答待ち: ADR=なし（未定義挙動の相談を保存） / worklog=棄却（既存の相談停止・残時間保存を適用）
 

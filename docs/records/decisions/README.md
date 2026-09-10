@@ -154,5 +154,7 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0146](0146-delegate-verification-from-claude-to-codex.md) | 開発の主担当を維持し、Claude CodeとCodexから共通の検証担当を呼ぶ | Accepted | 2026-09-09 |
 | [0147](0147-use-common-cli-for-isolated-verification.md) | 検証の共通入口をCLIに置き、準備・実行・回収の責務を分ける | Accepted | 2026-09-09 |
 | [0148](0148-initialize-independent-git-metadata-for-verification.md) | 検証用コピーに独立したGit管理領域を作る | Accepted | 2026-09-09 |
+| [0163](0163-prioritize-guideline-operating-cost-improvements.md) | ロードマップでは確認工程の費用と判断の適用不全への対処を先行する | Proposed | 2026-09-10 |
 | [0164](0164-exclude-behavior-preserving-observations-from-full-review-default.md) | 利用条件を変えない実測結果の追記を初回フルレビューの強い推奨から除外する | Accepted | 2026-09-10 |
 | [0165](0165-apply-cost-comparison-before-review-disposition.md) | レビュー指摘の費用比較は既存の採否手順と対応表に組み込み、自動検査は最終手段とする | Accepted | 2026-09-10 |
+| [0166](0166-compare-model-discretion-before-detailed-workflows.md) | 独自の開発手順を詳細化する前にモデルへ進め方を任せる比較を行う | Accepted | 2026-09-10 |

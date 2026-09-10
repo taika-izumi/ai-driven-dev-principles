@@ -8,7 +8,7 @@
 
 **技術:** Windows、PowerShell、Python標準ライブラリ・pytest、Codex CLI 0.153.4、Claude Code 2.1.267。
 
-**仕様:** [概要と3ブロック](../../current/specs/2026-09-10-model-discretion-comparison/00-overview.md)。仕様はフル1回・差分1回・機械検証1回を経て確定済み。本計画は確定した仕様との対応確認を終え、計画確定点の判断待ち。
+**仕様:** [概要と3ブロック](../../current/specs/2026-09-10-model-discretion-comparison/00-overview.md)。仕様はフル1回・差分1回・機械検証1回を経て確定済み。2026-09-10、ユーザーが追加レビューを見送り、計画を確定して準備へ進む選択肢に「1で。」と回答。本計画は確定済み。
 
 ## 全体制約
 
@@ -16,7 +16,7 @@
 - 8実行・各30分・作成側240分・準備と外側検査60分・実行段階全体300分。子と再開を同じ実行へ合算。
 - 元版は `86d89a8091de8366161569a7771affb0ff279607`。元のLoopForAlpha、既存WorkflowTrials/run-*、中断中のworktreeは変更しない。
 - 作成側の領域と、検査原本・相手成果物の領域を分ける。設定分離・境界・親子停止を実測するまで比較を起動しない。
-- 実装時レビューへの引き継ぎ指摘: 現時点でなし（確定前レビュー未実施）。逸脱判断はstart-workの `references/plan-deviation-defaults.md` を適用する。
+- 実装時レビューへの引き継ぎ指摘: なし（仕様レビューの指摘は反映済み、計画の追加レビューはユーザーが見送り）。逸脱判断はstart-workの `references/plan-deviation-defaults.md` を適用する。
 - 今回の成果物は比較の準備資料。試験用スクリプト・人工ログの作成は以下のタスクで行い、既に実装済みとは扱わない。
 
 ## Task 1: 起動条件を確かめ、可能な操作だけに絞る
@@ -25,7 +25,7 @@
 **出力:** 試験用領域の `control/preflight.json`。各確認項目はpass/fail/unknownと証拠を持つ。
 **受け渡し:** Task 4の承認提示へは、非モデル確認の結果と具体的な起動引数案を渡す。モデル起動が必要な項目はunknownのままでよい。全項目passはTask 4の事前実測後、本比較の開始直前に要求する。
 
-- [ ] 次の非モデル実行コマンドを通常ユーザーの権限で確認する。認証情報本文を表示しない。
+- [x] 次の非モデル実行コマンドを通常ユーザーの権限で確認する。認証情報本文を表示しない。
 
 ```powershell
 codex --version
@@ -53,8 +53,8 @@ claude --help
 **入力:** 仕様01の取得対象と題材依頼。
 **出力:** 共通入力のハッシュと固定開始版。各実行のコピーはTask 4でこのbaselineから作る。
 
-- [ ] 対象ディレクトリが既存なら上書きしない。実体と用途を確認する。新規なら許可された範囲内で作成し、同名の既存試験と混ぜない。
-- [ ] 次のコマンドで指定版の限定ファイルを取得する。既存の作業ツリーをコピーしない。
+- [x] 対象ディレクトリが既存なら上書きしない。実体と用途を確認する。新規なら許可された範囲内で作成し、同名の既存試験と混ぜない。
+- [x] 次のコマンドで指定版の限定ファイルを取得する。既存の作業ツリーをコピーしない。
 
 ```powershell
 git -c safe.directory=D:/Dev/001_Trade/LoopForAlpha -C D:/Dev/001_Trade/LoopForAlpha archive --format=zip --output=D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910/source.zip 86d89a8091de8366161569a7771affb0ff279607 tools/process_trace tests/test_process_trace_records.py tests/test_process_trace_session.py tests/test_process_trace_tables.py
@@ -63,7 +63,7 @@ Expand-Archive -LiteralPath D:/Dev/002_AiDev/WorkflowTrials/model-discretion-202
 
 期待値: tools/process_trace内の8 Pythonファイルと既存テスト3本を取得。元リポジトリの.env、実データ、会話履歴、Git管理領域、設定ファイルは含まれない。実際の `git ls-tree -r --name-only` と照合し、数が違えば開始版の実体を確認して期待値を訂正する。
 
-- [ ] 次の固定取得元から、通常の導入先を変更せず条件用資料を複製する。templateは公開時コミットの10ファイルを使う（同コミットの実在と一覧を確認済み）。存在しないv0.1.26タグは使わない。
+- [x] 次の固定取得元から、通常の導入先を変更せず条件用資料を複製する。templateは公開時コミットの10ファイルを使う（同コミットの実在と一覧を確認済み）。存在しないv0.1.26タグは使わない。
 
 ```powershell
 $trialRoot = 'D:/Dev/002_AiDev/WorkflowTrials/model-discretion-20260910'
@@ -88,7 +88,7 @@ foreach ($package in $packages) {
 
 取得物の相対パス・SHA256と版をmanifestへ保存し、コピー元との一致を確認する。templateの版は `guideline_template_commit=f5229a836156e9a502f2fbde5a5ffddcb2509256` として記録する。取得物を勝手に更新しない。template-source/templateの内容は既存手順条件の作業コピーへだけ配置し、2プラグインのコピーは同条件の試験専用読み込み設定へ渡す。モデル裁量条件へは配置・有効化しない。実際の設定と親子への継承はTask 4で確認する。
 
-- [ ] `public-fixtures/bug/` と `public-fixtures/feature/` を分け、次の親ログをUTF-8で保存する。本文の検査文字列は全条件共通。日時題材の追加例は `bug/alpha.jsonl` の3行目と同じ形式で、時刻を `invalid` とキー欠落に変える。小機能の `feature/alpha.jsonl` は先頭2行だけにして、日時題材の不具合と混ぜない。
+- [x] `public-fixtures/bug/` と `public-fixtures/feature/` を分け、次の親ログをUTF-8で保存する。本文の検査文字列は全条件共通。日時題材の追加例は `bug/alpha.jsonl` の3行目と同じ形式で、時刻を `invalid` とキー欠落に変える。小機能の `feature/alpha.jsonl` は先頭2行だけにして、日時題材の不具合と混ぜない。
 
 ```jsonl
 {"type":"user","timestamp":"2026-09-01T00:00:00Z","origin":{"kind":"human"},"message":{"content":"BODY_SENTINEL_ALPHA"}}
@@ -106,9 +106,9 @@ foreach ($package in $packages) {
 {"type":"user","timestamp":"2026-09-01T00:20:00Z","origin":{"kind":"human"},"message":{"content":"BODY_SENTINEL_GAMMA"}}
 ```
 
-- [ ] 両題材の `alpha/subagents/agent-fixture.jsonl` には親例のassistant行を複製し、message.idをそれぞれ `m-child-1` と `m-child-2` に、時刻を有効値・タイムゾーンなし値へ変えた2応答を保存する。選択機能用では両方を有効時刻にする。
-- [ ] 題材依頼は仕様01の引用文をそのまま保存する。共通の製品説明と権限・上限・報告要求を別ファイルへまとめる。解法・正解コードは含めない。
-- [ ] 取得ファイル、人工ログ、依頼、追加するガイドライン一式のSHA256をmanifestへ記録する。設定に必要な製品情報を片方だけから除去しない。
+- [x] 両題材の `alpha/subagents/agent-fixture.jsonl` には親例のassistant行を複製し、message.idをそれぞれ `m-child-1` と `m-child-2` に、時刻を有効値・タイムゾーンなし値へ変えた2応答を保存する。選択機能用では両方を有効時刻にする。
+- [x] 題材依頼は仕様01の引用文をそのまま保存する。共通の製品説明と権限・上限・報告要求を別ファイルへまとめる。解法・正解コードは含めない。
+- [x] 取得ファイル、人工ログ、依頼、追加するガイドライン一式のSHA256をmanifestへ記録する。設定に必要な製品情報を片方だけから除去しない。
 
 検証: baselineをcwdに `python -B -m pytest -p no:cacheprovider` で対象3本を明示して実行し、終了コードと実行・成功・失敗・スキップ・エラー数を保存する。今回、通常ユーザー権限の `D:/Dev/001_Trade/LoopForAlpha/.venv/Scripts/python.exe` では23件成功・スキップ0だった。これは固定された原版の確認結果であり、生成された候補コードを通常ユーザー権限で実行する指定ではない。実際の試験用プロファイルで元リポジトリ・Python本体・依存パッケージへ変更できない状態で利用できるかを確認する。必要テストのスキップ・0件実行はpassにしない。pytest不足なら自動インストールせず既存環境を確認する。元の製品全テストを本試験用コピーへ持ち込まない。
 
@@ -118,8 +118,8 @@ foreach ($package in $packages) {
 **入力:** 仕様03のBUG-01〜05、FEATURE-01〜04、COMMON-01〜02。
 **出力:** 検査原本のハッシュと正常・不合格例の実施記録。作成側へ原本を書き込み可能にしない。
 
-- [ ] 固定検査は作成側のconftest等を読み込まない外側のテスト環境で実行する。公開例とは値が異なる人工ログを使用し、仕様外の要求を追加しない。
-- [ ] 日時関数を直接確かめる部分は次の内容を用いる。対象ソースは環境変数 `COMPARISON_CANDIDATE` で外側から指定する。原版ではタイムゾーンなし値の検査が失敗することを先に確認する。
+- [x] 固定検査は作成側のconftest等を読み込まない外側のテスト環境で実行する。公開例とは値が異なる人工ログを使用し、仕様外の要求を追加しない。
+- [x] 日時関数を直接確かめる部分は次の内容を用いる。対象ソースは環境変数 `COMPARISON_CANDIDATE` で外側から指定する。原版ではタイムゾーンなし値の検査が失敗することを先に確認する。
 
 ```python
 import importlib
@@ -154,11 +154,11 @@ if __name__ == "__main__":
     unittest.main()
 ```
 
-- [ ] CLI検査はサブプロセスで `python -B -m tools.process_trace INPUT --out-dir OUTPUT` を実行し、終了コード・4CSV・入力ハッシュを読む。引数は配列で渡す。指定機能では `--session-id alpha --session-id gamma --session-id alpha` を追加し、全CSVのsession_id集合が `{alpha,gamma}` の部分集合、sessionsのID列が `alpha,gamma` の各1行、seqが順に1・2で各CSVの存在する行の対応が一致することを検査する。該当種類の入力記録がないCSVに行を要求せず、入力にある関連行の省略は認めない。
-- [ ] 不明時刻の親・子を含む日時例で、CLI終了コード0と集計件数・空欄を確認する。全不明時刻の親ログにはタイムゾーンなし値・無効文字列・時刻キー欠落を各1件以上入れ、first_ts・last_ts・wall_minutesが空欄でhuman_turnsが入力の人間レコード数と一致することを検査する。
-- [ ] 未知ID検査は同じ成果物のFEATURE-02が合格した後に評価し、合格しなければ前提未成立として未観測にする。終了コード0だけで成功対照成立とはしない。4出力へ異なる検査文字列を書き各SHA256を保存し、`--session-id alpha --session-id nonexistent` の終了コード2、stderr内のnonexistent、4ハッシュ不変を検査する。指定なしの出力は開始版の同一人工ログから得た4CSVとバイト比較する。
-- [ ] BODY_SENTINELとASSISTANT_SENTINELで始まる全文がCSVへないこと、公開列が開始版と一致すること、入力ハッシュ不変を検査する。
-- [ ] 採点側だけに置く正常例と、仕様03の誤実装例で各検査のpass/failを照合する。コードの構文エラーを仕様不合格の証拠にしない。検査が正常例を落とす、誤実装を通す場合は本比較前に修正する。
+- [x] CLI検査はサブプロセスで `python -B -m tools.process_trace INPUT --out-dir OUTPUT` を実行し、終了コード・4CSV・入力ハッシュを読む。引数は配列で渡す。指定機能では `--session-id alpha --session-id gamma --session-id alpha` を追加し、全CSVのsession_id集合が `{alpha,gamma}` の部分集合、sessionsのID列が `alpha,gamma` の各1行、seqが順に1・2で各CSVの存在する行の対応が一致することを検査する。該当種類の入力記録がないCSVに行を要求せず、入力にある関連行の省略は認めない。
+- [x] 不明時刻の親・子を含む日時例で、CLI終了コード0と集計件数・空欄を確認する。全不明時刻の親ログにはタイムゾーンなし値・無効文字列・時刻キー欠落を各1件以上入れ、first_ts・last_ts・wall_minutesが空欄でhuman_turnsが入力の人間レコード数と一致することを検査する。
+- [x] 未知ID検査は同じ成果物のFEATURE-02が合格した後に評価し、合格しなければ前提未成立として未観測にする。終了コード0だけで成功対照成立とはしない。4出力へ異なる検査文字列を書き各SHA256を保存し、`--session-id alpha --session-id nonexistent` の終了コード2、stderr内のnonexistent、4ハッシュ不変を検査する。指定なしの出力は開始版の同一人工ログから得た4CSVとバイト比較する。
+- [x] BODY_SENTINELとASSISTANT_SENTINELで始まる全文がCSVへないこと、公開列が開始版と一致すること、入力ハッシュ不変を検査する。
+- [x] 採点側だけに置く正常例と、仕様03の誤実装例で各検査のpass/failを照合する。コードの構文エラーを仕様不合格の証拠にしない。検査が正常例を落とす、誤実装を通す場合は本比較前に修正する。
 
 完了条件: 11個の検査IDそれぞれがどの検査コード・人工ログ・期待値へ対応するかを記録でき、題材ごとの必要検査が正常例を通す。原版ではFEATURE-02・03が不合格、FEATURE-04は成功対照を満たさず未観測になる。後退検査の個々がすべて原版で失敗することは要求せず、検査一式の識別力を確認する。
 
@@ -190,4 +190,11 @@ if __name__ == "__main__":
 
 本計画は具体的な準備順を定めるが、起動経路の成立は未実測である。Task 1で成立しない場合にも停止できる計画として扱う。実行準備完了・モデル比較済みとは報告しない。
 
-確定前レビュー: 仕様に対してclaude-opus-5の1体4観点フル実施を1回、差分再確認を新規1体で1回実施した。[初回対応](../../records/reviews/2026-09-10-model-discretion-spec-r1.md)、[差分再確認の対応](../../records/reviews/2026-09-10-model-discretion-spec-r2.md)、[機械検証と仕様確定](../../records/reviews/2026-09-10-model-discretion-spec-finalization.md)を参照。仕様確定点は実質的な収束として終了。本計画のコード例・対応タスクも仕様レビュー内で確認されているが、計画確定点の実施判断とは区別する。計画は未レビューの新規規範を追加しない写像であり通常型と判定し、追加の独立レビューを見送って確定する案を推奨する。ユーザーが追加レビューを選ぶ場合は1体4観点を候補とする（概算5〜10分、未実測）。上流要件の写像漏れを完全に保証する判断ではない。
+確定前レビュー: 仕様に対してclaude-opus-5の1体4観点フル実施を1回、差分再確認を新規1体で1回実施した。[初回対応](../../records/reviews/2026-09-10-model-discretion-spec-r1.md)、[差分再確認の対応](../../records/reviews/2026-09-10-model-discretion-spec-r2.md)、[機械検証と仕様確定](../../records/reviews/2026-09-10-model-discretion-spec-finalization.md)を参照。仕様確定点は実質的な収束として終了。本計画のコード例・対応タスクも仕様レビュー内で確認されているが、計画確定点の実施判断とは区別する。計画確定点は通常型として提示し、2026-09-10にユーザーが追加レビュー見送りと準備への進行を選択した。上流要件の写像漏れを完全に保証する判断ではない。
+
+
+## 実行記録
+
+2026-09-10、Task 2・3の資材と検査を作成。原版は両題材で不合格、正常例は必要項目全て合格、誤実装5例を検出した。Task 1は入力表示・非モデルの親子書き込み境界・ローカル子孫停止・保護下のClaude認証まで確認。実モデルの確認と、複製したプラグインを実ロードする方法は未完了。Task 4・5は未着手。
+
+詳細と証拠は [準備記録](../../records/experiments/2026-09-10-model-discretion-preparation.md)。準備・採点60分枠を約59.9分使用したため、モデル起動前で停止。上限変更の判断待ち。逸脱照合: 計画の資材・検査要件と一致。Task 1の未確定事項を推測で埋めず、後続起動を保留している。

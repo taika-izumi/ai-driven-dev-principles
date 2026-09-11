@@ -1,0 +1,2546 @@
+{
+  "revision": "15bc4aab5f3509f6f55fc7f78155821f6a9e9537",
+  "manifest": {
+    "revision": "15bc4aab5f3509f6f55fc7f78155821f6a9e9537",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "bytes": 9317,
+        "sha256": "17793c481b41ac0103c856a0b165d92313ac8c132245db77574c8ef8c1d618eb"
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "bytes": 63091,
+        "sha256": "124f72f6d642be3ab873404a8d5960c2ab86a3fd51b93ce85985bcfea4bcf0dd"
+      },
+      {
+        "path": "README.md",
+        "bytes": 16493,
+        "sha256": "070efc025f56183baf48f672d5a99622a65da65ac44bebbf947e1c9ead2287f1"
+      },
+      {
+        "path": "docs/current/development-roadmap.md",
+        "bytes": 51702,
+        "sha256": "b4f58960f8faaf358c0773aaa1908d6bd5209437e197883f136e41263e4afdbf"
+      },
+      {
+        "path": "docs/current/specs/2026-04-12-meta-guidelines-design.md",
+        "bytes": 12873,
+        "sha256": "8913d479a6c3f96915f77d1a68fd03365c6436dd5d049e21952b4312774b0f22"
+      },
+      {
+        "path": "docs/current/specs/2026-04-13-contributing-and-gateway-skill-design.md",
+        "bytes": 7147,
+        "sha256": "0a71ecd5b057d18f3322c71c351184081d97b7231d547ea31b8d1370e1b65016"
+      },
+      {
+        "path": "docs/current/specs/2026-04-13-template-folder-and-sync-design.md",
+        "bytes": 6875,
+        "sha256": "faa6ec224b9aee1a84791555022c5f6336645d38e66eeef9c247e68990c29105"
+      },
+      {
+        "path": "docs/current/specs/2026-04-25-record-strengthening-design.md",
+        "bytes": 25951,
+        "sha256": "7893d33ede3f5b4806f405b29f4a9387a193ba98068153d08ecb2a7dd72f1143"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/00-overview.md",
+        "bytes": 12995,
+        "sha256": "524574e4cdf8dd049c930da016aadf06bb3a1056387a8e48006f5293b3f7634e"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/01-skill-feature-block-design.md",
+        "bytes": 8900,
+        "sha256": "fd601bb6bf8f64dfe4cf8b86d078a2fc45fdd447b6e0552ac9812666ee0217e5"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/02-principle-extension.md",
+        "bytes": 3263,
+        "sha256": "cbfd7ee033857a48a59f0f8f3644abc54724cadb5ecfc662fc7ffb8bd6350d35"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/03-instructions-update.md",
+        "bytes": 4839,
+        "sha256": "9e47048e3c0c5f03126e61a7e7dd2302a8dd469d1344d15de49654a3edb0790c"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/04-template-and-docs-sync.md",
+        "bytes": 2565,
+        "sha256": "14250ab876b876858367cade47e81ccf545bdad4664c43dcf126aaa77fc08b59"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-retrospective-design.md",
+        "bytes": 13975,
+        "sha256": "d26bc2aef615e8a635cf274a988691da790ecec9a969794e3e0e9dba557d3e7c"
+      },
+      {
+        "path": "docs/current/specs/2026-06-15-naming-clarity-discipline-design.md",
+        "bytes": 3768,
+        "sha256": "d4ebdc7989ca6b17d4cee002e6bd726cabe6fc874810a337725258ba008b44e4"
+      },
+      {
+        "path": "docs/current/specs/2026-06-16-choice-with-recommendation-design.md",
+        "bytes": 4389,
+        "sha256": "55d8f32789ebfcd2b0d4c765182213a6fe77b573c9ac8f72d38f1cbd40eff5d7"
+      },
+      {
+        "path": "docs/current/specs/2026-06-16-claude-code-support-design.md",
+        "bytes": 7221,
+        "sha256": "b131338314358dc4d8256f7047e1959eb17610371ad6684ec0bb65ebf873d496"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/00-overview.md",
+        "bytes": 9419,
+        "sha256": "55255103aafbdfaec97e1804f1b54beedbfc2ec989145320276ec7334cbc523c"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/01-folder-structure-definition.md",
+        "bytes": 7490,
+        "sha256": "f8e52b4117cfafd4e52692a4b93f651d51d468f985440f9d3636005a26495c81"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/02-organize-inbox-skill.md",
+        "bytes": 4759,
+        "sha256": "402ef109d265f20c8b1050f888d648d0e304d7a6082ea85a0e4318df216f4302"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/03-skill-path-updates.md",
+        "bytes": 4040,
+        "sha256": "d44f5134475147439db54ae70d18324280ede833eb2c24e6380af23861b4fac4"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/04-layer-docs-updates.md",
+        "bytes": 4096,
+        "sha256": "56a27b8a7a90a6cfa7e90c688b0557d7d7c61f083c112c21aa2a32633900d9a0"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/05-template-sync-update.md",
+        "bytes": 3441,
+        "sha256": "2860d457ce69dec5d538c9d6543d2e7fb104079fc68faee975f110871d03713d"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/06-repo-docs-migration.md",
+        "bytes": 4637,
+        "sha256": "7c30f74040b11f6796f17e0dd949913395e92745a7206aa254249da65acf19d8"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-record-process-norms-design.md",
+        "bytes": 5905,
+        "sha256": "fd77960632ba7c337200f5e05f443cdbb7e84a9384eeadebcbe9f64a5333d305"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/00-overview.md",
+        "bytes": 6600,
+        "sha256": "a1a7027dbbe8a09cffb3c05c19cfe151ce982c0198c64cd9f64ddc1c8086afda"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/01-issue-management-structure.md",
+        "bytes": 5520,
+        "sha256": "5bb2f652169c8b3664b1422bdb10d9b0b4217e6b7a72a6202ddd5ee32cac5d91"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/02-retrospective-ticketing.md",
+        "bytes": 3604,
+        "sha256": "6822205f0b74db337975bf0778a9a834be6d5b36c00b3e910c2ca9e63e1e703d"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/03-related-doc-consistency.md",
+        "bytes": 3829,
+        "sha256": "c56bdeafbcad112cfbc4f7f4f3f690598636a1de611cf8e8bf967883cf1cd4c6"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/04-migration-and-sync.md",
+        "bytes": 4475,
+        "sha256": "3a3ee018d0dbd618a558a37da3c4d1f4e261994280fd9c7eb9d66e11072cb81d"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md",
+        "bytes": 8909,
+        "sha256": "87291cc06f54e4c603a06ad68724a8e13bc5141eb3a271923c3a9fdedd3d64ef"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/01-worklog-store.md",
+        "bytes": 7791,
+        "sha256": "7bbe9602791fd378f003a36fc7c56152d648bcdf78f1c692496fc78e9715e3b5"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/02-skill1-record.md",
+        "bytes": 4948,
+        "sha256": "eca6aa5b74d80c6ea7c56f6a04ad82f87617e0eb9f2e1105b90ffda49a3d78d7"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/03-skill2-extract.md",
+        "bytes": 4172,
+        "sha256": "66416a1d3e6f79ebb33aef938c7a2c92016918338b2157b23462f3f073846327"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/04-skill3-skillify.md",
+        "bytes": 4300,
+        "sha256": "e307da37c0d5d73d59cab6ffb9bb6248c9e9560971db7dbede89d773b8cc12c8"
+      },
+      {
+        "path": "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+        "bytes": 31771,
+        "sha256": "a778393c756f2a8e6f111f01345c3188458feb512bf1d0d0abd153e06ea84597"
+      },
+      {
+        "path": "docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md",
+        "bytes": 9870,
+        "sha256": "b81e8424888ba859adbaea3aaeebefd2abf6f42d256d77ca6c94dc0ceacbbe6f"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/00-overview.md",
+        "bytes": 17376,
+        "sha256": "85f7be305a99023a47eb20fff0997c9319a34ca82373aabd2dccaa93b3481d44"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md",
+        "bytes": 16162,
+        "sha256": "4afed99ff13c1a1dbd075291749a35e9df718c9d88ffee689bf1f72e0a7c5cab"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md",
+        "bytes": 19464,
+        "sha256": "14d4b6d610d33155116786b1ba3542225629ce0e5a1848d4437c5f2450f9ea96"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/03-template-sync-integration.md",
+        "bytes": 8738,
+        "sha256": "f8ee098659d0e6a19fe3708b4d70e1a4011a16672d66f1cdcd6487c07d109b48"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/04-plugin-distribution-layout.md",
+        "bytes": 8730,
+        "sha256": "168fff7ba2e024b8453d93c024b3565151f459509f8ac819b7e890836ea3f9de"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/05-source-migration.md",
+        "bytes": 13273,
+        "sha256": "d93643d7fe5e99099d9c31a540bbf075d6e5cca08245b4d711da62e0c9de5052"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-overfitting-check-for-extensions-design.md",
+        "bytes": 21878,
+        "sha256": "e2be44f99466b81f2d72b4d47ae887829ad8b9fb26f45a32c49fd773b841f0c2"
+      },
+      {
+        "path": "docs/current/specs/2026-08-13-handoff-bloat-control/00-overview.md",
+        "bytes": 10516,
+        "sha256": "fa1952abb0904faa21c392770a78f2e4331c6d22a4111f77c0e81928a5dbc2b6"
+      },
+      {
+        "path": "docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md",
+        "bytes": 7886,
+        "sha256": "69831730e5b27620a8c7d3fffb3e33c7131b81c996de85c5cb66413275d9a750"
+      },
+      {
+        "path": "docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md",
+        "bytes": 5626,
+        "sha256": "e3ea0bd0bd5eebbe0fbdee5881c7a4e310bcb12a3e93b695d178443e27f2c0b8"
+      },
+      {
+        "path": "docs/current/specs/2026-08-25-codex-support-design.md",
+        "bytes": 27980,
+        "sha256": "48c6e07559ce4e78468a12d077f973b93492935bb0ff923ee80638476d5f2e30"
+      },
+      {
+        "path": "docs/current/specs/2026-08-28-start-work-responsibility-split-design.md",
+        "bytes": 24895,
+        "sha256": "d570d478f45f5c501da86b1b8a7069f2b94c6ac3b9cc6a0856a00585036ca394"
+      },
+      {
+        "path": "docs/current/specs/2026-09-04-plain-language-vocabulary-design.md",
+        "bytes": 34033,
+        "sha256": "d4078a0e263b25bed6f3dfb119b2c5275a4740f30a02030e2ad6f107533f4502"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/00-overview.md",
+        "bytes": 9133,
+        "sha256": "03ea906ca759b5100e7fc4a56431b9ae6f94db6d5a10518d47e287e1421b601e"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/01-agreement.md",
+        "bytes": 4332,
+        "sha256": "9e62bb5310b1117b49d80d9cbbf75e70c0fb42312219a6ce37f0f4ac4de3bf3c"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/02-application.md",
+        "bytes": 5111,
+        "sha256": "8d7cd2f94f94d072ed8656d683ac848a991176d89418279857d9f35167d61f0e"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/03-continuation.md",
+        "bytes": 3650,
+        "sha256": "bd0cbffd25b4d8c439cfe219267d7f107005d6c2f8924eaf16225861a68a2884"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/00-overview.md",
+        "bytes": 8855,
+        "sha256": "8bde3ae83c1ffef958e432238939bf4fd951224c3c9a667d0b578b0c2499da75"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/01-request-and-copy.md",
+        "bytes": 4939,
+        "sha256": "bc680a9b302f44374051f9d47be6cfb6f876eed4f18d30f3add3d77d98c3ad12"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/02-isolated-execution.md",
+        "bytes": 6392,
+        "sha256": "e407e219b42eae79bd23f0bfd27cc4bb765571ab6a1e56d81da9ddfb77994426"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/03-result-collection.md",
+        "bytes": 4470,
+        "sha256": "33365a14bbd055702033be0ddc18361a75ddcd9207c2b030b32ce2f175142926"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/00-overview.md",
+        "bytes": 6124,
+        "sha256": "026374be3cd9aa82ea75d95a087f3cfddb0da6e84afbb02f4a853e1b030219fc"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/01-inputs.md",
+        "bytes": 7680,
+        "sha256": "e14406a135a48ff5b600b8966b9300f54fa23d631d10dbf2ab7d587e4e06d12e"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/02-execution.md",
+        "bytes": 9307,
+        "sha256": "560134471bf65b47079009f9393698625da0a1ea669dddd86c8abe8f0098abc1"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/03-assessment.md",
+        "bytes": 7676,
+        "sha256": "5e9c1da45922123a719ca29b0bdbfdf91a2ba40da28d217f0b4e9eff11ad4c20"
+      },
+      {
+        "path": "docs/overview/folder-structure.md",
+        "bytes": 10275,
+        "sha256": "f661a219f9dbac99f6df4cb63e6e74972a8e4e18703f463eecf2826465e05814"
+      },
+      {
+        "path": "docs/overview/issue-management.md",
+        "bytes": 15872,
+        "sha256": "7d6c80f7196c8162b6b1e96f6225ddc5b475f527d72e0def49b726ee9b63c838"
+      },
+      {
+        "path": "docs/overview/principles.md",
+        "bytes": 4365,
+        "sha256": "602e7c466102a0110cebc3baccea5505f2fd7727a874ed41f2cf5d1fbe1a0fbd"
+      },
+      {
+        "path": "docs/overview/wording-replacements.md",
+        "bytes": 4223,
+        "sha256": "f4f747c736300b7f17b91201fc29e3d1100cec7e11298a15ab15e533ed80b121"
+      },
+      {
+        "path": "docs/records/decisions/0001-adopt-layered-guidelines.md",
+        "bytes": 2094,
+        "sha256": "b639a0df0c4ffb91c3b31b399064e31a93bfaa9c50e415bbb94613ea35d69574"
+      },
+      {
+        "path": "docs/records/decisions/0002-add-contributing-and-gateway-skill.md",
+        "bytes": 1906,
+        "sha256": "eb2b60a5906c4914a96fe3c3b250e0881573207f44030aa493074af36a13b554"
+      },
+      {
+        "path": "docs/records/decisions/0003-template-folder-and-manifest-sync.md",
+        "bytes": 2760,
+        "sha256": "c5336e02858ff4da4c4c2d5bc116d9e8404d11e00bb1f98483514b94daa33d08"
+      },
+      {
+        "path": "docs/records/decisions/0004-introduce-start-work-skill.md",
+        "bytes": 2465,
+        "sha256": "f07c5351b08cc6a37d080367916c71753ce878f09a6269f79b444c1a73ac7ba8"
+      },
+      {
+        "path": "docs/records/decisions/0005-adopt-handoff-file-scheme.md",
+        "bytes": 2595,
+        "sha256": "b5537734767bca3162c86dfaa7de65ae14471a4e7836a2fd247d0282a1999dd3"
+      },
+      {
+        "path": "docs/records/decisions/0006-continuous-adr-detection-rule.md",
+        "bytes": 2285,
+        "sha256": "db08a2ce583fe28fb9d908a03fad529bf08cfd1dbd9c20b911304d931d790c50"
+      },
+      {
+        "path": "docs/records/decisions/0007-introduce-feature-block-design-skill.md",
+        "bytes": 2310,
+        "sha256": "aff7d5cd32e4d157add72a983f08a6c197a1e0b62fbb2a8a97e60c3e5b7dcd08"
+      },
+      {
+        "path": "docs/records/decisions/0008-adopt-spec-directory-split-and-snapshot-rule.md",
+        "bytes": 2241,
+        "sha256": "3bd70d98b810fe1452e3595a7f19deb5e3107400ff2b135bf87f17fe69b8bc6c"
+      },
+      {
+        "path": "docs/records/decisions/0009-extend-principle-2-scope.md",
+        "bytes": 1933,
+        "sha256": "9a668f784b9a32dfffa288f45cf2b115134764a768761ea67c17013d11ba90fb"
+      },
+      {
+        "path": "docs/records/decisions/0010-introduce-retrospective-phase.md",
+        "bytes": 3229,
+        "sha256": "96b7d41fb7e52dc7098466779063328a01414f71883e13ee08c242d77f092316"
+      },
+      {
+        "path": "docs/records/decisions/0011-retrospective-storage-policy.md",
+        "bytes": 3132,
+        "sha256": "99e76392eb1bc680cffaddefddf20c6412a33f349b7d738c5c63525471fbf8c4"
+      },
+      {
+        "path": "docs/records/decisions/0012-domain-knowledge-out-of-scope-for-c.md",
+        "bytes": 2989,
+        "sha256": "1c72253202e54eaf77b4c71a3c0324b9520099cc0d799b9b0337831f48533a3b"
+      },
+      {
+        "path": "docs/records/decisions/0013-introduce-knowledge-distillation-skill.md",
+        "bytes": 3404,
+        "sha256": "ae6298f5eb86280d90f21ec8a4c0fb3b4292e23a0c6ff72c62e8d9bcfef3f04a"
+      },
+      {
+        "path": "docs/records/decisions/0014-parent-dir-check-before-file-create.md",
+        "bytes": 2903,
+        "sha256": "4234b2b0cccf814cd26f7035cbc6dfd967861e94e911a88834b6317d5c6ab618"
+      },
+      {
+        "path": "docs/records/decisions/0015-distribute-skills-as-copilot-cli-plugin.md",
+        "bytes": 4927,
+        "sha256": "dc979a6767cf9e00cfbdc3706bb12b10cb55a7155704c80665f91ac78133be59"
+      },
+      {
+        "path": "docs/records/decisions/0016-redesign-template-workflow-plugin-only.md",
+        "bytes": 5791,
+        "sha256": "4320a86df059fb451195bb1fce28eedba5b26d912e5a74b5512bf6f1275c6064"
+      },
+      {
+        "path": "docs/records/decisions/0017-correct-local-marketplace-registration.md",
+        "bytes": 7426,
+        "sha256": "1731476a367e5a14ef42855dda9d59b91eba1d28dfd6541efa2535bb3f28d6a5"
+      },
+      {
+        "path": "docs/records/decisions/0018-mandate-brainstorming-for-medium-or-multi-option-work.md",
+        "bytes": 7274,
+        "sha256": "db23c18fcb52abba5cf745f019ff2c4f69fda87e6214b7eef87ea89c7c8ccc50"
+      },
+      {
+        "path": "docs/records/decisions/0019-adr-authoring-discipline.md",
+        "bytes": 3705,
+        "sha256": "8e335e6aec91a7719171f6475db9e608e2f1fe28d1170e18ffe9ecb7e828d35b"
+      },
+      {
+        "path": "docs/records/decisions/0020-retire-responding-to-user-enforcement.md",
+        "bytes": 2641,
+        "sha256": "911b2c14c407dc60498e0b8f8f15605e74c2980d4fd365934bfd383db8476851"
+      },
+      {
+        "path": "docs/records/decisions/0021-retrospective-issue-extraction-only.md",
+        "bytes": 6102,
+        "sha256": "dcbe349827fafe432748707b6a06d4168717cfb5d757ae7bd8aea993244714c3"
+      },
+      {
+        "path": "docs/records/decisions/0022-naming-clarity-discipline.md",
+        "bytes": 4349,
+        "sha256": "f889a36f4d0986d297fc0c482a21ff5c34b5dd44b5e68faab304f84499adf6eb"
+      },
+      {
+        "path": "docs/records/decisions/0023-unify-layer2-into-claude-md.md",
+        "bytes": 5814,
+        "sha256": "34327989fb86972e8bbfa8fbd9d27dc1d9e7b1ac416b2a7ce1619bb82aae2938"
+      },
+      {
+        "path": "docs/records/decisions/0024-choice-with-recommendation-norm.md",
+        "bytes": 4399,
+        "sha256": "ee71501ba39714e126560cdd2706a88be109d807c9fbdb0a4c56b669337a2a2c"
+      },
+      {
+        "path": "docs/records/decisions/0025-five-class-information-taxonomy.md",
+        "bytes": 6719,
+        "sha256": "3627b4840f587398c19b346171b3ad4dbbe49b26332dd0f1501f485e8e15e9b6"
+      },
+      {
+        "path": "docs/records/decisions/0026-inbox-and-organize-inbox-skill.md",
+        "bytes": 3972,
+        "sha256": "9054e0bff45007658de94209af85368d48a472f497f5ee9f17fe2f8fd816af4c"
+      },
+      {
+        "path": "docs/records/decisions/0027-template-seed-criteria.md",
+        "bytes": 5088,
+        "sha256": "c56100e840e615f3e5242c340c8c7896136e3b0c365184c8fc06178bbf00ba30"
+      },
+      {
+        "path": "docs/records/decisions/0028-retrospective-issue-ticketing-integration.md",
+        "bytes": 8622,
+        "sha256": "791d9e3af556390f6764979ff9412bb7dedef175958a2f49e0a5633d3ba3fccd"
+      },
+      {
+        "path": "docs/records/decisions/0029-question-tool-display-countermeasure.md",
+        "bytes": 6057,
+        "sha256": "1558e76c613d0ffb64fdbb104ebf57e53e27e5a9a494daac41542eefdc9674cb"
+      },
+      {
+        "path": "docs/records/decisions/0030-adr-draft-commit-deferral.md",
+        "bytes": 5181,
+        "sha256": "aeb512cc456268e13083cfa59a59ea9470eaba686326285f6e93b745d584fa34"
+      },
+      {
+        "path": "docs/records/decisions/0031-issue-recurrence-recording.md",
+        "bytes": 3704,
+        "sha256": "e095f8b9c26e9a965a53d09f2d0e4664f629de2e2003922c411fb7dc1a1dc9dd"
+      },
+      {
+        "path": "docs/records/decisions/0032-agent-executability-check.md",
+        "bytes": 4053,
+        "sha256": "7cd111c827ed0ca13ce1d61791f877f21be469376e788f8d454e64062b6c9ce4"
+      },
+      {
+        "path": "docs/records/decisions/0033-sync-template-lf-output.md",
+        "bytes": 3167,
+        "sha256": "94630dfe161d6c4de6dbc43ffd3a6d9a06453f131552054c2e3e8e914f5b8f68"
+      },
+      {
+        "path": "docs/records/decisions/0034-plan-verification-edit-consistency-check.md",
+        "bytes": 4134,
+        "sha256": "518648663e565a4f6007a3fd9b3a4423a5faa7945886fa7e503a8abda1350cda"
+      },
+      {
+        "path": "docs/records/decisions/0035-question-tool-timeout-stop-norm.md",
+        "bytes": 8589,
+        "sha256": "f9162db3236864f61b99a6eeeac177484879bbb8c4b8808a58d7a201cd0b2f98"
+      },
+      {
+        "path": "docs/records/decisions/0036-selection-ui-env-setting-and-text-fallback.md",
+        "bytes": 5924,
+        "sha256": "e0a3eb04246375ae4f649a181121a89b0740b949a96af10017c0a870a969995e"
+      },
+      {
+        "path": "docs/records/decisions/0037-gitattributes-eol-normalization.md",
+        "bytes": 3914,
+        "sha256": "f77955ce71c72dd25184b28fc590db8fb33b95b50769cc74c42810265ae1fb4b"
+      },
+      {
+        "path": "docs/records/decisions/0038-read-back-verification-norm.md",
+        "bytes": 3288,
+        "sha256": "4389091a55fa5fdd8dd0ddc0db8fea9cb216307bf7d36efb8f20642b2523973a"
+      },
+      {
+        "path": "docs/records/decisions/0039-environment-solution-survey-first.md",
+        "bytes": 3544,
+        "sha256": "cc5ead0541ed23bd20f76af915ccf9110af1b6afc255e95900dd19778633f3c2"
+      },
+      {
+        "path": "docs/records/decisions/0040-claude-md-growth-governance.md",
+        "bytes": 6864,
+        "sha256": "3d9aa0b17718192679d318c84c1369a0e8fb8e6e38fc11d0bc0a1c1d06995425"
+      },
+      {
+        "path": "docs/records/decisions/0041-adr-rejected-status-and-ledger-audit.md",
+        "bytes": 5119,
+        "sha256": "ac01f2e038f5b95790fc62bf22707ed7f51a255cac11692cc4a89b62e144f07f"
+      },
+      {
+        "path": "docs/records/decisions/0042-superseded-identification-and-ledger-audit.md",
+        "bytes": 5499,
+        "sha256": "c937aa840e72344f1b25d2c4935a175c19b5787ed8c15d34c3573b80033de510"
+      },
+      {
+        "path": "docs/records/decisions/0043-loop-engineering-poc-first-direction.md",
+        "bytes": 5925,
+        "sha256": "3aa70a3bf45d34e27cfe9039ef07db27cd993d449aeab98335ad335fe3b020b6"
+      },
+      {
+        "path": "docs/records/decisions/0044-worklog-skill-pipeline-central-aggregation.md",
+        "bytes": 5520,
+        "sha256": "f6710d8a6502f144b18c2ee1bf186c035a9149ee301746db714df6329f4f220a"
+      },
+      {
+        "path": "docs/records/decisions/0045-worklog-entry-schema-and-lifecycle.md",
+        "bytes": 6826,
+        "sha256": "b859205dc29697c2c53dd87dfc8972ad6fdc134c90dae12be62fd29668b3e280"
+      },
+      {
+        "path": "docs/records/decisions/0046-skill3-engine-borrowing-and-env-guard.md",
+        "bytes": 3250,
+        "sha256": "185bf4e7e2e7d0be080d351f4ba0ab36b9d9794e70c22cffabe3e30140c8b0b1"
+      },
+      {
+        "path": "docs/records/decisions/0047-worklog-record-wired-into-start-work-post.md",
+        "bytes": 3037,
+        "sha256": "6e5ddfc02b46dc40826b1600df9deddaa4ab6aba69f9b7761d93a09bffa1fd33"
+      },
+      {
+        "path": "docs/records/decisions/0048-worklog-entry-model-field-required.md",
+        "bytes": 2803,
+        "sha256": "63e7891a88c0742c85307464336ace624a53e26e39d4051f5e381fb0b4604f90"
+      },
+      {
+        "path": "docs/records/decisions/0049-worklog-schema-version-field.md",
+        "bytes": 2534,
+        "sha256": "d0bfcb869a813242394d6ff6efd7580fcfad1be36c825e344ba26dd5aac8d805"
+      },
+      {
+        "path": "docs/records/decisions/0050-worklog-id-collision-recount-and-readback.md",
+        "bytes": 2446,
+        "sha256": "504baf33d02a6f436321375d6b03781c7117d0f71142a13137ab04fb1b566853"
+      },
+      {
+        "path": "docs/records/decisions/0051-worklog-friction-array-symmetry.md",
+        "bytes": 1592,
+        "sha256": "6a26b6fddb473d5ce7dd7e25a7e8b705223b2f92846271bfd03d115be10b6479"
+      },
+      {
+        "path": "docs/records/decisions/0052-worklog-qualitative-material-guides-over-fields.md",
+        "bytes": 2751,
+        "sha256": "e615bbd34c6d880fea937a56f36d0b682f332d0824b497c39f5bbdfacf3f03e8"
+      },
+      {
+        "path": "docs/records/decisions/0053-worklog-entry-unit-theme-based.md",
+        "bytes": 2019,
+        "sha256": "4c2d4c1ca869d77c4b2874e648348eccc26e92ee7f541d60e3c8b34ba4f214e0"
+      },
+      {
+        "path": "docs/records/decisions/0054-worklog-store-encoding-eol-contract.md",
+        "bytes": 4631,
+        "sha256": "d1a4b9a9654833aae9afae192c918fc358b7055653920a72da2ff672a0a16927"
+      },
+      {
+        "path": "docs/records/decisions/0055-start-work-skill-availability-ai-side-check.md",
+        "bytes": 3229,
+        "sha256": "0bcc481f9b61cfbb48d58e4d342b9eaee8110ae02150318812e92578627527ce"
+      },
+      {
+        "path": "docs/records/decisions/0056-retrospective-issue-extraction-core-worklog-delegation.md",
+        "bytes": 12750,
+        "sha256": "c9e374fa2ca9a1cdd233b0c3faa17a473937972c9e909e30311ae6a8ac34cbec"
+      },
+      {
+        "path": "docs/records/decisions/0057-post-wrapper-consumption-visibility-and-reconciliation.md",
+        "bytes": 6574,
+        "sha256": "b0f8cedf65676bedef2634a3cac835f12bb8a7854a024f674cf5851f5446fdd3"
+      },
+      {
+        "path": "docs/records/decisions/0058-worklog-record-session-switch-trigger.md",
+        "bytes": 4296,
+        "sha256": "fe26dcb73c0838716e4b258c3998c2b8cb1d7d6989bd630c46bc76cb559e103d"
+      },
+      {
+        "path": "docs/records/decisions/0059-adr-granularity-by-question-not-length.md",
+        "bytes": 5409,
+        "sha256": "1e07a79924e4763743c77b7b876e5118b65337f61a49175df8dd0c5563f965c8"
+      },
+      {
+        "path": "docs/records/decisions/0060-adr-granularity-check-on-append.md",
+        "bytes": 4997,
+        "sha256": "7c699de42f7909a2e8528190fa399748f465431a68c3ba3c33039f81d08bd8a2"
+      },
+      {
+        "path": "docs/records/decisions/0061-distributed-flow-issue-intake-routing.md",
+        "bytes": 5377,
+        "sha256": "0d92e7f98753760cc0a687847f3ebf50e4a929bf1771413ea6fb22f97538ed5a"
+      },
+      {
+        "path": "docs/records/decisions/0062-cycle-scope-worklog-pipeline-throughput-first.md",
+        "bytes": 4779,
+        "sha256": "e716b1e7273b55c302b9b26942fea3063f9bc5883b9c00991cfe6b7844c38a87"
+      },
+      {
+        "path": "docs/records/decisions/0063-distributed-issue-handover-path.md",
+        "bytes": 5593,
+        "sha256": "1ffc687fd924ca4fd0c9f58caec1354c014ce36a44014fd12aadf29bab366977"
+      },
+      {
+        "path": "docs/records/decisions/0064-worklog-store-write-api-and-health-check.md",
+        "bytes": 7213,
+        "sha256": "d44ae6dc2fede93017521127724bff8fca7fc1c5cff32efa49acfb40e0e09e3d"
+      },
+      {
+        "path": "docs/records/decisions/0065-skillify-requires-applicability-design-first.md",
+        "bytes": 5225,
+        "sha256": "98f0028a7b92ab49dcc48db6d8772be03d711363e6fe9a474a05482dbb933aec"
+      },
+      {
+        "path": "docs/records/decisions/0066-subagent-dispatch-items-split-by-workload-cost.md",
+        "bytes": 6150,
+        "sha256": "f2ff617b55355e91f87b248d682022325d9408db23ac5a8dfe9f9773819a9afc"
+      },
+      {
+        "path": "docs/records/decisions/0067-pre-finalization-review-as-new-skill.md",
+        "bytes": 6983,
+        "sha256": "4d2333de43afb3ebeeaeda5938a79e79581b081de319a8c472d2f72913d45f27"
+      },
+      {
+        "path": "docs/records/decisions/0068-cross-repo-issue-reference-format.md",
+        "bytes": 4440,
+        "sha256": "f3f290b649736d3cda669f697081bf1ea5edf15787aafef2f713cdbee8c8410d"
+      },
+      {
+        "path": "docs/records/decisions/0069-general-skill-extension-target-own-repo-only.md",
+        "bytes": 4323,
+        "sha256": "691dff3b67eecf4b3c7ecbafd031ce4d14bf443ad11f203ff27b81230ef7317f"
+      },
+      {
+        "path": "docs/records/decisions/0070-dispatch-constraints-as-norm-not-hook-injection.md",
+        "bytes": 5042,
+        "sha256": "ddbc6c209cec1ef64abc4d195479a85220a332c6c808edad62d0887b30570617"
+      },
+      {
+        "path": "docs/records/decisions/0071-b-group-firing-check-as-mandatory-table-walk.md",
+        "bytes": 4474,
+        "sha256": "9609c23e4eb6937f2d194b2e92c1c02c425cbe482abba3c40578a4e4876868a2"
+      },
+      {
+        "path": "docs/records/decisions/0072-pre-finalization-review-triggered-by-user-only.md",
+        "bytes": 5268,
+        "sha256": "eaf8ff6d7d9197e255350a116ff29041137d695983aa14de9127daa0c450cd50"
+      },
+      {
+        "path": "docs/records/decisions/0073-dispatch-norms-carry-provenance-and-sunset-path.md",
+        "bytes": 5233,
+        "sha256": "1758084ca7d9d8edab82e74813cb2c406d35fef8fc0e00f354fa3d876b87f3c5"
+      },
+      {
+        "path": "docs/records/decisions/0074-handoff-pruning-recovery-via-git-history-only.md",
+        "bytes": 3312,
+        "sha256": "6a4ae88c0009690170518b1458a1064e82892e79fda19b386eb24779160773d3"
+      },
+      {
+        "path": "docs/records/decisions/0075-handoff-two-stage-pruning-discipline.md",
+        "bytes": 5213,
+        "sha256": "98ba3f6d39c65165fe582621a9f67127bae989dcd16f72cd6a75697810826baf"
+      },
+      {
+        "path": "docs/records/decisions/0076-handoff-status-add-ready-for-next-cycle.md",
+        "bytes": 2868,
+        "sha256": "f1fe3a6cdc46cfeec7579280d4b30ebcce073d174755ce35d889434cd1cae10b"
+      },
+      {
+        "path": "docs/records/decisions/0077-handoff-external-references-use-stable-identifiers.md",
+        "bytes": 2376,
+        "sha256": "8a5a55b9e727739026b60bd34d2b7f8d100a18f0ed8a0a27b9f292c7ed6e4540"
+      },
+      {
+        "path": "docs/records/decisions/0078-rename-meta-guidelines-to-ai-driven-dev-guidelines.md",
+        "bytes": 4278,
+        "sha256": "a3172aaf0074e77675206c664e8405b8028b17a5e0c3570d0f113f5090efc2bf"
+      },
+      {
+        "path": "docs/records/decisions/0079-overfitting-check-required-for-guideline-extensions.md",
+        "bytes": 9846,
+        "sha256": "09029ff0a8358e4137d8784b992bed27525143715b7eef55abf77b5176c89c62"
+      },
+      {
+        "path": "docs/records/decisions/0080-review-presentation-scaled-by-unreviewed-normative-content.md",
+        "bytes": 24710,
+        "sha256": "a65938a1487a1c5d2e4223871e1316b748c506a1b88d04d912b2d248d5bd5595"
+      },
+      {
+        "path": "docs/records/decisions/0081-distributed-artifact-adr-reference-scope.md",
+        "bytes": 9051,
+        "sha256": "1e7a8230e74f6d0d4e5142cad7b58480da9f3faf466ffbfe0c7472242efc16b4"
+      },
+      {
+        "path": "docs/records/decisions/0082-distribute-generated-artifact-not-source.md",
+        "bytes": 5019,
+        "sha256": "d0a8b81e8c5e4d0f15e6f453b9b39f47787b85ee0489d7a12dcd258ecf70e8c5"
+      },
+      {
+        "path": "docs/records/decisions/0083-provenance-notation-convention-enforced-by-generator.md",
+        "bytes": 8602,
+        "sha256": "d6a3ac4fc0d680680d2d1ddeabe34613cb09ff3fddf6bb0116b336973ae7e451"
+      },
+      {
+        "path": "docs/records/decisions/0084-convention-scope-exceeds-machine-check-scope.md",
+        "bytes": 7636,
+        "sha256": "da1d08cf9a0bd1aec643db1f729d3e3005df00ff1297e52d4543b4b805af2058"
+      },
+      {
+        "path": "docs/records/decisions/0085-no-structured-question-tool-on-affected-models.md",
+        "bytes": 9415,
+        "sha256": "ea04be19b26213cff48221cd0688816e4af28bb1953ae411fecc3c86e346bbc3"
+      },
+      {
+        "path": "docs/records/decisions/0086-handoff-canonical-relocation-standard.md",
+        "bytes": 9111,
+        "sha256": "7cf7773f5592c14150f6affc7b1813454ce1f3f1daf8479124b94c8f736e89dc"
+      },
+      {
+        "path": "docs/records/decisions/0087-handoff-pruning-trigger-system.md",
+        "bytes": 7032,
+        "sha256": "b0f8da8989b7b27d7096226367774ce4cb24eb713f71bba1fbd289e0bca00d1f"
+      },
+      {
+        "path": "docs/records/decisions/0088-handoff-section-volume-norms.md",
+        "bytes": 6392,
+        "sha256": "080fe48829b3618fe299a9f8bf4770498a5a4e241d121f7984e8a0d3ca1b3e5b"
+      },
+      {
+        "path": "docs/records/decisions/0089-placement-definition-vs-skill-procedure-boundary.md",
+        "bytes": 3766,
+        "sha256": "5028d9c7f0baae2306e596802d0da7198b281c19e3515b6d5ad10cc43e946a3a"
+      },
+      {
+        "path": "docs/records/decisions/0090-version-bump-required-for-plugin-redistribution.md",
+        "bytes": 4919,
+        "sha256": "a7b7856378817f203486baf54e864c535fc45cba0ee0dc9e197b6dac53907c8a"
+      },
+      {
+        "path": "docs/records/decisions/0091-session-handoff-doc-clarity-fixes.md",
+        "bytes": 12912,
+        "sha256": "0cc4f94836ebade2476b5148d474f1f70dc4b69f396864673d40b576887bc405"
+      },
+      {
+        "path": "docs/records/decisions/0092-cycle-wide-consistency-check-before-adr-promotion.md",
+        "bytes": 18266,
+        "sha256": "41bd3f02264aea9e81f487ebeccac9f9c17ff05b5071bf6b3312b477c43fb4dd"
+      },
+      {
+        "path": "docs/records/decisions/0093-destructive-verification-dispatch-isolation-constraints.md",
+        "bytes": 14733,
+        "sha256": "f8fb9d6bf515684d4ea91b4a1dc23740a81ca256b3cb23cf71fb978ca988d90f"
+      },
+      {
+        "path": "docs/records/decisions/0094-artifact-bloat-addressed-as-growth-pattern.md",
+        "bytes": 4855,
+        "sha256": "2192ac2aa9326c00a740b6f69093538bd092630c0f77cdf294e4bb21b4c4b12f"
+      },
+      {
+        "path": "docs/records/decisions/0095-issue-materials-lifecycle-split-colocation.md",
+        "bytes": 8023,
+        "sha256": "5ba0ce637469d3034b85b2017bf055c9232b83f573fc39bf7dcfac904b1256d9"
+      },
+      {
+        "path": "docs/records/decisions/0096-issue-folder-promotion-trigger-and-role-system.md",
+        "bytes": 14157,
+        "sha256": "9959c5e3e63c410251393db6a6f8e105df8064b97cd77f20be9aa6c03969d1e4"
+      },
+      {
+        "path": "docs/records/decisions/0097-issue-granularity-one-problem-many-questions.md",
+        "bytes": 4841,
+        "sha256": "f3291c12b2e8db5f716b48e94cddc150c8bf91a6a090259de94bc8f28bffcafd"
+      },
+      {
+        "path": "docs/records/decisions/0098-norm-placement-behavior-in-skills-structure-in-docs.md",
+        "bytes": 5994,
+        "sha256": "23ff3c870f2e93b8d87bc8a99d5f72ae78fa5272abf449b3581aa33ab1d81e13"
+      },
+      {
+        "path": "docs/records/decisions/0099-citation-consistency-via-existing-checkpoint-wording.md",
+        "bytes": 16554,
+        "sha256": "3f011410b95f849f0aea7bb451d150a2e18a1cea555f6cc7c0bc86faf72e7e2d"
+      },
+      {
+        "path": "docs/records/decisions/0100-one-shot-guideline-audit-with-two-track-judgment.md",
+        "bytes": 20641,
+        "sha256": "565b16ad337a9e87c919cd2d7599bb20ae733a89c9672656058c116a37f21e61"
+      },
+      {
+        "path": "docs/records/decisions/0101-audit-verdict-keep-integrate-hold-and-weak-brake.md",
+        "bytes": 7846,
+        "sha256": "457db416f1e46a9ddf4b673f4d511c2b05454efd055000c73fb706b6e75788e4"
+      },
+      {
+        "path": "docs/records/decisions/0102-codify-evaluability-mandate-in-contributing.md",
+        "bytes": 20210,
+        "sha256": "250336f27fe9ed8b865ea737a1fc1dcf77787e4cdcf2e66b56c1d8d45e00cd9d"
+      },
+      {
+        "path": "docs/records/decisions/0103-single-cycle-scope-for-integration-and-simplification.md",
+        "bytes": 5205,
+        "sha256": "92a03d10add8bece1466789c2a83b492c20735ae776d300a9f0b1f27a54cf226"
+      },
+      {
+        "path": "docs/records/decisions/0104-integration-design-by-source-collation-with-audit-proposal-as-default.md",
+        "bytes": 3839,
+        "sha256": "58e4bc33cb0400be025741c8007e9d5fa8d49178884f30eb605e9c84181c111d"
+      },
+      {
+        "path": "docs/records/decisions/0105-integration-design-wiring-two-commons-and-simplification.md",
+        "bytes": 41592,
+        "sha256": "1be2214042ba34f241dd590dd69721867cb0bde2ed897924ea183d8a46065214"
+      },
+      {
+        "path": "docs/records/decisions/0106-two-layer-wiring-for-merge-mode-norm.md",
+        "bytes": 32902,
+        "sha256": "986cf98df8a741bdd6ad7406e73fb3870d5cead1d77d8c1d295f81315aa9f398"
+      },
+      {
+        "path": "docs/records/decisions/0107-iterative-review-recommendation-by-revision-nature.md",
+        "bytes": 65656,
+        "sha256": "49903c0b63445b913f6581007140705af44a753fa3cb9bc9944927b89c744e96"
+      },
+      {
+        "path": "docs/records/decisions/0108-accepted-adr-revision-status-handling.md",
+        "bytes": 18259,
+        "sha256": "dac0c4d6dcefb6ea388ff443ab0d312aaf1e144ea379151e1fcba16c869b1bc4"
+      },
+      {
+        "path": "docs/records/decisions/0109-retire-structured-question-tool-unconditionally.md",
+        "bytes": 17743,
+        "sha256": "f4f58d91e3f789a39d32716591c987ca12dc4fec7a60134dc968c8ee284444ce"
+      },
+      {
+        "path": "docs/records/decisions/0110-full-scope-codex-support.md",
+        "bytes": 3495,
+        "sha256": "d00e94f91d93ff91b4ccc829f47ec181c6b8b0f0dca3f4fff983b5e2a3161723"
+      },
+      {
+        "path": "docs/records/decisions/0111-agents-md-as-layer2-source-of-truth.md",
+        "bytes": 5523,
+        "sha256": "eec516ae0328a70ae7094f9d7b157ae5f5bb8663ff0809d96c45dc6b4fe11a0b"
+      },
+      {
+        "path": "docs/records/decisions/0112-codex-native-marketplace-generated.md",
+        "bytes": 7037,
+        "sha256": "d3eb52a908616a746b3671b886c9f5bebaa396ef87b25485b3e7888d61a0c620"
+      },
+      {
+        "path": "docs/records/decisions/0113-json-input-guards-consolidated-into-codex-generation-task.md",
+        "bytes": 11316,
+        "sha256": "4140c645423d422df1ff25aa9e1b9dbd8d1526b4351456631f0206e415cedce4"
+      },
+      {
+        "path": "docs/records/decisions/0114-layer2-reference-neutralization-finish.md",
+        "bytes": 13462,
+        "sha256": "f20fd22bc9300057ce1525421c73e5e95b886f22f852dc13a41e26a54c994e56"
+      },
+      {
+        "path": "docs/records/decisions/0115-focus-cycle-on-start-work-split-only.md",
+        "bytes": 3009,
+        "sha256": "a72b29e5cea1d6d84956ad98abd8aef3e378c31c82017895b217b6881e6875f8"
+      },
+      {
+        "path": "docs/records/decisions/0116-relocate-start-work-domain-norms-by-ownership.md",
+        "bytes": 8026,
+        "sha256": "e4d350ff8817918fec6556c3958174953d794f000b30867a7c5b4166e154073c"
+      },
+      {
+        "path": "docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md",
+        "bytes": 28108,
+        "sha256": "9b06ae5963df04dc922c5a7a3d5c827843e68fd7ffba11e580f6ab69f203cec3"
+      },
+      {
+        "path": "docs/records/decisions/0118-bulk-reflux-of-lfa-review-flow-issues.md",
+        "bytes": 7020,
+        "sha256": "71052ba9c4c7f3ce54c3afd6bfbb169a3d4986281214665aa38fa832df3bde2c"
+      },
+      {
+        "path": "docs/records/decisions/0119-plan-deviation-decision-defaults.md",
+        "bytes": 29417,
+        "sha256": "74272a6f62b5b03d557fe38758e86264bcf46d08b0870af365679d33bc3bea6e"
+      },
+      {
+        "path": "docs/records/decisions/0120-stratified-initial-review-bodies-and-round-outlier-detection.md",
+        "bytes": 43465,
+        "sha256": "0c8ccd188a1089a1b923ed30f2249b6da84daa162ff0de95e12b964545c05b64"
+      },
+      {
+        "path": "docs/records/decisions/0121-skill-md-size-trigger-and-split-norm.md",
+        "bytes": 31248,
+        "sha256": "09dfb7524968d4876ef64cdb903a7084109f31f372ecbdc5898868dd9765c7b9"
+      },
+      {
+        "path": "docs/records/decisions/0122-split-session-handoff-and-decision-log-by-firing-unit.md",
+        "bytes": 33728,
+        "sha256": "31ab048283a01b412498120f06c0e7873d3b87fd80439f513f4421dff8caa05c"
+      },
+      {
+        "path": "docs/records/decisions/0123-plain-language-vocabulary-in-normative-documents.md",
+        "bytes": 22082,
+        "sha256": "88b2827e647f311db840649b83a6a51be8e273c276b2592009b25b8642c68124"
+      },
+      {
+        "path": "docs/records/decisions/0124-review-minimum-as-recommendation-with-user-discretion.md",
+        "bytes": 6862,
+        "sha256": "7e8ed14272bfce554d677098ac1e6ee53f61cfeebfdb4cef68236e7c9986da47"
+      },
+      {
+        "path": "docs/records/decisions/0125-evaluate-cost-of-review-driven-additions.md",
+        "bytes": 5145,
+        "sha256": "ba1309784f6c73103c6b37da2997c384250cf7af7ac6492bf78f2ed14448ff5c"
+      },
+      {
+        "path": "docs/records/decisions/0126-compare-workflow-continuation-from-fixed-baseline.md",
+        "bytes": 2663,
+        "sha256": "47b9006898d6da1de33132a9daccd26452b47168b645f55111609742ec5854f9"
+      },
+      {
+        "path": "docs/records/decisions/0127-document-codex-mode-instruction-workaround.md",
+        "bytes": 1838,
+        "sha256": "15da7cbeaaa2ae5803c95bb2eb8dbe1ab3d8263180ccf4de3ed85f64e5170e4c"
+      },
+      {
+        "path": "docs/records/decisions/0128-investigate-removing-human-involvement-cost-axis.md",
+        "bytes": 1761,
+        "sha256": "5fa2a1da9feb077f4a2d223e06cdb310ea5da4a313fe108e7eb2925bd6a8e168"
+      },
+      {
+        "path": "docs/records/decisions/0129-use-lightweight-estimates-in-objective-design.md",
+        "bytes": 2451,
+        "sha256": "0453f4384916ef1008907af43781aea766975865b1326368afaa7b753e9f2993"
+      },
+      {
+        "path": "docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md",
+        "bytes": 12051,
+        "sha256": "93e870782da3d0b3256e67809cf52f3ee3819eb24ff9432247c676d1cbaf7319"
+      },
+      {
+        "path": "docs/records/decisions/0131-connect-completed-work-to-integration.md",
+        "bytes": 12679,
+        "sha256": "ba0e898a7b8ac44017222bcbf58c76f33e15b4d2b85755a99352da4d2f3853ab"
+      },
+      {
+        "path": "docs/records/decisions/0132-complete-distribution-with-version-update.md",
+        "bytes": 10198,
+        "sha256": "745b54a5f3d1b1fb8349adb52c4a2e702fd7fca59850d1abc4c78c34045623c0"
+      },
+      {
+        "path": "docs/records/decisions/0133-delegate-decisions-by-agreed-impact-boundaries.md",
+        "bytes": 5057,
+        "sha256": "bdf03c4a367b50e97e3f9803588398d94e5acf20e78951e97e47c7b2200ff976"
+      },
+      {
+        "path": "docs/records/decisions/0134-pass-wording-rules-to-document-subagents.md",
+        "bytes": 7505,
+        "sha256": "b091f6989dc69f5de8ad456184ac3b4b87f41c39e3e54abdb7a24b095e32ada8"
+      },
+      {
+        "path": "docs/records/decisions/0135-defer-retrospective-timing-change.md",
+        "bytes": 2464,
+        "sha256": "2fef4063bfeb15c3897e2a864d2af5f339b381bc0d6044a33792ef505b50e5b6"
+      },
+      {
+        "path": "docs/records/decisions/0136-examine-post-proposal-reconsideration-method.md",
+        "bytes": 1586,
+        "sha256": "f0e8682d44160f08c1bdbf0eed9532aa8838ba56fe88b95572f47d645c00634b"
+      },
+      {
+        "path": "docs/records/decisions/0137-prepare-small-reconsideration-comparison.md",
+        "bytes": 3979,
+        "sha256": "33e9320ca84dd8bf21d68c38f8835b15c2db6f146a04a130fe5bd4fea6bd0ad5"
+      },
+      {
+        "path": "docs/records/decisions/0138-use-existing-worklogs-for-reconsideration-observations.md",
+        "bytes": 2905,
+        "sha256": "7573626c89e37fadf17ab8f63a653f49acc30a9cb8d30de5bf0c849ea8cf8d01"
+      },
+      {
+        "path": "docs/records/decisions/0139-reuse-official-agent-runtimes-for-development-pilots.md",
+        "bytes": 5532,
+        "sha256": "cb16cf27daa713ea0e68af93c2bd231fe1d160a20bec487376940f5fb2215ae4"
+      },
+      {
+        "path": "docs/records/decisions/0140-stage-guideline-improvements-before-agent-pilots.md",
+        "bytes": 7862,
+        "sha256": "ae905bfdbe77297fb0fd4d94dfd93d3b145040af733e34121a74efda307e29f6"
+      },
+      {
+        "path": "docs/records/decisions/0141-keep-inspection-protection-tool-independent.md",
+        "bytes": 7155,
+        "sha256": "5fc1a982b0ab2188218a4f0b88867a12c112e39678f27aabda2ffe78a3a50599"
+      },
+      {
+        "path": "docs/records/decisions/0142-verify-claude-through-existing-codex-sandbox.md",
+        "bytes": 2156,
+        "sha256": "13c1189d21ee734638f3ebfbb31909e49a57bbbe3a609ebe2989f1eb0998f07c"
+      },
+      {
+        "path": "docs/records/decisions/0143-protect-claude-native-subagents-by-removing-write-tools.md",
+        "bytes": 10814,
+        "sha256": "fe83c38b3107a553df696a2b3fe48fdf3d5edf1635ddb73aa05e2d16f6a1a92a"
+      },
+      {
+        "path": "docs/records/decisions/0144-protect-claude-native-subagents-with-allowlist-only.md",
+        "bytes": 10910,
+        "sha256": "1d7940ae83be591c3d7c19418ff898564e87b847d47a8a94a964a90c0e07d1b3"
+      },
+      {
+        "path": "docs/records/decisions/0145-enable-autonomous-test-creation-within-isolation.md",
+        "bytes": 2898,
+        "sha256": "01e4d7941cc47f74343501cdbb6abb8ef742f08e369dc71529a73d26b253d387"
+      },
+      {
+        "path": "docs/records/decisions/0146-delegate-verification-from-claude-to-codex.md",
+        "bytes": 4857,
+        "sha256": "daceb71632636aa29327bf972b28f55393affe27b3d650110e8e450577a1be48"
+      },
+      {
+        "path": "docs/records/decisions/0147-use-common-cli-for-isolated-verification.md",
+        "bytes": 4337,
+        "sha256": "0c4144024d438acfb2d5dab325b1931d42cd8ff767d45a3054a9d1679ed278a0"
+      },
+      {
+        "path": "docs/records/decisions/0148-initialize-independent-git-metadata-for-verification.md",
+        "bytes": 3911,
+        "sha256": "c4d1e8d3c8a9fddd4c3b6319b1aaf6f21fdaac370feab487a29775827c10908d"
+      },
+      {
+        "path": "docs/records/decisions/0163-prioritize-guideline-operating-cost-improvements.md",
+        "bytes": 4643,
+        "sha256": "fd62b3191de2f3c210611a2a1e27f4da00c62e4eecd4dc5397b4c91999f6e794"
+      },
+      {
+        "path": "docs/records/decisions/0164-exclude-behavior-preserving-observations-from-full-review-default.md",
+        "bytes": 4222,
+        "sha256": "d1801753e35f2202745337d197f009c14427443e8c6477256110f01d2f68f399"
+      },
+      {
+        "path": "docs/records/decisions/0165-apply-cost-comparison-before-review-disposition.md",
+        "bytes": 6869,
+        "sha256": "fdce2c7bd8d9a3a9f26cea91f425ab026b6cbba94ea8c9034a2740dda307b0d8"
+      },
+      {
+        "path": "docs/records/decisions/0166-compare-model-discretion-before-detailed-workflows.md",
+        "bytes": 7591,
+        "sha256": "066c118046dbc50eacb6d0865baeb7e3f2d3a1a1cef8a09a0f1014305e723db5"
+      },
+      {
+        "path": "docs/records/decisions/0167-use-existing-subscriptions-for-workflow-comparison.md",
+        "bytes": 1952,
+        "sha256": "615c1676007eed7af422539ca183d3f86b6f33433f209c4b22661b773b084a92"
+      },
+      {
+        "path": "docs/records/decisions/0168-compare-two-models-on-process-trace-tasks.md",
+        "bytes": 4312,
+        "sha256": "d56225ce891146c021c483fd357454d5aff8901e9797c0e64d3151a9e681d254"
+      },
+      {
+        "path": "docs/records/decisions/0169-resume-essential-comparison-preparation-with-progress.md",
+        "bytes": 2481,
+        "sha256": "84c65ba69d82b7521f1bcc182e3d9c12438a9a568da06fc821ee48edd3a4805b"
+      },
+      {
+        "path": "docs/records/decisions/0170-verify-installed-codex-plugin-content-for-comparison.md",
+        "bytes": 2275,
+        "sha256": "93baa6e572d916df4aff5e6c0e3ca966894beb3cd41756aaca15b34d0d49fc54"
+      },
+      {
+        "path": "docs/records/decisions/0171-copy-test-dependencies-for-protected-comparison.md",
+        "bytes": 2303,
+        "sha256": "5cdbb4519179b7843174ece2086a44871e53698deb5df03dbe17ffeb0c8908f6"
+      },
+      {
+        "path": "docs/records/decisions/0172-align-common-codex-skills-for-comparison.md",
+        "bytes": 2257,
+        "sha256": "70dd8cc5a0d73eb168ba25d0b8533258539edb2ca0c197706c0a5643e8dc08ce"
+      },
+      {
+        "path": "docs/records/decisions/0173-use-accept-edits-for-claude-preflight.md",
+        "bytes": 1805,
+        "sha256": "b2fdc832252d8681234dcd9e92e4455eb76ae4be1a074e9f1b34316ad57a720e"
+      },
+      {
+        "path": "docs/records/decisions/0174-diagnose-claude-plugin-write-permission.md",
+        "bytes": 2352,
+        "sha256": "3c85f133e28abb42c7735ec522b722e5a57ac3b2306e414e7b5bd432e0c665a4"
+      },
+      {
+        "path": "docs/records/decisions/0175-isolate-init-only-runtime-state.md",
+        "bytes": 2135,
+        "sha256": "9dcad0b0fda2dae7aede41beeca1534acf99f788109238256e60bfb09a58f4a2"
+      },
+      {
+        "path": "docs/records/decisions/0176-permit-single-session-runtime-directory.md",
+        "bytes": 2623,
+        "sha256": "119f8ecfbb7e7f8cc0be6938203c18a621cb52333b31166e42ce14b50dc581b8"
+      },
+      {
+        "path": "docs/records/decisions/0177-verify-write-after-hook-initialization.md",
+        "bytes": 2646,
+        "sha256": "bb1a4bb7f054ffbc8cae8dd05a3eccad95271b7c9d2f38ed53c2cd12dfbfe160"
+      },
+      {
+        "path": "docs/records/decisions/0178-diagnose-plugins-individually.md",
+        "bytes": 2096,
+        "sha256": "8a5154ba84a54e8c158741184416aa2d958203c21b80929ca796f0eb10f314c0"
+      },
+      {
+        "path": "docs/records/decisions/0179-prepare-normal-user-claude-control.md",
+        "bytes": 2591,
+        "sha256": "12ea097c47f3c2962eea07808e6058e5992d361efb4eaab6617733a6ffd596ab"
+      },
+      {
+        "path": "docs/records/decisions/0180-evaluate-astra-before-expanding-model-coverage.md",
+        "bytes": 3671,
+        "sha256": "33e2980dff0938193140f77b71b03b729767b36b5ca60e1b882028b16cc53659"
+      },
+      {
+        "path": "docs/records/decisions/0181-run-sol-comparison-at-low-effort.md",
+        "bytes": 1644,
+        "sha256": "fc42883993020a2ed9c62f4c57bda6ea0e01618aed40ab7a6a0716d16d07c789"
+      },
+      {
+        "path": "docs/records/decisions/0182-reject-unknown-session-id-from-first-stage.md",
+        "bytes": 1693,
+        "sha256": "dcd29371ad0ec4e096cd4480f483984761dcc86aed163da8f3c00aff4c9d4c87"
+      },
+      {
+        "path": "docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md",
+        "bytes": 5770,
+        "sha256": "7ec4a902995892df88f0d6df7cb639d0439381799da4a6368d3c9fb03201417f"
+      },
+      {
+        "path": "docs/records/decisions/0184-reassess-preparation-by-outcome-and-remaining-cost.md",
+        "bytes": 5324,
+        "sha256": "148b698ea7fd7ad0c71ea14239c777fe347cdd00a17fb02ce0c96e05d90126f6"
+      },
+      {
+        "path": "docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md",
+        "bytes": 6226,
+        "sha256": "06aa268cc0a7aff354a957c06984f2654ec0184a573ae5cf1c70ab9b9388387e"
+      },
+      {
+        "path": "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md",
+        "bytes": 7696,
+        "sha256": "1db9c7f9f2b0b60d6174be77eb4d5d00503600b1ad1f731b8728856d8c1b5960"
+      },
+      {
+        "path": "docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md",
+        "bytes": 4305,
+        "sha256": "f2df07ee9422f1998d39b49272052fb7446c2715ccf51dea39a8f148beb946ed"
+      },
+      {
+        "path": "docs/records/decisions/0188-develop-read-glob-grep-evidence-access.md",
+        "bytes": 2752,
+        "sha256": "323d72185e5c8a09ce87e70b3541c30554a56c8369b7437332344e80bcf69c61"
+      },
+      {
+        "path": "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md",
+        "bytes": 14725,
+        "sha256": "1af0b3a1d8568b884b5e366ab0555ec30a238e3ca7332373d36c866fe21d7772"
+      },
+      {
+        "path": "docs/records/decisions/README.md",
+        "bytes": 34230,
+        "sha256": "eee1897c937e7b4b8c692be31641d8b472dc91194b922c0affd74be1546fb6b5"
+      },
+      {
+        "path": "docs/records/experiments/2026-09-12-review-evidence-access-result.md",
+        "bytes": 6128,
+        "sha256": "ea0fe61097d9d65238cf0c40390cdf0e6cd001fc2dd1774654c35d5a0dc94ce9"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-11-premise-intent-audit.md",
+        "bytes": 5994,
+        "sha256": "8b869b453877688fedf95d80ab670aff686c89daaf270a6dd3476d38e983fd26"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-11-review-criteria-r1.md",
+        "bytes": 6505,
+        "sha256": "c600e1f17510a6086d373a8070d7ededfca1f2a0563265e84614b88036b267ca"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-11-review-criteria-r2.md",
+        "bytes": 5635,
+        "sha256": "29331c6e6dce7b7ed31abeee0b67a9302da8454ca01201cd31071988593717c4"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md",
+        "bytes": 11865,
+        "sha256": "6c02d2376f7f0bc4b60f2e65ca662029ec9a63e912f24374941c863ad4a5f0c5"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md",
+        "bytes": 8120,
+        "sha256": "40fcc8144701b367b51f8c32e720aad39433bd70718b01c83ed7bff77b07095f"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-review-design-finalization.md",
+        "bytes": 4900,
+        "sha256": "6a672e2914b5ced2490178ccce86dded78aaf65edefabafc63bbc61bb21d1208"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-review-scope-reassessment.md",
+        "bytes": 8970,
+        "sha256": "4c467e771d930cf41b70fb0905c630d8dcf114dbae14b9b8420e419e92a1b279"
+      },
+      {
+        "path": "docs/working/issues/flow/0075-review-lacks-usability-check-for-normative-docs.md",
+        "bytes": 3627,
+        "sha256": "182297c5fb211a85931823b4d699c87776570dac5f416ec709d737619e09d04e"
+      },
+      {
+        "path": "docs/working/issues/flow/0112-multilayer-review-role-separation-not-codified.md",
+        "bytes": 5036,
+        "sha256": "ca6100fe7bdf405fc692b2049ce4275c8510a2f6fff5d3bb53350491d626598c"
+      },
+      {
+        "path": "docs/working/issues/flow/0133-design-review-lacks-cleanroom-stage/0133-design-review-lacks-cleanroom-stage.md",
+        "bytes": 5871,
+        "sha256": "7d3064b62b0c1646c90a94bbc527eca2e5382afc80ddc6a6fce49ccdf1512579"
+      },
+      {
+        "path": "docs/working/issues/flow/0133-design-review-lacks-cleanroom-stage/lfa-0165-full-read-reviewers-anchor-on-existing-decisions-add-a-cleanroom-stage.md",
+        "bytes": 7066,
+        "sha256": "5d3b539b7c06d3752a0321dcee5fb8c3c56305462a59fcb11a94eb84c052f6c5"
+      },
+      {
+        "path": "docs/working/issues/flow/0133-design-review-lacks-cleanroom-stage/lfa-0165-multi-stage-review-protocol.md",
+        "bytes": 21813,
+        "sha256": "38bafcf680ed5c06c1bcb2dea6ef61455b40000c54df1ba1dae630fe2c548938"
+      },
+      {
+        "path": "docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md",
+        "bytes": 6030,
+        "sha256": "d6a40217ad9b5f4c4e24630589a0cc3844f6aff658e4e204d24118dfde9310c8"
+      },
+      {
+        "path": "docs/working/issues/flow/0144-reviewer-cannot-discover-omitted-evidence.md",
+        "bytes": 5312,
+        "sha256": "3fc515984706e8ccf6f2ef3e4244adb29f6c1b1898452b1d72bf92e04cadaedb"
+      },
+      {
+        "path": "skills/decision-log/SKILL.md",
+        "bytes": 4073,
+        "sha256": "26b71b7dd5dbbda432eef8d62d2fbac412bcf1a7983818f71027db4460548bbc"
+      },
+      {
+        "path": "skills/decision-log/references/adr-authoring.md",
+        "bytes": 9346,
+        "sha256": "ae321f776b46312c4c6114b9a612d98367dff38afa49029da627a5ace31cae4b"
+      },
+      {
+        "path": "skills/decision-log/references/cycle-consistency-check.md",
+        "bytes": 6947,
+        "sha256": "c98c877fceb5751319b39ca6e29e526a08e91bd65655c9832159cb826f7665e6"
+      },
+      {
+        "path": "skills/decision-log/references/open-questions.md",
+        "bytes": 2852,
+        "sha256": "727b4261253bfa80d1329abed6782f77159149fc28e959dd7ccc3692c9b9bba7"
+      },
+      {
+        "path": "skills/decision-log/references/status-updates.md",
+        "bytes": 7195,
+        "sha256": "e0b6c2f7428337f984933140c47874789b39ebf7293eb2d54b445a903498c16f"
+      },
+      {
+        "path": "skills/extend-guidelines/SKILL.md",
+        "bytes": 3309,
+        "sha256": "bb8f2eb4e05ed6c5a3b5d99773d31a37197b1842532d0292bcc196a5e6b940a1"
+      },
+      {
+        "path": "skills/feature-block-design/SKILL.md",
+        "bytes": 9271,
+        "sha256": "56ca645fbbfbba04ec7c5c7f964e7b71428a6905817f00ed7a5a9194bd78b5a9"
+      },
+      {
+        "path": "skills/organize-inbox/SKILL.md",
+        "bytes": 3848,
+        "sha256": "0ba3af3b89a4a3d22e80ec19c23eac5a8a0d26e65cbae63633a85db3c01d5908"
+      },
+      {
+        "path": "skills/pre-action-review/SKILL.md",
+        "bytes": 3018,
+        "sha256": "e06e9cda7162729f352f14d92d673c52fb00bec645b5bc9466e38188ffe0d00f"
+      },
+      {
+        "path": "skills/pre-finalization-review/SKILL.md",
+        "bytes": 18300,
+        "sha256": "a7ea177c52d8458381fd114d97ab93763efd5966c52e9692f83415b1cc7411cc"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/examples-and-evidence.md",
+        "bytes": 8752,
+        "sha256": "13e6a2e916cbd1c8091c3f340f75d3562c2231560fee426d559d78b29cfa3ec1"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/iteration-norms.md",
+        "bytes": 17583,
+        "sha256": "7aaefc4445c28d685732984830837271e7c11af4b26a5c884c07d39df823ec25"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/review-criteria.md",
+        "bytes": 9178,
+        "sha256": "7997e770869268b1124e252a34422756cd5637d0c7418f4ccf336138f024d9e1"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/review-procedure.md",
+        "bytes": 6689,
+        "sha256": "6a4718cf592aea6afced51aac2274be20857db915fb40fb188acc016dea828c5"
+      },
+      {
+        "path": "skills/retrospective/SKILL.md",
+        "bytes": 19051,
+        "sha256": "b9b3b9c0f5ee1e4397f4b7ce5919b0abf797b5b834372ab47d3b35260ed4f893"
+      },
+      {
+        "path": "skills/retrospective/flow-template.md",
+        "bytes": 1629,
+        "sha256": "c95f10fe1217dc08ef2ce323b1b563ee6e4c3bb5386526e48de3bfff7fc27d4e"
+      },
+      {
+        "path": "skills/retrospective/template.md",
+        "bytes": 2128,
+        "sha256": "c68034e55279d9fa8c60563a3f033b797f034446e00e17a7d62d321f28aae0d4"
+      },
+      {
+        "path": "skills/session-handoff/SKILL.md",
+        "bytes": 8796,
+        "sha256": "dcf07f36b77c2e2e64d7abb60b547ee9bcbc6bb8692a551d0c011aeed8a2d620"
+      },
+      {
+        "path": "skills/session-handoff/references/op-create.md",
+        "bytes": 723,
+        "sha256": "825d65bd9b03695c54bef18a66c0022e846c5ea3330b3b1d541855cbc6ef2bb9"
+      },
+      {
+        "path": "skills/session-handoff/references/op-cycle-reset.md",
+        "bytes": 2151,
+        "sha256": "bf8f6f5e93dc341b12ea6c97803e84ba4255a1ea7aa36b46f389734c86ae0cb9"
+      },
+      {
+        "path": "skills/session-handoff/references/op-finalize.md",
+        "bytes": 4196,
+        "sha256": "4119f917c9ff70d21fc23912a47faf958d1263e50260540432da74667d61c063"
+      },
+      {
+        "path": "skills/session-handoff/references/op-read.md",
+        "bytes": 2796,
+        "sha256": "24c44cee301b6f44ac4983195c50fc66b30bf57c3d4c18bd8ea0bd3ab3310edc"
+      },
+      {
+        "path": "skills/session-handoff/references/op-update.md",
+        "bytes": 4847,
+        "sha256": "7d3ba621dfcad81b4a531f03353be201b9f54b2a28291bfbefe23deafee23f73"
+      },
+      {
+        "path": "skills/session-handoff/references/relocation-map.md",
+        "bytes": 3707,
+        "sha256": "e324ca3ca3d2bf77fa2ff13822a52f925775bf7c81d133bd41705a8e75904d7b"
+      },
+      {
+        "path": "skills/session-handoff/references/relocation-procedure.md",
+        "bytes": 2812,
+        "sha256": "9f7c7d23d2baf292c44a272c5deff199251b4b6910e264a06b92bf78d4f10fcc"
+      },
+      {
+        "path": "skills/session-handoff/references/review-field-values.md",
+        "bytes": 5106,
+        "sha256": "885dc35120df46eb03d953047251572da1d279d9e70d7e84bfe55dd5fa544dfe"
+      },
+      {
+        "path": "skills/session-handoff/references/section-volume-norms.md",
+        "bytes": 2601,
+        "sha256": "9cdeb243d3e7a6632b11d00b88a6017b5a72354ce293ee2cb3c9e1d05d3ce555"
+      },
+      {
+        "path": "skills/start-work/SKILL.md",
+        "bytes": 19871,
+        "sha256": "f21327159c911f5c04914ad69aa3555b8fcfbf8c4b3de8ae183d3ea2a5f56139"
+      },
+      {
+        "path": "skills/start-work/references/decision-delegation.md",
+        "bytes": 6221,
+        "sha256": "bc1274c4ba24d3194403f42742662f2cd8f7c11098e1e4d607ca5bee22e5ad87"
+      },
+      {
+        "path": "skills/start-work/references/merge-practice.md",
+        "bytes": 4490,
+        "sha256": "0c10a4c889d01fc091a4b5adac9bb8918b3a08c7801a3832ebbe72bb5cb35df4"
+      },
+      {
+        "path": "skills/start-work/references/plan-deviation-defaults.md",
+        "bytes": 13441,
+        "sha256": "89ce2aebacdf21de1acf3f9ed0f8203eb5d224743d02a0bd12e701b521ff1693"
+      },
+      {
+        "path": "skills/subagent-dispatch/SKILL.md",
+        "bytes": 13775,
+        "sha256": "1f4d36917fc230a474f07aeb5e0283a2c8ce48438e3feeaa23b715e4c0a1fce4"
+      },
+      {
+        "path": "skills/subagent-dispatch/references/inspection-isolation.md",
+        "bytes": 12289,
+        "sha256": "1909c0ae4a4df294d74d4d8706d5e076c90ea40a743a371a71c4fee80df165f7"
+      },
+      {
+        "path": "skills/worklog-extract/SKILL.md",
+        "bytes": 7351,
+        "sha256": "3220361dd52d7c9e79a59ad2304133c951d976a3092a62fe162fdf1c78acd103"
+      },
+      {
+        "path": "skills/worklog-extract/scripts/check-store-health.py",
+        "bytes": 7750,
+        "sha256": "f9882523712c78a00000a6b3968e355b5900600fba57b6290cdda63432c7b0da"
+      },
+      {
+        "path": "skills/worklog-record/SKILL.md",
+        "bytes": 7792,
+        "sha256": "a7234b5eb57b7c264ad8ececdc91585fc2ad64b378ce2f4640fd8e885aa8ca5f"
+      },
+      {
+        "path": "skills/worklog-record/references/store-format.md",
+        "bytes": 8960,
+        "sha256": "f31c4986ee2c33e0cdff92ad578d51d295871037384b2d5bfcfb9197537452e5"
+      },
+      {
+        "path": "skills/worklog-skillify/SKILL.md",
+        "bytes": 4845,
+        "sha256": "4ef507877725e791af1c88469279d529f299884bb0cc701cc9f5adfb81b5fb0f"
+      },
+      {
+        "path": "skills/worklog-skillify/references/skill-authoring-techniques.md",
+        "bytes": 2073,
+        "sha256": "96cb60b82e71364938bbc1a01d226fad11ac9c3daa175bfd1ef63ff3e767bfd7"
+      }
+    ]
+  },
+  "roles": [
+    {
+      "role": "requirements",
+      "state": "finished",
+      "tool_calls": 24,
+      "read_paths": [
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\README.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0185-check-project-purpose-in-independent-reviews.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0186-define-review-questions-evidence-and-boundaries.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0189-organize-review-questions-and-independent-challenge.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-four-review-perspectives-coverage.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-reusable-review-insights-from-adrs.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-review-design-finalization.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-review-scope-reassessment.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\working\\issues\\flow\\0143-review-coverage-and-meaning-unverified.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\SKILL.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\review-criteria.md"
+      ],
+      "errors": [
+        "Path does not exist: dist. Note: your current working directory is D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot.",
+        "Path does not exist: template. Note: your current working directory is D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot."
+      ],
+      "execution": {
+        "role": "requirements",
+        "exit_code": 0,
+        "seen_init": true,
+        "stop_reason": null,
+        "elapsed_seconds": 281.58,
+        "changed": []
+      },
+      "raw_result": {
+        "duration_api_ms": 281186,
+        "stop_reason": "end_turn",
+        "session_id": "483f1f84-2a14-495f-8186-bd283002850b",
+        "total_cost_usd": 1.5098410000000002,
+        "usage": {
+          "input_tokens": 26,
+          "cache_creation_input_tokens": 79566,
+          "cache_read_input_tokens": 525766,
+          "output_tokens": 17946,
+          "output_tokens_details": {
+            "thinking_tokens": 10137
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 79566,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "not_available",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 8215,
+              "cache_read_input_tokens": 73121,
+              "cache_creation_input_tokens": 6445,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 0,
+                "ephemeral_1h_input_tokens": 6445
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 2418,
+            "outputTokens": 20,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.002518,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-opus-5": {
+            "inputTokens": 26,
+            "outputTokens": 17946,
+            "cacheReadInputTokens": 525766,
+            "cacheCreationInputTokens": 79566,
+            "webSearchRequests": 0,
+            "costUSD": 1.507323,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 10137,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 25,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "```json\n{\n  \"role\": \"independent-reviewer:目的・要求担当（claude-opus-5）\",\n  \"reviewed_targets\": [\n    \"docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md（全文108行、対象版 15bc4aab）\"\n  ],\n  \"evidence_paths\": [\n    \"README.md\",\n    \"CONTRIBUTING.md\",\n    \"skills/pre-finalization-review/SKILL.md\",\n    \"skills/pre-finalization-review/references/review-criteria.md\",\n    \"skills/pre-finalization-review/references/examples-and-evidence.md\",\n    \"skills/subagent-dispatch/SKILL.md\",\n    \"skills/start-work/SKILL.md\",\n    \"skills/start-work/references/plan-deviation-defaults.md\",\n    \"docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md\",\n    \"docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md\",\n    \"docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md\",\n    \"docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md\",\n    \"docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md\",\n    \"docs/records/reviews/2026-09-12-review-scope-reassessment.md\",\n    \"docs/records/reviews/2026-09-12-review-design-finalization.md\",\n    \"docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md\",\n    \"docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md\",\n    \"docs/current/specs/2026-08-28-start-work-responsibility-split-design.md\"\n  ],\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"0189 L88（整合対象の列挙）、L90（設計本文の集約方針）\",\n      \"evidence\": \"0189 L88は整合対象を「pre-finalization-reviewの定義・入力・実施・方式・適用例、subagent-dispatchの参照、対応する現行仕様と配布物」と列挙。しかし旧観点名に依存する記述は他にも実在する: skills/start-work/references/plan-deviation-defaults.md L32「`pre-finalization-review` の前提実在観点と同水準」（不在の根拠を残す実証要件の基準点）、同L67・L76「タスク別／実装時の仕様適合レビュー」、README.md L48「4 観点独立レビューの実施」。skills/start-work/SKILL.md L75/L78は提示規則の参照のみで観点名は持たないが、参照網は start-work 側へ及ぶ。Grep範囲: リポジトリ全体（`4観点|敵対的|前提実在|実装整合性|仕様適合`、52ファイル）。うちCONTRIBUTING.md L42のヒットは過剰適合点検の4観点で無関係、docs/current/specs の2件は「対応する現行仕様」に含まれると読める。\",\n      \"problem\": \"観点名の再編を決めた設計であるにもかかわらず、名称に依存する参照の所在の列挙が start-work と README を欠く。0189自身がADR-0091・0092を引いて「文書間・工程間の相互作用」「所在・条件の到達性」を保持すべき検査対象としている（L71・L76）のに、その保持要求を自ADRの反映範囲に適用しきれていない。\",\n      \"impact\": \"実装時に旧名が残存し、plan-deviation-defaults の「前提実在観点と同水準」の実証要件が参照先を失う（＝採用基準の水準規定の弱化）。READMEは初見利用者の入口であり、旧名残存は初見理解の齟齬を生む。いずれもADR-0189が防ぎたい「定義の弱化」「接続落ち」の再発経路。\",\n      \"recommendation\": \"主担当判断事項。既存文言の微修正で足りる案として、L88の列挙を「観点名を参照する全箇所（start-work の計画採用基準・実装時レビュー注入、README のスキル一覧を含む）」へ一般化する1文の追加を推奨。増設（反映漏れ台帳の新設等）は不要で、維持負担は列挙1文の更新のみ。\",\n      \"limits\": \"実装未着手であること自体は既知の段階差として指摘していない。指摘は「反映対象の列挙が実体より狭い」という設計上の欠落に限る。dist/ ・template/ は本スナップショットに不在のため配布物側の旧名残存は未確認。\"\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"0189 L88（旧ADRの見直し範囲）、L96（評価は実装後の最初の3件）\",\n      \"evidence\": \"ADR-0186 L44は「今後最初の3件の独立レビューで…改善が見られない場合は定義・例を簡素化する」、ADR-0185 L36は「導入後の最初の3件の独立レビューで…固有の検出がなければ補足の簡素化・撤回を提案」と、いずれも未消化の評価窓を規定（両ADRとも2026-09-11 Accepted）。CONTRIBUTING.md L87-88は新設に「期待検出量と観測可能な廃止条件」を義務づけ、ADR-0101由来の要求（0189 L75、reusable記録 L16）は「未検出を不要・機会不足・検出器不備で区別する」ことを保持対象とする。0189はL96で自らの新しい3件窓を設ける一方、ADR-0186 L34の部分修正注記（0189起因）にも0189本文にも、旧2窓を継続・統合・未評価として打ち切るいずれかの扱いが書かれていない。\",\n      \"problem\": \"評価窓が二重化し、先行規範（0185・0186の定義・入力の補足）の効果が一度も評価されないまま再編で入れ替わる経路が残る。0189自身が保持すると宣言した「効果の評価可能性と簡素化・廃止の条件」（L75）の適用が、直前の2規範に対して欠けている。\",\n      \"impact\": \"評価されない補足文言が積み上がる構造（ADR-0101・0102が増殖の背景として記録した型）を、本再編で再現しうる。逆に旧窓が生きていると解釈されると、実装前の観測をもって0186の簡素化判断が行われる誤用も起こる。\",\n      \"recommendation\": \"主担当判断事項。ADR-0186（および必要なら0185）の部分修正注記へ「先行の3件窓は機会不足のため未評価とし、0189 L96の窓へ統合する」旨を1行追加する案を推奨。新しい計数工程・台帳は不要（既存注記への1行のみ、維持負担は実質増えない）。\",\n      \"limits\": \"過去のレビュー記録・git履歴・handoffは本コピーに含まれないため、0185・0186の3件窓に実際に何件が計上済みかは未確認。評価未実施の事実自体は0189 L98・finalization L30で開示済みであり、そこは指摘対象としていない。\"\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189 L61（信頼性・移行・復旧の行）、L65（セキュリティの行）\",\n      \"evidence\": \"比較記録 docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md L40は「成立性が復旧・移行を確認し、敵対的担当が故障条件から再検査」を担当候補として挙げる。0189 L61は同項目の責任を「成立性担当。構造の維持負担は根拠担当と分担」とし反証担当に触れないが、L65のセキュリティ行のみ「反証担当が迂回・失敗条件」と明記している。\",\n      \"problem\": \"品質項目表の中で反証担当の明示が1行だけ選択的に行われ、他行は非明示。0189 L54が「関係する項目の未確認を『問題なし』へ含めない」と定める一方、表の非対称さは「復旧・移行は反証の対象外」という読みを許す。L36・L48の一般規定で救済されるため設計の矛盾ではないが、表単独で読まれた場合に担当の欠落が生じうる。\",\n      \"impact\": \"中断・再開・部分失敗という、0189 L36が反証担当の中心に置く条件が、最も関係する復旧・移行行から読み取れない。委譲文をこの表から機械的に組む運用では失敗経路の担当が落ちる。\",\n      \"recommendation\": \"主担当判断事項。増設ではなく統一・簡素化で足りる。①L65の反証担当の明示を削って表を役割3担当に揃え反証はL36・L48で一括して覆う、②またはL61に反証担当を1語追加、のいずれか。維持負担は表1セルの整合のみ。\",\n      \"limits\": \"L36・L48の一般規定が有効に読まれる限り実害は生じない。読み手の解釈差に依存する弱い指摘であり、表の意図（対象の性質に応じた選択）を否定するものではない。\"\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189 L84（体制と人数の選び方）、L88（既存規範を無条件に解除しない）\",\n      \"evidence\": \"現行 skills/pre-finalization-review/SKILL.md L96は「判断に迷う場合は確認範囲を広くする側を推奨し、方式が未決ならフル実施、人数が未決なら観点分離とする」という安全側の既定を持ち、同L90・L100は「4観点」「1体4観点兼務」という観点数に紐づく表現で人数規定・記録要求を書いている。0189 L84は「4体分担を基本の候補とする…実行時は対象・必要な専門性・未確認範囲・費用から人数と分担を選ぶ」とするのみで、再編後の構成（3領域＋反証）における迷い時の既定と、旧「観点分離」「4観点兼務」の写像先を示さない。\",\n      \"problem\": \"L88の「既存の要求・保護・実証・採否の規範を無条件に解除しない」という包括節に頼っており、人数の安全側既定という具体的な保護の写像先（3体か4体か、兼務記録の呼称）が設計段階で未定義。ユーザーが重視した「4体を毎回必須にしない」方針と、既存の「迷えば広い側」既定の両立点が本文から決まらない。\",\n      \"impact\": \"実装者の解釈により、迷い時に人数を絞る側へ倒れて安全側既定が事実上弱化する余地が残る。逆に4体固定へ倒れれば「毎回必須にしない」というユーザー要求に反する。0189の評価（L96、役割境界の確認）も人数記録の呼称が未定のままでは復元しにくい。\",\n      \"recommendation\": \"主担当判断事項。1文の追記で足りる（例:「人数が未決の場合は3領域分離＋独立反証を既定とし、兼務時の記録形式は既存のSKILL.md規定を写像して維持する」）。新規の判定表・閾値は不要で、維持負担は1文と実装時の呼称対応のみ。\",\n      \"limits\": \"L88の包括節および実装工程（Issue-0143に残る作業）でこの写像が定義される可能性はあり、実装未実施そのものを欠陥としていない。指摘は「保持すべき旧要求の写像先が設計本文で未特定」という点に限る。実運用でどちらへ倒れるかは未実証。\"\n    }\n  ],\n  \"unknowns\": [\n    \"ADR-0189 L10が承認基準に含める「同日までの本会話」の原文は提供されておらず、承認範囲の確認は本ADRとreviews記録・Issue-0143の記載に限られる。\",\n    \"dist/ と template/ が本コピーに存在しないため、finalization記録 L32の「配布物に実質差分なし」「両-Check終了0」は追認できない（配布物側の旧観点名残存も未確認）。\",\n    \"git履歴・過去のレビュー記録（2026-09-11 review-criteria-finalization 等）・handoffの `review=` 行が含まれないため、0185・0186の3件評価窓の消化状況、および0189 L96の3件が計数可能かの実地確認はできない。\",\n    \"品質項目の網羅性については、比較記録の12類型が0189 L58-65の8行へ全て対応することを原文対比で確認した（設計品質→L59、変更の完全性→L60、規約・外部制約→L58、運用・保守→L61など）。抜けは検出していないが、12類型自体が網羅の証明ではないと同記録L32が断っており、絶対的な網羅性は未確認。\",\n    \"0189 L74の「特に疑う6類型は既存適用例へ到達できるようにする」は examples-and-evidence.md L15-26 に6項目が実在することを確認済み。0186 L34・0117 L48の部分修正注記の実在も確認済み（finalization L18の主張は追認できた）。\",\n    \"本レビューは読み取り専用（Read/Glob/Grep）で実施し、動作・4体構成の効果は検証していない。指摘はすべて原文対比による文書上の不一致・欠落であり、実環境の動作の事実ではない。\"\n  ],\n  \"created_paths\": []\n}\n```",
+        "ttft_ms": 1753,
+        "type": "result",
+        "duration_ms": 280302,
+        "uuid": "871fc2e4-ccb4-4340-8058-cbdabd3bc9b6",
+        "ttft_stream_ms": 1176,
+        "time_to_request_ms": 20,
+        "first_content_frame_ms": 1176,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "report": {
+        "role": "independent-reviewer:目的・要求担当（claude-opus-5）",
+        "reviewed_targets": [
+          "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md（全文108行、対象版 15bc4aab）"
+        ],
+        "evidence_paths": [
+          "README.md",
+          "CONTRIBUTING.md",
+          "skills/pre-finalization-review/SKILL.md",
+          "skills/pre-finalization-review/references/review-criteria.md",
+          "skills/pre-finalization-review/references/examples-and-evidence.md",
+          "skills/subagent-dispatch/SKILL.md",
+          "skills/start-work/SKILL.md",
+          "skills/start-work/references/plan-deviation-defaults.md",
+          "docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md",
+          "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md",
+          "docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md",
+          "docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md",
+          "docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md",
+          "docs/records/reviews/2026-09-12-review-scope-reassessment.md",
+          "docs/records/reviews/2026-09-12-review-design-finalization.md",
+          "docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md",
+          "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+          "docs/current/specs/2026-08-28-start-work-responsibility-split-design.md"
+        ],
+        "findings": [
+          {
+            "id": "F1",
+            "severity": "medium",
+            "target_lines": "0189 L88（整合対象の列挙）、L90（設計本文の集約方針）",
+            "evidence": "0189 L88は整合対象を「pre-finalization-reviewの定義・入力・実施・方式・適用例、subagent-dispatchの参照、対応する現行仕様と配布物」と列挙。しかし旧観点名に依存する記述は他にも実在する: skills/start-work/references/plan-deviation-defaults.md L32「`pre-finalization-review` の前提実在観点と同水準」（不在の根拠を残す実証要件の基準点）、同L67・L76「タスク別／実装時の仕様適合レビュー」、README.md L48「4 観点独立レビューの実施」。skills/start-work/SKILL.md L75/L78は提示規則の参照のみで観点名は持たないが、参照網は start-work 側へ及ぶ。Grep範囲: リポジトリ全体（`4観点|敵対的|前提実在|実装整合性|仕様適合`、52ファイル）。うちCONTRIBUTING.md L42のヒットは過剰適合点検の4観点で無関係、docs/current/specs の2件は「対応する現行仕様」に含まれると読める。",
+            "problem": "観点名の再編を決めた設計であるにもかかわらず、名称に依存する参照の所在の列挙が start-work と README を欠く。0189自身がADR-0091・0092を引いて「文書間・工程間の相互作用」「所在・条件の到達性」を保持すべき検査対象としている（L71・L76）のに、その保持要求を自ADRの反映範囲に適用しきれていない。",
+            "impact": "実装時に旧名が残存し、plan-deviation-defaults の「前提実在観点と同水準」の実証要件が参照先を失う（＝採用基準の水準規定の弱化）。READMEは初見利用者の入口であり、旧名残存は初見理解の齟齬を生む。いずれもADR-0189が防ぎたい「定義の弱化」「接続落ち」の再発経路。",
+            "recommendation": "主担当判断事項。既存文言の微修正で足りる案として、L88の列挙を「観点名を参照する全箇所（start-work の計画採用基準・実装時レビュー注入、README のスキル一覧を含む）」へ一般化する1文の追加を推奨。増設（反映漏れ台帳の新設等）は不要で、維持負担は列挙1文の更新のみ。",
+            "limits": "実装未着手であること自体は既知の段階差として指摘していない。指摘は「反映対象の列挙が実体より狭い」という設計上の欠落に限る。dist/ ・template/ は本スナップショットに不在のため配布物側の旧名残存は未確認。"
+          },
+          {
+            "id": "F2",
+            "severity": "medium",
+            "target_lines": "0189 L88（旧ADRの見直し範囲）、L96（評価は実装後の最初の3件）",
+            "evidence": "ADR-0186 L44は「今後最初の3件の独立レビューで…改善が見られない場合は定義・例を簡素化する」、ADR-0185 L36は「導入後の最初の3件の独立レビューで…固有の検出がなければ補足の簡素化・撤回を提案」と、いずれも未消化の評価窓を規定（両ADRとも2026-09-11 Accepted）。CONTRIBUTING.md L87-88は新設に「期待検出量と観測可能な廃止条件」を義務づけ、ADR-0101由来の要求（0189 L75、reusable記録 L16）は「未検出を不要・機会不足・検出器不備で区別する」ことを保持対象とする。0189はL96で自らの新しい3件窓を設ける一方、ADR-0186 L34の部分修正注記（0189起因）にも0189本文にも、旧2窓を継続・統合・未評価として打ち切るいずれかの扱いが書かれていない。",
+            "problem": "評価窓が二重化し、先行規範（0185・0186の定義・入力の補足）の効果が一度も評価されないまま再編で入れ替わる経路が残る。0189自身が保持すると宣言した「効果の評価可能性と簡素化・廃止の条件」（L75）の適用が、直前の2規範に対して欠けている。",
+            "impact": "評価されない補足文言が積み上がる構造（ADR-0101・0102が増殖の背景として記録した型）を、本再編で再現しうる。逆に旧窓が生きていると解釈されると、実装前の観測をもって0186の簡素化判断が行われる誤用も起こる。",
+            "recommendation": "主担当判断事項。ADR-0186（および必要なら0185）の部分修正注記へ「先行の3件窓は機会不足のため未評価とし、0189 L96の窓へ統合する」旨を1行追加する案を推奨。新しい計数工程・台帳は不要（既存注記への1行のみ、維持負担は実質増えない）。",
+            "limits": "過去のレビュー記録・git履歴・handoffは本コピーに含まれないため、0185・0186の3件窓に実際に何件が計上済みかは未確認。評価未実施の事実自体は0189 L98・finalization L30で開示済みであり、そこは指摘対象としていない。"
+          },
+          {
+            "id": "F3",
+            "severity": "low",
+            "target_lines": "0189 L61（信頼性・移行・復旧の行）、L65（セキュリティの行）",
+            "evidence": "比較記録 docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md L40は「成立性が復旧・移行を確認し、敵対的担当が故障条件から再検査」を担当候補として挙げる。0189 L61は同項目の責任を「成立性担当。構造の維持負担は根拠担当と分担」とし反証担当に触れないが、L65のセキュリティ行のみ「反証担当が迂回・失敗条件」と明記している。",
+            "problem": "品質項目表の中で反証担当の明示が1行だけ選択的に行われ、他行は非明示。0189 L54が「関係する項目の未確認を『問題なし』へ含めない」と定める一方、表の非対称さは「復旧・移行は反証の対象外」という読みを許す。L36・L48の一般規定で救済されるため設計の矛盾ではないが、表単独で読まれた場合に担当の欠落が生じうる。",
+            "impact": "中断・再開・部分失敗という、0189 L36が反証担当の中心に置く条件が、最も関係する復旧・移行行から読み取れない。委譲文をこの表から機械的に組む運用では失敗経路の担当が落ちる。",
+            "recommendation": "主担当判断事項。増設ではなく統一・簡素化で足りる。①L65の反証担当の明示を削って表を役割3担当に揃え反証はL36・L48で一括して覆う、②またはL61に反証担当を1語追加、のいずれか。維持負担は表1セルの整合のみ。",
+            "limits": "L36・L48の一般規定が有効に読まれる限り実害は生じない。読み手の解釈差に依存する弱い指摘であり、表の意図（対象の性質に応じた選択）を否定するものではない。"
+          },
+          {
+            "id": "F4",
+            "severity": "low",
+            "target_lines": "0189 L84（体制と人数の選び方）、L88（既存規範を無条件に解除しない）",
+            "evidence": "現行 skills/pre-finalization-review/SKILL.md L96は「判断に迷う場合は確認範囲を広くする側を推奨し、方式が未決ならフル実施、人数が未決なら観点分離とする」という安全側の既定を持ち、同L90・L100は「4観点」「1体4観点兼務」という観点数に紐づく表現で人数規定・記録要求を書いている。0189 L84は「4体分担を基本の候補とする…実行時は対象・必要な専門性・未確認範囲・費用から人数と分担を選ぶ」とするのみで、再編後の構成（3領域＋反証）における迷い時の既定と、旧「観点分離」「4観点兼務」の写像先を示さない。",
+            "problem": "L88の「既存の要求・保護・実証・採否の規範を無条件に解除しない」という包括節に頼っており、人数の安全側既定という具体的な保護の写像先（3体か4体か、兼務記録の呼称）が設計段階で未定義。ユーザーが重視した「4体を毎回必須にしない」方針と、既存の「迷えば広い側」既定の両立点が本文から決まらない。",
+            "impact": "実装者の解釈により、迷い時に人数を絞る側へ倒れて安全側既定が事実上弱化する余地が残る。逆に4体固定へ倒れれば「毎回必須にしない」というユーザー要求に反する。0189の評価（L96、役割境界の確認）も人数記録の呼称が未定のままでは復元しにくい。",
+            "recommendation": "主担当判断事項。1文の追記で足りる（例:「人数が未決の場合は3領域分離＋独立反証を既定とし、兼務時の記録形式は既存のSKILL.md規定を写像して維持する」）。新規の判定表・閾値は不要で、維持負担は1文と実装時の呼称対応のみ。",
+            "limits": "L88の包括節および実装工程（Issue-0143に残る作業）でこの写像が定義される可能性はあり、実装未実施そのものを欠陥としていない。指摘は「保持すべき旧要求の写像先が設計本文で未特定」という点に限る。実運用でどちらへ倒れるかは未実証。"
+          }
+        ],
+        "unknowns": [
+          "ADR-0189 L10が承認基準に含める「同日までの本会話」の原文は提供されておらず、承認範囲の確認は本ADRとreviews記録・Issue-0143の記載に限られる。",
+          "dist/ と template/ が本コピーに存在しないため、finalization記録 L32の「配布物に実質差分なし」「両-Check終了0」は追認できない（配布物側の旧観点名残存も未確認）。",
+          "git履歴・過去のレビュー記録（2026-09-11 review-criteria-finalization 等）・handoffの `review=` 行が含まれないため、0185・0186の3件評価窓の消化状況、および0189 L96の3件が計数可能かの実地確認はできない。",
+          "品質項目の網羅性については、比較記録の12類型が0189 L58-65の8行へ全て対応することを原文対比で確認した（設計品質→L59、変更の完全性→L60、規約・外部制約→L58、運用・保守→L61など）。抜けは検出していないが、12類型自体が網羅の証明ではないと同記録L32が断っており、絶対的な網羅性は未確認。",
+          "0189 L74の「特に疑う6類型は既存適用例へ到達できるようにする」は examples-and-evidence.md L15-26 に6項目が実在することを確認済み。0186 L34・0117 L48の部分修正注記の実在も確認済み（finalization L18の主張は追認できた）。",
+          "本レビューは読み取り専用（Read/Glob/Grep）で実施し、動作・4体構成の効果は検証していない。指摘はすべて原文対比による文書上の不一致・欠落であり、実環境の動作の事実ではない。"
+        ],
+        "created_paths": []
+      }
+    },
+    {
+      "role": "evidence",
+      "state": "finished",
+      "tool_calls": 34,
+      "read_paths": [
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\overview\\principles.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0117-premise-existence-viewpoint-and-premise-checks.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0185-check-project-purpose-in-independent-reviews.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0185-preserve-project-purpose-alignment-in-reviews.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0188-develop-read-glob-grep-evidence-access.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0189-organize-review-questions-and-independent-challenge.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-four-review-perspectives-coverage.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-reusable-review-insights-from-adrs.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-review-design-finalization.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-review-scope-reassessment.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\working\\issues\\flow\\0143-review-coverage-and-meaning-unverified.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\feature-block-design\\SKILL.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\SKILL.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\examples-and-evidence.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\iteration-norms.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\review-criteria.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\review-procedure.md"
+      ],
+      "errors": [
+        "File does not exist. Note: your current working directory is D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot."
+      ],
+      "execution": {
+        "role": "evidence",
+        "exit_code": 0,
+        "seen_init": true,
+        "stop_reason": null,
+        "elapsed_seconds": 398.94,
+        "changed": []
+      },
+      "raw_result": {
+        "duration_api_ms": 398498,
+        "stop_reason": "end_turn",
+        "session_id": "40ec905d-981c-4f53-8ac4-0ead3be18437",
+        "total_cost_usd": 2.2497540000000003,
+        "usage": {
+          "input_tokens": 46,
+          "cache_creation_input_tokens": 97806,
+          "cache_read_input_tokens": 1282488,
+          "output_tokens": 25107,
+          "output_tokens_details": {
+            "thinking_tokens": 15729
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 97806,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "not_available",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 5986,
+              "cache_read_input_tokens": 99366,
+              "cache_creation_input_tokens": 1030,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 0,
+                "ephemeral_1h_input_tokens": 1030
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 2430,
+            "outputTokens": 23,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.002545,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-opus-5": {
+            "inputTokens": 46,
+            "outputTokens": 25107,
+            "cacheReadInputTokens": 1282488,
+            "cacheCreationInputTokens": 97806,
+            "webSearchRequests": 0,
+            "costUSD": 2.247209,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 15729,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 35,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "```json\n{\n  \"role\": \"claude-opus-5 / 独立レビュアー（根拠・設計判断担当）\",\n  \"reviewed_targets\": [\n    \"docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md（全文108行・全数走査）\"\n  ],\n  \"evidence_paths\": [\n    \"skills/pre-finalization-review/SKILL.md\",\n    \"skills/pre-finalization-review/references/review-criteria.md\",\n    \"skills/pre-finalization-review/references/review-procedure.md\",\n    \"skills/pre-finalization-review/references/iteration-norms.md\",\n    \"skills/pre-finalization-review/references/examples-and-evidence.md\",\n    \"skills/subagent-dispatch/SKILL.md\",\n    \"skills/feature-block-design/SKILL.md\",\n    \"skills/decision-log/SKILL.md\",\n    \"skills/decision-log/references/status-updates.md\",\n    \"CONTRIBUTING.md\",\n    \"docs/overview/principles.md\",\n    \"docs/records/decisions/0079-overfitting-check-required-for-guideline-extensions.md\",\n    \"docs/records/decisions/0099-citation-consistency-via-existing-checkpoint-wording.md\",\n    \"docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md\",\n    \"docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md\",\n    \"docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md\",\n    \"docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md\",\n    \"docs/records/decisions/0188-develop-read-glob-grep-evidence-access.md\",\n    \"docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md\",\n    \"docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md\",\n    \"docs/records/reviews/2026-09-12-review-scope-reassessment.md\",\n    \"docs/records/reviews/2026-09-12-review-design-finalization.md\",\n    \"docs/records/experiments/2026-09-12-review-evidence-access-result.md\",\n    \"docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md\",\n    \"docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md\"\n  ],\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"0189:84（体制と人数）、関連 0189:36・50・88\",\n      \"evidence\": \"現行 SKILL.md:90「レビューの観点は 4 つ…を維持する。担当は1〜4体」と SKILL.md:96「4観点は維持し、担当は1〜4体とする…人数が未決なら観点分離とする」は、人数を減らしても4観点の検査自体は必ず覆われることを保証している。ADR-0189:84 は「4体分担を基本の候補」「4体を毎回必須とする決定ではなく、実行時は…人数と分担を選ぶ」とのみ定め、領域（観点）側の被覆維持に相当する文が本文に無い。0189:88 は「旧ADR-0186の4観点定義とADR-0117の観点配置はこの設計で見直す」と明記しており、同88の包括的保持文（要求・保護・実証・採否）は見直し対象である観点構成には及ばない。\",\n      \"problem\": \"新設計正本において、人数削減時に「独立した反例・失敗経路の探索」等の領域の問い自体が無担当になり得る。0189:50は「確認が必要な品質項目の主担当を定める」と述べるが、これは反証担当への丸投げ禁止の規定で、担当を置かない場合の被覆責任を定めていない。\",\n      \"impact\": \"実装時に review-criteria.md を書き換える際、現行の「4観点は維持」相当の被覆保証が脱落し、1〜2体構成で失敗経路探索や検証検出力の確認が抜ける経路が開く。ADR-0117:33（体数1〜4は観点数と別）で維持してきた区別が曖昧になる。\",\n      \"recommendation\": \"主担当判断。増設ではなく既存文言の継承として、Decision 5に「人数に関わらず4領域の問いは覆う。人数で変わるのは独立性と分担であり検査範囲ではない」旨の1文を置く案を推奨。維持負担は1文のみで、実装時にSKILL.mdの既存文を引き継ぐだけのため増分はほぼ無い。代替は「現行SKILL.mdの当該文を変更対象外と明記する」方式で、どちらでも足りる。\",\n      \"limits\": \"文書対比のみ。実装は未着手のため実害の実測ではない。0189:88の包括保持文を広く読めば被覆も維持されるという解釈は成り立つが、同88が観点構成を見直し対象と名指ししているため一義的ではない。\"\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189:71-76（過去ADRから保持する問いと制約）、0189:88\",\n      \"evidence\": \"現行 review-criteria.md:54「将来作成することが計画に明記された部品は、現在ないだけで不整合・前提誤りにしない。既存部品として誤って扱っていないか、作成・接続・検証の担当と順序が揃うかを確認する」。ADR-0189 の保持リスト（71-76）と Decision 1・2 のどこにも同等の規定が無い（0189全文を走査）。0189:38 の「承認済みの段階的な限定」はスコープ限定の評価規定であり、未作成部品の扱いとは別事項。\",\n      \"problem\": \"0189:88 により review-criteria.md の観点定義は書き換え対象になるため、この誤検出防止規定が引き継がれる根拠が設計正本に無い。\",\n      \"impact\": \"段階実装の成果物に対し、未作成部品を「実体と不一致」「前提誤り」と誤判定する指摘が増え、採否工程の負担が増す。Issue-0143:12 が問題視した『原意の弱化』と同型の脱落になり得る。\",\n      \"recommendation\": \"主担当判断。Decision 4 の保持リストへ1行追加、または0189:88の保持文に「観点境界の既存注記（未作成部品・実行証拠の限界）を含む」と明示する案。維持負担は1行。既存文言の継承であり新規範ではない。\",\n      \"limits\": \"文書対比のみ。実装時の書き換えで実際に脱落するかは未観測（段階差ではなく設計正本の記載欠落として報告）。\"\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189:61（信頼性・移行・復旧、運用・観測、設定・依存の更新｜成立性担当。構造の維持負担は根拠担当と分担）\",\n      \"evidence\": \"承認基準とされた比較記録 docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md:40 は「信頼性・復旧・移行…成立性が復旧・移行を確認し、敵対的担当が故障条件から再検査」と2担当を割り当てている。ADR-0189:61 では反証担当が落ち、同表で反証担当が明記されるのはセキュリティ行（0189:65）のみ。最終点検記録 2026-09-12-review-design-finalization.md:12・20 は「12類型を8行へまとめた」「既出の問いの脱落は見当たらない」としており、担当側の脱落は点検されていない。\",\n      \"problem\": \"0189:50 が「確認が必要な品質項目の主担当を定める」方針を取る以上、担当欄の非対称は意図的な設計か写し落ちかが読み取れない。二重実行・途中停止からの復旧不能といった障害条件は0189:36の反証担当の射程と重なるため、表と射程の対応が曖昧。\",\n      \"impact\": \"委譲文作成時に信頼性・復旧領域で反証担当を外す運用が既定化し、ADR-0092由来の「組合せ・部分失敗」検査が薄くなる可能性。\",\n      \"recommendation\": \"主担当判断。当該行へ「反証担当が故障・中断条件から再検査」を1語追加するか、意図的な簡素化なら0189:36の射程で覆う旨を注記する。いずれも文言のみで維持負担の増分は無い。\",\n      \"limits\": \"文書対比のみ。0189:36の反証担当の射程は「運用を破る条件」を含むため、実運用で必ず抜けるとは断定できない。\"\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189:104（過剰適合点検・出所の偏り欄）\",\n      \"evidence\": \"0189:104 は「ADR-0079・0099の事例は主にclaude-fable-5作成／claude-opus-5検出」と記す。ADR-0099:89 は作成 claude-fable-5・検出 claude-opus-5 を明記し一致する。一方 ADR-0079:10 は自身の契機事例について「spec 承認まで進み、設計承認後のユーザーレビューでの指摘で初めて 3 点の過剰適合の芽が確認された」と記録し、検出主体は利用者である（作成側モデルの記載も無い）。examples-and-evidence.md:7 の claude-fable-5 / 3観点レビューは ADR-0080 適用例の出所（別サイクル）であり、ADR-0079 の契機事例ではない。\",\n      \"problem\": \"出所の偏り欄は出所・モデル世代を実数で示すための欄（CONTRIBUTING.md:73）であり、人手（利用者目視）で検出された事例をAI検出として合算すると、AI側の検出実績を実際より広く見せる。引用の向きの保存（0189:72が自ら掲げる規律）にも反する。\",\n      \"impact\": \"本ADRの限界記述が実際よりAI検出寄りに読まれ、将来の再較正時に「AIレビューで捕捉できた型」の母数を誤る。決定内容そのものは変わらない。\",\n      \"recommendation\": \"主担当判断。「主に」の範囲を限定し、ADR-0079の契機事例は利用者検出である旨を1句加える（またはADR-0099のみを当該帰属の根拠として残す）。文言訂正のみで維持負担は無い。\",\n      \"limits\": \"ADR-0079本文と適用例文書の対比による。当該箇所は『主に』と留保しているため誤りの度合いは限定的。\"\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189:96（発火機会はその3件で、少なくとも1件の役割境界・欠落検出を評価できる機会を見込む）、0189:107\",\n      \"evidence\": \"同ADR 0189:84 は4体を必須とせず人数を都度選ぶと定める。役割境界の妥当性は2体以上へ分担した回でしか観測できないが、0189:96は発火条件を「実装後の最初の3件の対象レビュー」とのみ置き、分担条件を付けていない。比較対象として ADR-0185:36 の評価条項は人数に依存しない検査（目的整合）を対象にしており、条件と見込みが整合している。CONTRIBUTING.md:87 は発火機会を対象期間・計数手段付きの計数可能な形で書くことを求めるが、条件の適合性までは規定していない。\",\n      \"problem\": \"SKILL.md:98 の実測（写像planでは1体4観点兼務が約1/3コスト）に照らすと、最初の3件が1体兼務で実施される経路は現実的にあり、その場合「役割境界の評価機会1件以上」の見込みに根拠が無い。結果として簡素化・撤回判定（0189:107）が『未評価』のまま固定し、維持負担だけが残り得る。\",\n      \"impact\": \"評価可能性（ADR-0102）の実効性が下がり、規範の廃止・簡素化の判断材料が集まらない。決定の妥当性そのものは損なわれない。\",\n      \"recommendation\": \"主担当判断。発火機会を「2体以上へ分担した対象レビュー3件」等へ条件付けるか、見込みの根拠（実装直後は観点分離を選ぶ見込みである旨）を1文添える案。台帳・監視の増設は不要で、文言のみ。既存条項のままリスク受容する選択も比較対象として残る（その場合は未評価が続くことを明示）。\",\n      \"limits\": \"将来の人数選択は未確定であり、実際に機会が生じない事実の観測ではない。段階差ではなく、条件設定と自らの人数方針との整合の問題として報告する。\"\n    }\n  ],\n  \"unknowns\": [\n    \"ADR-0185:30が参照する docs/records/reviews/2026-09-11-review-criteria-finalization.md はスナップショットに存在せず（docs/records/reviews 配下をglobで確認）、同ADRの確定経緯は未確認。過去レビュー記録が複製対象外である旨の与件と整合するため、不足として記録する。\",\n    \"Git履歴・未追跡データが無いため、0189:88の『現在の配布済みスキルは変更していない』『Issue-0143は未完了』はファイル内容（skills/配下が旧4観点のまま、Issue-0143 Status: open）との一致までしか確認できず、コミット状態・dist生成物の同期は未検証。\",\n    \"最終点検記録が挙げる sync-template / build-dist -Check 等の実行結果は本環境で再実行できず（実行権限なし）、記載の成否は未実証。\",\n    \"4体分担の検出力・費用対効果は本ADR自身が未実証としており、本レビューでも実証していない（本件は文書レビュー）。\",\n    \"ADR-0107・0120・0124等が本文に持つ『4観点（敵対的・実装整合性・仕様適合・前提実在）』表記への部分修正注記は今回付されていないが、実装未着手で名称の一括改名を行わない方針（review-scope-reassessment:40）と整合し得るため、指摘ではなく確認事項として残す。\"\n  ],\n  \"created_paths\": []\n}\n```",
+        "ttft_ms": 1138,
+        "type": "result",
+        "duration_ms": 397525,
+        "uuid": "94f92297-150f-4d24-974a-a0771bfe2bea",
+        "ttft_stream_ms": 723,
+        "time_to_request_ms": 20,
+        "first_content_frame_ms": 723,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "report": {
+        "role": "claude-opus-5 / 独立レビュアー（根拠・設計判断担当）",
+        "reviewed_targets": [
+          "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md（全文108行・全数走査）"
+        ],
+        "evidence_paths": [
+          "skills/pre-finalization-review/SKILL.md",
+          "skills/pre-finalization-review/references/review-criteria.md",
+          "skills/pre-finalization-review/references/review-procedure.md",
+          "skills/pre-finalization-review/references/iteration-norms.md",
+          "skills/pre-finalization-review/references/examples-and-evidence.md",
+          "skills/subagent-dispatch/SKILL.md",
+          "skills/feature-block-design/SKILL.md",
+          "skills/decision-log/SKILL.md",
+          "skills/decision-log/references/status-updates.md",
+          "CONTRIBUTING.md",
+          "docs/overview/principles.md",
+          "docs/records/decisions/0079-overfitting-check-required-for-guideline-extensions.md",
+          "docs/records/decisions/0099-citation-consistency-via-existing-checkpoint-wording.md",
+          "docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md",
+          "docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md",
+          "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md",
+          "docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md",
+          "docs/records/decisions/0188-develop-read-glob-grep-evidence-access.md",
+          "docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md",
+          "docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md",
+          "docs/records/reviews/2026-09-12-review-scope-reassessment.md",
+          "docs/records/reviews/2026-09-12-review-design-finalization.md",
+          "docs/records/experiments/2026-09-12-review-evidence-access-result.md",
+          "docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md",
+          "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md"
+        ],
+        "findings": [
+          {
+            "id": "F1",
+            "severity": "medium",
+            "target_lines": "0189:84（体制と人数）、関連 0189:36・50・88",
+            "evidence": "現行 SKILL.md:90「レビューの観点は 4 つ…を維持する。担当は1〜4体」と SKILL.md:96「4観点は維持し、担当は1〜4体とする…人数が未決なら観点分離とする」は、人数を減らしても4観点の検査自体は必ず覆われることを保証している。ADR-0189:84 は「4体分担を基本の候補」「4体を毎回必須とする決定ではなく、実行時は…人数と分担を選ぶ」とのみ定め、領域（観点）側の被覆維持に相当する文が本文に無い。0189:88 は「旧ADR-0186の4観点定義とADR-0117の観点配置はこの設計で見直す」と明記しており、同88の包括的保持文（要求・保護・実証・採否）は見直し対象である観点構成には及ばない。",
+            "problem": "新設計正本において、人数削減時に「独立した反例・失敗経路の探索」等の領域の問い自体が無担当になり得る。0189:50は「確認が必要な品質項目の主担当を定める」と述べるが、これは反証担当への丸投げ禁止の規定で、担当を置かない場合の被覆責任を定めていない。",
+            "impact": "実装時に review-criteria.md を書き換える際、現行の「4観点は維持」相当の被覆保証が脱落し、1〜2体構成で失敗経路探索や検証検出力の確認が抜ける経路が開く。ADR-0117:33（体数1〜4は観点数と別）で維持してきた区別が曖昧になる。",
+            "recommendation": "主担当判断。増設ではなく既存文言の継承として、Decision 5に「人数に関わらず4領域の問いは覆う。人数で変わるのは独立性と分担であり検査範囲ではない」旨の1文を置く案を推奨。維持負担は1文のみで、実装時にSKILL.mdの既存文を引き継ぐだけのため増分はほぼ無い。代替は「現行SKILL.mdの当該文を変更対象外と明記する」方式で、どちらでも足りる。",
+            "limits": "文書対比のみ。実装は未着手のため実害の実測ではない。0189:88の包括保持文を広く読めば被覆も維持されるという解釈は成り立つが、同88が観点構成を見直し対象と名指ししているため一義的ではない。"
+          },
+          {
+            "id": "F2",
+            "severity": "low",
+            "target_lines": "0189:71-76（過去ADRから保持する問いと制約）、0189:88",
+            "evidence": "現行 review-criteria.md:54「将来作成することが計画に明記された部品は、現在ないだけで不整合・前提誤りにしない。既存部品として誤って扱っていないか、作成・接続・検証の担当と順序が揃うかを確認する」。ADR-0189 の保持リスト（71-76）と Decision 1・2 のどこにも同等の規定が無い（0189全文を走査）。0189:38 の「承認済みの段階的な限定」はスコープ限定の評価規定であり、未作成部品の扱いとは別事項。",
+            "problem": "0189:88 により review-criteria.md の観点定義は書き換え対象になるため、この誤検出防止規定が引き継がれる根拠が設計正本に無い。",
+            "impact": "段階実装の成果物に対し、未作成部品を「実体と不一致」「前提誤り」と誤判定する指摘が増え、採否工程の負担が増す。Issue-0143:12 が問題視した『原意の弱化』と同型の脱落になり得る。",
+            "recommendation": "主担当判断。Decision 4 の保持リストへ1行追加、または0189:88の保持文に「観点境界の既存注記（未作成部品・実行証拠の限界）を含む」と明示する案。維持負担は1行。既存文言の継承であり新規範ではない。",
+            "limits": "文書対比のみ。実装時の書き換えで実際に脱落するかは未観測（段階差ではなく設計正本の記載欠落として報告）。"
+          },
+          {
+            "id": "F3",
+            "severity": "low",
+            "target_lines": "0189:61（信頼性・移行・復旧、運用・観測、設定・依存の更新｜成立性担当。構造の維持負担は根拠担当と分担）",
+            "evidence": "承認基準とされた比較記録 docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md:40 は「信頼性・復旧・移行…成立性が復旧・移行を確認し、敵対的担当が故障条件から再検査」と2担当を割り当てている。ADR-0189:61 では反証担当が落ち、同表で反証担当が明記されるのはセキュリティ行（0189:65）のみ。最終点検記録 2026-09-12-review-design-finalization.md:12・20 は「12類型を8行へまとめた」「既出の問いの脱落は見当たらない」としており、担当側の脱落は点検されていない。",
+            "problem": "0189:50 が「確認が必要な品質項目の主担当を定める」方針を取る以上、担当欄の非対称は意図的な設計か写し落ちかが読み取れない。二重実行・途中停止からの復旧不能といった障害条件は0189:36の反証担当の射程と重なるため、表と射程の対応が曖昧。",
+            "impact": "委譲文作成時に信頼性・復旧領域で反証担当を外す運用が既定化し、ADR-0092由来の「組合せ・部分失敗」検査が薄くなる可能性。",
+            "recommendation": "主担当判断。当該行へ「反証担当が故障・中断条件から再検査」を1語追加するか、意図的な簡素化なら0189:36の射程で覆う旨を注記する。いずれも文言のみで維持負担の増分は無い。",
+            "limits": "文書対比のみ。0189:36の反証担当の射程は「運用を破る条件」を含むため、実運用で必ず抜けるとは断定できない。"
+          },
+          {
+            "id": "F4",
+            "severity": "low",
+            "target_lines": "0189:104（過剰適合点検・出所の偏り欄）",
+            "evidence": "0189:104 は「ADR-0079・0099の事例は主にclaude-fable-5作成／claude-opus-5検出」と記す。ADR-0099:89 は作成 claude-fable-5・検出 claude-opus-5 を明記し一致する。一方 ADR-0079:10 は自身の契機事例について「spec 承認まで進み、設計承認後のユーザーレビューでの指摘で初めて 3 点の過剰適合の芽が確認された」と記録し、検出主体は利用者である（作成側モデルの記載も無い）。examples-and-evidence.md:7 の claude-fable-5 / 3観点レビューは ADR-0080 適用例の出所（別サイクル）であり、ADR-0079 の契機事例ではない。",
+            "problem": "出所の偏り欄は出所・モデル世代を実数で示すための欄（CONTRIBUTING.md:73）であり、人手（利用者目視）で検出された事例をAI検出として合算すると、AI側の検出実績を実際より広く見せる。引用の向きの保存（0189:72が自ら掲げる規律）にも反する。",
+            "impact": "本ADRの限界記述が実際よりAI検出寄りに読まれ、将来の再較正時に「AIレビューで捕捉できた型」の母数を誤る。決定内容そのものは変わらない。",
+            "recommendation": "主担当判断。「主に」の範囲を限定し、ADR-0079の契機事例は利用者検出である旨を1句加える（またはADR-0099のみを当該帰属の根拠として残す）。文言訂正のみで維持負担は無い。",
+            "limits": "ADR-0079本文と適用例文書の対比による。当該箇所は『主に』と留保しているため誤りの度合いは限定的。"
+          },
+          {
+            "id": "F5",
+            "severity": "low",
+            "target_lines": "0189:96（発火機会はその3件で、少なくとも1件の役割境界・欠落検出を評価できる機会を見込む）、0189:107",
+            "evidence": "同ADR 0189:84 は4体を必須とせず人数を都度選ぶと定める。役割境界の妥当性は2体以上へ分担した回でしか観測できないが、0189:96は発火条件を「実装後の最初の3件の対象レビュー」とのみ置き、分担条件を付けていない。比較対象として ADR-0185:36 の評価条項は人数に依存しない検査（目的整合）を対象にしており、条件と見込みが整合している。CONTRIBUTING.md:87 は発火機会を対象期間・計数手段付きの計数可能な形で書くことを求めるが、条件の適合性までは規定していない。",
+            "problem": "SKILL.md:98 の実測（写像planでは1体4観点兼務が約1/3コスト）に照らすと、最初の3件が1体兼務で実施される経路は現実的にあり、その場合「役割境界の評価機会1件以上」の見込みに根拠が無い。結果として簡素化・撤回判定（0189:107）が『未評価』のまま固定し、維持負担だけが残り得る。",
+            "impact": "評価可能性（ADR-0102）の実効性が下がり、規範の廃止・簡素化の判断材料が集まらない。決定の妥当性そのものは損なわれない。",
+            "recommendation": "主担当判断。発火機会を「2体以上へ分担した対象レビュー3件」等へ条件付けるか、見込みの根拠（実装直後は観点分離を選ぶ見込みである旨）を1文添える案。台帳・監視の増設は不要で、文言のみ。既存条項のままリスク受容する選択も比較対象として残る（その場合は未評価が続くことを明示）。",
+            "limits": "将来の人数選択は未確定であり、実際に機会が生じない事実の観測ではない。段階差ではなく、条件設定と自らの人数方針との整合の問題として報告する。"
+          }
+        ],
+        "unknowns": [
+          "ADR-0185:30が参照する docs/records/reviews/2026-09-11-review-criteria-finalization.md はスナップショットに存在せず（docs/records/reviews 配下をglobで確認）、同ADRの確定経緯は未確認。過去レビュー記録が複製対象外である旨の与件と整合するため、不足として記録する。",
+          "Git履歴・未追跡データが無いため、0189:88の『現在の配布済みスキルは変更していない』『Issue-0143は未完了』はファイル内容（skills/配下が旧4観点のまま、Issue-0143 Status: open）との一致までしか確認できず、コミット状態・dist生成物の同期は未検証。",
+          "最終点検記録が挙げる sync-template / build-dist -Check 等の実行結果は本環境で再実行できず（実行権限なし）、記載の成否は未実証。",
+          "4体分担の検出力・費用対効果は本ADR自身が未実証としており、本レビューでも実証していない（本件は文書レビュー）。",
+          "ADR-0107・0120・0124等が本文に持つ『4観点（敵対的・実装整合性・仕様適合・前提実在）』表記への部分修正注記は今回付されていないが、実装未着手で名称の一括改名を行わない方針（review-scope-reassessment:40）と整合し得るため、指摘ではなく確認事項として残す。"
+        ],
+        "created_paths": []
+      }
+    },
+    {
+      "role": "feasibility",
+      "state": "finished",
+      "tool_calls": 34,
+      "read_paths": [
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\CONTRIBUTING.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0186-define-review-questions-evidence-and-boundaries.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0187-track-review-coverage-and-independent-evidence-access.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0189-organize-review-questions-and-independent-challenge.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-review-design-finalization.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\working\\issues\\flow\\0075-review-lacks-usability-check-for-normative-docs.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\working\\issues\\flow\\0143-review-coverage-and-meaning-unverified.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\decision-log\\references\\cycle-consistency-check.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\feature-block-design\\SKILL.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\SKILL.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\examples-and-evidence.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\iteration-norms.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\review-criteria.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\review-procedure.md"
+      ],
+      "errors": [],
+      "execution": {
+        "role": "feasibility",
+        "exit_code": 0,
+        "seen_init": true,
+        "stop_reason": null,
+        "elapsed_seconds": 335.22,
+        "changed": []
+      },
+      "raw_result": {
+        "duration_api_ms": 334471,
+        "stop_reason": "end_turn",
+        "session_id": "569926f3-f10a-4219-8edd-2f8aeace7a0d",
+        "total_cost_usd": 1.7539185,
+        "usage": {
+          "input_tokens": 40,
+          "cache_creation_input_tokens": 80806,
+          "cache_read_input_tokens": 861849,
+          "output_tokens": 20486,
+          "output_tokens_details": {
+            "thinking_tokens": 11598
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 80806,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "not_available",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 6118,
+              "cache_read_input_tokens": 80090,
+              "cache_creation_input_tokens": 3306,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 0,
+                "ephemeral_1h_input_tokens": 3306
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 2429,
+            "outputTokens": 31,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.0025840000000000004,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-opus-5": {
+            "inputTokens": 40,
+            "outputTokens": 20486,
+            "cacheReadInputTokens": 861849,
+            "cacheCreationInputTokens": 80806,
+            "webSearchRequests": 0,
+            "costUSD": 1.7513345000000002,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 11598,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 35,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "```json\n{\n  \"role\": \"independent-reviewer-feasibility (claude-opus-5)\",\n  \"reviewed_targets\": [\n    \"docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md (全文 1-108行, 対象版 15bc4aab5f3509f6f55fc7f78155821f6a9e9537)\"\n  ],\n  \"evidence_paths\": [\n    \"skills/pre-finalization-review/SKILL.md\",\n    \"skills/pre-finalization-review/references/review-criteria.md\",\n    \"skills/pre-finalization-review/references/review-procedure.md\",\n    \"skills/pre-finalization-review/references/iteration-norms.md\",\n    \"skills/pre-finalization-review/references/examples-and-evidence.md\",\n    \"skills/subagent-dispatch/SKILL.md\",\n    \"skills/start-work/SKILL.md\",\n    \"skills/start-work/references/plan-deviation-defaults.md\",\n    \"skills/decision-log/references/status-updates.md\",\n    \"skills/decision-log/references/cycle-consistency-check.md\",\n    \"skills/session-handoff/references/review-field-values.md\",\n    \"skills/feature-block-design/SKILL.md\",\n    \"README.md\",\n    \"CONTRIBUTING.md\",\n    \"docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md\",\n    \"docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md\",\n    \"docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md\",\n    \"docs/records/reviews/2026-09-12-review-design-finalization.md\",\n    \"docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md\",\n    \"docs/working/issues/flow/0075-review-lacks-usability-check-for-normative-docs.md\"\n  ],\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"Minor\",\n      \"target_lines\": \"0189: L76（初見利用の1行）, L35（成立性領域の見るもの）, L88（実装未反映と Issue-0143 未完了）\",\n      \"evidence\": \"Issue-0075 L3(Status: open) / L30-32(対策案: レビュアーに文書だけを読ませて実際に数種の作業をさせ詰まりを出させる／理由づけを実測で検証／適用条件の設計が要る) / L37(「必要観点全体の再評価はIssue-0143」へ委譲、本Issueの観点新設案は自動採用しない)。Issue-0143 L6(関連にIssue-0075) L26(完了条件: 原意の採用・変更・不採用理由を説明できる)。ADR-0189はIssue-0075にも実演型検査案にも言及がなく（0189全文をgrep: 『0075』『実演』該当なし）、docs/records/reviews/2026-09-12-review-design-finalization.md L13も「初見利用を保持」と述べるだけで採否理由は無い。\",\n      \"problem\": \"Issue-0075は自らの観点新設案（実演型の初見利用検査）の評価をIssue-0143へ明示的に委譲しているが、0143の設計結論であるADR-0189は当該案の採用・不採用・統合のいずれとも記録していない。0189 L35/L76は『初見の利用手順』『所在・条件・順序を理解して使えるか』という読解経路レベルの記述に留まり、Issue-0075の実測（仕様との逐語突合39項目全一致で合格した規約節が、実際に作業させる検査で4作業中3作業で詰まった）が示す型を捕捉する方法・適用条件は未定義。\",\n      \"impact\": \"実装時に初見利用の確認が『読解経路の点検』へ縮み、Issue-0075型（正確だが使えない規範文書）が確定を通過し続ける。Issue-0075の委譲先が結論を出さないまま残るため、追跡上も宙に浮く。\",\n      \"recommendation\": \"主担当判断で、(a) ADR-0189本文に1行『Issue-0075の実演型検査案は成立性領域の初見利用へ統合／別課題として保留（理由）』を置くか、(b) Issue-0075の検討状況へ同旨を追記するかを選ぶ。新観点の増設は不要で、既存の成立性領域の文言内に『関係する場合は当該文書だけで代表作業を試す』を収めれば維持負担は文1行分。増設案（実効性観点の新設）は担当増・費用増に対し実測が単一サイクル1件のため、現時点では文言統合の方が安い。\",\n      \"limits\": \"Issue-0075をレビュー対象外の資料として参照した指摘であり、ADR-0189が当該案を不採用とした会話上の根拠が資料外に存在する可能性は否定できない。未実装であること自体を欠陥としていない。\"\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"Minor\",\n      \"target_lines\": \"0189: L52-65（品質項目の割当て表。各行の主な確認責任が要求／根拠／成立性／反証の4役名で記述）, L67, L83-84（4体は毎回必須でなく人数と分担を選ぶ）\",\n      \"evidence\": \"0189 L65は『セキュリティ…反証担当が迂回・失敗条件』と反証担当のみへ割当てる行を持つ。L84『4体を毎回必須とする決定ではなく…人数と分担を選ぶ』。現行実装側では skills/pre-finalization-review/SKILL.md L90『担当は1〜4体』、references/iteration-norms.md L42（フル実施でも担当1〜4体）、L54（収束近い回は1〜2体へ縮小した実測）があり、役より少ない人数での実施が既定の運用経路として存在する。\",\n      \"problem\": \"品質項目表の責任が4役名で固定記述される一方、役より少ない人数を選んだ場合に各行の責任をどの担当へ移すかの規則が本文に無い。緩和文としてL54『関係する項目の未確認を「問題なし」へ含めない』とL84『分担を選ぶ』はあるが、未確認として開示する義務までしか導けず、割当先の決定規則にはならない。\",\n      \"impact\": \"1〜2体構成（実測で既に運用されている構成）では、反証担当のみに割当てた行（迂回・失敗条件）が担当不在となり、境界の抜け＝0189 L50が禁じた『分担先が無いことによる指摘の落ち』が実装時に再現しうる。\",\n      \"recommendation\": \"L67またはL84へ1行『役より少ない人数を選ぶ場合は、表の担当欄を残る担当へ割り当て直し、割当先と外した項目を委譲文へ明記する』を追加する案と、既存文言（L54の未確認開示＋L84の分担選択）で足りると受容する案を主担当が比較。前者の維持負担は1行の追記のみで、新台帳・新工程は不要。\",\n      \"limits\": \"設計段階の記述の明確性に関する指摘で、実際に抜けが生じた実測は今回の範囲では確認していない。\"\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"Info\",\n      \"target_lines\": \"0189: L88（反映対象の列挙: pre-finalization-reviewの定義・入力・実施・方式・適用例、subagent-dispatchの参照、対応する現行仕様と配布物）\",\n      \"evidence\": \"README.md L48『…確定点での確定前レビュー提示（毎回）と 4 観点独立レビューの実施…』。snapshot全体をgrep（『4観点|敵対的|前提実在|実装整合性|仕様適合』）した結果、pre-finalization-review配下5ファイル、subagent-dispatch/SKILL.md L24、docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md 他の現行仕様、README.md L48、および過去ADR群が該当。skills/pre-finalization-review/SKILL.md L3（frontmatter description）も4観点名を含む。CONTRIBUTING.md L42の『4観点』は過剰適合点検の観点であり無関係。\",\n      \"problem\": \"L88の列挙は README.md の索引記述を明示的に含まない（現行仕様でも配布物でもないレイヤの案内文書）。SKILL.md frontmatter は『定義』に読めるが明示はない。\",\n      \"impact\": \"実装時に README の観点名が旧4観点のまま残り、案内文書と正本が食い違う（初見利用者が最初に読む経路での不一致）。影響は表記の不整合に限られ、規範の意味は変わらない。\",\n      \"recommendation\": \"L88の列挙へ『索引・案内文書（README等）』を含めるか、Issue-0143 L56の残作業側で受けるかを主担当が判断。実装計画の作成時に機械検査（観点名のgrep）で拾える種類のため、ADR本文を増やさず計画側で扱う選択も妥当。\",\n      \"limits\": \"template/plugin/dist・スクリプトはスナップショットに含まれないため、配布物側の観点名の実在は未確認（unknowns参照）。\"\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"Info\",\n      \"target_lines\": \"0189: L96（評価は実装後の最初の3件の対象レビュー）, L88（旧ADR-0186の4観点定義を見直す）\",\n      \"evidence\": \"ADR-0186 L44『今後最初の3件の独立レビューで、既存報告から観点の混同による見落とし・重複と、必要な参照負担を確認する』（2026-09-11 Accepted）。ADR-0186 L34の部分修正注記（ADR-0189）は入力・原文・未確認・報告の趣旨の保持のみを述べ、評価条項の扱いを述べない。examples-and-evidence.md L37・L45にも『導入後3サイクル』の未消化な評価条項が併存。\",\n      \"problem\": \"0186の評価（最初の3件）が発火する前に0189が定義を組み替えるが、0186由来の未評価の評価条項を0189の評価（実装後3件）へ統合するのか、未評価のまま失効させるのかが本文・注記のいずれにも書かれていない。\",\n      \"impact\": \"評価可能性（CONTRIBUTING L47の廃止条件規範の趣旨）に穴が残り、旧定義の便益が未評価のまま新定義へ置き換わったことを後から追跡できない。実運用上の害は限定的。\",\n      \"recommendation\": \"0189 L96へ『0186・0117由来の未評価の評価条項は本条項の3件へ統合して読む』旨の1行を足す案と、部分修正注記側で受ける案、現状受容（記録は各ADRに残る）を主担当が比較。維持負担は1行。\",\n      \"limits\": \"評価条項の統合が会話上で合意済みである可能性は資料から判定できない。過去のレビュー記録はスナップショットに含まれない。\"\n    }\n  ],\n  \"unknowns\": [\n    \"配布物（template.manifest・plugin/dist・sync-template/build-dist スクリプト）はスナップショットに存在せず（root glob で296件中に該当なし、*.manifest は0件）、0189 L88の『配布物』整合と最終点検記録 L32の生成検査結果は今回未検証。\",\n    \"Git履歴・未追跡データ・過去の独立レビュー記録が含まれないため、0189が引用する実測（Issue-0103/0107/0114、LoopForAlpha由来）と『独立モデルレビュー0回』の事実は一次確認できていない。\",\n    \"4体分担の検出力・費用対効果は設計段階で未実証（ADR自身がL94・L98で未実証と明記）。今回のレビューは文書対比のみで、実行による検証は行っていない（本レビューの権限外）。\",\n    \"0189 L90のfeature-block-design非該当判断は skills/feature-block-design/SKILL.md L19-20（主要機能2つ以上／モジュール3つ以上）と照合し、既存文書の改定であって部品新設ではない点で成立と読めるが、実装対象文書数が3を超えるため境界事例である旨は付言に留める。\"\n  ],\n  \"created_paths\": []\n}\n```",
+        "ttft_ms": 1670,
+        "type": "result",
+        "duration_ms": 333793,
+        "uuid": "296d49f9-1b2a-491c-a2cd-d3e56787ea81",
+        "ttft_stream_ms": 1096,
+        "time_to_request_ms": 20,
+        "first_content_frame_ms": 1097,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "report": {
+        "role": "independent-reviewer-feasibility (claude-opus-5)",
+        "reviewed_targets": [
+          "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md (全文 1-108行, 対象版 15bc4aab5f3509f6f55fc7f78155821f6a9e9537)"
+        ],
+        "evidence_paths": [
+          "skills/pre-finalization-review/SKILL.md",
+          "skills/pre-finalization-review/references/review-criteria.md",
+          "skills/pre-finalization-review/references/review-procedure.md",
+          "skills/pre-finalization-review/references/iteration-norms.md",
+          "skills/pre-finalization-review/references/examples-and-evidence.md",
+          "skills/subagent-dispatch/SKILL.md",
+          "skills/start-work/SKILL.md",
+          "skills/start-work/references/plan-deviation-defaults.md",
+          "skills/decision-log/references/status-updates.md",
+          "skills/decision-log/references/cycle-consistency-check.md",
+          "skills/session-handoff/references/review-field-values.md",
+          "skills/feature-block-design/SKILL.md",
+          "README.md",
+          "CONTRIBUTING.md",
+          "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md",
+          "docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md",
+          "docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md",
+          "docs/records/reviews/2026-09-12-review-design-finalization.md",
+          "docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md",
+          "docs/working/issues/flow/0075-review-lacks-usability-check-for-normative-docs.md"
+        ],
+        "findings": [
+          {
+            "id": "F1",
+            "severity": "Minor",
+            "target_lines": "0189: L76（初見利用の1行）, L35（成立性領域の見るもの）, L88（実装未反映と Issue-0143 未完了）",
+            "evidence": "Issue-0075 L3(Status: open) / L30-32(対策案: レビュアーに文書だけを読ませて実際に数種の作業をさせ詰まりを出させる／理由づけを実測で検証／適用条件の設計が要る) / L37(「必要観点全体の再評価はIssue-0143」へ委譲、本Issueの観点新設案は自動採用しない)。Issue-0143 L6(関連にIssue-0075) L26(完了条件: 原意の採用・変更・不採用理由を説明できる)。ADR-0189はIssue-0075にも実演型検査案にも言及がなく（0189全文をgrep: 『0075』『実演』該当なし）、docs/records/reviews/2026-09-12-review-design-finalization.md L13も「初見利用を保持」と述べるだけで採否理由は無い。",
+            "problem": "Issue-0075は自らの観点新設案（実演型の初見利用検査）の評価をIssue-0143へ明示的に委譲しているが、0143の設計結論であるADR-0189は当該案の採用・不採用・統合のいずれとも記録していない。0189 L35/L76は『初見の利用手順』『所在・条件・順序を理解して使えるか』という読解経路レベルの記述に留まり、Issue-0075の実測（仕様との逐語突合39項目全一致で合格した規約節が、実際に作業させる検査で4作業中3作業で詰まった）が示す型を捕捉する方法・適用条件は未定義。",
+            "impact": "実装時に初見利用の確認が『読解経路の点検』へ縮み、Issue-0075型（正確だが使えない規範文書）が確定を通過し続ける。Issue-0075の委譲先が結論を出さないまま残るため、追跡上も宙に浮く。",
+            "recommendation": "主担当判断で、(a) ADR-0189本文に1行『Issue-0075の実演型検査案は成立性領域の初見利用へ統合／別課題として保留（理由）』を置くか、(b) Issue-0075の検討状況へ同旨を追記するかを選ぶ。新観点の増設は不要で、既存の成立性領域の文言内に『関係する場合は当該文書だけで代表作業を試す』を収めれば維持負担は文1行分。増設案（実効性観点の新設）は担当増・費用増に対し実測が単一サイクル1件のため、現時点では文言統合の方が安い。",
+            "limits": "Issue-0075をレビュー対象外の資料として参照した指摘であり、ADR-0189が当該案を不採用とした会話上の根拠が資料外に存在する可能性は否定できない。未実装であること自体を欠陥としていない。"
+          },
+          {
+            "id": "F2",
+            "severity": "Minor",
+            "target_lines": "0189: L52-65（品質項目の割当て表。各行の主な確認責任が要求／根拠／成立性／反証の4役名で記述）, L67, L83-84（4体は毎回必須でなく人数と分担を選ぶ）",
+            "evidence": "0189 L65は『セキュリティ…反証担当が迂回・失敗条件』と反証担当のみへ割当てる行を持つ。L84『4体を毎回必須とする決定ではなく…人数と分担を選ぶ』。現行実装側では skills/pre-finalization-review/SKILL.md L90『担当は1〜4体』、references/iteration-norms.md L42（フル実施でも担当1〜4体）、L54（収束近い回は1〜2体へ縮小した実測）があり、役より少ない人数での実施が既定の運用経路として存在する。",
+            "problem": "品質項目表の責任が4役名で固定記述される一方、役より少ない人数を選んだ場合に各行の責任をどの担当へ移すかの規則が本文に無い。緩和文としてL54『関係する項目の未確認を「問題なし」へ含めない』とL84『分担を選ぶ』はあるが、未確認として開示する義務までしか導けず、割当先の決定規則にはならない。",
+            "impact": "1〜2体構成（実測で既に運用されている構成）では、反証担当のみに割当てた行（迂回・失敗条件）が担当不在となり、境界の抜け＝0189 L50が禁じた『分担先が無いことによる指摘の落ち』が実装時に再現しうる。",
+            "recommendation": "L67またはL84へ1行『役より少ない人数を選ぶ場合は、表の担当欄を残る担当へ割り当て直し、割当先と外した項目を委譲文へ明記する』を追加する案と、既存文言（L54の未確認開示＋L84の分担選択）で足りると受容する案を主担当が比較。前者の維持負担は1行の追記のみで、新台帳・新工程は不要。",
+            "limits": "設計段階の記述の明確性に関する指摘で、実際に抜けが生じた実測は今回の範囲では確認していない。"
+          },
+          {
+            "id": "F3",
+            "severity": "Info",
+            "target_lines": "0189: L88（反映対象の列挙: pre-finalization-reviewの定義・入力・実施・方式・適用例、subagent-dispatchの参照、対応する現行仕様と配布物）",
+            "evidence": "README.md L48『…確定点での確定前レビュー提示（毎回）と 4 観点独立レビューの実施…』。snapshot全体をgrep（『4観点|敵対的|前提実在|実装整合性|仕様適合』）した結果、pre-finalization-review配下5ファイル、subagent-dispatch/SKILL.md L24、docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md 他の現行仕様、README.md L48、および過去ADR群が該当。skills/pre-finalization-review/SKILL.md L3（frontmatter description）も4観点名を含む。CONTRIBUTING.md L42の『4観点』は過剰適合点検の観点であり無関係。",
+            "problem": "L88の列挙は README.md の索引記述を明示的に含まない（現行仕様でも配布物でもないレイヤの案内文書）。SKILL.md frontmatter は『定義』に読めるが明示はない。",
+            "impact": "実装時に README の観点名が旧4観点のまま残り、案内文書と正本が食い違う（初見利用者が最初に読む経路での不一致）。影響は表記の不整合に限られ、規範の意味は変わらない。",
+            "recommendation": "L88の列挙へ『索引・案内文書（README等）』を含めるか、Issue-0143 L56の残作業側で受けるかを主担当が判断。実装計画の作成時に機械検査（観点名のgrep）で拾える種類のため、ADR本文を増やさず計画側で扱う選択も妥当。",
+            "limits": "template/plugin/dist・スクリプトはスナップショットに含まれないため、配布物側の観点名の実在は未確認（unknowns参照）。"
+          },
+          {
+            "id": "F4",
+            "severity": "Info",
+            "target_lines": "0189: L96（評価は実装後の最初の3件の対象レビュー）, L88（旧ADR-0186の4観点定義を見直す）",
+            "evidence": "ADR-0186 L44『今後最初の3件の独立レビューで、既存報告から観点の混同による見落とし・重複と、必要な参照負担を確認する』（2026-09-11 Accepted）。ADR-0186 L34の部分修正注記（ADR-0189）は入力・原文・未確認・報告の趣旨の保持のみを述べ、評価条項の扱いを述べない。examples-and-evidence.md L37・L45にも『導入後3サイクル』の未消化な評価条項が併存。",
+            "problem": "0186の評価（最初の3件）が発火する前に0189が定義を組み替えるが、0186由来の未評価の評価条項を0189の評価（実装後3件）へ統合するのか、未評価のまま失効させるのかが本文・注記のいずれにも書かれていない。",
+            "impact": "評価可能性（CONTRIBUTING L47の廃止条件規範の趣旨）に穴が残り、旧定義の便益が未評価のまま新定義へ置き換わったことを後から追跡できない。実運用上の害は限定的。",
+            "recommendation": "0189 L96へ『0186・0117由来の未評価の評価条項は本条項の3件へ統合して読む』旨の1行を足す案と、部分修正注記側で受ける案、現状受容（記録は各ADRに残る）を主担当が比較。維持負担は1行。",
+            "limits": "評価条項の統合が会話上で合意済みである可能性は資料から判定できない。過去のレビュー記録はスナップショットに含まれない。"
+          }
+        ],
+        "unknowns": [
+          "配布物（template.manifest・plugin/dist・sync-template/build-dist スクリプト）はスナップショットに存在せず（root glob で296件中に該当なし、*.manifest は0件）、0189 L88の『配布物』整合と最終点検記録 L32の生成検査結果は今回未検証。",
+          "Git履歴・未追跡データ・過去の独立レビュー記録が含まれないため、0189が引用する実測（Issue-0103/0107/0114、LoopForAlpha由来）と『独立モデルレビュー0回』の事実は一次確認できていない。",
+          "4体分担の検出力・費用対効果は設計段階で未実証（ADR自身がL94・L98で未実証と明記）。今回のレビューは文書対比のみで、実行による検証は行っていない（本レビューの権限外）。",
+          "0189 L90のfeature-block-design非該当判断は skills/feature-block-design/SKILL.md L19-20（主要機能2つ以上／モジュール3つ以上）と照合し、既存文書の改定であって部品新設ではない点で成立と読めるが、実装対象文書数が3を超えるため境界事例である旨は付言に留める。"
+        ],
+        "created_paths": []
+      }
+    },
+    {
+      "role": "adversarial",
+      "state": "finished",
+      "tool_calls": 23,
+      "read_paths": [
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\README.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0185-check-project-purpose-in-independent-reviews.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0186-define-review-questions-evidence-and-boundaries.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\decisions\\0189-organize-review-questions-and-independent-challenge.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-four-review-perspectives-coverage.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-reusable-review-insights-from-adrs.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-review-design-finalization.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\docs\\records\\reviews\\2026-09-12-review-scope-reassessment.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\feature-block-design\\SKILL.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\SKILL.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\iteration-norms.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\review-criteria.md",
+        "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.tmp\\adr-0189-review-r1\\snapshot\\skills\\pre-finalization-review\\references\\review-procedure.md"
+      ],
+      "errors": [],
+      "execution": {
+        "role": "adversarial",
+        "exit_code": 0,
+        "seen_init": true,
+        "stop_reason": null,
+        "elapsed_seconds": 314.73,
+        "changed": []
+      },
+      "raw_result": {
+        "duration_api_ms": 314021,
+        "stop_reason": "end_turn",
+        "session_id": "7d0b820d-b54e-41d3-b33f-849442975c0d",
+        "total_cost_usd": 1.4841375,
+        "usage": {
+          "input_tokens": 26,
+          "cache_creation_input_tokens": 73336,
+          "cache_read_input_tokens": 525335,
+          "output_tokens": 19418,
+          "output_tokens_details": {
+            "thinking_tokens": 10989
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 73336,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "not_available",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 6672,
+              "cache_read_input_tokens": 72385,
+              "cache_creation_input_tokens": 3541,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 0,
+                "ephemeral_1h_input_tokens": 3541
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 2430,
+            "outputTokens": 20,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.0025299999999999997,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-opus-5": {
+            "inputTokens": 26,
+            "outputTokens": 19418,
+            "cacheReadInputTokens": 525335,
+            "cacheCreationInputTokens": 73336,
+            "webSearchRequests": 0,
+            "costUSD": 1.4816075,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 10989,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 24,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "```json\n{\n  \"role\": \"independent-adversarial-reviewer (claude-opus-5)\",\n  \"reviewed_targets\": [\n    \"docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md (全108行・全数)\"\n  ],\n  \"evidence_paths\": [\n    \"skills/pre-finalization-review/SKILL.md\",\n    \"skills/pre-finalization-review/references/review-criteria.md\",\n    \"skills/pre-finalization-review/references/review-procedure.md\",\n    \"skills/pre-finalization-review/references/iteration-norms.md\",\n    \"skills/decision-log/references/status-updates.md\",\n    \"skills/decision-log/references/cycle-consistency-check.md\",\n    \"skills/feature-block-design/SKILL.md\",\n    \"skills/subagent-dispatch/SKILL.md\",\n    \"docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md\",\n    \"docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md\",\n    \"docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md\",\n    \"docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md\",\n    \"docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md\",\n    \"docs/records/reviews/2026-09-12-review-scope-reassessment.md\",\n    \"docs/records/reviews/2026-09-12-review-design-finalization.md\",\n    \"README.md\",\n    \"CONTRIBUTING.md\"\n  ],\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"0189: 25, 84, 94, 96, 107\",\n      \"evidence\": \"0189 L84『4体を毎回必須とする決定ではなく、実行時は対象・…費用から人数と分担を選ぶ』、L94『4体の便益は未実証として扱う』、L96『発火機会はその3件で、少なくとも1件の役割境界・欠落検出を評価できる機会を見込む』。人数決定の正本は SKILL.md L94『人数を増やすこと自体を品質向上とは扱わない』『費用の比較はAGENTS.mdの「作業方法の判断」に従い』と L98『1体4観点兼務は観点分離の実測比で約1/3のコスト』。0189 L88 のとおり実装後もこの人数判断は解除されない。\",\n      \"problem\": \"評価入力（役割分離した回の記録）を作るかどうかが、便益未実証を理由に安価側へ倒れやすい既存の人数判断へ委ねられており、『少なくとも1件の役割境界・欠落検出を評価できる機会を見込む』に到達手段がない。便益未実証→安価な1〜2体選択→分離運用の記録が生じない→未評価のまま、という循環が成立する。ADR本文は『機会・記録が足りなければ未評価』と退避先だけを定めており、廃止条件（L107）も同じ3件に依存するため、採用も撤回も判定不能な状態が継続しうる。\",\n      \"impact\": \"3領域＋独立反証という中心的な設計変更が、評価も簡素化も発火しないまま常設化する。ADR-0101/0102が記録した『評価できず保留の行が増える』型の再発経路（docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md L16）に一致する。\",\n      \"recommendation\": \"増設ではなく文言修正で足りる見込み。(a)『3件のうち分離運用が1回も生じなければ本設計は未評価であり、その状態自体を簡素化検討の契機とする』と受容条件を明記する、または (b) 評価対象を『実装後最初の3件』ではなく『実装後最初に分離運用した1件＋以後2件』とする。いずれも新規台帳・監視を伴わず維持負担は増えない。台帳新設案は0189 L94・L96の不増設方針と衝突するため推奨しない。採否は主担当判断。\",\n      \"limits\": \"実装後の実運用は未発生のため、循環は文書上の成立経路であり実測ではない。\"\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"0189: 60, 61, 62, 63, 64, 65（Decision 3表）、84\",\n      \"evidence\": \"0189 L60『成立性担当。要求担当と契約変更を照合』、L61『構造の維持負担は根拠担当と分担』、L62-65も複数担当へ横断配分。一方 review-procedure.md L14 は『人数に4観点を割り当て、独立サブエージェントへ委譲する』、SKILL.md L115『レビュアーを成果物作成者のコンテキストから独立させる』、0189 L84『他担当の初回所見を見せずに初回判断を回収する』。担当間の情報交換経路を定める記述は review-criteria.md・review-procedure.md・iteration-norms.md のいずれにも無く（『委譲元が渡すもの』L5-15、手順1〜6の join 点は手順5集約のみ）。\",\n      \"problem\": \"初回判断が並列・相互不可視で行われる委譲モデルに対し、Decision 3 が『Aと照合』『Bと分担』という担当間協調を前提にした責任表記を用いている。実行経路が存在しないため、文脈を持たない担当は当該項目を相手担当の担当分とみなして落とすか、逆に全員が重複実施する。0189 L50『反証担当へ「他の担当が扱わないすべて」を委ねず、確認が必要な品質項目の主担当を定める』という本ADR自身の要求（＝境界の抜けの防止）を、同じ表の中で満たしきれていない。\",\n      \"impact\": \"本設計が主目的に置く『境界の抜け』（SKILL.md L109）が、契約変更・維持負担・検証の検出力といった横断項目で再発する。0186が掲げた『コンテキストを持たないエージェントが誤解なく適用できる定義』（0186 L10）の達成も損なう。\",\n      \"recommendation\": \"文言の明確化で対応可能。『照合／分担』は各担当が自領域の観点で独立に確認し、突き合わせは review-procedure.md 手順5の集約で主担当が行う、と1文で規定する（新工程・新台帳なし、維持負担は追加なし）。代替として各行を単独責任へ書き換える案もあるが、意図した重なり（L48）を削るため非推奨。採否は主担当判断。\",\n      \"limits\": \"実装文書が未着手のため、実装時に手順5へ寄せて解消される可能性はある。ADR本文のみを根拠とした指摘。\"\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"0189: 88（『旧ADR-0186の4観点定義とADR-0117の観点配置はこの設計で見直す』）、1（表題）、29-36\",\n      \"evidence\": \"ADR-0186 L16 は代替案3として『観点を全面的に改名・再編し、目的・費用等の担当を増やす』を挙げ、L18-20で案1（既存4観点の名称と検査範囲を維持）を採用、L40『既存4観点の撤去・名前の一括置換・レビュー人数の固定…はしない』と決定している。0189 は観点名を4つとも改称し領域構成を変える（L29-36）ため、0186が不採用とした案3に相当する。処理は0186 L34 の部分修正注記のみで Status は Accepted 維持。skills/decision-log/references/status-updates.md L30『決定内容を変える改訂（Decisionの骨格・帰結が置き換わる場合に限る）: …新ADRを作成して旧ADRを Superseded by へ更新する。決定の一部のみが改まる場合は部分修正の型へ振る…判定に迷う場合はユーザーへ確認する』。\",\n      \"problem\": \"0186の採否選択そのもの（案1採用・案3不採用）が逆転しているのに、Superseded／部分修正の2分岐のどちらに該当するかの判定根拠がADR本文にも最終点検記録（2026-09-12-review-design-finalization.md L18）にも示されていない。入力欄・報告・5判定など0186の一部が存続するため部分修正と読む余地はあるが、判定が『迷い』に当たる場合の規定（ユーザー確認）を通した形跡も無い。\",\n      \"impact\": \"実装までの期間、Accepted のままの0186本文（L20『確定前レビューは4観点を維持し』、L40）と0189が相反する規範として併存し、0186を参照したエージェントが旧構成を正としうる。ADRのステータス運用規範（ADR-0108系）の適用一貫性も損なう。\",\n      \"recommendation\": \"追加機構は不要。0189側またはステータス処理で、(a) 2分岐のどちらを適用したか（存続部分と置換部分の範囲）を1〜2行で明示する、または (b) 迷いと判断してユーザー確認へ回す。Superseded化はレビュー入力の正本参照を広範に付け替える費用があるため、範囲明示の方が安い。最終判断は主担当。\",\n      \"limits\": \"Git履歴・過去のレビュー記録が本コピーに含まれないため、判定過程が別途記録されている可能性は否定できない。\"\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189: 88\",\n      \"evidence\": \"0189 L88 は見直し対象として ADR-0186 と ADR-0117 のみを挙げる。実際に部分修正注記があるのは 0117 L48 と 0186 L34 のみ（`0189` の全文検索で他ADRに注記なし）。一方 ADR-0185 L26 は Decision 本文で『4観点、人数・実施判断・保護・指摘採否の既存規定は維持する』と明記し、同ADRは subagent-dispatch/SKILL.md L24 から確定前レビュー以外の独立レビューへも接続する現役の正本である。\",\n      \"problem\": \"0189が改めるのと同じ『4観点』を Decision で確認している 0185 に、見直しの所在が残っていない。0189 L88 の見直し対象列挙が実体（4観点を決定文に持つADR群: 0185ほか0107/0120/0124も観点名を参照）より狭い。\",\n      \"impact\": \"0185 を入口に読む担当・エージェントが、0189と矛盾する『4観点維持』を有効な決定として受け取る。影響は実装反映までの移行期間と、0185経由の非確定前レビュー委譲に限られるため低。\",\n      \"recommendation\": \"0185 への部分修正注記の追加、または0189 L88 の列挙に『4観点名を参照する既存ADRの扱い（注記対象の範囲と、参照のみのADRは実装時に整合）』を1行追加する。維持負担はほぼ増えない。実施可否と実際の追記は主担当判断（本レビューでは編集しない）。\",\n      \"limits\": \"0107/0120/0124 の言及は人数・方式決定の中での観点名参照であり、決定の骨格が変わるかは未判定。\"\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189: 96, 107\",\n      \"evidence\": \"『最初の3件』評価条項は ADR-0185 L36（導入後の最初の3件）、ADR-0186 L44（今後最初の3件）、0189 L96/L107（実装後の最初の3件）の三重に存在する。0189 は 0186 の定義を置き換えるが（L88）、0186 L44 の評価債務の帰趨（消化・失効・0189の3件と同一視するか）を述べていない。\",\n      \"problem\": \"起点の異なる未消化の評価条項が累積し、どのレビューがどの条項を消化するかが不定。0189自身が引く評価可能性の趣旨（L107、ADR-0101/0102）に照らして、未消化条項の増殖は避けたい型に当たる。\",\n      \"impact\": \"将来の棚卸しで『いずれの評価も未実施・未評価』が続き、簡素化・撤回の判断材料が得られない。既存条項が明示的に閉じられないため、報告負担だけが名目上残る。\",\n      \"recommendation\": \"0189側で『0186 L44 の3件評価は本設計の実装により対象定義が変わるため、0189 L96 の3件へ統合する（0185 の目的整合の評価は独立に継続）』と1文で整理するのが最も安い。新条項の追加や台帳化は不要。採否は主担当。\",\n      \"limits\": \"過去のレビュー記録一式が本コピーに無く、0185/0186 の3件が既に何件消化済みかを実測できていない。\"\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"low\",\n      \"target_lines\": \"0189: 82\",\n      \"evidence\": \"0189 L82『各指摘は対象箇所・問題・根拠・成立条件・影響を既存の報告へ残す』。現行 review-criteria.md L64 の報告契約は『対象箇所／問題／根拠／目的・動作への影響』の4項目で、『成立条件』は敵対的観点の指摘要件（同 L26）として限定的に課されている。\",\n      \"problem\": \"全指摘に『成立条件』を必須化する拡張であり、原文対比だけで確定する文書不一致型の指摘では内容が形式的になりやすい。0189 L94 が『負担は増える』と認めた範囲に含まれるが、既存規範の適用範囲が全指摘へ広がる点が本文からは読み取りにくい。\",\n      \"impact\": \"実装時に全指摘へ必須欄として写されると、記入のための定型文が増え、判断改善のない負担増となる（0189 L96 が簡素化候補と呼ぶ状態を自ら作る）。\",\n      \"recommendation\": \"『成立条件は、動作・失敗経路を根拠とする指摘に求め、原文対比型では対比箇所の提示をもって足りる』と適用条件を付すか、現行4項目のままとする。既存文言の維持で足りる可能性が高い。採否は主担当。\",\n      \"limits\": \"実装文書が未作成のため、必須欄化されるかは未確定。現時点では文言の射程の問題。\"\n    }\n  ],\n  \"unknowns\": [\n    \"Git履歴・未追跡データ・過去のレビュー記録一式が本コピーに無く、0185/0186 の『最初の3件』の消化状況、および0186のSuperseded/部分修正判定の検討過程を実測できない。\",\n    \"本レビューは読み取りのみ（Read/Glob/Grep）で、実装・配布物の実挙動、4体分担の検出力・費用は検証していない。指摘はすべて原文対比に基づく文書上の成立経路であり、実環境の事実ではない。\",\n    \"docs/current/specs 配下の現行仕様に対する4観点記述の整合（0189 L88の『対応する現行仕様と配布物』の具体範囲）は、該当ファイル4件の存在を確認したのみで全文照合していない。\"\n  ],\n  \"created_paths\": []\n}\n```",
+        "ttft_ms": 1228,
+        "type": "result",
+        "duration_ms": 313277,
+        "uuid": "5010368e-432b-4afe-b78e-22384c245ee8",
+        "ttft_stream_ms": 716,
+        "time_to_request_ms": 26,
+        "first_content_frame_ms": 717,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "report": {
+        "role": "independent-adversarial-reviewer (claude-opus-5)",
+        "reviewed_targets": [
+          "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md (全108行・全数)"
+        ],
+        "evidence_paths": [
+          "skills/pre-finalization-review/SKILL.md",
+          "skills/pre-finalization-review/references/review-criteria.md",
+          "skills/pre-finalization-review/references/review-procedure.md",
+          "skills/pre-finalization-review/references/iteration-norms.md",
+          "skills/decision-log/references/status-updates.md",
+          "skills/decision-log/references/cycle-consistency-check.md",
+          "skills/feature-block-design/SKILL.md",
+          "skills/subagent-dispatch/SKILL.md",
+          "docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md",
+          "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md",
+          "docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md",
+          "docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md",
+          "docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md",
+          "docs/records/reviews/2026-09-12-review-scope-reassessment.md",
+          "docs/records/reviews/2026-09-12-review-design-finalization.md",
+          "README.md",
+          "CONTRIBUTING.md"
+        ],
+        "findings": [
+          {
+            "id": "F1",
+            "severity": "medium",
+            "target_lines": "0189: 25, 84, 94, 96, 107",
+            "evidence": "0189 L84『4体を毎回必須とする決定ではなく、実行時は対象・…費用から人数と分担を選ぶ』、L94『4体の便益は未実証として扱う』、L96『発火機会はその3件で、少なくとも1件の役割境界・欠落検出を評価できる機会を見込む』。人数決定の正本は SKILL.md L94『人数を増やすこと自体を品質向上とは扱わない』『費用の比較はAGENTS.mdの「作業方法の判断」に従い』と L98『1体4観点兼務は観点分離の実測比で約1/3のコスト』。0189 L88 のとおり実装後もこの人数判断は解除されない。",
+            "problem": "評価入力（役割分離した回の記録）を作るかどうかが、便益未実証を理由に安価側へ倒れやすい既存の人数判断へ委ねられており、『少なくとも1件の役割境界・欠落検出を評価できる機会を見込む』に到達手段がない。便益未実証→安価な1〜2体選択→分離運用の記録が生じない→未評価のまま、という循環が成立する。ADR本文は『機会・記録が足りなければ未評価』と退避先だけを定めており、廃止条件（L107）も同じ3件に依存するため、採用も撤回も判定不能な状態が継続しうる。",
+            "impact": "3領域＋独立反証という中心的な設計変更が、評価も簡素化も発火しないまま常設化する。ADR-0101/0102が記録した『評価できず保留の行が増える』型の再発経路（docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md L16）に一致する。",
+            "recommendation": "増設ではなく文言修正で足りる見込み。(a)『3件のうち分離運用が1回も生じなければ本設計は未評価であり、その状態自体を簡素化検討の契機とする』と受容条件を明記する、または (b) 評価対象を『実装後最初の3件』ではなく『実装後最初に分離運用した1件＋以後2件』とする。いずれも新規台帳・監視を伴わず維持負担は増えない。台帳新設案は0189 L94・L96の不増設方針と衝突するため推奨しない。採否は主担当判断。",
+            "limits": "実装後の実運用は未発生のため、循環は文書上の成立経路であり実測ではない。"
+          },
+          {
+            "id": "F2",
+            "severity": "medium",
+            "target_lines": "0189: 60, 61, 62, 63, 64, 65（Decision 3表）、84",
+            "evidence": "0189 L60『成立性担当。要求担当と契約変更を照合』、L61『構造の維持負担は根拠担当と分担』、L62-65も複数担当へ横断配分。一方 review-procedure.md L14 は『人数に4観点を割り当て、独立サブエージェントへ委譲する』、SKILL.md L115『レビュアーを成果物作成者のコンテキストから独立させる』、0189 L84『他担当の初回所見を見せずに初回判断を回収する』。担当間の情報交換経路を定める記述は review-criteria.md・review-procedure.md・iteration-norms.md のいずれにも無く（『委譲元が渡すもの』L5-15、手順1〜6の join 点は手順5集約のみ）。",
+            "problem": "初回判断が並列・相互不可視で行われる委譲モデルに対し、Decision 3 が『Aと照合』『Bと分担』という担当間協調を前提にした責任表記を用いている。実行経路が存在しないため、文脈を持たない担当は当該項目を相手担当の担当分とみなして落とすか、逆に全員が重複実施する。0189 L50『反証担当へ「他の担当が扱わないすべて」を委ねず、確認が必要な品質項目の主担当を定める』という本ADR自身の要求（＝境界の抜けの防止）を、同じ表の中で満たしきれていない。",
+            "impact": "本設計が主目的に置く『境界の抜け』（SKILL.md L109）が、契約変更・維持負担・検証の検出力といった横断項目で再発する。0186が掲げた『コンテキストを持たないエージェントが誤解なく適用できる定義』（0186 L10）の達成も損なう。",
+            "recommendation": "文言の明確化で対応可能。『照合／分担』は各担当が自領域の観点で独立に確認し、突き合わせは review-procedure.md 手順5の集約で主担当が行う、と1文で規定する（新工程・新台帳なし、維持負担は追加なし）。代替として各行を単独責任へ書き換える案もあるが、意図した重なり（L48）を削るため非推奨。採否は主担当判断。",
+            "limits": "実装文書が未着手のため、実装時に手順5へ寄せて解消される可能性はある。ADR本文のみを根拠とした指摘。"
+          },
+          {
+            "id": "F3",
+            "severity": "medium",
+            "target_lines": "0189: 88（『旧ADR-0186の4観点定義とADR-0117の観点配置はこの設計で見直す』）、1（表題）、29-36",
+            "evidence": "ADR-0186 L16 は代替案3として『観点を全面的に改名・再編し、目的・費用等の担当を増やす』を挙げ、L18-20で案1（既存4観点の名称と検査範囲を維持）を採用、L40『既存4観点の撤去・名前の一括置換・レビュー人数の固定…はしない』と決定している。0189 は観点名を4つとも改称し領域構成を変える（L29-36）ため、0186が不採用とした案3に相当する。処理は0186 L34 の部分修正注記のみで Status は Accepted 維持。skills/decision-log/references/status-updates.md L30『決定内容を変える改訂（Decisionの骨格・帰結が置き換わる場合に限る）: …新ADRを作成して旧ADRを Superseded by へ更新する。決定の一部のみが改まる場合は部分修正の型へ振る…判定に迷う場合はユーザーへ確認する』。",
+            "problem": "0186の採否選択そのもの（案1採用・案3不採用）が逆転しているのに、Superseded／部分修正の2分岐のどちらに該当するかの判定根拠がADR本文にも最終点検記録（2026-09-12-review-design-finalization.md L18）にも示されていない。入力欄・報告・5判定など0186の一部が存続するため部分修正と読む余地はあるが、判定が『迷い』に当たる場合の規定（ユーザー確認）を通した形跡も無い。",
+            "impact": "実装までの期間、Accepted のままの0186本文（L20『確定前レビューは4観点を維持し』、L40）と0189が相反する規範として併存し、0186を参照したエージェントが旧構成を正としうる。ADRのステータス運用規範（ADR-0108系）の適用一貫性も損なう。",
+            "recommendation": "追加機構は不要。0189側またはステータス処理で、(a) 2分岐のどちらを適用したか（存続部分と置換部分の範囲）を1〜2行で明示する、または (b) 迷いと判断してユーザー確認へ回す。Superseded化はレビュー入力の正本参照を広範に付け替える費用があるため、範囲明示の方が安い。最終判断は主担当。",
+            "limits": "Git履歴・過去のレビュー記録が本コピーに含まれないため、判定過程が別途記録されている可能性は否定できない。"
+          },
+          {
+            "id": "F4",
+            "severity": "low",
+            "target_lines": "0189: 88",
+            "evidence": "0189 L88 は見直し対象として ADR-0186 と ADR-0117 のみを挙げる。実際に部分修正注記があるのは 0117 L48 と 0186 L34 のみ（`0189` の全文検索で他ADRに注記なし）。一方 ADR-0185 L26 は Decision 本文で『4観点、人数・実施判断・保護・指摘採否の既存規定は維持する』と明記し、同ADRは subagent-dispatch/SKILL.md L24 から確定前レビュー以外の独立レビューへも接続する現役の正本である。",
+            "problem": "0189が改めるのと同じ『4観点』を Decision で確認している 0185 に、見直しの所在が残っていない。0189 L88 の見直し対象列挙が実体（4観点を決定文に持つADR群: 0185ほか0107/0120/0124も観点名を参照）より狭い。",
+            "impact": "0185 を入口に読む担当・エージェントが、0189と矛盾する『4観点維持』を有効な決定として受け取る。影響は実装反映までの移行期間と、0185経由の非確定前レビュー委譲に限られるため低。",
+            "recommendation": "0185 への部分修正注記の追加、または0189 L88 の列挙に『4観点名を参照する既存ADRの扱い（注記対象の範囲と、参照のみのADRは実装時に整合）』を1行追加する。維持負担はほぼ増えない。実施可否と実際の追記は主担当判断（本レビューでは編集しない）。",
+            "limits": "0107/0120/0124 の言及は人数・方式決定の中での観点名参照であり、決定の骨格が変わるかは未判定。"
+          },
+          {
+            "id": "F5",
+            "severity": "low",
+            "target_lines": "0189: 96, 107",
+            "evidence": "『最初の3件』評価条項は ADR-0185 L36（導入後の最初の3件）、ADR-0186 L44（今後最初の3件）、0189 L96/L107（実装後の最初の3件）の三重に存在する。0189 は 0186 の定義を置き換えるが（L88）、0186 L44 の評価債務の帰趨（消化・失効・0189の3件と同一視するか）を述べていない。",
+            "problem": "起点の異なる未消化の評価条項が累積し、どのレビューがどの条項を消化するかが不定。0189自身が引く評価可能性の趣旨（L107、ADR-0101/0102）に照らして、未消化条項の増殖は避けたい型に当たる。",
+            "impact": "将来の棚卸しで『いずれの評価も未実施・未評価』が続き、簡素化・撤回の判断材料が得られない。既存条項が明示的に閉じられないため、報告負担だけが名目上残る。",
+            "recommendation": "0189側で『0186 L44 の3件評価は本設計の実装により対象定義が変わるため、0189 L96 の3件へ統合する（0185 の目的整合の評価は独立に継続）』と1文で整理するのが最も安い。新条項の追加や台帳化は不要。採否は主担当。",
+            "limits": "過去のレビュー記録一式が本コピーに無く、0185/0186 の3件が既に何件消化済みかを実測できていない。"
+          },
+          {
+            "id": "F6",
+            "severity": "low",
+            "target_lines": "0189: 82",
+            "evidence": "0189 L82『各指摘は対象箇所・問題・根拠・成立条件・影響を既存の報告へ残す』。現行 review-criteria.md L64 の報告契約は『対象箇所／問題／根拠／目的・動作への影響』の4項目で、『成立条件』は敵対的観点の指摘要件（同 L26）として限定的に課されている。",
+            "problem": "全指摘に『成立条件』を必須化する拡張であり、原文対比だけで確定する文書不一致型の指摘では内容が形式的になりやすい。0189 L94 が『負担は増える』と認めた範囲に含まれるが、既存規範の適用範囲が全指摘へ広がる点が本文からは読み取りにくい。",
+            "impact": "実装時に全指摘へ必須欄として写されると、記入のための定型文が増え、判断改善のない負担増となる（0189 L96 が簡素化候補と呼ぶ状態を自ら作る）。",
+            "recommendation": "『成立条件は、動作・失敗経路を根拠とする指摘に求め、原文対比型では対比箇所の提示をもって足りる』と適用条件を付すか、現行4項目のままとする。既存文言の維持で足りる可能性が高い。採否は主担当。",
+            "limits": "実装文書が未作成のため、必須欄化されるかは未確定。現時点では文言の射程の問題。"
+          }
+        ],
+        "unknowns": [
+          "Git履歴・未追跡データ・過去のレビュー記録一式が本コピーに無く、0185/0186 の『最初の3件』の消化状況、および0186のSuperseded/部分修正判定の検討過程を実測できない。",
+          "本レビューは読み取りのみ（Read/Glob/Grep）で、実装・配布物の実挙動、4体分担の検出力・費用は検証していない。指摘はすべて原文対比に基づく文書上の成立経路であり、実環境の事実ではない。",
+          "docs/current/specs 配下の現行仕様に対する4観点記述の整合（0189 L88の『対応する現行仕様と配布物』の具体範囲）は、該当ファイル4件の存在を確認したのみで全文照合していない。"
+        ],
+        "created_paths": []
+      }
+    }
+  ],
+  "summary": [
+    {
+      "role": "requirements",
+      "seconds": 281.58,
+      "findings": 4,
+      "cost_usd": 1.5098410000000002,
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 2418,
+          "outputTokens": 20,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.002518,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "thinkingTokens": 0,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        },
+        "claude-opus-5": {
+          "inputTokens": 26,
+          "outputTokens": 17946,
+          "cacheReadInputTokens": 525766,
+          "cacheCreationInputTokens": 79566,
+          "webSearchRequests": 0,
+          "costUSD": 1.507323,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "thinkingTokens": 10137,
+          "canonicalModel": "claude-opus-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      }
+    },
+    {
+      "role": "evidence",
+      "seconds": 398.94,
+      "findings": 5,
+      "cost_usd": 2.2497540000000003,
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 2430,
+          "outputTokens": 23,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.002545,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "thinkingTokens": 0,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        },
+        "claude-opus-5": {
+          "inputTokens": 46,
+          "outputTokens": 25107,
+          "cacheReadInputTokens": 1282488,
+          "cacheCreationInputTokens": 97806,
+          "webSearchRequests": 0,
+          "costUSD": 2.247209,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "thinkingTokens": 15729,
+          "canonicalModel": "claude-opus-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      }
+    },
+    {
+      "role": "feasibility",
+      "seconds": 335.22,
+      "findings": 4,
+      "cost_usd": 1.7539185,
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 2429,
+          "outputTokens": 31,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.0025840000000000004,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "thinkingTokens": 0,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        },
+        "claude-opus-5": {
+          "inputTokens": 40,
+          "outputTokens": 20486,
+          "cacheReadInputTokens": 861849,
+          "cacheCreationInputTokens": 80806,
+          "webSearchRequests": 0,
+          "costUSD": 1.7513345000000002,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "thinkingTokens": 11598,
+          "canonicalModel": "claude-opus-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      }
+    },
+    {
+      "role": "adversarial",
+      "seconds": 314.73,
+      "findings": 6,
+      "cost_usd": 1.4841375,
+      "model_usage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 2430,
+          "outputTokens": 20,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.0025299999999999997,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "thinkingTokens": 0,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        },
+        "claude-opus-5": {
+          "inputTokens": 26,
+          "outputTokens": 19418,
+          "cacheReadInputTokens": 525335,
+          "cacheCreationInputTokens": 73336,
+          "webSearchRequests": 0,
+          "costUSD": 1.4816075,
+          "contextWindow": 1000000,
+          "maxOutputTokens": 64000,
+          "thinkingTokens": 10989,
+          "canonicalModel": "claude-opus-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      }
+    }
+  ],
+  "total_findings": 19,
+  "total_cost_usd": 6.997651
+}

@@ -174,3 +174,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0180](0180-evaluate-astra-before-expanding-model-coverage.md) | 初期比較はAstraとSolで実施しClaudeの環境整備を保留する | Accepted | 2026-09-11 |
 | [0181](0181-run-sol-comparison-at-low-effort.md) | Solの本比較は推論設定lowで実行する | Accepted | 2026-09-11 |
 | [0182](0182-reject-unknown-session-id-from-first-stage.md) | 第一段階から未知IDをエラーとして扱う | Accepted | 2026-09-11 |
+| [0183](0183-place-targeted-evaluation-before-stage-three-adoption.md) | 初期比較を終了し追加評価は段階3の具体的な採否前に限定する | Accepted | 2026-09-11 |

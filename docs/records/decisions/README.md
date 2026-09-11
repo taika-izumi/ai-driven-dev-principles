@@ -179,3 +179,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0185](0185-check-project-purpose-in-independent-reviews.md) | 独立レビューでプロジェクト全体の目的・方針との整合を確認する | Accepted | 2026-09-11 |
 | [0186](0186-define-review-questions-evidence-and-boundaries.md) | レビュー観点を問い・根拠・境界で定義し共通の委譲資料にする | Accepted | 2026-09-11 |
 | [0187](0187-track-review-coverage-and-independent-evidence-access.md) | レビュー観点の再評価と根拠を自力で探す経路を別課題として扱う | Accepted | 2026-09-11 |
+| [0188](0188-develop-read-glob-grep-evidence-access.md) | 根拠探索の最小候補としてRead・Glob・Grep構成を具体化する | Accepted | 2026-09-12 |

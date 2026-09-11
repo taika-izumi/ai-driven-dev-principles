@@ -1,0 +1,211 @@
+{
+  "date": "2026-09-11",
+  "version": "0.1.27",
+  "pluginId": "ai-driven-dev-principles@ai-driven-dev-principles",
+  "installedPath": "C:/Users/d12an/.codex/plugins/cache/ai-driven-dev-principles/ai-driven-dev-principles/0.1.27",
+  "enabled": true,
+  "publishedCommit": "48c9a1c0a2c2dcb3913c2dbada4743080970b30e",
+  "remote": "https://github.com/taika-izumi/ai-driven-dev-principles.git",
+  "branch": "master",
+  "checkedFiles": 39,
+  "installedFiles": 39,
+  "mismatchCount": 0,
+  "files": [
+    {
+      "path": "decision-log/SKILL.md",
+      "sha256": "F7772C410FA0E44E22EAF28EEBD5940F8AD94A1D048B8AAEB5E496F00096AB30",
+      "match": true
+    },
+    {
+      "path": "decision-log/references/adr-authoring.md",
+      "sha256": "F1E130FB4F6BE38FC2DF5883F3AE9D19E0794298DF40FCB8FFC5306754C4CFB4",
+      "match": true
+    },
+    {
+      "path": "decision-log/references/cycle-consistency-check.md",
+      "sha256": "2995336348A582B5283721B11D367483A6EC6AF9EC61D84AD6539B1E775122AC",
+      "match": true
+    },
+    {
+      "path": "decision-log/references/open-questions.md",
+      "sha256": "727B4261253BFA80D1329ABED6782F77159149FC28E959DD7CCC3692C9B9BBA7",
+      "match": true
+    },
+    {
+      "path": "decision-log/references/status-updates.md",
+      "sha256": "659E64616793DA69195A531D2DB9814E28C780B5340A20141F529C79B918930F",
+      "match": true
+    },
+    {
+      "path": "extend-guidelines/SKILL.md",
+      "sha256": "175FDCC707F2C9909B9A418718F868678E0A2C9598111531AA1BE6AFEFB6F8D8",
+      "match": true
+    },
+    {
+      "path": "feature-block-design/SKILL.md",
+      "sha256": "EF42B4A34A0DE96817E7F98A1E89D397F43C80BA4EB1D94D0951CBBC29DDB218",
+      "match": true
+    },
+    {
+      "path": "organize-inbox/SKILL.md",
+      "sha256": "630DE71978B2658B02A76A57A164C03EBC082D28F8E186BE9B644103BD69F170",
+      "match": true
+    },
+    {
+      "path": "pre-action-review/SKILL.md",
+      "sha256": "E06E9CDA7162729F352F14D92D673C52FB00BEC645B5BC9466E38188FFE0D00F",
+      "match": true
+    },
+    {
+      "path": "pre-finalization-review/SKILL.md",
+      "sha256": "9F42A58C365FF1F2CD30E9328DFCDBE00CBDF1859D86459E9C7DB27C64133671",
+      "match": true
+    },
+    {
+      "path": "pre-finalization-review/references/examples-and-evidence.md",
+      "sha256": "A667EA2A0051515DC062E7231797373B3F792651ADF55195982A3168014EB5EF",
+      "match": true
+    },
+    {
+      "path": "pre-finalization-review/references/iteration-norms.md",
+      "sha256": "821670F9EE318D248F851B06D04AF034A43762F8C8F6B41D329882ED60AD090E",
+      "match": true
+    },
+    {
+      "path": "pre-finalization-review/references/review-criteria.md",
+      "sha256": "DFDEC690D34FC9F36FDD1759CB3B0E79432441CAF32CD0D7283A7C848AE895A0",
+      "match": true
+    },
+    {
+      "path": "pre-finalization-review/references/review-procedure.md",
+      "sha256": "F8FD0EA1C08232557B6B5F03EE59DB9BB41766F6552DAE7962BA495C7CDFF5B8",
+      "match": true
+    },
+    {
+      "path": "retrospective/flow-template.md",
+      "sha256": "7546236D607B26EC1680EB019D3927AD5E8555CFC4B6CDDF0A26ABE06EF87BDA",
+      "match": true
+    },
+    {
+      "path": "retrospective/SKILL.md",
+      "sha256": "1D7A0CA49E5B62735C236711E3B90E7214A8A1284DE39782B85B5747D94E4EB8",
+      "match": true
+    },
+    {
+      "path": "retrospective/template.md",
+      "sha256": "37A36E40B7B19F9E166B85527DEE64C460950FDA26BB851EE77AFDDEB14A797C",
+      "match": true
+    },
+    {
+      "path": "session-handoff/SKILL.md",
+      "sha256": "40CC36D38A5E8105EF80756F04ED833E18987C58DBAFE12FEED3D88E7C776527",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/op-create.md",
+      "sha256": "825D65BD9B03695C54BEF18A66C0022E846C5EA3330B3B1D541855CBC6EF2BB9",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/op-cycle-reset.md",
+      "sha256": "370B1B9EB0D69CA72D2D07456ECA5AAE97B4DB0883269DD5C85F62B95BA58C3D",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/op-finalize.md",
+      "sha256": "6A6CCFB91ACC8257D920B82A259F4DB91833B65385DAD19E384913F19109C3A6",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/op-read.md",
+      "sha256": "0319090A04941EA83845AE3A6E684CDE41DC935BB96E39820D7E691AD103EA3D",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/op-update.md",
+      "sha256": "73F653D49BF1410499923C2233ACCD136FD6546C8F555EF9237CB782F92126FA",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/relocation-map.md",
+      "sha256": "91E34148E32C8A4AD336C2322F1F45DC45F7F2DA67F70A8F9CCE1AD097B0BF7C",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/relocation-procedure.md",
+      "sha256": "2A891A3A615DE6846F2A5031CCD9C45646FD63CB4805F1E59E07144F32D7A494",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/review-field-values.md",
+      "sha256": "77A6ACF7619C08879D410D122CF8562FB313830AAB7CC84777B77DDB17BB09E4",
+      "match": true
+    },
+    {
+      "path": "session-handoff/references/section-volume-norms.md",
+      "sha256": "4C308B3F522C876299BF076B6F1D0D0398BE5301AEC7B7904326F8E19834AD04",
+      "match": true
+    },
+    {
+      "path": "start-work/SKILL.md",
+      "sha256": "5B44BD47E21F8AD292138AE39B954790706679E6CBD65893BD5D93418927C1F5",
+      "match": true
+    },
+    {
+      "path": "start-work/references/decision-delegation.md",
+      "sha256": "64C4B67AA148644C2CECAAF8A8B264BCB0F6984A1775FDAD2CDC61E14709C805",
+      "match": true
+    },
+    {
+      "path": "start-work/references/merge-practice.md",
+      "sha256": "0C10A4C889D01FC091A4B5ADAC9BB8918B3A08C7801A3832EBBE72BB5CB35DF4",
+      "match": true
+    },
+    {
+      "path": "start-work/references/plan-deviation-defaults.md",
+      "sha256": "30F89D721FE2F3308CF029683C9E3E9A4BABE8F9E01070DF6BA1D36C109EA81E",
+      "match": true
+    },
+    {
+      "path": "subagent-dispatch/SKILL.md",
+      "sha256": "B8448CC05443B0C99D64119ED5C9EB0AAB4033B6D1CE62861705B6D8DDF82FA1",
+      "match": true
+    },
+    {
+      "path": "subagent-dispatch/references/inspection-isolation.md",
+      "sha256": "09A97F26A62A0F92D62E219871B7430800B6FEDC7B2F0AEC1F595DA4E942C5EA",
+      "match": true
+    },
+    {
+      "path": "worklog-extract/SKILL.md",
+      "sha256": "6B3839B3424AC3C850E6703D760D96596851663DCAA4406D43EC953523179000",
+      "match": true
+    },
+    {
+      "path": "worklog-extract/scripts/check-store-health.py",
+      "sha256": "9558BE0ED10E0B39A8A9AEEEF2AE57ADDFBE800CE4EF53A0F575984023F8E80C",
+      "match": true
+    },
+    {
+      "path": "worklog-record/SKILL.md",
+      "sha256": "4E26EBE16272A30ECFFA4C885DE2C3D43F8DC92498A5D86AF7CD5F554AA7AE6F",
+      "match": true
+    },
+    {
+      "path": "worklog-record/references/store-format.md",
+      "sha256": "EF38460A5FE55CB465AEF245E5584A1416FBDACC6BD52E1FA71C702A639D1C0B",
+      "match": true
+    },
+    {
+      "path": "worklog-skillify/SKILL.md",
+      "sha256": "F5B1168263A78844D1C50B1972AD91C761AD5C8B392B1197DD63F2088C3C5625",
+      "match": true
+    },
+    {
+      "path": "worklog-skillify/references/skill-authoring-techniques.md",
+      "sha256": "3C45B40093B46086F63CD167C95A3BE180AEBCFD38CB34C73C95C40943C28987",
+      "match": true
+    }
+  ],
+  "note": "marketplace upgradeの最初の試行はFilename too longで失敗。再試行のプロセスだけにGit core.longpaths=trueを設定し成功。ユーザーの恒久Git設定は変更していない。"
+}

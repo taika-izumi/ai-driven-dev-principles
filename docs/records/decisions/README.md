@@ -175,3 +175,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0181](0181-run-sol-comparison-at-low-effort.md) | Solの本比較は推論設定lowで実行する | Accepted | 2026-09-11 |
 | [0182](0182-reject-unknown-session-id-from-first-stage.md) | 第一段階から未知IDをエラーとして扱う | Accepted | 2026-09-11 |
 | [0183](0183-place-targeted-evaluation-before-stage-three-adoption.md) | 初期比較を終了し追加評価は段階3の具体的な採否前に限定する | Accepted | 2026-09-11 |
+| [0184](0184-reassess-preparation-by-outcome-and-remaining-cost.md) | 準備の継続判断を成果と残る費用に照らして既存の次手判断へ組み込む | Proposed | 2026-09-11 |
+| [0185](0185-check-project-purpose-in-independent-reviews.md) | 独立レビューでプロジェクト全体の目的・方針との整合を確認する | Accepted | 2026-09-11 |
+| [0186](0186-define-review-questions-evidence-and-boundaries.md) | レビュー観点を問い・根拠・境界で定義し共通の委譲資料にする | Accepted | 2026-09-11 |

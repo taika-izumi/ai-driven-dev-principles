@@ -1,0 +1,444 @@
+{
+  "reviewer": "claude-opus-5",
+  "effort": "medium",
+  "session_id": "c0fc3e03-8f20-4e3a-912b-83342bd6e242",
+  "comprehension": {
+    "total": 6,
+    "cases": [
+      {
+        "id": 1,
+        "findings": [
+          "要求原文は「設計・実装・運用の判断負担の改善」と「判断手順の共通案の作成」だが、案の適用範囲は「運用開始前の準備だけ」に限定されており、根拠のない範囲縮小にあたる指摘候補である",
+          "限定を正当化する承認・理由が資料にないため、設計・実装・運用のうち準備以外の判断負担が取りこぼされる可能性がある"
+        ],
+        "viewpoints": [
+          "仕様適合（目的・要求との一致）"
+        ],
+        "evidence": [
+          "事例1本文『要求: 今回は判断手順の共通案を作る』と『案: 運用開始前の準備だけに適用』の対比",
+          "事例1本文『限定の承認・理由は資料にない』",
+          "定義『根拠のない範囲縮小・拡大を箇所付きで示す』（4観点表・仕様適合の行）",
+          "定義『各種開発向けの要求を、説明なく検証準備だけへ限定した: 仕様適合で要求と対象範囲を照合する』（仕様適合と前提実在の境界）"
+        ],
+        "unknowns": [
+          "限定が段階的導入として承認済みかどうか（承認記録が本文にない）",
+          "限定の意図・背景（未文書の指示の有無を含む）",
+          "方針の正本の所在と該当節"
+        ],
+        "next_action": "追加作業は不要。現時点は「仕様適合の指摘（根拠のない範囲縮小の疑い）＋限定意図は未確認」として報告し、範囲拡大の実行は行わない。委譲元に限定の承認記録と要求原文の所在の提示を求める。"
+      },
+      {
+        "id": 2,
+        "findings": [
+          "保護対象とされた合格基準が公開ヘルプで既に説明されているため、『未公開情報の保護』という対策理由が事実と食い違う",
+          "ほかに未公開情報がないと明記されているため、当該応答制限が守る対象が本文の範囲では成立せず、前提実在の判定は『不要』または『前提誤り』の候補となる"
+        ],
+        "viewpoints": [
+          "前提実在（根拠・必要性）",
+          "仕様適合（目的・要求との一致）"
+        ],
+        "evidence": [
+          "事例2本文『方針: 未公開の合格基準を保護』と『実体: 同じ基準を公開ヘルプで既に説明』の対比",
+          "事例2本文『ほかの未公開情報はない』",
+          "定義『「未公開情報を守る」仕組みだが、その情報は既に公開されている: 前提実在で保護理由を問い直す』",
+          "定義『不要: 想定した問題・保護対象・到達経路が成立せず、提示された対策理由を支持しない』『前提誤り: 仕組みは必要だが、必要性の説明に使った事実が誤っている』"
+        ],
+        "unknowns": [
+          "公開ヘルプの記載が公式・最新で、非公開版と同一内容かの確認（原文・出所が未提供）",
+          "公開範囲の差（例: 一部利用者限定公開か全体公開か）",
+          "推測防止以外の目的（試験の公平性など事実の実在だけで決まらない目的）が制限に与えられているか"
+        ],
+        "next_action": "追加作業は不要。前提実在の指摘として『保護対象が実在しない疑い（不要／前提誤り）』を報告し、公開ヘルプ該当箇所の原文・出所と、制限の他目的の有無の提示を委譲元に求める。制限の削除実行は行わない。"
+      },
+      {
+        "id": 3,
+        "findings": [
+          "現API契約 save(record) に対し、計画は save(record, overwrite=true) を呼ぶため、呼び出しの引数が実際の契約と食い違う",
+          "計画が『引数変更なしと明記』しながら第2引数を渡しており、計画内部でも記述が矛盾している",
+          "別の変更タスクがない以上、将来作成が明記された部品として扱えず、現時点の不整合として指摘対象になる"
+        ],
+        "viewpoints": [
+          "実装整合性（実体・接続との一致）",
+          "仕様適合（目的・要求との一致）"
+        ],
+        "evidence": [
+          "事例3本文『現API契約: save(record)』と『save(record, overwrite=true) を呼ぶ』の対比",
+          "事例3本文『引数変更なしと明記』という計画記述と実際の呼び出し形の矛盾",
+          "事例3本文『別の変更タスクはない』",
+          "定義『「参照している関数が実際のAPIにない」は主に実装整合性』および『将来作成することが計画に明記された部品は、現在ないだけで不整合・前提誤りにしない』"
+        ],
+        "unknowns": [
+          "save の実体コード・シグネチャ定義の所在（原文未提供、静的確認のみで実行検証は不可）",
+          "可変長引数やキーワード引数の受け口が実装側に存在するか",
+          "overwrite 相当の挙動が既定で提供されているか"
+        ],
+        "next_action": "追加作業は不要。実装整合性の指摘1件（関係観点に仕様適合を併記）として報告し、save の定義箇所の原文と呼び出し元一覧の提示を求める。ツールがないため実行検証は行わず未確認として明示する。"
+      },
+      {
+        "id": 4,
+        "findings": [
+          "全担当が read→加算→write を排他・版確認なしで行うため、2担当が同時に加算すると先行の書き込みが上書きされ、初期値0から期待値2ではなく1になる更新喪失（lost update）の経路が成立する",
+          "この結果は『複数担当が更新しても値を失わない』という要求そのものに反するため、敵対的観点で経路を示しつつ仕様適合でも未達を指摘できる"
+        ],
+        "viewpoints": [
+          "敵対的（失敗経路の探索）",
+          "仕様適合（目的・要求との一致）"
+        ],
+        "evidence": [
+          "事例4本文『要求: 複数担当が更新しても値を失わない』と『設計: 全担当がread→加算→write』『排他・版確認はない』の対比",
+          "事例4本文『初期値0、2担当が同時に加算』という明示条件（成立条件）",
+          "定義『境界値・並行操作・中断・再開・部分失敗など…成立条件→操作や状態遷移→望ましくない結果を示し、その結果が問題になる根拠も添える』"
+        ],
+        "unknowns": [
+          "記憶域側に原子的加算・条件付き書き込み・トランザクションが存在するか（資料に記載なし）",
+          "同時実行が実際に起こりうる運用条件（担当の起動タイミング、直列化の有無）",
+          "実測・再現記録の有無（本レビューでは実行不可）"
+        ],
+        "next_action": "追加作業は不要。敵対的観点の失敗経路（成立条件→read/read→加算/加算→write/write→値1）を1件にまとめ、仕様適合を関係観点として併記して報告する。対策案（排他・楽観ロック・原子的加算）は欠陥の成立と分けて提案に留める。"
+      },
+      {
+        "id": 5,
+        "findings": [
+          "初回対象を1OSに限る限定は承認済みであり、拡大条件と保留対象も明記されているため、限定だけを欠陥として指摘しない",
+          "確認範囲内では、全体目的（複数OS対応）と今回の計画（初回対象のみ実装）のつながりが資料上示されており、仕様適合上の指摘は見当たらない"
+        ],
+        "viewpoints": [
+          "仕様適合（目的・要求との一致）"
+        ],
+        "evidence": [
+          "事例5本文『承認: 初回は1OSで確認し次段階で拡大』『拡大条件と保留対象は明記』",
+          "定義『段階的な導入として、初回対象を限定する承認と全体目的へのつながりがある: 限定だけを欠陥としない。全目的を今回同時に実装することを求めない』"
+        ],
+        "unknowns": [
+          "承認記録の正本の所在・版（本文の要約のみで原文未提供）",
+          "拡大条件の具体的内容と、次段階の担当・順序",
+          "1OS限定の実装が他OS対応時に手戻りを生む設計上の分岐（コード・設定が未提供のため実装整合性は未確認）"
+        ],
+        "next_action": "追加作業は不要。『確認範囲内で問題なし（未確認部分の安全を意味しない）』として、承認と全体目的の整合を見た根拠箇所を添えて報告する。実装整合性・敵対的観点の評価には対象コード／設定の所在提示が必要である旨を付記する。"
+      },
+      {
+        "id": 6,
+        "findings": [
+          "『既存の安全機構がすべてを保護する』という設計理由は、根拠資料が未提供で参照先も不明なため、証拠のない断定であり、必要／不要／重複などの判定に進められない",
+          "対象コードが部分抜粋のみであり、保護の到達経路や網羅性を確認できないため、『不在』『重複』いずれの判断にも必要な探索範囲が示せない",
+          "現時点の妥当な結論は『未確認』であり、設計理由を支持も否定もできない"
+        ],
+        "viewpoints": [
+          "前提実在（根拠・必要性）",
+          "実装整合性（実体・接続との一致）"
+        ],
+        "evidence": [
+          "事例6本文『根拠資料は未提供で参照先も不明』『対象コードは部分抜粋だけ』",
+          "定義『証拠不足は上記5判定へ無理に入れず「未確認」とし、足りない資料・条件を示す』",
+          "定義『「不在」の判断には、読んだ対象・探索範囲・到達経路または到達しない根拠を添える。観測したことがないだけで不要としない』",
+          "常時制約『証拠のない断定は指摘として採用できない』"
+        ],
+        "unknowns": [
+          "既存安全機構の実体（コード・設定）の所在と適用範囲",
+          "『すべて』が指す保護対象の定義と境界条件",
+          "抜粋外のコード・呼び出し元・例外経路",
+          "動作を根拠にした確認（実行記録）の有無（本レビューでは実行不可）"
+        ],
+        "next_action": "追加作業は不要。前提実在を『未確認』として報告し、不足資料（安全機構の正本パスと節、保護対象の定義、対象コード全体または該当範囲の原文、既存の実行記録）を具体的に列挙して委譲元へ要求する。推測で埋めず、資料受領後に再評価する。"
+      }
+    ]
+  },
+  "review": {
+    "reviewed_files": [
+      "skills/pre-finalization-review/SKILL.md（全文・添付本文）",
+      "skills/pre-finalization-review/references/review-criteria.md（全文・添付本文）",
+      "skills/pre-finalization-review/references/review-procedure.md（全文・添付本文）",
+      "skills/pre-finalization-review/references/examples-and-evidence.md（全文・添付本文）",
+      "skills/subagent-dispatch/SKILL.md（全文・添付本文）",
+      "docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md（全文・添付本文）",
+      "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md（全文・添付本文）"
+    ],
+    "coverage": {
+      "対象総数": "7文書（ソース5ファイル＋ADR2件）。全7件を通読し、指摘・未確認を割り当てた",
+      "対象版": "添付された現作業ツリーの本文。基点は git HEAD 856e8d2（差分そのものは未提示のため、新設・改定箇所はADR-0185/0186の記述からの推定を含む）",
+      "参照した上位原文": "docs/current/development-roadmap.md 先頭44行、CONTRIBUTING.md 先頭97行（いずれも抜粋のみ。全体目的・過剰適合点検・新設の評価可能性の照合に使用）",
+      "適用観点": "4観点（仕様適合／前提実在／実装整合性／敵対的）をすべての対象文書へ適用。観点は排他分類せず、同一欠陥は1件へ統合した",
+      "確認方法": "添付原文どうしの記述照合のみ（静的）。ツールなしのためファイル参照・コマンド実行・写経実行・git操作は一切行っておらず、動作を根拠とする指摘は作っていない",
+      "未確認の範囲": "添付されなかった参照先文書（iteration-norms.md 等）、HEADとの実差分、リポジトリ内の他規範との重複、実際の委譲プロンプト運用",
+      "前段の扱い": "先の6例に対する回答は正解と前提せず、本レビューの根拠に用いていない"
+    },
+    "findings": [
+      {
+        "id": "R1",
+        "severity": "Major",
+        "viewpoints": [
+          "仕様適合",
+          "実装整合性"
+        ],
+        "location": "skills/pre-finalization-review/references/review-criteria.md 冒頭『確定前レビューは4観点を使い、他の独立レビューでは呼び出し側の担当範囲に従う（ADR-0185 / ADR-0186）』",
+        "problem": "確定前レビュー以外の独立レビューについて、担当範囲に『全体目的・方針との整合確認を含める』という必須要素が、観点定義の正本である本文書に書かれていない。呼び出し側の担当範囲に全面的に委ねる記述になっている。",
+        "evidence": "ADR-0186 Decision『他の独立レビューは呼び出し側が定めた担当範囲に、全体目的との整合確認を含める』／ADR-0185 Decision『設計・計画・実装の独立レビューでは、直接の要求との一致に加え、成果物とそのスコープがプロジェクト全体の目的・方針に沿うかを確認する』／skills/subagent-dispatch/SKILL.md 末尾『全体目的との整合を確認対象に含める。確定前レビュー以外でも適用する』。この3箇所にある必須要素が review-criteria.md 冒頭の対応文だけ欠けている。",
+        "impact": "ADR-0186 が『定義・入力・報告の正本』と定めた文書が、決定内容より弱い規定になっている。委譲元が subagent-dispatch を経由せず review-criteria.md を直接参照した場合、確定前レビュー以外では全体目的整合が担当範囲から落ちる経路が残り、ADR-0185 が防ごうとした『作成側が狭めた設計を上流要求として渡すと、その範囲内の整合だけで終わる』（ADR-0185 Considered Alternatives 案2）状態へ戻りうる。",
+        "suggestion": "事実として不一致が成立する。対策案（欠陥の成立とは分離）: 当該文で『他の独立レビューでは呼び出し側の担当範囲に従う。ただし担当範囲には全体目的・方針との整合確認を含める』と補う。"
+      },
+      {
+        "id": "R2",
+        "severity": "Major",
+        "viewpoints": [
+          "仕様適合",
+          "実装整合性",
+          "敵対的"
+        ],
+        "location": "skills/pre-finalization-review/references/review-procedure.md 手順2『前提実在観点の委譲プロンプトには、方針の正本と実体の所在（ファイルパス）を明記して渡す（コンテキストを持たないレビュアーに、読むべき正本を知らせずに正本との照合を課さないため）』",
+        "problem": "正本パスの明記義務が前提実在観点だけに限定されている。今回 ADR-0185 が全体目的整合を明示した先は仕様適合観点（review-criteria.md 表の『仕様適合（目的・要求との一致）: 全体目的・方針と個別要求を満たすか』）であり、その担当へ目的・方針の正本パスを明記する義務が手順の箇条に現れていない。",
+        "evidence": "review-criteria.md 4観点表の仕様適合行（比較対象＝全体目的・方針）／ADR-0185 Decision『委譲元は関連する目的・方針の正本のパスと節、今回の要求・範囲、承認済みの限定理由がある場合はその根拠を渡す』（観点を限定していない）／review-procedure.md 手順2の限定列挙。失敗経路: SKILL.md『方式・人数の判断』に従い4体の観点分離を選ぶ→手順2の明記義務は前提実在担当のみ→仕様適合担当には作成側要約だけが渡る→『直近の設計や作成者の要約だけで全体目的を代替しない』（review-criteria.md）が満たせないまま『問題なし』が返る。",
+        "impact": "ADR-0185 の主目的（局所要求には一致するが全体目的に必要な対象を落とす設計の捕捉）が、人数を増やした観点分離の場合にかえって成立しにくくなる。冒頭節の一般規定（『review-criteria.md に従い目的・方針の原文を渡す』）はあるが、手順側の明示義務が一観点に限定されているため、実務では限定列挙が優先して読まれる余地がある。",
+        "suggestion": "対策案: 手順2の当該文を『前提実在および仕様適合の委譲プロンプトには、方針・目的の正本と実体の所在（ファイルパスと節）を明記して渡す』へ拡張するか、観点を限定しない一般則として書く。"
+      },
+      {
+        "id": "R3",
+        "severity": "Minor",
+        "viewpoints": [
+          "仕様適合",
+          "実装整合性"
+        ],
+        "location": "skills/pre-finalization-review/references/review-criteria.md「重なりと費用の扱い」『最終採否は、実施手順の集約で行う』、および「委譲元が渡すもの」『実行を伴う確認の保護は委譲手順に従う』",
+        "problem": "レビュー担当が読む正本の中で、他文書への参照が文書名・パス・節名なしの一般名詞（『実施手順の集約』『委譲手順』）で書かれている。今回の要求は『文脈のないAIにも観点が理解できるよう整理する』であり、会話履歴を持たない担当は参照先へ到達できない。",
+        "evidence": "review-criteria.md の当該2箇所には文書名がない。参照先は実際には review-procedure.md 手順5（集約）と subagent-dispatch SKILL.md 手順3〜5・inspection-isolation.md（実行保護）に存在する（review-procedure.md 手順5 の表題『集約』、subagent-dispatch SKILL.md 手順3『起動前に references/inspection-isolation.md を読み』）。同文書内でも ADR 番号は明記されており、参照粒度が不揃いである。",
+        "impact": "担当が『採否は自分の範囲外』『実行保護は別途規定がある』とだけ理解し、どの規定に従うか確認できない。採否や保護の所在を誤って自分の裁量と解釈する、または未確認として無用に差し戻す経路が生じ、目的（無駄な時間・トークン消費の削減）に反する往復が増えうる。",
+        "suggestion": "対策案: 『実施手順の集約（review-procedure.md 手順5）』『委譲手順（subagent-dispatch スキル）』のように参照先を1語添える。新規文書は不要。"
+      },
+      {
+        "id": "R4",
+        "severity": "Minor",
+        "viewpoints": [
+          "実装整合性",
+          "敵対的",
+          "仕様適合"
+        ],
+        "location": "skills/subagent-dispatch/SKILL.md 条件発火表『実証を伴わない指摘は採用しないこと』／review-procedure.md 手順5『実証の伴わない指摘は採用しない』／review-criteria.md 報告の契約『記述の照合だけで確認できる指摘は原文の対比を、動作が根拠の指摘は許可された条件での実測・再現経路を示す』",
+        "problem": "『実証』が動作実測だけを指すのか、原文どうしの対比も含むのかが、3文書のどこにも明示的に接続されていない。review-criteria.md は照合型の根拠を認めているが、採否側の2文書は『実証』という同一語で不採用条件を書いている。",
+        "evidence": "上記3箇所の原文。review-procedure.md 手順3は『成果物中のコード…は写経して実際に実行させる』と動作実証を定義する一方、規範文書レビューではコードが無く、指摘の根拠は原文対比のみになる（examples-and-evidence.md の適用例1『選定漏れ型』は文書内容の欠落であり動作実証を伴わない型である）。",
+        "impact": "会話文脈を持たない委譲元・担当が『実証＝実行』と読むと、規範文書レビューで最も重要な選定漏れ型・文書間相互作用型の指摘が一律に不採用となりうる。逆に緩く読めば不採用規定が空文化する。今回の整理目的（誤解なく理解できる定義）を部分的に達していない。",
+        "suggestion": "対策案: review-criteria.md 報告の契約か review-procedure.md 手順5に『実証には、動作を根拠とする実測・再現経路と、記述を根拠とする原文の対比の双方を含む』と1文で定義を接続する。"
+      },
+      {
+        "id": "R5",
+        "severity": "Minor",
+        "viewpoints": [
+          "敵対的",
+          "実装整合性"
+        ],
+        "location": "skills/subagent-dispatch/SKILL.md 条件発火表『検査対象は全数走査し、対象の総数を明示すること』／review-criteria.md「委譲元が渡すもの」末尾『各欄の専用文書や全資料の一律読破は要求しない』／review-procedure.md 手順2の括弧書き『条件発火の「検査・監査・走査」が発火し、全数走査・対象の総数明示…が制約に入る』",
+        "problem": "レビュー委譲では必ず『全数走査』制約が入るが、その走査対象が『委譲で指定した検査対象成果物』であって『渡された参照資料・関連原文』ではない、という区別が明示されていない。",
+        "evidence": "上記3箇所が同一の委譲プロンプト内に同時に現れる構成（review-procedure.md 手順2が両者の同居を明記している）。両文はそれぞれ単独では整合するが、対象語の範囲が定義されていない。",
+        "impact": "文脈のない担当が参照資料側まで全数読破と解釈すれば、ADR-0185 案3で不採用とした『全資料の一律読破』の費用が事実上復活し、ロードマップの目的（成果につながらない時間・トークン消費の削減）に反する。逆に対象成果物側を抜き読みする解釈も生じうる。",
+        "suggestion": "対策案: review-procedure.md 手順2の括弧書きに『全数走査の対象は指定した検査対象成果物であり、参照資料の一律読破は求めない』と補足する。"
+      },
+      {
+        "id": "R6",
+        "severity": "Info",
+        "viewpoints": [
+          "実装整合性"
+        ],
+        "location": "skills/pre-finalization-review/references/examples-and-evidence.md「根拠と世代」『SKILL.md 提示規則 3-2 の探索先併記の根拠』",
+        "problem": "参照先の節名が実物と一致しない。SKILL.md の当該節の見出しは『3-2. 反対材料の併記』であり、『探索先併記』という名称は存在しない。",
+        "evidence": "SKILL.md『**3-2. 反対材料の併記**』および同節『反対材料が無ければ「特定できた反対材料: なし」と確認した出所を簡潔に添える』／examples-and-evidence.md の上記引用。",
+        "impact": "節番号は一致しているため到達は可能だが、文脈のない担当が名称で検索した場合に該当なしとなる。今回の要求（誤解のない理解）に対する小さな阻害。",
+        "suggestion": "対策案: 『提示規則 3-2（反対材料の併記）の出所併記の根拠』へ表記を合わせる。"
+      },
+      {
+        "id": "R7",
+        "severity": "Info",
+        "viewpoints": [
+          "仕様適合",
+          "前提実在"
+        ],
+        "location": "ADR-0186 Consequences『今後最初の3件の独立レビューで、既存報告から観点の混同による見落とし・重複と、必要な参照負担を確認する』／review-procedure.md 手順5末尾『今回の方式・人数の判断、上流確認、費用比較の導入後評価は、既存の計画・課題ログ・対応表・ADRから復元できる事例に限る』",
+        "problem": "ADR-0185 の評価項目（目的・範囲の不整合の検出と参照負担）は手順5の『上流確認』に対応づけられる余地があるが、ADR-0186 の評価項目（観点の混同による見落とし・重複）に対応する語が手順5の列挙に無く、どの既存記録から復元するかが本文側に接続されていない。",
+        "evidence": "手順5末尾の列挙は『方式・人数の判断、上流確認、費用比較』の3項目で、観点の混同に相当する項目を含まない。ADR-0186 は『専用の計数工程は設けない』としており、既存記録からの復元が唯一の経路である。",
+        "impact": "CONTRIBUTING.md『新設の評価可能性』が求める廃止条件の判定（『理解・検出が改善せず再説明・重複作業のみが増えた場合は定義と例を簡素化』）を行う際、復元元が特定されず未評価が積み上がる可能性がある。ADR自体に記載はあるため重大ではない。",
+        "suggestion": "対策案: 手順5末尾の列挙へ『観点の適用（混同・重複）の状況』を加えるか、ADR側の記載で足りると明示する。台帳の新設は不要（両ADRの『専用台帳は作らない』を維持）。"
+      }
+    ],
+    "unknowns": [
+      "skills/pre-finalization-review/references/iteration-norms.md の原文が未提供。SKILL.md は『方式を判断するときは初回を含めて iteration-norms.md「反復の実施」の確認範囲・担当条件も読む』と接続し、review-procedure.md 手順1・2・4・6 も同文書を参照するが、今回の定義変更（review-criteria.md の新設・接続）が同文書と矛盾しないかは確認できていない。担当範囲の7文書には含まれていないが、接続検証に必要な原文の抜けとして報告する。",
+      "skills/start-work/references/decision-delegation.md、AGENTS.md「ユーザーへの質問と意思決定要求」「作業方法の判断」、session-handoff スキル、subagent-dispatch の references/inspection-isolation.md、plan-deviation-defaults.md、docs/overview/wording-replacements.md が未提供。SKILL.md・review-procedure.md・subagent-dispatch が参照する規定の実在と整合は未確認。",
+      "git HEAD 856e8d2 との実差分が未提示。どの記述が今回の新設・改定で、どれが従前からの記述かをADR本文の記載から推定しており、改定範囲の正確な切り分けは未確認。",
+      "ADR-0185・0186 がともに Status: Proposed のまま、正本ファイル本文（review-criteria.md 等）が当該ADRを参照して記述されている。Proposed 段階でのスキル本文改定の可否を定める規範（decision-log の references/status-updates.md 等）が未提供のため、手続き上の整合は判定できない。SKILL.md の spec 確定点（設計文書兼用 ADR 型）が Proposed ADR のコミットを想定していることから、逸脱とは断定しない。",
+      "review-criteria.md の新設内容が、本リポジトリの他規範（AGENTS.md や start-work 等）にある既存の目的整合・報告規定と重複していないかは、それらの原文が無いため前提実在の『重複』判定に必要な探索範囲を満たせず未確認。",
+      "ツールを使用していないため、参照パス・節見出しの実在（例: review-criteria.md が示すパスにファイルが存在するか、session-handoff の「「本サイクル」の定義」節が実在するか）は照合できていない。実行・検索は行っておらず、実行成功として扱っていない。",
+      "ADR-0185/0186 が挙げる導入後評価（最初の3件）の実施状況・実測は提示されておらず、改定の効果は本レビューでも未実証である（両ADR自身も効果未実証と明記）。"
+    ],
+    "assessment": "対象総数7文書（ソース5＋ADR2）を全数確認した。ADR-0185（全体目的・方針との整合の明示）とADR-0186（観点を問い・根拠・境界で定義し共通の委譲資料にする）の決定内容は、review-criteria.md への定義集約、review-procedure.md 冒頭節・手順1・2 からの接続、subagent-dispatch SKILL.md 末尾からの確定前レビュー外への接続として、おおむね本文へ反映されている。4観点の維持、前提実在の5判定と未確認の分離、費用比較と最終採否の分離（review-procedure.md 手順5）、人数・実施判断・保護の既存規定の非変更も確認でき、今回の制約『新規の起動方式・実行機構・人数増加は対象外』に反する記述は見当たらなかった。CONTRIBUTING.md の過剰適合点検ブロックは両ADR末尾に所定の4観点で存在し、新設（review-criteria.md）を含むADR-0186は既存工程の文言拡張（案2）・リスク受容との比較、期待検出量（最初の3件）、向き付きの廃止条件を備えている。前提実在の観点では、この新設が守る対象（会話文脈を持たない担当への定義伝達）は両ADRのContextに1件の実例として示され、効果未実証である旨も明記されているため、現時点の判定は『必要（根拠は単一プロジェクト・単一事例で限定的）』とし、既存規範との重複可能性は原文未提供のため未確認とする。一方で、決定内容と本文の不一致が2件（R1: 確定前レビュー外の担当範囲に全体目的整合が落ちている／R2: 正本パス明記義務が前提実在観点に限定され、全体目的整合の主担当である仕様適合へ届かない）あり、いずれもADR-0185の主目的の達成経路を弱めるため Major とした。加えて、文脈のないAIの理解という今回要求に対する阻害が3件（R3 参照先の不特定、R4『実証』の範囲未接続、R5 全数走査の対象未定義）、軽微な不整合が2件（R6 節名の不一致、R7 評価復元経路の接続漏れ）ある。本レビューはツールを用いない静的な記述照合のみであり、動作・実行を根拠とする確認は一切行っていない。したがって『上記以外に問題なし』は確認範囲内の結果であって、未提供文書（特に iteration-norms.md と start-work 系）との整合、HEADとの実差分、運用時の挙動の安全・整合を意味しない。"
+  },
+  "first_metadata": {
+    "duration_ms": 67908,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4132,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 4252,
+      "output_tokens_details": {
+        "thinking_tokens": 366
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4132,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 4252,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 4132,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4132
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 4473,
+        "outputTokens": 22,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.004583,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 4252,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 4132,
+        "webSearchRequests": 0,
+        "costUSD": 0.14762999999999998,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 366,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "total_cost_usd": 0.152213,
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    }
+  },
+  "second_metadata": {
+    "duration_ms": 231284,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 37223,
+      "cache_read_input_tokens": 4132,
+      "output_tokens": 14440,
+      "output_tokens_details": {
+        "thinking_tokens": 7242
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 37223,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 14440,
+          "cache_read_input_tokens": 4132,
+          "cache_creation_input_tokens": 37223,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 37223
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 14440,
+        "cacheReadInputTokens": 4132,
+        "cacheCreationInputTokens": 37223,
+        "webSearchRequests": 0,
+        "costUSD": 0.735306,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 7242,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "total_cost_usd": 0.735306,
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    }
+  },
+  "limitations": [
+    "静的文書照合。シェル・ファイル・MCPツールなし。",
+    "モデル名・ツール空・セッション一致は開始イベントで確認。",
+    "CLIのcostUSDは参考値で実請求額ではない。初回にはCLI補助モデルHaikuの利用計上もある。",
+    "6事例は定義内の例と重なるため独立した一般化試験ではない。"
+  ]
+}

@@ -5,11 +5,13 @@ description: "新しい作業（新規開発、改修、デバッグ、レビュ
 
 # start-work
 
-AIエージェントを活用した作業のフローを定義し、フロー通りに動かすための起点スキル。superpowers のフレームワークで実行可能なすべての作業の入り口として機能する。
+AIと協働する作業の起点。superpowers の全作業に対応する。
 
 ## いつ使うか
 
-新しい作業を開始する時は、必ず最初にこのスキルを呼ぶこと。ここで言う「作業」とは、新規開発、機能追加、改修、リファクタリング、バグ修正、デバッグ、コードレビュー、調査、PoC、ガイドライン拡張など、superpowers のフレームワークで扱える全ての作業を指す。
+新しい作業（開発・改修・調査・レビュー等）を取りまとめる主担当が、開始・再開時に呼ぶ。
+
+委譲された担当は目的・根拠・範囲・実行条件を確認し、主担当のPhase 0・1やhandoff・ADR作成を重複しない。不足は `references/project-purpose.md` の権限内の読取りか親への報告で扱い、目的確認を省かない（ADR-0190）。
 
 ## 責務境界
 
@@ -34,6 +36,8 @@ start-work が正本として持つのはオーケストレーション（フェ
 4. 本セッションで新規追加/改定した `ai-driven-dev-principles` スキルの availability は、AI 側の system-reminder（available-skills 一覧）または Skill ツール呼び出し可否で判定する（UI の `/skills` 表示には依存しない）。反映が確認できない場合はユーザーへ `/plugin marketplace update ai-driven-dev-principles` の実行を依頼する（AI からは実行不可。ADR-0055）
 
 ### Phase 0: セッション継続チェック
+
+分岐前に `references/project-purpose.md` で現在の目的・方針を取得し、handoff要約と次手判断へ使う。根拠を失った場合も再取得する（ADR-0190）。
 
 1. `session-handoff` スキルの **read** 操作を呼ぶ
 2. 結果に応じて分岐:

@@ -3,7 +3,7 @@
 - 更新日: 2026-09-11
 - 状態: **段階2の初期比較は終了。追加評価は今すぐ行わず、段階3で具体的な改善案の採否を左右する場合に限定する**。Astra/mediumとSol/lowの8実行・14起動段階は機能検査合格。Sol/lowの裁量条件では前回の検証結果の保存が欠落した。長期保守・拡張とADRの将来便益は未評価。利用上限を理由とするユーザーの終了指示に従い、追加モデル実行は行わない（ADR-0183）。Issue-0140・0124の対策、0.1.26公開とこのPCのCodex導入は完了。Claude・今回比較用sbxの整備とIssue-0136は保留を維持する。
 - 利用方針: 2026-09-08、ユーザーが今後の整備を本ロードマップに沿って進めるための引き継ぎを指示。個別の組織運用方法は4.1節の先行調査後に決める。調査項目の追加を、未検証の対策や個別実装の承認とは扱わない。
-- 目的: ユーザーが満足できる品質と、保守・拡張を続けるための記録・構造を維持し、人の判断を必要な箇所へ集中させながら、現在と将来の総負担を抑える。成果につながらない方針への固執による時間・トークンの浪費も対象とする。機能テストの成功だけを品質全体とせず、短期の速度で品質・権限・継続情報の不足を相殺しない。
+- 目的・判断方針の正本: [このプロジェクトの目的・判断方針](../overview/project-purpose.md)。本書はその目的へ進む段階・条件・現在の次手を扱う。
 - 関連方針: [ADR-0043](../records/decisions/0043-loop-engineering-poc-first-direction.md)、提案中の[ADR-0139](../records/decisions/0139-reuse-official-agent-runtimes-for-development-pilots.md)・[ADR-0140](../records/decisions/0140-stage-guideline-improvements-before-agent-pilots.md)。2026-09-10の更新判断は[ADR-0163](../records/decisions/0163-prioritize-guideline-operating-cost-improvements.md)。今回の順位更新は個別Issueの実装や未確定の組織運用案の承認ではない。
 - 最新方針: [ADR-0183](../records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md)。2026-09-11の検証終了・ロードマップ更新依頼に基づく。[初期比較結果](../records/experiments/2026-09-10-model-discretion-comparison.md)を改善案の設計材料にし、追加評価の価値と時期を4.0節に定める。比較先行の起点は[ADR-0166](../records/decisions/0166-compare-model-discretion-before-detailed-workflows.md)。
 

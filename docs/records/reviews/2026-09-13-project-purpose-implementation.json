@@ -1,0 +1,79 @@
+{
+  "model_requested": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "execution": {
+    "run": {
+      "role": "diff",
+      "exit_code": 0,
+      "elapsed_seconds": 456.33
+    },
+    "snapshot_unchanged": true
+  },
+  "usage": [
+    {
+      "input_tokens": 1430602,
+      "cached_input_tokens": 1313408,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 17277,
+      "reasoning_output_tokens": 9834
+    }
+  ],
+  "review": {
+    "reviewed_targets": [
+      "AGENTS.md",
+      "README.md",
+      "docs/current/development-roadmap.md",
+      "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+      "docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md",
+      "docs/current/specs/2026-08-28-start-work-responsibility-split-design.md",
+      "skills/pre-finalization-review/references/review-criteria.md",
+      "skills/session-handoff/SKILL.md",
+      "skills/session-handoff/references/op-create.md",
+      "skills/session-handoff/references/op-cycle-reset.md",
+      "skills/session-handoff/references/op-read.md",
+      "skills/session-handoff/references/op-update.md",
+      "skills/start-work/SKILL.md",
+      "skills/subagent-dispatch/SKILL.md",
+      "docs/overview/project-purpose.md",
+      "skills/start-work/references/project-purpose.md",
+      "dist/skills/pre-finalization-review/references/review-criteria.md",
+      "dist/skills/session-handoff/SKILL.md",
+      "dist/skills/session-handoff/references/op-create.md",
+      "dist/skills/session-handoff/references/op-cycle-reset.md",
+      "dist/skills/session-handoff/references/op-read.md",
+      "dist/skills/session-handoff/references/op-update.md",
+      "dist/skills/start-work/SKILL.md",
+      "dist/skills/start-work/references/project-purpose.md",
+      "dist/skills/subagent-dispatch/SKILL.md",
+      "template/AGENTS.md"
+    ],
+    "evidence_read": [
+      "implementation.diff",
+      "docs/overview/project-purpose.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/00-overview.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/01-purpose-context.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/02-workflow-integration.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/03-distribution-and-validation.md",
+      "docs/records/decisions/0190-read-project-purpose-at-start-resume-and-delegation.md",
+      "docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md",
+      "docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md",
+      "docs/working/plans/2026-09-13-project-purpose-context.md",
+      "skills/pre-finalization-review/references/review-criteria.md",
+      "skills/session-handoff/references/op-finalize.md",
+      "docs/records/experiments/2026-09-13-project-purpose-validation.md",
+      "docs/records/experiments/2026-09-13-project-purpose-validation.json",
+      "scripts/build-dist.ps1",
+      "scripts/sync-template.ps1",
+      "template.manifest"
+    ],
+    "findings": [],
+    "unverified": [
+      "開始・再開の実運用、handoffの単独read・finalize・cycle-resetの実セッション経路は未実行。確認できたのは文書接続と8題×2条件・各1実行の読解判断試験であり、全実運用成功ではない。",
+      "P07は現行側でreview-criteria、改修後側でdecision-log本体が入力に含まれず、完全なレビュー・決定記録手順の実行可能性は未確認。検証記録はこの不足を主判断の成否や改修効果へ加算していない。",
+      "レビュー担当は生成器、両Check、サイズ検査を再実行していない。主担当の実行済みという与件、計画の実行記録、現在のsource・dist・template実体を静的に照合した。snapshotには生成器が参照するscripts/lib/strip-provenance.ps1と実行時の生ログが含まれない。",
+      "ADR-0190が参照する設計レビューR2・R3の原記録はsnapshotに含まれず、ADR-0190記載の収束要約までを根拠とした。",
+      "公開、実導入、ADR昇格、0.1.29への版更新、導入後最初の3件の観測は後続計画であり未確認。現時点の欠陥には数えていない。"
+    ],
+    "verdict": "修正必須の実装欠陥は確認されなかった。全26対象（implementation.diff内23件＋新規3件、ソース16件・生成物10件）を確認し、正本・標準入口・未定義／未反映／read-only、主担当と子の非重複、handoff各操作、レビュー入力の再利用、固有目的の非配布、利用側AGENTS共通部更新、source・dist・templateの条件保持が確定仕様と整合した。新規参照はsource・dist双方に実在し、固有目的本文はdist・template・template.manifestへ混入していない。作成・編集したファイルはない。"
+  }
+}

@@ -1,9 +1,9 @@
 # Handoff: プロジェクトの目的・方針の参照
 
 - **Branch**: codex/project-purpose-context
-- **Last Updated**: 2026-09-13 04:55 (Asia/Tokyo)
+- **Last Updated**: 2026-09-13 06:14 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 設計確定 / 実装計画の実行・確定前レビューの選択待ち
+- **Current Phase**: 実装・検証完了 / masterへの取り込み方法の選択待ち
 
 ## 作業の目的・背景
 
@@ -11,13 +11,15 @@
 
 ## 関連ドキュメント
 
-- 目的の現行正本: docs/current/development-roadmap.md 冒頭・4.0節、AGENTS.md「作業方法の判断」。採用理由と境界はADR-0130・0183。
+- プロジェクトの目的・方針: 対象ルートはD:/Dev/002_AiDev/MakeAiInstructions/.worktrees/project-purpose-context。正本はdocs/overview/project-purpose.md（5350b9f版）。採用理由はADR-0130・0183、段階はロードマップ。
 - 設計理由: docs/records/decisions/0190-read-project-purpose-at-start-resume-and-delegation.md。詳細仕様: docs/current/specs/2026-09-12-project-purpose-context/00-overview.mdと3ブロック。
 - 調査と対話: docs/reference/stage-three-preparation-and-delegation.md。コピー元はmasterの同ファイルの未コミット変更。元も保持。
 - 個別承認: 2026-09-12「OK。この案で進めていきましょう」。直前の提案と対象はADR-0190 Context・Decisionへ保存。
 - レビューと対応案: docs/records/reviews/2026-09-12-project-purpose-design-r1.md、同名JSON。原所見・送信承認・実行と消費・起動補正・5論点の対応を記録。
 - 最新レビュー: docs/records/reviews/2026-09-13-project-purpose-design-r2.md、同名JSON。前回7指摘解消、新規Major 1件（子のstart-work二重起動）の対応案と増設点検。
 - 設計確定: docs/records/reviews/2026-09-13-project-purpose-design-r3.md、同名JSON。R2指摘解消、新規0件。実装計画: docs/working/plans/2026-09-13-project-purpose-context.md。
+
+- 実装結果: docs/records/experiments/2026-09-13-project-purpose-validation.md、docs/records/reviews/2026-09-13-project-purpose-implementation.md、同日project-purpose-cycle-check.md。
 
 ## 完了済みタスク
 
@@ -28,17 +30,20 @@
 - [x] Sol/high 1体の差分再確認1回を完了。前回7指摘解消、新規1指摘への修正案をADR・仕様02・03へ反映。
 - [x] Sol/high 1体で起点分担1点を再確認し、解消・追加指摘なし。設計はフル1回＋差分2回で実質的な収束。
 
+- [x] 計画4タスクを実装・検証し、0.1.29の配布物を生成。ADR-0190をAcceptedへ昇格。
+
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の確定前レビューと実行方法の選択。
-  - 状態: 設計はR3で確定。4タスクの計画を作成し、仕様・期待値を照合済み。主担当による直接実装を推奨。計画は確定仕様の写像で、追加の独立レビューは未実施。
-  - 対象確定点の型: plan確定点。成果物の型: 通常型（設計で規範内容をレビュー済み）。計画レビューの実施・見送りは回答待ち。前のspec確定点は下記review行へ保存。
-  - 残り: 計画の選択後にexecuting-plans。提案するモデル実行は旧・新の判断比較各1回＋実装レビュー1回、Sol/high計3回。送信範囲・停止条件・有限試験の限界は計画に記載。現行スキルと目的の正本本文は未変更。
+- [ ] **現在の作業**: 取り込み方法の選択待ち。
+  - 状態: 計画4タスクを完了。8題の現行・改修後比較とSol/highの実装レビュー（指摘0件）、両生成器・Check・サイズ・サイクル全体整合を確認。ADR-0190はAccepted、0.1.29の配布物を生成済み。
+  - 残り: masterへローカル統合／pushとPR／ブランチ保持の選択。masterとorigin/masterはf63a7a4（公開0.1.28）。マージ慣行はbranch.master.mergeoptionsの--no-ff。取り込み・公開・実導入は未実施。
+  - 検証の限界: 有限の読解・判断試験であり実運用の全経路ではない。P07等の規則入力不足は実験記録へ分離。実運用の最初の3件の観測はこれから。
 
 ## 未着手のタスク
 
-- [ ] 計画に沿った固定入力の作成と、会話履歴を持たない担当による判断確認。
-- [ ] 目的の正本・参照経路の改修、配布整合、必要なレビューと検証。
+- [ ] masterへの統合、統合した場合のretrospective。
+- [ ] 公開・利用側更新（それぞれ個別の指示に従う）。
+- [ ] 最初の3件の開始・再開における目的参照の効果観測。
 - [ ] 継続・切替・保留の判断案の比較。ADR-0184の旧案を採用済みと扱わない。
 
 ## 既知のブロッカー・懸念
@@ -57,14 +62,20 @@
 - 2026-09-13 spec 確定点: ADR=0190 / worklog=棄却（既存手順で対応） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・2回・実質的な収束）
 - 2026-09-13 実装計画の作成: ADR=なし（確定仕様の写像） / worklog=棄却（既存手順で対応）
 
+- 2026-09-13 plan 確定点: ADR=なし（確定仕様の写像） / worklog=棄却（既存手順） / review=見送り
+- 2026-09-13 タスク1・現行判断の保存: ADR=0190 / worklog=棄却（承認計画どおり）
+- 2026-09-13 タスク2・目的と取得手順: ADR=0190 / worklog=棄却（承認計画どおり）
+- 2026-09-13 タスク3・起点と委譲の接続: ADR=0190 / worklog=棄却（重複説明の圧縮は既存規律）
+- 2026-09-13 タスク4・ADR-0190 Accepted 昇格: ADR=0190 / worklog=棄却（承認計画どおり） / cyclecheck=実施（指摘なし）
+
 ## 次セッション開始時のアクション
 
-1. 目的の現行正本、ADR-0190、本handoffを読む。本worktreeでgit statusを確認する。
-2. 実装計画とユーザーの選択から続ける。設計の再承認は不要。レビューにはFable・Astraを使わず、CLI実行は既存Windows sandbox=elevatedを明示する。
-3. 計画を確定したらexecuting-plansへ。設計の静的レビュー、判断比較、実運用の効果を区別する。実装・生成・検証前にADRを反映済みとしない。
+1. docs/overview/project-purpose.md、本handoff、実装・サイクル整合の記録を読む。目的の根拠と今回の未統合状態を把握する。
+2. 取り込み方法へのユーザー回答からfinishing-a-development-branchを続ける。マージ先はmaster、方式は--no-ff。元checkoutの未コミット資料を保全する。
+3. マージしたら統合後の検証・retrospectiveへ。公開・実導入を済んだことにせず、旧実験やADR-0184を自動再開しない。
 
 ## 重要な意思決定の履歴
 
-- ADR-0190: 目的・方針を開始・再開・委譲へ届ける。Proposed、設計・改修への個別承認あり。
+- ADR-0190: 目的・方針を開始・再開・委譲へ届ける。Accepted、実装・検証済み。
 - ADR-0130・0183: 現行の目的・費用判断。目的を再定義せず今回の設計へ適用する。
 - ADR-0184: 準備に限定した旧案は中断・Proposedのまま。本サイクルで復活させない。

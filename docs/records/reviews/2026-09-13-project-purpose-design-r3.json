@@ -1,0 +1,64 @@
+{
+  "model_requested": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "source_files": 21,
+  "source_bytes": 210320,
+  "execution": {
+    "run": {
+      "role": "diff",
+      "exit_code": 0,
+      "elapsed_seconds": 149.59
+    },
+    "snapshot_unchanged": true
+  },
+  "usage": [
+    {
+      "input_tokens": 269175,
+      "cached_input_tokens": 193536,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 6793,
+      "reasoning_output_tokens": 3392
+    }
+  ],
+  "review": {
+    "reviewed_targets": [
+      "変更1/3: ADR-0190 Decisionの子の分担",
+      "変更2/3: 仕様02の主担当・子の分担",
+      "変更3/3: 仕様03の委譲検証ケース",
+      "指摘1/1: ADR0190-R2-01「子のstart-work二重起動」"
+    ],
+    "evidence_read": [
+      "changes.diff",
+      "before/以下の変更3文書の該当原文",
+      "docs/records/decisions/0190-read-project-purpose-at-start-resume-and-delegation.md Decision",
+      "docs/current/specs/2026-09-12-project-purpose-context/02-workflow-integration.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/03-distribution-and-validation.md 検証ケース",
+      "docs/records/reviews/2026-09-13-project-purpose-design-r2.md ADR0190-R2-01",
+      "AGENTS.md「作業方法の判断」「作業の起点」",
+      "skills/start-work/SKILL.md「いつ使うか」およびPhase 0・1",
+      "skills/subagent-dispatch/SKILL.md 入力伝達・常時適用の担当外作業禁止",
+      "docs/current/specs/2026-09-12-project-purpose-context/01-purpose-context.md 正本取得・目的変更・読み取り専用分岐",
+      "skills/pre-finalization-review/references/review-criteria.md",
+      "skills/pre-finalization-review/references/iteration-norms.md「差分再確認」",
+      "docs/current/development-roadmap.md 冒頭・4.0節",
+      "docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md",
+      "docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md"
+    ],
+    "prior_findings": [
+      {
+        "id": "ADR0190-R2-01",
+        "status": "解消",
+        "evidence": "R2の失敗経路は、目的と範囲を受け取った子がAGENTS/start-workの無条件発火に従い、親のPhase 0・1、handoff作成、ADR作成へ進むことだった。修正後は、ADR-0190 Decisionで全体start-workを主担当の責務とし、仕様02でAGENTSの「作業の起点」とstart-workの「いつ使うか」をこの分担へ修正する対象を明記した。主担当の新規開始は01の目的取得後に全体フローを継続する。目的が揃った子は目的・担当範囲を確認するが親のPhase 0・1等を重複しない。目的不足の子は担当範囲・権限内の必要な読取りか親への報告に限定される。read-onlyの子は仕様03と仕様01により書込みへ移行しない。subagent-dispatchへ目的・根拠・範囲・実行条件を渡す接続も指定され、既存の担当外作業禁止および権限非拡張と整合する。現行ソースの旧発火文は未実装状態として区別し、その具体的な修正先と契約は設計上特定されている。"
+      }
+    ],
+    "findings": [],
+    "unverified": [
+      "未実装のため、AGENTS.md、start-work、subagent-dispatchの改修後実体および生成・配布物との同期は未確認。",
+      "実行用コードは対象になく、4分岐は文書上の経路照合のみ。実モデルの動作成功は確認していない。",
+      "反例探索は本担当による兼務であり、独立した反証とは称さない。",
+      "前回解消済みの5論点と成果物全体は今回の範囲外として再審査していない。",
+      "環境実体はmanaged/restrictedのread-onlyとして扱った。最初のchanges.diff読取りは成功し、編集・子起動・外部操作は行っていない。"
+    ],
+    "verdict": "変更3/3文書と指摘1/1点を差分再確認した結果、ADR0190-R2-01は設計上解消している。主担当の新規開始、目的が揃った子、目的が不足する子、read-onlyの子の4分岐はいずれも文書上の経路が特定され、子の目的取得を免除せず、親の全体開始処理を重複せず、既存の委任範囲・承認を拡張しない。範囲内の新規Major/Minor指摘はない。"
+  }
+}

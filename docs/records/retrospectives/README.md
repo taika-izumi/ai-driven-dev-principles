@@ -85,6 +85,7 @@
 | 2026-09-09 | Claude標準サブエージェントの対話セッションでの保護確認（Issue-0136） | [system](system/2026-09-09-claude-native-subagent-interactive.md) / [flow](flow/2026-09-09-claude-native-subagent-interactive.md) | master（取り込み方式: 既定ブランチへの直接コミット。対象 40068bc〜951e3fd） | Issue-0141・0142 起票。Issue-0135・0136・0139・0140 へ追記。現行方針前提の課題2件は起票見送り。worklog 送り1件。ADR-0144 Accepted、ADR-0143 へ部分修正注記 |
 | 2026-09-10 | 実測追記の初回レビュー推奨条件の限定（Issue-0140） | [system](system/2026-09-10-issue-0140-review-cost.md) | codex/issue-0140-review-cost（取り込み方式: マージコミット 45159a9） | 新規起票0件、worklog 1件。ADR-0164 Accepted、Issue-0140 closed。公開・導入未実施 |
 | 2026-09-10 | レビュー採否時の費用比較の具体化（Issue-0124） | [system](system/2026-09-10-issue-0124-cost-comparison.md) | codex/issue-0124-cost-comparison（取り込み方式: マージコミット 06b8fa7） | 新規起票0件、worklog 1件。ADR-0165 Accepted、Issue-0124 closed。0.1.26未公開 |
+| 2026-09-12 | レビューの問いと担当分担の反映 | [system](system/2026-09-12-review-questions.md) / [flow](flow/2026-09-12-review-questions.md) | codex/issue-0143-review-questions（取り込み方式: マージコミット 7dec143） | Issue-0145をユーザー指示で起票、対策未決。0.1.28のローカル統合・検証完了 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

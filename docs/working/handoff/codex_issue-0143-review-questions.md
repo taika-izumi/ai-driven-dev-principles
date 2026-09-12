@@ -2,8 +2,8 @@
 
 - **Branch**: codex/issue-0143-review-questions
 - **Last Updated**: 2026-09-12 13:18 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 7dec143でmaster統合済み / master側で振り返り確認待ち
+- **Status**: completed
+- **Current Phase**: 7dec143でmaster統合済み / 振り返りとIssue-0145起票完了
 
 ## 作業の目的・背景
 
@@ -26,11 +26,11 @@ ADR-0189の設計を現行仕様・スキル・配布物へ反映し、別題材
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: masterへ--no-ffで統合済み。統合後の両Checkと差分検査成功。masterのhandoffと.tmp/2026-09-12-review-questions-retrospective-draft.mdを正本として振り返りの課題抽出確認を待つ。
+- [ ] **現在の作業**: masterへ--no-ffで統合済み。統合後の両Checkと差分検査成功。正式な振り返りはdocs/records/retrospectives/system/2026-09-12-review-questions.md。課題0145の対策は未決。最新状態はmasterのhandoffを参照。
 
 ## 未着手のタスク
 
-- [ ] 振り返りの課題確認後に記録・サイクル終了処理を行う。masterマージは完了済み。公開・利用側更新は別判断。
+- [ ] 振り返り・サイクル終了処理は完了。公開はセッション終了時にユーザー承認済み。利用側更新は未実施。
 
 ## 既知のブロッカー・懸念
 
@@ -48,7 +48,7 @@ ADR-0189の設計を現行仕様・スキル・配布物へ反映し、別題材
 ## 次セッション開始時のアクション
 
 1. 実装ブランチのstatus・コミットと上記結果を確認する。モデル検査は完了済みで再実行しない。
-2. masterで振り返り案への回答を受けて続行する。再マージしない。worktree側の同名handoffはマージ前の記録なので、master側の本ファイルを優先する。証跡は保全する。
+2. masterのhandoffから次のユーザー指示に従う。再マージしない。worktree側の同名handoffはマージ前の記録なので、master側の本ファイルを優先する。証跡は保全する。
 3. リモート公開・利用側更新とローカル統合を区別する。
 
 ## 重要な意思決定の履歴

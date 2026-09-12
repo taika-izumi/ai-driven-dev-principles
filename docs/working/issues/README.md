@@ -156,3 +156,4 @@
 | [0142](flow/0142-delegation-consultation-items-overlap-norm-decided-matters.md) | 判断の分担の「相談事項」が規範の既決事項と重なったとき、AI がどちらか一方を落とす — 区別と優先順位の規則を定める | open | 2026-09-09 |
 | [0143](flow/0143-review-coverage-and-meaning-unverified.md) | 独立レビューで検出すべき欠陥と観点構成の対応が未検証 | closed | 2026-09-11 |
 | [0144](flow/0144-reviewer-cannot-discover-omitted-evidence.md) | 独立レビュアーが委譲元の選んだ資料の不足を自力で補えない | open | 2026-09-11 |
+| [0145](flow/0145-redesign-history-investigation-sufficiency-unverified.md) | 再設計時に一部の履歴参照だけで調査十分と判断し、過去の有用な知見の引継ぎがユーザー介入に依存する | open | 2026-09-12 |

@@ -1,9 +1,9 @@
 # Handoff: レビュー観点と根拠探索の再評価
 
 - **Branch**: master
-- **Last Updated**: 2026-09-12 12:45 (Asia/Tokyo)
+- **Last Updated**: 2026-09-12 13:20 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 専用worktreeで計画タスク1〜3完了 / 変更後確認と実装レビューの送信範囲承認待ち
+- **Current Phase**: 専用worktreeで実装・検証完了（31cf340） / 統合方法の選択待ち
 
 ## 作業の目的・背景
 
@@ -13,7 +13,7 @@
 
 ## 関連ドキュメント
 
-- 実装作業場所: `.worktrees/issue-0143-review-questions`、ブランチ`codex/issue-0143-review-questions`。同所の`docs/working/handoff/codex_issue-0143-review-questions.md`を進捗の正本とする。スキル本文は未変更。
+- 実装作業場所: `.worktrees/issue-0143-review-questions`、ブランチ`codex/issue-0143-review-questions`。同所の`docs/working/handoff/codex_issue-0143-review-questions.md`を進捗の正本とする。予定版0.1.28の実装・検証は同所で完了。masterは未統合。
 
 - 実装計画: `docs/working/plans/2026-09-12-review-questions-reframe.md`。旧定義の15題確認→定義更新→参照同期→新定義確認→配布更新の5タスク。スキルの規範変更は旧定義確認後。
 
@@ -119,7 +119,7 @@
 
 ## 進行中のタスク
 
-- **現在の作業**: 専用worktreeで旧定義の15題確認とスキル・仕様・配布物の反映を実施（fe3a271）。旧回答は12題充足・3題部分的。変更後6ファイルと実装レビュー24ファイルの2実行を準備済みで承認待ち。版更新・統合・公開は未実施。
+- **現在の作業**: 専用worktreeで予定版0.1.28の実装・検証を完了（31cf340）。承認済み2実行も終了。15題比較・独立レビュー7指摘の4件修正・両Check成功を記録。統合方法の選択待ち。公開・利用側更新は未実施。
 - **レビュー状態**: spec確定点・規範改定型。フル1回（4体）＋差分1回（新規1体）、claude-opus-5・medium。提示後確定（実質的な収束に至らず）。最新補足は主担当が元条件と照合。更新済みADR-0189が正本で、.tmpの旧案を再適用しない。
 - **保持する要求**: プロジェクト全体の目的・方針との整合を、局所要求だけへの適合へ弱めない（ユーザー再確認、ADR-0185）。承認済み限定の尊重と原文共有も維持。詳細は4観点比較記録の追記。
 - **試験条件と保全**: Claude Opus 5・medium、1実行済み。`.tmp/issue-0144-evidence-access/`に全資材・生イベントを保全。再起動しない。CLI利用量には補助モデルHaikuも現れたが用途は未特定。詳細は実証結果を参照。
@@ -164,6 +164,9 @@
 - `.worktrees/issue-0124-cost-comparison`とブランチは統合済み。未追跡のレビュー証跡のため保持。最新の完了状態はmaster側handoffを正とする。
 
 ## 節目ごとの確認記録
+
+- 2026-09-12 実装ブランチ検証完了: ADR=0189適用状態を同ブランチで更新 / worklog=棄却（既存契約復元・原文照合） / 詳細は31cf340のhandoffを参照
+
 
 - 2026-09-12 実装用worktreeと変更前入力の準備: ADR=なし（既定手順と計画の具体化） / worklog=棄却（既知の長いパス対応とコピー照合）
 
@@ -284,7 +287,7 @@
 
 ## 次セッション開始時のアクション
 
-1. `.worktrees/issue-0143-review-questions/docs/working/handoff/codex_issue-0143-review-questions.md`から続ける。旧定義確認は実施済み。変更後6ファイルと実装レビュー24ファイルの承認後にタスク4を進める。masterで実装しない。
+1. `.worktrees/issue-0143-review-questions/docs/working/handoff/codex_issue-0143-review-questions.md`から続ける。3つのモデル実行はすべて完了済みで再起動しない。31cf340を確認し、ユーザーの統合方法の選択に従う。masterマージ直後はretrospective。証跡を保全する。
 2. 全プロジェクトを閲覧できる可能性と、毎回全資料を読む義務を分ける。旧意図の現在の必要性と観点の数・名前は再評価対象。0.1.27の3点だけを自動復元して完了にしない。実行条件と送信範囲を具体化してからモデル試験する。
 3. 初期比較は完了。長期保守・ADRの便益は未評価。Claude・sbx・Issue-0136、既存worktree・stash・未追跡証跡の保留と保全を維持する。利用枠回復だけで追加実行を再開しない。
 

@@ -1,0 +1,300 @@
+{
+  "raw_result": {
+    "duration_api_ms": 88140,
+    "stop_reason": "end_turn",
+    "session_id": "c24ba9fe-dee4-41b9-855a-b60c7bc3ae72",
+    "total_cost_usd": 0.4385915,
+    "usage": {
+      "input_tokens": 10,
+      "cache_creation_input_tokens": 27413,
+      "cache_read_input_tokens": 52615,
+      "output_tokens": 5453,
+      "output_tokens_details": {
+        "thinking_tokens": 1262
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 27413,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 4415,
+          "cache_read_input_tokens": 25026,
+          "cache_creation_input_tokens": 2387,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2387
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 1719,
+        "outputTokens": 12,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.001779,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 10,
+        "outputTokens": 5453,
+        "cacheReadInputTokens": 52615,
+        "cacheCreationInputTokens": 27413,
+        "webSearchRequests": 0,
+        "costUSD": 0.43681249999999994,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 1262,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "is_error": false,
+    "num_turns": 8,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "定義4文書とcases.jsonを確認しました。各事例を観点定義に照らして判定します。\n\n```json\n{\n  \"results\": [\n    {\n      \"id\": \"Q01\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"全体方針「完全オフライン」と、クラウドAPI必須の提案が正面から矛盾する（仕様適合：目的・方針との一致）。速度条件という個別要求だけを満たしても、上位方針への違反は解消されない。与件に例外承認や方針変更の記載はない。\",\n      \"unknowns\": [\"オフライン方針に対する例外承認の有無\", \"オフラインのまま速度条件を満たす代替案の存否\"]\n    },\n    {\n      \"id\": \"Q02\",\n      \"judgment\": \"問題なし\",\n      \"reason\": \"段階的導入として初回対象を限定する承認があり、後続対応も承認済みで全体目的につながっている。review-criteria.mdの境界節が「限定だけを欠陥としない／全目的の同時実装を求めない」と定めるとおり、実装案と限定の一致は整合している。確認範囲は与件の限定と承認の一致のみ。\",\n      \"unknowns\": [\"後続対応の実施時期・担当が計画上どこに割り当てられているか\"]\n    },\n    {\n      \"id\": \"Q03\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"保護対象とされた一覧が既に公開済みで、「秘密にする」という対策理由が成立しない（前提実在：不要）。別の保護理由は与件上存在しないと明示されているため、証拠不足ではなく理由の不成立として扱える。実体側で公開状態を再確認した結果ではなく、与件に基づく判定である。\",\n      \"unknowns\": []\n    },\n    {\n      \"id\": \"Q04\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"入力・対象・失敗条件が既存ゲートと同一で、新ゲートに追加の役割がないため前提実在の「重複」に当たる。examples-and-evidence.mdの「既存ゲートが覆う対象への重複ゲート」に該当する型でもある。与件が別役割の不在を明示しているため、役割差の見落としは排除されている。\",\n      \"unknowns\": [\"既存ゲートの信頼性低下時に二重化が要る運用要求があるか（与件外）\"]\n    },\n    {\n      \"id\": \"Q05\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"「削除には承認が必要」という保護要求に対し、再実行経路が承認を経ずに削除へ到達できる抜け道を残している（敵対的・仕様適合）。通常経路の承認だけでは保護が成立せず、再実行という現実的な状態遷移で望ましくない削除が起きる。到達経路は与件の記述に基づくもので、実行による再現は行っていない。\",\n      \"unknowns\": [\"再実行経路の実際の呼出し条件と頻度\", \"削除対象の復旧可能性\"]\n    },\n    {\n      \"id\": \"Q06\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"出典側の成立条件（特定版・オンライン時のみ）と引用側の説明（全版・オフラインでも成立）が食い違う、原文対比で示せる不一致である。引用側の一般化は出典が支持しない範囲まで広げており、前提誤りかつ実装整合性の問題となる。これは文書上の不一致の実証であり、動作の実測ではない。\",\n      \"unknowns\": [\"オフライン・他版で実際に検査が成立するかの実測\"]\n    },\n    {\n      \"id\": \"Q07\",\n      \"judgment\": \"判断材料不足\",\n      \"reason\": \"計測も原因資料も過去障害記録も無いため、遅延という対処すべき問題の実在を確認できず、対策理由は現時点で支持されていない。ただしreview-criteria.mdは「観測したことがないだけで不要としない」「証拠不足は未確認とする」と定めるため、「不要」とは断定できない。記録の不在は事象の不在の証明ではない。\",\n      \"unknowns\": [\"遅延の計測データ\", \"遅延の発生条件・原因の資料\", \"対策が想定する負荷条件\"]\n    },\n    {\n      \"id\": \"Q08\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"API契約が秒単位であるのに呼出し側が未変換のミリ秒値を渡しており、契約と実体の単位が食い違う（実装整合性）。1000倍の値ずれとなり期待動作を満たさない。与件の契約記述に基づく判定で、実行による再現はしていない。\",\n      \"unknowns\": [\"API側が範囲外値を拒否するか黙って受理するか\"]\n    },\n    {\n      \"id\": \"Q09\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"並行する2処理が同名の一時ファイルへ異なる内容を書くため、書き込みと送信の順序次第で他方の内容を送る／内容が混ざる競合が成立する（敵対的：並行操作）。成立条件（並行実行・同名パス・異内容）は与件に揃っており、誤送信という害も具体化できる。実測での再現は行っていない。\",\n      \"unknowns\": [\"排他制御やパス一意化の有無\", \"送信内容の取り違えが業務上どの程度の害になるか\"]\n    },\n    {\n      \"id\": \"Q10\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"入力拒否時も終了0を返す以上、終了0のみを合格条件とする検証は失敗を区別できず、常に緑を返す検出力欠陥になる（敵対的・実装整合性）。examples-and-evidence.mdの「検証が緑を返すが何も守っていない」型に該当する。与件の終了コード仕様に基づく判定で、実行での再現は行っていない。\",\n      \"unknowns\": [\"終了コード以外の出力で拒否を判別できる経路の有無\"]\n    },\n    {\n      \"id\": \"Q11\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"手順が参照する「既定の出力先」を特定できる資料が無く、初見担当は保存先を決定できないため手順が完結しない（実装整合性：参照先の不一致・境界の抜け）。コンテキストを持たない担当が実行する前提の手順として、必要な原文へ到達できない状態である。出力先が実在しないと断定しているのではなく、示す資料が無いという不在の指摘である。\",\n      \"unknowns\": [\"既定の出力先が別資料や暗黙知として存在するか\", \"誤った保存先に置いた場合の影響\"]\n    },\n    {\n      \"id\": \"Q12\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"旧規範は現在も利用中で「次の3回で評価する」と定められているのに、新案が評価を新機能完成後の3回へ統合すると、利用中の旧規範の評価機会が本来の時期から失われる（仕様適合・境界の抜け）。新機能完成までの期間、どの評価もその旧規範を担当しない領域が生じる。統合を承認した記載は与件に無い。\",\n      \"unknowns\": [\"評価時期の変更に対する承認の有無\", \"新機能完成までの想定期間\"]\n    },\n    {\n      \"id\": \"Q13\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"権限確認という機構自体は要求上必要だが、その必要性の説明「認証が無いから」は実体（認証はあり、権限確認だけが無い）と食い違うため、前提実在の「前提誤り」に当たる。機構を不要とする指摘ではなく、根拠文の訂正を要する指摘である。停止判定上も根拠文の訂正のみで済めば周辺レイヤに振り分けられる型である。\",\n      \"unknowns\": [\"誤った前提に引きずられて設計内容自体（認証の再実装など）が歪んでいないか\"]\n    },\n    {\n      \"id\": \"Q14\",\n      \"judgment\": \"問題なし\",\n      \"reason\": \"review-criteria.mdは「将来作成することが計画に明記された部品は、現在ないだけで不整合・前提誤りにしない」と定め、本件は作成→接続→検証の担当と順序も明記されている。既存部品として誤って扱ってもいない。現時点で未作成であること自体は欠陥ではなく、確認範囲は順序と担当の明記までである。\",\n      \"unknowns\": [\"後続タスクの実施自体が滞った場合の扱い（与件外）\"]\n    },\n    {\n      \"id\": \"Q15\",\n      \"judgment\": \"問題あり\",\n      \"reason\": \"同じ要求を既存設定の変更で満たせるのに、新サービスの常時運用という継続的な増設を推奨しており、review-procedure.md手順5が求める増設案の比較（既存手順の修正で足りるか、導入・運用・保守の負担）が成立していない。修正が有効であること自体は増設の採用根拠にならず、継続維持の負担を比較せずに採る点が食い違いである。費用が高い印象だけを理由に不要と判定しているのではない。\",\n      \"unknowns\": [\"既存設定変更では満たせない副次要求の有無\", \"新サービス常時運用の実コスト見積り\"]\n    }\n  ],\n  \"read_files\": [\n    \"definition/references/review-criteria.md\",\n    \"definition/SKILL.md\",\n    \"definition/references/iteration-norms.md\",\n    \"definition/references/examples-and-evidence.md\",\n    \"definition/references/review-procedure.md\",\n    \"cases.json\"\n  ],\n  \"created_paths\": []\n}\n```",
+    "ttft_ms": 1173,
+    "type": "result",
+    "duration_ms": 85986,
+    "uuid": "dfaaeb44-2cad-4dde-9c19-bf03ae93506a",
+    "ttft_stream_ms": 774,
+    "time_to_request_ms": 22,
+    "first_content_frame_ms": 774,
+    "queued_turn_count": 0,
+    "result_index": 0
+  },
+  "report": {
+    "results": [
+      {
+        "id": "Q01",
+        "judgment": "問題あり",
+        "reason": "全体方針「完全オフライン」と、クラウドAPI必須の提案が正面から矛盾する（仕様適合：目的・方針との一致）。速度条件という個別要求だけを満たしても、上位方針への違反は解消されない。与件に例外承認や方針変更の記載はない。",
+        "unknowns": [
+          "オフライン方針に対する例外承認の有無",
+          "オフラインのまま速度条件を満たす代替案の存否"
+        ]
+      },
+      {
+        "id": "Q02",
+        "judgment": "問題なし",
+        "reason": "段階的導入として初回対象を限定する承認があり、後続対応も承認済みで全体目的につながっている。review-criteria.mdの境界節が「限定だけを欠陥としない／全目的の同時実装を求めない」と定めるとおり、実装案と限定の一致は整合している。確認範囲は与件の限定と承認の一致のみ。",
+        "unknowns": [
+          "後続対応の実施時期・担当が計画上どこに割り当てられているか"
+        ]
+      },
+      {
+        "id": "Q03",
+        "judgment": "問題あり",
+        "reason": "保護対象とされた一覧が既に公開済みで、「秘密にする」という対策理由が成立しない（前提実在：不要）。別の保護理由は与件上存在しないと明示されているため、証拠不足ではなく理由の不成立として扱える。実体側で公開状態を再確認した結果ではなく、与件に基づく判定である。",
+        "unknowns": []
+      },
+      {
+        "id": "Q04",
+        "judgment": "問題あり",
+        "reason": "入力・対象・失敗条件が既存ゲートと同一で、新ゲートに追加の役割がないため前提実在の「重複」に当たる。examples-and-evidence.mdの「既存ゲートが覆う対象への重複ゲート」に該当する型でもある。与件が別役割の不在を明示しているため、役割差の見落としは排除されている。",
+        "unknowns": [
+          "既存ゲートの信頼性低下時に二重化が要る運用要求があるか（与件外）"
+        ]
+      },
+      {
+        "id": "Q05",
+        "judgment": "問題あり",
+        "reason": "「削除には承認が必要」という保護要求に対し、再実行経路が承認を経ずに削除へ到達できる抜け道を残している（敵対的・仕様適合）。通常経路の承認だけでは保護が成立せず、再実行という現実的な状態遷移で望ましくない削除が起きる。到達経路は与件の記述に基づくもので、実行による再現は行っていない。",
+        "unknowns": [
+          "再実行経路の実際の呼出し条件と頻度",
+          "削除対象の復旧可能性"
+        ]
+      },
+      {
+        "id": "Q06",
+        "judgment": "問題あり",
+        "reason": "出典側の成立条件（特定版・オンライン時のみ）と引用側の説明（全版・オフラインでも成立）が食い違う、原文対比で示せる不一致である。引用側の一般化は出典が支持しない範囲まで広げており、前提誤りかつ実装整合性の問題となる。これは文書上の不一致の実証であり、動作の実測ではない。",
+        "unknowns": [
+          "オフライン・他版で実際に検査が成立するかの実測"
+        ]
+      },
+      {
+        "id": "Q07",
+        "judgment": "判断材料不足",
+        "reason": "計測も原因資料も過去障害記録も無いため、遅延という対処すべき問題の実在を確認できず、対策理由は現時点で支持されていない。ただしreview-criteria.mdは「観測したことがないだけで不要としない」「証拠不足は未確認とする」と定めるため、「不要」とは断定できない。記録の不在は事象の不在の証明ではない。",
+        "unknowns": [
+          "遅延の計測データ",
+          "遅延の発生条件・原因の資料",
+          "対策が想定する負荷条件"
+        ]
+      },
+      {
+        "id": "Q08",
+        "judgment": "問題あり",
+        "reason": "API契約が秒単位であるのに呼出し側が未変換のミリ秒値を渡しており、契約と実体の単位が食い違う（実装整合性）。1000倍の値ずれとなり期待動作を満たさない。与件の契約記述に基づく判定で、実行による再現はしていない。",
+        "unknowns": [
+          "API側が範囲外値を拒否するか黙って受理するか"
+        ]
+      },
+      {
+        "id": "Q09",
+        "judgment": "問題あり",
+        "reason": "並行する2処理が同名の一時ファイルへ異なる内容を書くため、書き込みと送信の順序次第で他方の内容を送る／内容が混ざる競合が成立する（敵対的：並行操作）。成立条件（並行実行・同名パス・異内容）は与件に揃っており、誤送信という害も具体化できる。実測での再現は行っていない。",
+        "unknowns": [
+          "排他制御やパス一意化の有無",
+          "送信内容の取り違えが業務上どの程度の害になるか"
+        ]
+      },
+      {
+        "id": "Q10",
+        "judgment": "問題あり",
+        "reason": "入力拒否時も終了0を返す以上、終了0のみを合格条件とする検証は失敗を区別できず、常に緑を返す検出力欠陥になる（敵対的・実装整合性）。examples-and-evidence.mdの「検証が緑を返すが何も守っていない」型に該当する。与件の終了コード仕様に基づく判定で、実行での再現は行っていない。",
+        "unknowns": [
+          "終了コード以外の出力で拒否を判別できる経路の有無"
+        ]
+      },
+      {
+        "id": "Q11",
+        "judgment": "問題あり",
+        "reason": "手順が参照する「既定の出力先」を特定できる資料が無く、初見担当は保存先を決定できないため手順が完結しない（実装整合性：参照先の不一致・境界の抜け）。コンテキストを持たない担当が実行する前提の手順として、必要な原文へ到達できない状態である。出力先が実在しないと断定しているのではなく、示す資料が無いという不在の指摘である。",
+        "unknowns": [
+          "既定の出力先が別資料や暗黙知として存在するか",
+          "誤った保存先に置いた場合の影響"
+        ]
+      },
+      {
+        "id": "Q12",
+        "judgment": "問題あり",
+        "reason": "旧規範は現在も利用中で「次の3回で評価する」と定められているのに、新案が評価を新機能完成後の3回へ統合すると、利用中の旧規範の評価機会が本来の時期から失われる（仕様適合・境界の抜け）。新機能完成までの期間、どの評価もその旧規範を担当しない領域が生じる。統合を承認した記載は与件に無い。",
+        "unknowns": [
+          "評価時期の変更に対する承認の有無",
+          "新機能完成までの想定期間"
+        ]
+      },
+      {
+        "id": "Q13",
+        "judgment": "問題あり",
+        "reason": "権限確認という機構自体は要求上必要だが、その必要性の説明「認証が無いから」は実体（認証はあり、権限確認だけが無い）と食い違うため、前提実在の「前提誤り」に当たる。機構を不要とする指摘ではなく、根拠文の訂正を要する指摘である。停止判定上も根拠文の訂正のみで済めば周辺レイヤに振り分けられる型である。",
+        "unknowns": [
+          "誤った前提に引きずられて設計内容自体（認証の再実装など）が歪んでいないか"
+        ]
+      },
+      {
+        "id": "Q14",
+        "judgment": "問題なし",
+        "reason": "review-criteria.mdは「将来作成することが計画に明記された部品は、現在ないだけで不整合・前提誤りにしない」と定め、本件は作成→接続→検証の担当と順序も明記されている。既存部品として誤って扱ってもいない。現時点で未作成であること自体は欠陥ではなく、確認範囲は順序と担当の明記までである。",
+        "unknowns": [
+          "後続タスクの実施自体が滞った場合の扱い（与件外）"
+        ]
+      },
+      {
+        "id": "Q15",
+        "judgment": "問題あり",
+        "reason": "同じ要求を既存設定の変更で満たせるのに、新サービスの常時運用という継続的な増設を推奨しており、review-procedure.md手順5が求める増設案の比較（既存手順の修正で足りるか、導入・運用・保守の負担）が成立していない。修正が有効であること自体は増設の採用根拠にならず、継続維持の負担を比較せずに採る点が食い違いである。費用が高い印象だけを理由に不要と判定しているのではない。",
+        "unknowns": [
+          "既存設定変更では満たせない副次要求の有無",
+          "新サービス常時運用の実コスト見積り"
+        ]
+      }
+    ],
+    "read_files": [
+      "definition/references/review-criteria.md",
+      "definition/SKILL.md",
+      "definition/references/iteration-norms.md",
+      "definition/references/examples-and-evidence.md",
+      "definition/references/review-procedure.md",
+      "cases.json"
+    ],
+    "created_paths": []
+  },
+  "execution": {
+    "role": "baseline",
+    "exit_code": 0,
+    "seen_init": true,
+    "stop_reason": null,
+    "elapsed_seconds": 87.17,
+    "changed": []
+  },
+  "manifest": {
+    "baseline_version": "0.1.27",
+    "source_commit": "2875fbc",
+    "files": [
+      {
+        "path": "cases.json",
+        "bytes": 2501,
+        "sha256": "a97a5f801be5b810c643281162b2d23b8a1265b73c70b13c5494c535141b05a9"
+      },
+      {
+        "path": "definition/references/examples-and-evidence.md",
+        "bytes": 7921,
+        "sha256": "a667ea2a0051515dc062e7231797373b3f792651adf55195982a3168014eb5ef"
+      },
+      {
+        "path": "definition/references/iteration-norms.md",
+        "bytes": 17385,
+        "sha256": "821670f9ee318d248f851b06d04af034a43762f8c8f6b41d329882ed60ad090e"
+      },
+      {
+        "path": "definition/references/review-criteria.md",
+        "bytes": 9153,
+        "sha256": "dfdec690d34fc9f36fdd1759cb3b0e79432441caf32cd0d7283a7c848ae895a0"
+      },
+      {
+        "path": "definition/references/review-procedure.md",
+        "bytes": 6445,
+        "sha256": "f8fd0ea1c08232557b6b5f03ee59db9bb41766f6552dae7962ba495c7cdff5b8"
+      },
+      {
+        "path": "definition/SKILL.md",
+        "bytes": 18064,
+        "sha256": "9f42a58c365ff1f2cd30e9328dfcdbe00cbdf1859d86459e9c7db27c64133671"
+      }
+    ],
+    "source_assets": [
+      "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0143-review-questions\\scripts\\experiments\\review-questions\\cases.json",
+      "D:\\Dev\\002_AiDev\\MakeAiInstructions\\.worktrees\\issue-0143-review-questions\\scripts\\experiments\\review-questions\\expected.json"
+    ]
+  }
+}

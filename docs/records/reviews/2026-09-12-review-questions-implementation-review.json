@@ -1,0 +1,365 @@
+{
+  "raw_result": {
+    "duration_api_ms": 339334,
+    "stop_reason": "end_turn",
+    "session_id": "9e3e01cc-5ac5-4b62-9c40-918362344786",
+    "total_cost_usd": 2.296278,
+    "usage": {
+      "input_tokens": 34,
+      "cache_creation_input_tokens": 116783,
+      "cache_read_input_tokens": 1204310,
+      "output_tokens": 20947,
+      "output_tokens_details": {
+        "thinking_tokens": 11575
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 116783,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 8859,
+          "cache_read_input_tokens": 118492,
+          "cache_creation_input_tokens": 881,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 881
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 2378,
+        "outputTokens": 14,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.002448,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 34,
+        "outputTokens": 20947,
+        "cacheReadInputTokens": 1204310,
+        "cacheCreationInputTokens": 116783,
+        "webSearchRequests": 0,
+        "costUSD": 2.29383,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 11575,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "is_error": false,
+    "num_turns": 24,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```json\n{\n  \"reviewed_targets\": {\n    \"diff\": \"review-input/changes.diff（全780行を通読。対象コミット fe3a271 / 基点 2875fbc の全変更）\",\n    \"source_docs\": [\n      \"skills/pre-finalization-review/SKILL.md\",\n      \"skills/pre-finalization-review/references/review-criteria.md\",\n      \"skills/pre-finalization-review/references/examples-and-evidence.md\",\n      \"skills/pre-finalization-review/references/review-procedure.md\",\n      \"skills/pre-finalization-review/references/iteration-norms.md\",\n      \"skills/subagent-dispatch/SKILL.md\",\n      \"skills/start-work/references/plan-deviation-defaults.md\",\n      \"README.md\",\n      \"docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md\",\n      \"docs/current/specs/2026-08-28-start-work-responsibility-split-design.md\"\n    ],\n    \"dist_docs\": \"dist/skills/ 配下の対応7文書（差分は出所注記の除去のみで本文一致。R1-a 崩れ・空括弧・自己参照は今回の変更行に発見せず）\",\n    \"reference_docs\": [\n      \"docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md\",\n      \"docs/working/plans/2026-09-12-review-questions-reframe.md\",\n      \"docs/records/reviews/2026-09-12-review-questions-implementation.md\",\n      \"CONTRIBUTING.md（記法規約・スキル追加チェックリスト）\",\n      \"AGENTS.md / docs/overview/principles.md（全体目的の入口として所在確認）\"\n    ],\n    \"method\": \"Read/Glob/Grep のみ。編集・コマンド実行・生成器実行は一切していない（動作根拠の指摘は本レビューに無く、生成・Check 結果は記録の追認をせず未検証扱い）\"\n  },\n  \"findings\": [\n    {\n      \"id\": \"R1\",\n      \"severity\": \"medium\",\n      \"path\": \"skills/pre-finalization-review/SKILL.md（dist/skills/pre-finalization-review/SKILL.md も同内容） / docs/current/specs/2026-08-28-start-work-responsibility-split-design.md\",\n      \"lines\": \"SKILL.md:3（dist:2）／spec:38, 39, 81, 132\",\n      \"evidence\": \"spec:39「**frontmatter description は操作列挙型へ書き換える**…提示操作（確定点で毎回・AI が呼ぶ）と実施操作（ユーザー指示時のみ）を列挙し」、spec:81「frontmatter description: 操作列挙型へ書き換え」、spec:132（完了条件）「description が操作列挙型になっている」。今回 spec は :38 の実施操作行のみ更新され上記3行は未変更。一方 SKILL.md:3 は旧「2 操作を提供するスキル。提示操作:…実施操作:…」型を全廃し「確定点でレビューを提示するとき、または独立レビューの実施をユーザーが指示・委任したときに使う。」へ全面書き換え。計画（plan:106）の指示は「description・参照表・観点説明・人数判断を新定義へ接続する」であり、列挙型の廃止は指示外。\",\n      \"problem\": \"現行仕様が要求・完了条件として定める description の形式と、実体の description が一致しない。観点名の更新に必要な範囲を超えた書式変更が、仕様側の対応更新なしに入っている。\",\n      \"impact\": \"仕様が現状を説明しない状態になり、以後の整合検査（spec完了条件3の再確認）で誤判定を生む。列挙型が防いでいた「発動はユーザー指示のみ」がスキル全体に読まれる誤読リスクも、根拠文が仕様側に残ったまま実体で解除されている。\",\n      \"recommendation\": \"(a) description を新しい問いの語彙で操作列挙型に戻す、または (b) 列挙型廃止を意図した設計変更として spec:39/81/132 を更新し逸脱記録を残す、のいずれかを主担当が選ぶ。\",\n      \"classification\": \"設計の変更（計画外。(a)採用なら実体に合わせる調整）\"\n    },\n    {\n      \"id\": \"R2\",\n      \"severity\": \"medium\",\n      \"path\": \"skills/pre-finalization-review/references/review-criteria.md\",\n      \"lines\": \"7, 9, 15（比較: changes.diff の旧本文 605, 608, 619 行相当）\",\n      \"evidence\": \"旧「対象の版・差分範囲を明示し、複数版を混同させない。」「根拠の不足・矛盾・対象版の不明は、確認できる範囲と確認できない判断に分けて報告し、作成者の推測で埋めない。」が、新文（:7「所在・版・関連箇所を渡す」、:9「対象版と変更範囲」、:15）から脱落。ADR-0189:90 は「ADR-0186の共通入力・原文・未確認・報告の契約…は存続する」、計画:20 も既存規律の保全を求める。\",\n      \"problem\": \"版混同の禁止と、不足・矛盾時に推測で埋めない義務という既存の入力契約が、明文としては失われた。代替は部分的（:75「与件にない担当・実施状況等を補わない」、:87「条件が資料に無い場合はその不明を示す」）で、対象版の不明・複数版混同は覆っていない。\",\n      \"impact\": \"複数版が混在する委譲で旧版を対象に判断する誤り、根拠不足箇所を作成側要約で補う誤りが再発しうる。ADR-0189 が存続としたADR-0186由来の契約との不一致。\",\n      \"recommendation\": \"「対象版・差分範囲を明示し複数版を混同しない」「不足・矛盾・版不明は確認可否を分けて報告し推測で埋めない」を :9 または :15 へ1文で復元する。\",\n      \"classification\": \"事実誤り・期待値訂正ではなく、意図せぬ縮小（実体に合わせる調整／設計の変更の判断を要する）\"\n    },\n    {\n      \"id\": \"R3\",\n      \"severity\": \"low\",\n      \"path\": \"docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md\",\n      \"lines\": \"7, 9（比較: 同文書 6, 95, 103, 155, 208, 227, 256 で ADR-0189 に依拠）\",\n      \"evidence\": \":6 以降で本仕様の中核内容が ADR-0189 由来と明記される一方、:7「**根拠**: ADR-0124…0134」と :9「**根拠 ADR**: …ADR-0117（前提実在観点・前提検査・受け取り時義務の追加）、ADR-0120」に ADR-0189 が無い。:9 の ADR-0117 説明語も現行に存在しない観点名のまま。\",\n      \"problem\": \"現行仕様の根拠索引が、現在その仕様を規定している決定を指していない。\",\n      \"impact\": \"決定→仕様の追跡が索引から切れ、以後の改定時に ADR-0189 の条件（評価起点・4体を固定しない等）を見落とす経路ができる。\",\n      \"recommendation\": \"根拠 ADR 一覧へ ADR-0189 を追加。ADR-0117 の説明語は過去記録として残すか「必要性の5判定・前提検査」等へ調整するかを主担当が判断。\",\n      \"classification\": \"実体に合わせる調整\"\n    },\n    {\n      \"id\": \"R4\",\n      \"severity\": \"low\",\n      \"path\": \"docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md\",\n      \"lines\": \"3 と 103〜175（新設節「確認領域・入力・報告」）\",\n      \"evidence\": \":3「条件の正本を本仕様へ複写しない（ADR-0133）」、:348相当「条文を両方に複写しない」。新節は冒頭で正本を review-criteria.md と明示しつつ、入力・4領域表・担当境界・品質項目・5判定・報告・独立反証条件をほぼ逐条で再掲している（例 :369 の5判定と6適用例、:373 の報告契約は review-criteria.md:63-71, 85-89 とほぼ同内容）。\",\n      \"problem\": \"正本と同水準の規範記述が仕様側に二重化している。計画:111 が求めたのは「最新の入力・4重点・分担・方式・評価の起点を反映」であり、逐条再掲までは要求されていない。\",\n      \"impact\": \"今後 review-criteria.md だけを直したとき仕様側が古い規範として残り、どちらが正かの判断負担と矛盾が生じる（本変更で ADR-0117 説明語が取り残された R3 と同型の劣化経路）。\",\n      \"recommendation\": \"役割表＋要点数行（評価の起点を含む）へ圧縮し、条文詳細は review-criteria.md への参照に置き換える。維持する場合は複写を許容する旨を明記して :3 との関係を説明する。\",\n      \"classification\": \"設計の変更（不要な追加負担。圧縮なら実体に合わせる調整）\"\n    },\n    {\n      \"id\": \"R5\",\n      \"severity\": \"low\",\n      \"path\": \"skills/pre-finalization-review/references/review-criteria.md\",\n      \"lines\": \"55（比較: docs/records/decisions/0189-…md:67）\",\n      \"evidence\": \"ADR:67「セキュリティ・プライバシー・安全 | 要求担当が保護対象、根拠担当が脅威の前提、成立性担当が制御、反証担当が迂回・失敗条件」に対し、実装:55 は「…成立性担当が制御」で反証担当の分担が欠落。ADRの品質項目表で反証担当を明記した唯一の行。\",\n      \"problem\": \"ADR が明示した担当割当ての一部が反映されていない。:44 の「反証は表の各行を横断して失敗条件を見る」で概ね補われるが、迂回経路という具体の重点は落ちている。\",\n      \"impact\": \"保護の迂回経路（ADR-0189 の Q05 型・計画:66 の与件に対応）を誰も担当しない委譲文が作られやすい。\",\n      \"recommendation\": \":55 へ「反証担当が迂回・失敗条件」を戻す。横断規定で足りると判断するなら、省略理由を実装記録へ1行残す。\",\n      \"classification\": \"実体に合わせる調整（採否は主担当）\"\n    },\n    {\n      \"id\": \"R6\",\n      \"severity\": \"low\",\n      \"path\": \"skills/pre-finalization-review/references/examples-and-evidence.md（dist も同文）\",\n      \"lines\": \"38（関連: 同15, review-criteria.md:61）\",\n      \"evidence\": \":15 の見出しは「適用例: 根拠・必要性で特に疑う型」へ改名済みだが、:38 の根拠・廃止規範行は「前提実在観点・`review-procedure.md` 手順 5 の前提検査…の根拠」「同型 delta…が現れない場合は縮小・廃止を…提案する」と、現行に存在しない観点名で廃止対象を指したまま。\",\n      \"problem\": \"過去実測の記述（保持対象）と、現行規範の廃止判断対象の指示が同一行に同居しており、廃止判断時にどの現行要素を縮小するのか特定できない。\",\n      \"impact\": \"廃止・簡素化の提案時に対象が曖昧になり、5判定や必要性検査を過不足に削る／削れない判断ミスにつながる。\",\n      \"recommendation\": \"「前提実在観点（現行の根拠・設計判断領域に対応）」のような対応注記を1箇所足す。過去の実測値・世代は変更しない。\",\n      \"classification\": \"実体に合わせる調整\"\n    },\n    {\n      \"id\": \"R7\",\n      \"severity\": \"low\",\n      \"path\": \"skills/pre-finalization-review/SKILL.md / docs/current/specs/2026-08-05-…md / README.md\",\n      \"lines\": \"SKILL.md:90、spec:15・:181、README.md:48（比較: review-criteria.md:26、ADR:38）\",\n      \"evidence\": \"ADR と review-criteria は役割名を「独立した反例・失敗経路の探索」とするが、SKILL.md:90 は「反例・失敗経路の探索」、spec/README は「反例探索」と短縮。\",\n      \"problem\": \"役割名から「独立した」という要件語が落ちた呼称が入口文書側に並ぶ。\",\n      \"impact\": \"兼務した反例探索を独立反証と称さない要件（SKILL.md:96、review-criteria:28 で本文としては保持）が、名称だけ見た読み手に伝わらない。実害は本文で緩和されるため低。\",\n      \"recommendation\": \"入口の列挙で「独立した反証（反例・失敗経路の探索）」に揃えるか、現状維持を許容差分として実装記録へ明記する。\",\n      \"classification\": \"実体に合わせる調整\"\n    }\n  ],\n  \"unknowns\": [\n    \"ADR-0117 / ADR-0185 / ADR-0186 の本体は入力に無く、ADR-0189:90 が求める「観点構成への参照への再編先注記」が実際に付いたかはここでは未確認（リポジトリ全体で未実施とは断定しない）。\",\n    \"入力は指定10文書＋dist7文書と参照資料に限られ、skills/start-work/SKILL.md ほか他スキル・template/・.claude-plugin/ 等の旧観点名参照の有無はここでは未確認。\",\n    \"build-dist.ps1 / sync-template.ps1 / git diff --check の実行結果は実装記録（:25-26）の記述のみで、本レビューでは未実行のため追認していない。dist の一致は本文の原文対比で確認した範囲に限る。\",\n    \"タスク4の変更後15題確認は未実施であり、再編後の定義が旧定義より検出を改善するかは未評価。4体分担の費用対効果も未実証（ADR-0189 の前提どおり）。\",\n    \"版が 0.1.27 のままである点、長期の導入後評価が未了である点は、計画タスク5以降の既知の段階差として欠陥に数えていない。\"\n  ],\n  \"assessment\": {\n    \"scope_conformance\": \"ADR-0189 Decision 1〜6 の主要要素（3領域＋独立した反証の4行表、担当境界、品質項目8行、全体目的の全担当共有、5判定の保持、6適用例への到達、人数と問いの分離・4体を固定しない、旧評価起点の保全）は、review-criteria.md・SKILL.md・review-procedure.md・iteration-norms.md・subagent-dispatch・plan-deviation-defaults・README・現行仕様2件に対応する実体を確認できた。指示された保持対象（5判定・6適用例・旧評価起点・過去の体数実測・過剰適合点検の4観点・別工程の仕様適合）は保持されている。\",\n    \"deviation_check\": \"計画タスク1〜3のチェック項目と実際の差分はおおむね対応し、iteration-norms は フル実施1段落のみ、plan-deviation-defaults は参照1箇所のみの変更で、採用基準・反復条件・実行保護は不変であることを原文で確認した。計画のタスクと記録された調整を超える変更として特定できたのは R1（description の書式全面変更）で、R4（仕様側の逐条再掲）は計画の「反映」の解釈幅を超える可能性がある範囲。\",\n    \"residual_old_names\": \"旧名の残存は、過去実測・過剰適合点検・別工程の仕様適合・過去ADR名に限られ、一括での欠陥扱いはしていない。ただし R6（廃止規範行）と R3（根拠ADR索引の説明語）は現行規範の指示先として機能するため個別に指摘した。\",\n    \"overall\": \"重大な仕様違反・意味の反転は検出していない。採否が必要なのは R1・R2（仕様不整合と既存契約文の脱落）で、他は低。最終採否と分類の確定は主担当に返す。\"\n  }\n}\n```",
+    "ttft_ms": 1098,
+    "type": "result",
+    "duration_ms": 339160,
+    "uuid": "9cbb9f74-e968-462c-a9de-870badca33e9",
+    "ttft_stream_ms": 687,
+    "time_to_request_ms": 35,
+    "first_content_frame_ms": 687,
+    "queued_turn_count": 0,
+    "result_index": 0
+  },
+  "report": {
+    "reviewed_targets": {
+      "diff": "review-input/changes.diff（全780行を通読。対象コミット fe3a271 / 基点 2875fbc の全変更）",
+      "source_docs": [
+        "skills/pre-finalization-review/SKILL.md",
+        "skills/pre-finalization-review/references/review-criteria.md",
+        "skills/pre-finalization-review/references/examples-and-evidence.md",
+        "skills/pre-finalization-review/references/review-procedure.md",
+        "skills/pre-finalization-review/references/iteration-norms.md",
+        "skills/subagent-dispatch/SKILL.md",
+        "skills/start-work/references/plan-deviation-defaults.md",
+        "README.md",
+        "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+        "docs/current/specs/2026-08-28-start-work-responsibility-split-design.md"
+      ],
+      "dist_docs": "dist/skills/ 配下の対応7文書（差分は出所注記の除去のみで本文一致。R1-a 崩れ・空括弧・自己参照は今回の変更行に発見せず）",
+      "reference_docs": [
+        "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md",
+        "docs/working/plans/2026-09-12-review-questions-reframe.md",
+        "docs/records/reviews/2026-09-12-review-questions-implementation.md",
+        "CONTRIBUTING.md（記法規約・スキル追加チェックリスト）",
+        "AGENTS.md / docs/overview/principles.md（全体目的の入口として所在確認）"
+      ],
+      "method": "Read/Glob/Grep のみ。編集・コマンド実行・生成器実行は一切していない（動作根拠の指摘は本レビューに無く、生成・Check 結果は記録の追認をせず未検証扱い）"
+    },
+    "findings": [
+      {
+        "id": "R1",
+        "severity": "medium",
+        "path": "skills/pre-finalization-review/SKILL.md（dist/skills/pre-finalization-review/SKILL.md も同内容） / docs/current/specs/2026-08-28-start-work-responsibility-split-design.md",
+        "lines": "SKILL.md:3（dist:2）／spec:38, 39, 81, 132",
+        "evidence": "spec:39「**frontmatter description は操作列挙型へ書き換える**…提示操作（確定点で毎回・AI が呼ぶ）と実施操作（ユーザー指示時のみ）を列挙し」、spec:81「frontmatter description: 操作列挙型へ書き換え」、spec:132（完了条件）「description が操作列挙型になっている」。今回 spec は :38 の実施操作行のみ更新され上記3行は未変更。一方 SKILL.md:3 は旧「2 操作を提供するスキル。提示操作:…実施操作:…」型を全廃し「確定点でレビューを提示するとき、または独立レビューの実施をユーザーが指示・委任したときに使う。」へ全面書き換え。計画（plan:106）の指示は「description・参照表・観点説明・人数判断を新定義へ接続する」であり、列挙型の廃止は指示外。",
+        "problem": "現行仕様が要求・完了条件として定める description の形式と、実体の description が一致しない。観点名の更新に必要な範囲を超えた書式変更が、仕様側の対応更新なしに入っている。",
+        "impact": "仕様が現状を説明しない状態になり、以後の整合検査（spec完了条件3の再確認）で誤判定を生む。列挙型が防いでいた「発動はユーザー指示のみ」がスキル全体に読まれる誤読リスクも、根拠文が仕様側に残ったまま実体で解除されている。",
+        "recommendation": "(a) description を新しい問いの語彙で操作列挙型に戻す、または (b) 列挙型廃止を意図した設計変更として spec:39/81/132 を更新し逸脱記録を残す、のいずれかを主担当が選ぶ。",
+        "classification": "設計の変更（計画外。(a)採用なら実体に合わせる調整）"
+      },
+      {
+        "id": "R2",
+        "severity": "medium",
+        "path": "skills/pre-finalization-review/references/review-criteria.md",
+        "lines": "7, 9, 15（比較: changes.diff の旧本文 605, 608, 619 行相当）",
+        "evidence": "旧「対象の版・差分範囲を明示し、複数版を混同させない。」「根拠の不足・矛盾・対象版の不明は、確認できる範囲と確認できない判断に分けて報告し、作成者の推測で埋めない。」が、新文（:7「所在・版・関連箇所を渡す」、:9「対象版と変更範囲」、:15）から脱落。ADR-0189:90 は「ADR-0186の共通入力・原文・未確認・報告の契約…は存続する」、計画:20 も既存規律の保全を求める。",
+        "problem": "版混同の禁止と、不足・矛盾時に推測で埋めない義務という既存の入力契約が、明文としては失われた。代替は部分的（:75「与件にない担当・実施状況等を補わない」、:87「条件が資料に無い場合はその不明を示す」）で、対象版の不明・複数版混同は覆っていない。",
+        "impact": "複数版が混在する委譲で旧版を対象に判断する誤り、根拠不足箇所を作成側要約で補う誤りが再発しうる。ADR-0189 が存続としたADR-0186由来の契約との不一致。",
+        "recommendation": "「対象版・差分範囲を明示し複数版を混同しない」「不足・矛盾・版不明は確認可否を分けて報告し推測で埋めない」を :9 または :15 へ1文で復元する。",
+        "classification": "事実誤り・期待値訂正ではなく、意図せぬ縮小（実体に合わせる調整／設計の変更の判断を要する）"
+      },
+      {
+        "id": "R3",
+        "severity": "low",
+        "path": "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+        "lines": "7, 9（比較: 同文書 6, 95, 103, 155, 208, 227, 256 で ADR-0189 に依拠）",
+        "evidence": ":6 以降で本仕様の中核内容が ADR-0189 由来と明記される一方、:7「**根拠**: ADR-0124…0134」と :9「**根拠 ADR**: …ADR-0117（前提実在観点・前提検査・受け取り時義務の追加）、ADR-0120」に ADR-0189 が無い。:9 の ADR-0117 説明語も現行に存在しない観点名のまま。",
+        "problem": "現行仕様の根拠索引が、現在その仕様を規定している決定を指していない。",
+        "impact": "決定→仕様の追跡が索引から切れ、以後の改定時に ADR-0189 の条件（評価起点・4体を固定しない等）を見落とす経路ができる。",
+        "recommendation": "根拠 ADR 一覧へ ADR-0189 を追加。ADR-0117 の説明語は過去記録として残すか「必要性の5判定・前提検査」等へ調整するかを主担当が判断。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "id": "R4",
+        "severity": "low",
+        "path": "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+        "lines": "3 と 103〜175（新設節「確認領域・入力・報告」）",
+        "evidence": ":3「条件の正本を本仕様へ複写しない（ADR-0133）」、:348相当「条文を両方に複写しない」。新節は冒頭で正本を review-criteria.md と明示しつつ、入力・4領域表・担当境界・品質項目・5判定・報告・独立反証条件をほぼ逐条で再掲している（例 :369 の5判定と6適用例、:373 の報告契約は review-criteria.md:63-71, 85-89 とほぼ同内容）。",
+        "problem": "正本と同水準の規範記述が仕様側に二重化している。計画:111 が求めたのは「最新の入力・4重点・分担・方式・評価の起点を反映」であり、逐条再掲までは要求されていない。",
+        "impact": "今後 review-criteria.md だけを直したとき仕様側が古い規範として残り、どちらが正かの判断負担と矛盾が生じる（本変更で ADR-0117 説明語が取り残された R3 と同型の劣化経路）。",
+        "recommendation": "役割表＋要点数行（評価の起点を含む）へ圧縮し、条文詳細は review-criteria.md への参照に置き換える。維持する場合は複写を許容する旨を明記して :3 との関係を説明する。",
+        "classification": "設計の変更（不要な追加負担。圧縮なら実体に合わせる調整）"
+      },
+      {
+        "id": "R5",
+        "severity": "low",
+        "path": "skills/pre-finalization-review/references/review-criteria.md",
+        "lines": "55（比較: docs/records/decisions/0189-…md:67）",
+        "evidence": "ADR:67「セキュリティ・プライバシー・安全 | 要求担当が保護対象、根拠担当が脅威の前提、成立性担当が制御、反証担当が迂回・失敗条件」に対し、実装:55 は「…成立性担当が制御」で反証担当の分担が欠落。ADRの品質項目表で反証担当を明記した唯一の行。",
+        "problem": "ADR が明示した担当割当ての一部が反映されていない。:44 の「反証は表の各行を横断して失敗条件を見る」で概ね補われるが、迂回経路という具体の重点は落ちている。",
+        "impact": "保護の迂回経路（ADR-0189 の Q05 型・計画:66 の与件に対応）を誰も担当しない委譲文が作られやすい。",
+        "recommendation": ":55 へ「反証担当が迂回・失敗条件」を戻す。横断規定で足りると判断するなら、省略理由を実装記録へ1行残す。",
+        "classification": "実体に合わせる調整（採否は主担当）"
+      },
+      {
+        "id": "R6",
+        "severity": "low",
+        "path": "skills/pre-finalization-review/references/examples-and-evidence.md（dist も同文）",
+        "lines": "38（関連: 同15, review-criteria.md:61）",
+        "evidence": ":15 の見出しは「適用例: 根拠・必要性で特に疑う型」へ改名済みだが、:38 の根拠・廃止規範行は「前提実在観点・`review-procedure.md` 手順 5 の前提検査…の根拠」「同型 delta…が現れない場合は縮小・廃止を…提案する」と、現行に存在しない観点名で廃止対象を指したまま。",
+        "problem": "過去実測の記述（保持対象）と、現行規範の廃止判断対象の指示が同一行に同居しており、廃止判断時にどの現行要素を縮小するのか特定できない。",
+        "impact": "廃止・簡素化の提案時に対象が曖昧になり、5判定や必要性検査を過不足に削る／削れない判断ミスにつながる。",
+        "recommendation": "「前提実在観点（現行の根拠・設計判断領域に対応）」のような対応注記を1箇所足す。過去の実測値・世代は変更しない。",
+        "classification": "実体に合わせる調整"
+      },
+      {
+        "id": "R7",
+        "severity": "low",
+        "path": "skills/pre-finalization-review/SKILL.md / docs/current/specs/2026-08-05-…md / README.md",
+        "lines": "SKILL.md:90、spec:15・:181、README.md:48（比較: review-criteria.md:26、ADR:38）",
+        "evidence": "ADR と review-criteria は役割名を「独立した反例・失敗経路の探索」とするが、SKILL.md:90 は「反例・失敗経路の探索」、spec/README は「反例探索」と短縮。",
+        "problem": "役割名から「独立した」という要件語が落ちた呼称が入口文書側に並ぶ。",
+        "impact": "兼務した反例探索を独立反証と称さない要件（SKILL.md:96、review-criteria:28 で本文としては保持）が、名称だけ見た読み手に伝わらない。実害は本文で緩和されるため低。",
+        "recommendation": "入口の列挙で「独立した反証（反例・失敗経路の探索）」に揃えるか、現状維持を許容差分として実装記録へ明記する。",
+        "classification": "実体に合わせる調整"
+      }
+    ],
+    "unknowns": [
+      "ADR-0117 / ADR-0185 / ADR-0186 の本体は入力に無く、ADR-0189:90 が求める「観点構成への参照への再編先注記」が実際に付いたかはここでは未確認（リポジトリ全体で未実施とは断定しない）。",
+      "入力は指定10文書＋dist7文書と参照資料に限られ、skills/start-work/SKILL.md ほか他スキル・template/・.claude-plugin/ 等の旧観点名参照の有無はここでは未確認。",
+      "build-dist.ps1 / sync-template.ps1 / git diff --check の実行結果は実装記録（:25-26）の記述のみで、本レビューでは未実行のため追認していない。dist の一致は本文の原文対比で確認した範囲に限る。",
+      "タスク4の変更後15題確認は未実施であり、再編後の定義が旧定義より検出を改善するかは未評価。4体分担の費用対効果も未実証（ADR-0189 の前提どおり）。",
+      "版が 0.1.27 のままである点、長期の導入後評価が未了である点は、計画タスク5以降の既知の段階差として欠陥に数えていない。"
+    ],
+    "assessment": {
+      "scope_conformance": "ADR-0189 Decision 1〜6 の主要要素（3領域＋独立した反証の4行表、担当境界、品質項目8行、全体目的の全担当共有、5判定の保持、6適用例への到達、人数と問いの分離・4体を固定しない、旧評価起点の保全）は、review-criteria.md・SKILL.md・review-procedure.md・iteration-norms.md・subagent-dispatch・plan-deviation-defaults・README・現行仕様2件に対応する実体を確認できた。指示された保持対象（5判定・6適用例・旧評価起点・過去の体数実測・過剰適合点検の4観点・別工程の仕様適合）は保持されている。",
+      "deviation_check": "計画タスク1〜3のチェック項目と実際の差分はおおむね対応し、iteration-norms は フル実施1段落のみ、plan-deviation-defaults は参照1箇所のみの変更で、採用基準・反復条件・実行保護は不変であることを原文で確認した。計画のタスクと記録された調整を超える変更として特定できたのは R1（description の書式全面変更）で、R4（仕様側の逐条再掲）は計画の「反映」の解釈幅を超える可能性がある範囲。",
+      "residual_old_names": "旧名の残存は、過去実測・過剰適合点検・別工程の仕様適合・過去ADR名に限られ、一括での欠陥扱いはしていない。ただし R6（廃止規範行）と R3（根拠ADR索引の説明語）は現行規範の指示先として機能するため個別に指摘した。",
+      "overall": "重大な仕様違反・意味の反転は検出していない。採否が必要なのは R1・R2（仕様不整合と既存契約文の脱落）で、他は低。最終採否と分類の確定は主担当に返す。"
+    }
+  },
+  "execution": {
+    "role": "implementation",
+    "exit_code": 0,
+    "seen_init": true,
+    "stop_reason": null,
+    "elapsed_seconds": 340.64,
+    "changed": []
+  },
+  "manifest": {
+    "source_commit": "fe3a2717330c83aa3b3a0b03c22eca35abe57806",
+    "base_commit": "2875fbc",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "bytes": 9317,
+        "sha256": "17793c481b41ac0103c856a0b165d92313ac8c132245db77574c8ef8c1d618eb"
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "bytes": 63091,
+        "sha256": "124f72f6d642be3ab873404a8d5960c2ab86a3fd51b93ce85985bcfea4bcf0dd"
+      },
+      {
+        "path": "dist/skills/pre-finalization-review/references/examples-and-evidence.md",
+        "bytes": 9585,
+        "sha256": "a784240c5d32521da04bd173d064221e9741a1d22c40b9b7b0ca306957bdb4ea"
+      },
+      {
+        "path": "dist/skills/pre-finalization-review/references/iteration-norms.md",
+        "bytes": 17482,
+        "sha256": "2d91fcb3f6f50f2df337e6f7a012e113be907cf2d16fd841c66a2f5a3a377a2f"
+      },
+      {
+        "path": "dist/skills/pre-finalization-review/references/review-criteria.md",
+        "bytes": 12133,
+        "sha256": "3273b9ad3f848d6040fb3aed37dd4ec28b7e48a9d170c63efc738303b52dd88c"
+      },
+      {
+        "path": "dist/skills/pre-finalization-review/references/review-procedure.md",
+        "bytes": 6848,
+        "sha256": "6ac77f6307a8acaf21d6e0e37bb682936c36145ef53d383c8cc64a7f5cd54764"
+      },
+      {
+        "path": "dist/skills/pre-finalization-review/SKILL.md",
+        "bytes": 18194,
+        "sha256": "07f4cf141531c4e4cb5e286f003833bdc1dd54a8698efcf9e44f5125b031294f"
+      },
+      {
+        "path": "dist/skills/start-work/references/plan-deviation-defaults.md",
+        "bytes": 13226,
+        "sha256": "7da20f053e68f6141b19090962d7a78ac8d3988d6d4b74b4e15e510992b0be70"
+      },
+      {
+        "path": "dist/skills/subagent-dispatch/SKILL.md",
+        "bytes": 12941,
+        "sha256": "faef95b1057b85f38cbea10611758985474ea63c779e967093f8cae53851ae20"
+      },
+      {
+        "path": "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+        "bytes": 37926,
+        "sha256": "40469324f856229e3216933f87f6783de58a05a61d91537b3b95ce941538d67d"
+      },
+      {
+        "path": "docs/current/specs/2026-08-28-start-work-responsibility-split-design.md",
+        "bytes": 24997,
+        "sha256": "ef0b0381dfbca1fc2efcfade44da59c0b6d035fdbeddd28469f97a912e0a9072"
+      },
+      {
+        "path": "docs/overview/principles.md",
+        "bytes": 4365,
+        "sha256": "602e7c466102a0110cebc3baccea5505f2fd7727a874ed41f2cf5d1fbe1a0fbd"
+      },
+      {
+        "path": "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md",
+        "bytes": 19102,
+        "sha256": "ed823a682b68d3b5e34cf299c32a97431b2f32e9fa481721d68e5d4c426becb7"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-review-questions-implementation.md",
+        "bytes": 3641,
+        "sha256": "6570cb5680adef32594efeec6c07d7bf17b2a61927f18f10135e2d39afa0791e"
+      },
+      {
+        "path": "docs/working/plans/2026-09-12-review-questions-reframe.md",
+        "bytes": 21417,
+        "sha256": "e5251470da5ffedae05fbce7278394a455ef65ce7864d77db504bb1847f85085"
+      },
+      {
+        "path": "README.md",
+        "bytes": 16549,
+        "sha256": "a875f5d9cd47a9a628ebff2e54cb84a245b2089c4f41cef83780021b1ca2404b"
+      },
+      {
+        "path": "review-input/changes.diff",
+        "bytes": 129330,
+        "sha256": "ea5b2afac0333756d420f3f29602a1670c7a9f0e5d5116daf0cadae3f5284c8a"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/examples-and-evidence.md",
+        "bytes": 10430,
+        "sha256": "8bdbe7c23c3d2302eecb66ae62aa7b1f989345701ff18bfddbf9cf0423707b7e"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/iteration-norms.md",
+        "bytes": 17680,
+        "sha256": "a75092c0d4c1105b445705de8a7c0d56cb5e836ef2801eb80b1de1f09cb61e53"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/review-criteria.md",
+        "bytes": 12157,
+        "sha256": "52262a62dd9eb818f78129c466a982f06eb0a6c01d358bd1586c1c1df206c4ec"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/review-procedure.md",
+        "bytes": 7091,
+        "sha256": "67dc7ccb3ef53685fefe84471db128a835349344de30b68c2d9f40d53594bdf0"
+      },
+      {
+        "path": "skills/pre-finalization-review/SKILL.md",
+        "bytes": 18444,
+        "sha256": "b4938318e6bdfdaf3a3522b9cc2425f1569e224072c2d390671f688a5e98cb36"
+      },
+      {
+        "path": "skills/start-work/references/plan-deviation-defaults.md",
+        "bytes": 13513,
+        "sha256": "773d547617c5795df40073d500f6f097b71e3d9148b4bbf9d8916e93d024d134"
+      },
+      {
+        "path": "skills/subagent-dispatch/SKILL.md",
+        "bytes": 13856,
+        "sha256": "4fdca2d6eab382f2c9a9021a2c71ff2403d08e33d030e0c4c2417a1a8d47c3c5"
+      }
+    ]
+  }
+}

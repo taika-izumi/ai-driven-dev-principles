@@ -45,7 +45,7 @@ AI駆動開発ガイドライン — AIエージェントと協働して開発�
 | [`extend-guidelines`](skills/extend-guidelines/) | ガイドラインの拡張作業をガイドするゲートウェイ |
 | [`retrospective`](skills/retrospective/) | サブプロジェクトクローズ時の課題抽出記録。AI が課題候補（事象/原因/影響）を一括提示し、ユーザーが起票判断。課題を「対象システム固有 / 開発フロー」に分類して system/flow の2フォルダに記録する（対策の採否・設計・ADR化は次サイクルでユーザー判断。知見の再利用は worklog パイプラインが担う。ADR-0056） |
 | [`subagent-dispatch`](skills/subagent-dispatch/) | サブエージェント委譲の直前に、委譲プロンプトへ入れる制約ブロック（常時適用の 4 件＋条件発火の判定行）を組み立てる（ADR-0066/0070/0071/0073） |
-| [`pre-finalization-review`](skills/pre-finalization-review/) | 計画・仕様など非コード成果物の、確定点での確定前レビュー提示（毎回）と 4 観点独立レビューの実施（実証つき・発動はユーザー指示のみ）を担う。確定点・提示・反復の規則の正本は本スキル（ADR-0067 / ADR-0072 / ADR-0080 / ADR-0116 / ADR-0117） |
+| [`pre-finalization-review`](skills/pre-finalization-review/) | 計画・仕様など非コード成果物の、確定点での確定前レビュー提示（毎回）と 3領域と反例探索を覆う独立レビューの実施（実証つき・担当数と独立性を区別・発動はユーザー指示のみ）を担う。確定点・提示・反復の規則の正本は本スキル（ADR-0067 / ADR-0072 / ADR-0080 / ADR-0116 / ADR-0117） |
 | [`worklog-record`](skills/worklog-record/) | 作業の節目とセッション切り替え直前に、AI のデフォルト挙動と実際に必要だったことの差分（delta）を中央ストアへ記録する（ADR-0044/0047/0058） |
 | [`worklog-extract`](skills/worklog-extract/) | 中央ストアの作業ログをオンデマンドで走査し、スキル化・ルール化の候補をクラスタリングしてランク付き提示する（ADR-0044） |
 | [`worklog-skillify`](skills/worklog-skillify/) | 採用された worklog 候補を writing-skills 委譲でスキル化する。スコープで配置先を振り分ける（ADR-0044/0046/0069） |

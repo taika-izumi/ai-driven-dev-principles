@@ -1,0 +1,1824 @@
+{
+  "execution": {
+    "role": "diff",
+    "exit_code": 0,
+    "seen_init": true,
+    "stop_reason": null,
+    "elapsed_seconds": 467.75,
+    "changed": []
+  },
+  "raw_result": {
+    "duration_api_ms": 466664,
+    "stop_reason": "end_turn",
+    "session_id": "3d995302-c970-4fb0-8690-649882e2425c",
+    "total_cost_usd": 1.8673010000000003,
+    "usage": {
+      "input_tokens": 44,
+      "cache_creation_input_tokens": 71521,
+      "cache_read_input_tokens": 902300,
+      "output_tokens": 27926,
+      "output_tokens_details": {
+        "thinking_tokens": 13484
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 71521,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 11181,
+          "cache_read_input_tokens": 69354,
+          "cache_creation_input_tokens": 2167,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2167
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 2451,
+        "outputTokens": 24,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.002571,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 44,
+        "outputTokens": 27926,
+        "cacheReadInputTokens": 902300,
+        "cacheCreationInputTokens": 71521,
+        "webSearchRequests": 0,
+        "costUSD": 1.8647300000000002,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 13484,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "is_error": false,
+    "num_turns": 32,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```json\n{\n  \"reviewed_targets\": [\n    {\n      \"path\": \"review-input/proposed.md\",\n      \"role\": \"未適用の改訂案（レビュー対象本体・109行）\",\n      \"note\": \"先頭1行は状態注記コメント。原本と照合した実差分は置換8段落（L55, L77, L83, L85, L89, L97, L99, L105）。依頼文の「9箇所」は、L83が『報告項目の変更（C11）』と『将来部品の扱いの追加（C6）』の2件を1段落に含むため、論理編集9件＝段落8箇所と解釈すれば整合する（実施状態の更新はL99の1件）。欠落した差分は検出せず\"\n    },\n    {\n      \"path\": \"docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md\",\n      \"role\": \"15bc4aaの確定済み原本（108行）。proposed.diffの文脈行と一致を確認\"\n    },\n    {\n      \"path\": \"review-input/proposed.diff\",\n      \"role\": \"差分。proposed.mdと原本の突合で、差分に無い隠れ変更は検出せず\"\n    },\n    {\n      \"path\": \"review-input/r1-disposition.md\",\n      \"role\": \"採否案。追認せず原文・上流条件で再検査\"\n    },\n    {\n      \"path\": \"review-input/r1-original.json\",\n      \"role\": \"前回19指摘の原回答。要求F1-4/根拠F1-5/成立性F1-4/敵対的F1-6の19件がC1〜C11へ全件写像されており、統合漏れは検出せず\"\n    }\n  ],\n  \"dispositions\": [\n    {\n      \"id\": \"C1\",\n      \"label\": \"反映先の参照（部分採用）\",\n      \"result\": \"resolved\",\n      \"reason\": \"L89の追記が指す接続先を実体で確認した。skills/start-work/references/plan-deviation-defaults.md:32に「`pre-finalization-review` の前提実在観点と同水準」が実在し、README.md:48に「4 観点独立レビュー」が実在する。『別工程の一般的な「仕様適合」や他の4観点を一括置換しない』という限定も、docs/records/decisions/0119・0113等が別文脈で同名語を使う実態（観点名を含むADRは19ファイル）と整合する。関連ADRを網羅列挙していない点は、原指摘（成立性F3=Info、敵対的F4=low）の趣旨に照らして総称『関連ADRの注記』で足りると判断\"\n    },\n    {\n      \"id\": \"C2\",\n      \"label\": \"人数を減らした場合の範囲（採用）\",\n      \"result\": \"partly\",\n      \"reason\": \"『人数を減らしても3領域の問いと反例・失敗経路の探索は保持し、誰が兼務するかを委譲文に示す』『兼務時の既存記録は担当数と兼務範囲が分かる形で引き継ぐ』は、skills/pre-finalization-review/SKILL.md:90・96（4観点は維持し担当は1〜4体）およびSKILL.md:100（1体兼務は正本へ1行残す）の写像として成立し、兼務を独立反証と称さない既存文（L85前段）と両立する。ただし『人数判断に迷う場合は既存規定に従い……4体を推奨する』は既存規定の文言と一致しない（new_findings N4）。『必要な確認範囲を削る理由に人数や費用を用いない』はreview-criteria.md:60と同趣旨で新規義務ではない\"\n    },\n    {\n      \"id\": \"C3\",\n      \"label\": \"表の反証担当の記載（不採用）\",\n      \"result\": \"no_change_needed\",\n      \"reason\": \"不採用は原文と整合する。原本L36（proposed L37）が反証担当の射程を『目的・要求・根拠・設計・運用を破る条件』と横断的に定義し、L51が『反証担当へ「他の担当が扱わないすべて」を委ねず』と定めるため、§3表のセキュリティ行の明記から他行が対象外とは読めない。全行への担当複写はADR-0091の『定義を全箇所へ複写することで解決しない』（L77）と衝突する。ただし採否案の『C2・C9の共通整理で十分』という説明は過大で、実際に非対称を救っているのは追記文ではなく既存のL37・L51である（改訂案本文の欠陥ではない）\"\n    },\n    {\n      \"id\": \"C4\",\n      \"label\": \"先行評価の引継ぎ（部分採用）\",\n      \"result\": \"partly\",\n      \"reason\": \"ADR-0186:44（今後最初の3件の独立レビューで混同・重複・参照負担を確認）とADR-0185:36（導入後最初の3件で目的・範囲の不整合を確認）の実在を確認し、L97の『引き継ぎ』『評価目的は維持』『既存の観測とその時点の版は保全』『実施状況を確認せず機会不足と決めつけない』はいずれも原文と既存の非換算規定（review-procedure.md:28）に整合する。未解決点は引き継ぎ先の窓が『実装後の最初の3件』であり、ADR-0186の窓が実装未完了の間は起動しない経路が残ること（N3）。またADR-0185への部分修正注記は未処理（N2）\"\n    },\n    {\n      \"id\": \"C5\",\n      \"label\": \"分離運用を評価する機会（不採用）\",\n      \"result\": \"no_change_needed\",\n      \"reason\": \"不採用理由は既存条件と整合する。原本L96/L107は『機会・記録が足りなければ未評価』『機会不足・記録不足は未評価』であり、分離未実施を簡素化の発動条件にしない扱いはreview-procedure.md:28（不明を「適用なし」「便益なし」へ換算しない）およびSKILL.md:59の『機会不足・記録不足を不要としない』と一致する。『少なくとも1件』が見込みであることも原文どおり。L97の追記が問いの妥当性評価と担当分離の効果を区別した点は、敵対的F1の循環懸念への正しい切り分けだが、循環自体は解消せず（N6として別記）\"\n    },\n    {\n      \"id\": \"C6\",\n      \"label\": \"未作成の計画部品（採用）\",\n      \"result\": \"resolved\",\n      \"reason\": \"L83の追記はskills/pre-finalization-review/references/review-criteria.md:54の原文（『将来作成することが計画に明記された部品は、現在ないだけで不整合・前提誤りにしない。既存部品として誤って扱っていないか、作成・接続・検証の担当と順序が揃うかを確認する』）とほぼ逐語対応で、免責の拡大や新工程の追加はない\"\n    },\n    {\n      \"id\": \"C7\",\n      \"label\": \"出所の帰属（採用）\",\n      \"result\": \"resolved\",\n      \"reason\": \"原文で確認。ADR-0079:10-12は契機事例の検出を『設計承認後のユーザーレビューでの指摘』『検出がプロセスではなくユーザーの目視に依存した』と記し、同ファイル全体にモデル名の記載はない（claude/fable の一致0件）。ADR-0099:89はclaude-fable-5作成／claude-opus-5検出を明記。したがってL105の分離記述は正確で、旧文の『ADR-0079・0099の事例は主にclaude-fable-5作成／claude-opus-5検出』という合算は誤りだった。CONTRIBUTING.md:44・73が求める『出所数とモデル世代の実数』という欄の趣旨にも適合（件数の実数は旧文同様に未記載で、新規の後退はない）\"\n    },\n    {\n      \"id\": \"C8\",\n      \"label\": \"初見利用の確認方法（部分採用）\",\n      \"result\": \"partly\",\n      \"reason\": \"Issue-0075:12の実測（39項目一致で通過後、4作業中3作業で詰まる）を原文で確認し、L77の『代表作業を試し』『机上の経路確認と許可された実行を区別し、実行できない部分は未確認とする』はreview-criteria.md:13（許可される操作）・:66（再現経路が未実行ならその旨を記載し必須の実行検証の代わりにしない）と整合する。『専任の新観点は増設しない』はIssue-0075:37（本Issueの観点新設案を自動採用しない）およびADR-0189の代替案3不採用と一致し、全案件への実演義務にもなっていない。未反映はIssue-0075:31のもう一方の対策方向（文書内の理由づけを実測で検証）で、L77は作業試行のみを具体化している。なおIssue-0075側の状態記録の更新は本レビューの範囲外\"\n    },\n    {\n      \"id\": \"C9\",\n      \"label\": \"担当間の照合（採用）\",\n      \"result\": \"resolved\",\n      \"reason\": \"L55の追記は§3表の実文言（proposed L61『要求担当と契約変更を照合』、L62『構造の維持負担は根拠担当と分担』）を対象にしており、『結果の照合は主担当が既存の集約手順で行う』はreview-procedure.md手順5の集約（review-criteria.md:60が参照）に接続する既存経路で、新しい通信経路・工程を作っていない。『初回判断前の担当同士の協議を要求するものではない』は原本L85の『他担当の初回所見を見せずに初回判断を回収する』と矛盾しない\"\n    },\n    {\n      \"id\": \"C10\",\n      \"label\": \"旧ADRの部分修正（部分採用）\",\n      \"result\": \"partly\",\n      \"reason\": \"存続対象の実在を確認した。ADR-0186:24（5判定の維持）・:28-30（入力・原文・未確認・報告の契約）・:40は改訂案の記述と一致し、ADR-0186:34には既に『部分修正（ADR-0189……）』注記がある。したがって全面Superseded化を採らない判断は原文と整合し、status-updates.md:32の部分修正の型にも沿う。未解決は(1)ADR-0185への注記が現時点で不在（0185本文にADR-0189の一致0件）で、L89の『注記を残す』は宣言のみ、(2)評価条項の引き継ぎ（C4）は既存の0186注記に含まれておらず注記内容の更新が必要（N2）\"\n    },\n    {\n      \"id\": \"C11\",\n      \"label\": \"成立条件の報告（採用）\",\n      \"result\": \"resolved\",\n      \"reason\": \"review-criteria.md:64が各指摘の必須項目を『対象箇所／問題／根拠／目的・動作への影響』の4項目と定め、:66が『記述の照合だけで確認できる指摘は原文の対比を、動作が根拠の指摘は許可された条件での実測・再現経路を示す』と区別している。L83の改訂はこの正本と一致し、全指摘への必須欄増設を解いた。弱化の懸念については、成立条件の要求は反証領域に残る（proposed L37『成立条件と害を根拠で示し』、review-criteria.md:26）ため、必要な保護は失われていない\"\n    }\n  ],\n  \"new_findings\": [\n    {\n      \"id\": \"N1\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"review-input/proposed.md:99\",\n      \"evidence\": \"改訂案L99『初回独立フルレビューを4担当で実施した（docs/records/reviews/2026-09-12-adr-0189-r1.md）』。当該パスはスナップショットに存在しない（Glob `docs/records/reviews/2026-09-12*` の結果は four-review-perspectives-coverage.md / reusable-review-insights-from-adrs.md / review-design-finalization.md / review-scope-reassessment.md の4件のみ。Glob `**/*adr-0189*` は0件で、r1-disposition.md:3が挙げる `2026-09-12-adr-0189-r1-preparation.md` も不在）。r1-disposition.md:40・50は実体の所在を `.tmp/adr-0189-review-r1/` と記す\",\n      \"problem\": \"確定済み扱いの記録として引用するパスが、レビュー対象資料の中に実在しない。原本L98が参照する review-design-finalization.md は実在するため、参照の実在性に非対称がある\",\n      \"impact\": \"適用と同時に当該記録が作成されなければ、ADR本文に到達不能な参照が残る。ADR-0091・ADR-0077が扱う所在の到達性・安定参照の規律に反し、『実施した』根拠を読者が追えない。.tmp配下のみに実体がある場合は、剪定・掃除で根拠が失われる経路も残る\",\n      \"recommendation\": \"適用順序を、(1)r1記録を docs/records/reviews/ 配下へ正式化 →(2)ADR本文の参照追加、に固定する。正式化しない選択なら、参照先を実在する所在（記録名と保全場所）へ改め、.tmp のみの一時所在を確定記録の唯一の根拠にしない\",\n      \"limits\": \"スナップショット（296ファイル・15bc4aa相当）内での不在。作業ツリー本体や未コミット領域を参照する権限がないため、リポジトリ全体での不在は未確認（不在ではなく『提示資料内に不在』）。ファイル作成・実行は行っていない\"\n    },\n    {\n      \"id\": \"N2\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"review-input/proposed.md:1（状態注記）, 55, 77, 83, 85, 89, 97, 99, 105（本文改訂全体）\",\n      \"evidence\": \"skills/decision-log/references/status-updates.md:29『決定内容を変えない改訂……Status は Accepted のまま維持し、当該 ADR の Consequences 末尾へ改訂記録を 1 行残す。書式は `- 改訂記録（<契機>）: <改訂箇所>・<日付>。Status は Accepted のまま維持` に固定する』、同:30『決定内容を変える改訂（Decision の骨格・帰結が置き換わる場合に限る）: 本文を書き換えず、新 ADR を作成して……全部か一部かの判定に迷う場合はユーザーへ確認する』、同:32（他ADRへの部分修正注記は2分岐の対象外）。改訂案はStatus: Accepted（L4）を維持し本文8段落を書き換えるが、Consequences末尾に規定書式の改訂記録行がない（L99が末尾）。またDecision §4・§5・§6・Consequencesに新条件（実演による成立性確認、迷い時の人数既定、評価窓の引き継ぎ）が入る\",\n      \"problem\": \"Accepted済みADRの本文改訂に必要な分岐処理が未決・未反映。『決定内容を変えない』側なら固定書式の改訂記録行が不足し、『一部を改める』側ならC2/C4/C8は部分修正の型（新ADR＋旧ADRへの注記、迷い時はユーザー確認）へ振るべき候補になる\",\n      \"impact\": \"そのまま適用すると、改訂記録の計数grep前提（status-updates.md:29）を満たさない改訂が残り、評価条件・確認範囲を変えた事実が改訂の型として追跡不能になる。ADR-0186:34の既存注記も評価条項の引き継ぎ（C4）を含まないため、0186・0185側から見て自ADRの評価窓が0189へ移ったことが読めない\",\n      \"recommendation\": \"適用前に(1)C2・C4・C8を『決定内容の変更』に当たるか判定し、迷う場合はstatus-updates.md:30に従いユーザー確認、(2)変更なしと判定した範囲にはL99直後へ固定書式の改訂記録行を追加、(3)ADR-0186:34の部分修正注記へ評価条項の引き継ぎを追記し、ADR-0185にも同型の注記を追加する。判断と実施は主担当へ返す\",\n      \"limits\": \"改訂案の先頭注記（L1）は『承認後に改訂記録と必要な関連文書の処理を行う』と述べ、r1-disposition.md:40も分岐の区別を予告しているため、失念ではなく未処理の状態。指摘は『どの分岐に振るかが本文内容から見て非自明であり、C2/C8/C4は条件追加側に寄る』という範囲にとどまる。ファイル書き換え・実行は未実施\"\n    },\n    {\n      \"id\": \"N3\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"review-input/proposed.md:97（原本 L96 と対比）\",\n      \"evidence\": \"原本L96・改訂案L97はいずれも『評価は実装後の最初の3件の対象レビューで』と規定。ここへ『ADR-0186の同じ定義・混同・参照負担に関する評価は本設計の評価へ引き継ぎ、同じ確認を別に重ねない』を追加。引き継ぎ元のADR-0186:44は『今後最初の3件の独立レビューで、既存報告から観点の混同による見落とし・重複と、必要な参照負担を確認する』（実装完了を条件にしていない）。一方ADR-0189本文L89は『現在の配布済みスキルは変更しておらず、Issue-0143は未完了とする』\",\n      \"problem\": \"起動条件の異なる窓を統合する際、引き継ぎ後の起点が『実装後』へ狭まることが明示されていない。実装（Issue-0143）が進まない間、ADR-0186由来の簡素化・撤回判定が起動しない経路が残る\",\n      \"impact\": \"0186の簡素化条件（ADR-0186:53『最初の3件の既存報告で、理解・検出が改善せず再説明・重複作業のみが増えた場合は定義と例を簡素化』）が実装待ちで無期限に保留され、定義・例の維持負担だけが継続し得る。ADR-0189自身がL76で保持を宣言する『効果の評価可能性と簡素化・廃止の条件』（ADR-0101/0102/0125）の適用が先行規範に対して弱まる\",\n      \"recommendation\": \"引き継ぎ文に起点の扱いを明記する。例: 実装前に実施された独立レビュー（2026-09-12のr1を含む）の既存報告も0186由来の評価材料に数える、または0186の窓は元の起点で残し重複計測のみを避ける、のいずれかを選ぶ\",\n      \"limits\": \"文書間の条件対比による指摘で、実際に評価が未実施のまま滞留した実績は観測していない（r1-disposition.md:27も『旧評価は未実施・機会不足という原因は未検証』とする）。実行・計測は行っていない\"\n    },\n    {\n      \"id\": \"N4\",\n      \"severity\": \"medium\",\n      \"target_lines\": \"review-input/proposed.md:85（追記後段）\",\n      \"evidence\": \"改訂案L85『人数判断に迷う場合は既存規定に従い3領域分離と独立した反証の4体を推奨する』。対応する既存規定は skills/pre-finalization-review/SKILL.md:96『判断に迷う場合は確認範囲を広くする側を推奨し、方式が未決ならフル実施、人数が未決なら観点分離とする』、同:90『担当は1〜4体とし』、同:94『人数を増やすこと自体を品質向上とは扱わない』、references/iteration-norms.md:42『担当1〜4体』、同:52『体数を増やす判断材料はコード量・未レビュー差分の大きさ・写経実行の要否』。既存規定は『観点分離』を求めるが体数4を既定にしていない\",\n      \"problem\": \"『既存規定に従い』という帰属で、原文にない具体数（4体）を迷い時の既定へ格上げしている。同段落前段の『4体を毎回必須とする決定ではなく』および過剰適合点検L108『4体の必須化は行わない』、Consequences L95『4体の便益は未実証』との緊張も生む\",\n      \"impact\": \"迷いの申告が事実上の4体既定として運用され、未実証の体制が費用側で常態化する。SKILL.md:98の実測（1体4観点兼務は観点分離比で約1/3の費用。支持実測は写像plan1件=Issue-0103）と逆向きの既定が、根拠の格上げなしに入る\",\n      \"recommendation\": \"『既存規定に従い』の帰属を外し、SKILL.md:96の写像として『人数が未決なら確認範囲の広い側＝領域を分離する側を選ぶ』と書く。分離の粒度（2〜4体）は対象で選ぶ旨を残し、4体は上限側の選択肢として位置づける\",\n      \"limits\": \"原文対比による指摘であり、実際に4体が常態化した運用実績は観測していない。現行スキルが旧設計であることは既知の段階差で、本指摘は帰属表現の正確さと既定の強さに限る\"\n    },\n    {\n      \"id\": \"N5\",\n      \"severity\": \"low\",\n      \"target_lines\": \"review-input/proposed.md:99\",\n      \"evidence\": \"改訂案L99『初回独立フルレビューを4担当で実施した』。『フル実施／フルレビュー』は references/iteration-norms.md:42 で『4観点（敵対的・実装整合性・仕様適合・前提実在）を全数走査で覆う回』と定義され、同:29の骨格安定の目安は『直近のフル実施 2 回』を数える。実施されたr1は本ADRの新区分（3領域＋反証）による4担当で、r1-disposition.md:14は固定資料に主担当の最終点検を含むため『資料の判断から完全に独立した無前提の検査ではない』と限定し、同:36は『骨格安定・実質的な収束とは判定しない』と記す\",\n      \"problem\": \"現行正本で別の意味を持つ用語『フルレビュー』を、現行4観点ではない区分の実施に当てている。同時にr1原記録が付していた独立性の限定（固定資料が作成側の判断を含む）が本文に落ちていない\",\n      \"impact\": \"後続の読み手が当該回を現行定義のフル実施として計数し、骨格安定（iteration-norms.md:29）や未レビュー範囲の判定を緩める余地が生じる。『独立』の語が限定なしで残ることで、実証の強さが実際より高く読まれ得る\",\n      \"recommendation\": \"『新設計の4担当（3領域＋独立した反証）による初回の独立レビュー』と書き、現行4観点のフル実施とは方式が異なる旨と、固定資料に作成側の点検が含まれた限定を1節で添える\",\n      \"limits\": \"用語一致の対比による指摘。誤計数が実際に起きた記録は観測していない（r1側は明確に骨格安定を否定している）\"\n    },\n    {\n      \"id\": \"N6\",\n      \"severity\": \"low\",\n      \"target_lines\": \"review-input/proposed.md:97, 99\",\n      \"evidence\": \"L99は4担当（＝3領域分離＋独立反証）の実施を記録する一方、L97は評価対象を『実装後の最初の3件』に限り、追記末尾で『分離した実施機会がなければ後者は未評価とする』と述べる。r1-disposition.md:48は『同じ題材を1体・2体で検査した比較がないため、4体が費用に見合うとの因果的な結論は出せない』とし、r1-original.json（敵対的F1）は『便益未実証→安価な1〜2体選択→分離運用の記録が生じない→未評価のまま』という循環を指摘している\",\n      \"problem\": \"改訂案は実際に生じた分離実施の観測（r1）を記録しながら、それを自ADRの評価材料として数えるか否かを定めていない。C5不採用の代替として置かれた『区別』は循環を明示するだけで、観測を得る経路は増えない\",\n      \"impact\": \"分離体制の効果が、実装後に分離実施が選ばれない限り恒久的に未評価となり、採用も撤回も判定できない状態が続き得る（原本L107の廃止条件も同じ3件に依存）\",\n      \"recommendation\": \"評価材料の定義に、実装前に分離実施された回の既存報告（本件r1・本差分再確認）を『問いの妥当性と重複・負担の観測に使える材料』として数える旨を1文加えるか、逆に数えない理由を明記する。人数の必須化は不要\",\n      \"limits\": \"設計条件の対比による指摘で、将来の人数選択の実績は観測していない。過去の分離実施回数についても、提示資料から確認できたのはr1の4担当1回に限る\"\n    },\n    {\n      \"id\": \"N7\",\n      \"severity\": \"info\",\n      \"target_lines\": \"review-input/proposed.md:99\",\n      \"evidence\": \"L99『本改訂案への差分再確認と、別題材での理解確認は未実施』。本レビュー（差分再確認）は本文書を対象に実施済みであり、適用時点ではこの記述が事実と食い違う\",\n      \"problem\": \"適用のタイミング依存で陳腐化する状態記述が本文に含まれる\",\n      \"impact\": \"そのまま適用すると、実施済みの確認を未実施と記す誤記が確定記録へ入る。ADR-0189自身がL74で扱う『前提誤り』型の軽微な例に当たる\",\n      \"recommendation\": \"適用時にL99を実績で書き換える（差分再確認の実施と記録所在、残る未実施＝別題材での理解確認）。判断・実施は主担当へ\",\n      \"limits\": \"本レビューの結果を主担当が採否判断する前提での指摘。現時点の改訂案作成時点では正しい記述である\"\n    }\n  ],\n  \"evidence_paths\": [\n    \"review-input/proposed.md\",\n    \"review-input/proposed.diff\",\n    \"review-input/r1-disposition.md\",\n    \"review-input/r1-original.json\",\n    \"docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md\",\n    \"docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md\",\n    \"docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md\",\n    \"docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md\",\n    \"docs/records/decisions/0079-overfitting-check-required-for-guideline-extensions.md\",\n    \"docs/records/decisions/0099-citation-consistency-via-existing-checkpoint-wording.md\",\n    \"skills/pre-finalization-review/SKILL.md\",\n    \"skills/pre-finalization-review/references/review-criteria.md\",\n    \"skills/pre-finalization-review/references/review-procedure.md\",\n    \"skills/pre-finalization-review/references/iteration-norms.md\",\n    \"skills/pre-finalization-review/references/examples-and-evidence.md\",\n    \"skills/start-work/references/plan-deviation-defaults.md\",\n    \"skills/decision-log/SKILL.md\",\n    \"skills/decision-log/references/status-updates.md\",\n    \"docs/working/issues/flow/0075-review-lacks-usability-check-for-normative-docs.md\",\n    \"README.md\",\n    \"CONTRIBUTING.md\"\n  ],\n  \"unknowns\": [\n    \"docs/records/reviews/2026-09-12-adr-0189-r1.md がスナップショット外の作業ツリーに存在するかは権限外で未確認。提示資料内では不在\",\n    \"ADR-0117の観点配置・5判定の原文は今回未読（C10の存続主張はADR-0186:24の記述で間接確認）。0117側の注記整合の必要性は未確認\",\n    \"docs/overview/principles.md と CONTRIBUTING.md の全体方針節は、差分が目的・方針に触れないため索引レベルの確認のみ（CONTRIBUTING.mdは過剰適合点検の該当節のみ読了）\",\n    \"Issue-0143 の現況と実装計画の具体（L89が求める走査の実施可能性）は未確認\",\n    \"ADR-0107/0120/0124など観点名を含む他ADRの個別注記必要性は、総称『関連ADRの注記』に委ねられており個別判定は未実施\",\n    \"実行・機械検査は一切行っていないため、改訂後の運用が実際にどう振る舞うかは未実証（本レビューは原文対比のみ）\",\n    \"過去の独立レビュー実施回数は、提示資料から確認できたr1（4担当・2026-09-12）と ADR-0186:38 のr1記録の言及の範囲を超えて断定しない\"\n  ],\n  \"created_paths\": []\n}\n```",
+    "ttft_ms": 2954,
+    "type": "result",
+    "duration_ms": 466511,
+    "uuid": "0a097495-cb50-4a54-b61a-461bf5f6816f",
+    "ttft_stream_ms": 2139,
+    "time_to_request_ms": 518,
+    "first_content_frame_ms": 2140,
+    "queued_turn_count": 0,
+    "result_index": 0
+  },
+  "report": {
+    "reviewed_targets": [
+      {
+        "path": "review-input/proposed.md",
+        "role": "未適用の改訂案（レビュー対象本体・109行）",
+        "note": "先頭1行は状態注記コメント。原本と照合した実差分は置換8段落（L55, L77, L83, L85, L89, L97, L99, L105）。依頼文の「9箇所」は、L83が『報告項目の変更（C11）』と『将来部品の扱いの追加（C6）』の2件を1段落に含むため、論理編集9件＝段落8箇所と解釈すれば整合する（実施状態の更新はL99の1件）。欠落した差分は検出せず"
+      },
+      {
+        "path": "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md",
+        "role": "15bc4aaの確定済み原本（108行）。proposed.diffの文脈行と一致を確認"
+      },
+      {
+        "path": "review-input/proposed.diff",
+        "role": "差分。proposed.mdと原本の突合で、差分に無い隠れ変更は検出せず"
+      },
+      {
+        "path": "review-input/r1-disposition.md",
+        "role": "採否案。追認せず原文・上流条件で再検査"
+      },
+      {
+        "path": "review-input/r1-original.json",
+        "role": "前回19指摘の原回答。要求F1-4/根拠F1-5/成立性F1-4/敵対的F1-6の19件がC1〜C11へ全件写像されており、統合漏れは検出せず"
+      }
+    ],
+    "dispositions": [
+      {
+        "id": "C1",
+        "label": "反映先の参照（部分採用）",
+        "result": "resolved",
+        "reason": "L89の追記が指す接続先を実体で確認した。skills/start-work/references/plan-deviation-defaults.md:32に「`pre-finalization-review` の前提実在観点と同水準」が実在し、README.md:48に「4 観点独立レビュー」が実在する。『別工程の一般的な「仕様適合」や他の4観点を一括置換しない』という限定も、docs/records/decisions/0119・0113等が別文脈で同名語を使う実態（観点名を含むADRは19ファイル）と整合する。関連ADRを網羅列挙していない点は、原指摘（成立性F3=Info、敵対的F4=low）の趣旨に照らして総称『関連ADRの注記』で足りると判断"
+      },
+      {
+        "id": "C2",
+        "label": "人数を減らした場合の範囲（採用）",
+        "result": "partly",
+        "reason": "『人数を減らしても3領域の問いと反例・失敗経路の探索は保持し、誰が兼務するかを委譲文に示す』『兼務時の既存記録は担当数と兼務範囲が分かる形で引き継ぐ』は、skills/pre-finalization-review/SKILL.md:90・96（4観点は維持し担当は1〜4体）およびSKILL.md:100（1体兼務は正本へ1行残す）の写像として成立し、兼務を独立反証と称さない既存文（L85前段）と両立する。ただし『人数判断に迷う場合は既存規定に従い……4体を推奨する』は既存規定の文言と一致しない（new_findings N4）。『必要な確認範囲を削る理由に人数や費用を用いない』はreview-criteria.md:60と同趣旨で新規義務ではない"
+      },
+      {
+        "id": "C3",
+        "label": "表の反証担当の記載（不採用）",
+        "result": "no_change_needed",
+        "reason": "不採用は原文と整合する。原本L36（proposed L37）が反証担当の射程を『目的・要求・根拠・設計・運用を破る条件』と横断的に定義し、L51が『反証担当へ「他の担当が扱わないすべて」を委ねず』と定めるため、§3表のセキュリティ行の明記から他行が対象外とは読めない。全行への担当複写はADR-0091の『定義を全箇所へ複写することで解決しない』（L77）と衝突する。ただし採否案の『C2・C9の共通整理で十分』という説明は過大で、実際に非対称を救っているのは追記文ではなく既存のL37・L51である（改訂案本文の欠陥ではない）"
+      },
+      {
+        "id": "C4",
+        "label": "先行評価の引継ぎ（部分採用）",
+        "result": "partly",
+        "reason": "ADR-0186:44（今後最初の3件の独立レビューで混同・重複・参照負担を確認）とADR-0185:36（導入後最初の3件で目的・範囲の不整合を確認）の実在を確認し、L97の『引き継ぎ』『評価目的は維持』『既存の観測とその時点の版は保全』『実施状況を確認せず機会不足と決めつけない』はいずれも原文と既存の非換算規定（review-procedure.md:28）に整合する。未解決点は引き継ぎ先の窓が『実装後の最初の3件』であり、ADR-0186の窓が実装未完了の間は起動しない経路が残ること（N3）。またADR-0185への部分修正注記は未処理（N2）"
+      },
+      {
+        "id": "C5",
+        "label": "分離運用を評価する機会（不採用）",
+        "result": "no_change_needed",
+        "reason": "不採用理由は既存条件と整合する。原本L96/L107は『機会・記録が足りなければ未評価』『機会不足・記録不足は未評価』であり、分離未実施を簡素化の発動条件にしない扱いはreview-procedure.md:28（不明を「適用なし」「便益なし」へ換算しない）およびSKILL.md:59の『機会不足・記録不足を不要としない』と一致する。『少なくとも1件』が見込みであることも原文どおり。L97の追記が問いの妥当性評価と担当分離の効果を区別した点は、敵対的F1の循環懸念への正しい切り分けだが、循環自体は解消せず（N6として別記）"
+      },
+      {
+        "id": "C6",
+        "label": "未作成の計画部品（採用）",
+        "result": "resolved",
+        "reason": "L83の追記はskills/pre-finalization-review/references/review-criteria.md:54の原文（『将来作成することが計画に明記された部品は、現在ないだけで不整合・前提誤りにしない。既存部品として誤って扱っていないか、作成・接続・検証の担当と順序が揃うかを確認する』）とほぼ逐語対応で、免責の拡大や新工程の追加はない"
+      },
+      {
+        "id": "C7",
+        "label": "出所の帰属（採用）",
+        "result": "resolved",
+        "reason": "原文で確認。ADR-0079:10-12は契機事例の検出を『設計承認後のユーザーレビューでの指摘』『検出がプロセスではなくユーザーの目視に依存した』と記し、同ファイル全体にモデル名の記載はない（claude/fable の一致0件）。ADR-0099:89はclaude-fable-5作成／claude-opus-5検出を明記。したがってL105の分離記述は正確で、旧文の『ADR-0079・0099の事例は主にclaude-fable-5作成／claude-opus-5検出』という合算は誤りだった。CONTRIBUTING.md:44・73が求める『出所数とモデル世代の実数』という欄の趣旨にも適合（件数の実数は旧文同様に未記載で、新規の後退はない）"
+      },
+      {
+        "id": "C8",
+        "label": "初見利用の確認方法（部分採用）",
+        "result": "partly",
+        "reason": "Issue-0075:12の実測（39項目一致で通過後、4作業中3作業で詰まる）を原文で確認し、L77の『代表作業を試し』『机上の経路確認と許可された実行を区別し、実行できない部分は未確認とする』はreview-criteria.md:13（許可される操作）・:66（再現経路が未実行ならその旨を記載し必須の実行検証の代わりにしない）と整合する。『専任の新観点は増設しない』はIssue-0075:37（本Issueの観点新設案を自動採用しない）およびADR-0189の代替案3不採用と一致し、全案件への実演義務にもなっていない。未反映はIssue-0075:31のもう一方の対策方向（文書内の理由づけを実測で検証）で、L77は作業試行のみを具体化している。なおIssue-0075側の状態記録の更新は本レビューの範囲外"
+      },
+      {
+        "id": "C9",
+        "label": "担当間の照合（採用）",
+        "result": "resolved",
+        "reason": "L55の追記は§3表の実文言（proposed L61『要求担当と契約変更を照合』、L62『構造の維持負担は根拠担当と分担』）を対象にしており、『結果の照合は主担当が既存の集約手順で行う』はreview-procedure.md手順5の集約（review-criteria.md:60が参照）に接続する既存経路で、新しい通信経路・工程を作っていない。『初回判断前の担当同士の協議を要求するものではない』は原本L85の『他担当の初回所見を見せずに初回判断を回収する』と矛盾しない"
+      },
+      {
+        "id": "C10",
+        "label": "旧ADRの部分修正（部分採用）",
+        "result": "partly",
+        "reason": "存続対象の実在を確認した。ADR-0186:24（5判定の維持）・:28-30（入力・原文・未確認・報告の契約）・:40は改訂案の記述と一致し、ADR-0186:34には既に『部分修正（ADR-0189……）』注記がある。したがって全面Superseded化を採らない判断は原文と整合し、status-updates.md:32の部分修正の型にも沿う。未解決は(1)ADR-0185への注記が現時点で不在（0185本文にADR-0189の一致0件）で、L89の『注記を残す』は宣言のみ、(2)評価条項の引き継ぎ（C4）は既存の0186注記に含まれておらず注記内容の更新が必要（N2）"
+      },
+      {
+        "id": "C11",
+        "label": "成立条件の報告（採用）",
+        "result": "resolved",
+        "reason": "review-criteria.md:64が各指摘の必須項目を『対象箇所／問題／根拠／目的・動作への影響』の4項目と定め、:66が『記述の照合だけで確認できる指摘は原文の対比を、動作が根拠の指摘は許可された条件での実測・再現経路を示す』と区別している。L83の改訂はこの正本と一致し、全指摘への必須欄増設を解いた。弱化の懸念については、成立条件の要求は反証領域に残る（proposed L37『成立条件と害を根拠で示し』、review-criteria.md:26）ため、必要な保護は失われていない"
+      }
+    ],
+    "new_findings": [
+      {
+        "id": "N1",
+        "severity": "medium",
+        "target_lines": "review-input/proposed.md:99",
+        "evidence": "改訂案L99『初回独立フルレビューを4担当で実施した（docs/records/reviews/2026-09-12-adr-0189-r1.md）』。当該パスはスナップショットに存在しない（Glob `docs/records/reviews/2026-09-12*` の結果は four-review-perspectives-coverage.md / reusable-review-insights-from-adrs.md / review-design-finalization.md / review-scope-reassessment.md の4件のみ。Glob `**/*adr-0189*` は0件で、r1-disposition.md:3が挙げる `2026-09-12-adr-0189-r1-preparation.md` も不在）。r1-disposition.md:40・50は実体の所在を `.tmp/adr-0189-review-r1/` と記す",
+        "problem": "確定済み扱いの記録として引用するパスが、レビュー対象資料の中に実在しない。原本L98が参照する review-design-finalization.md は実在するため、参照の実在性に非対称がある",
+        "impact": "適用と同時に当該記録が作成されなければ、ADR本文に到達不能な参照が残る。ADR-0091・ADR-0077が扱う所在の到達性・安定参照の規律に反し、『実施した』根拠を読者が追えない。.tmp配下のみに実体がある場合は、剪定・掃除で根拠が失われる経路も残る",
+        "recommendation": "適用順序を、(1)r1記録を docs/records/reviews/ 配下へ正式化 →(2)ADR本文の参照追加、に固定する。正式化しない選択なら、参照先を実在する所在（記録名と保全場所）へ改め、.tmp のみの一時所在を確定記録の唯一の根拠にしない",
+        "limits": "スナップショット（296ファイル・15bc4aa相当）内での不在。作業ツリー本体や未コミット領域を参照する権限がないため、リポジトリ全体での不在は未確認（不在ではなく『提示資料内に不在』）。ファイル作成・実行は行っていない"
+      },
+      {
+        "id": "N2",
+        "severity": "medium",
+        "target_lines": "review-input/proposed.md:1（状態注記）, 55, 77, 83, 85, 89, 97, 99, 105（本文改訂全体）",
+        "evidence": "skills/decision-log/references/status-updates.md:29『決定内容を変えない改訂……Status は Accepted のまま維持し、当該 ADR の Consequences 末尾へ改訂記録を 1 行残す。書式は `- 改訂記録（<契機>）: <改訂箇所>・<日付>。Status は Accepted のまま維持` に固定する』、同:30『決定内容を変える改訂（Decision の骨格・帰結が置き換わる場合に限る）: 本文を書き換えず、新 ADR を作成して……全部か一部かの判定に迷う場合はユーザーへ確認する』、同:32（他ADRへの部分修正注記は2分岐の対象外）。改訂案はStatus: Accepted（L4）を維持し本文8段落を書き換えるが、Consequences末尾に規定書式の改訂記録行がない（L99が末尾）。またDecision §4・§5・§6・Consequencesに新条件（実演による成立性確認、迷い時の人数既定、評価窓の引き継ぎ）が入る",
+        "problem": "Accepted済みADRの本文改訂に必要な分岐処理が未決・未反映。『決定内容を変えない』側なら固定書式の改訂記録行が不足し、『一部を改める』側ならC2/C4/C8は部分修正の型（新ADR＋旧ADRへの注記、迷い時はユーザー確認）へ振るべき候補になる",
+        "impact": "そのまま適用すると、改訂記録の計数grep前提（status-updates.md:29）を満たさない改訂が残り、評価条件・確認範囲を変えた事実が改訂の型として追跡不能になる。ADR-0186:34の既存注記も評価条項の引き継ぎ（C4）を含まないため、0186・0185側から見て自ADRの評価窓が0189へ移ったことが読めない",
+        "recommendation": "適用前に(1)C2・C4・C8を『決定内容の変更』に当たるか判定し、迷う場合はstatus-updates.md:30に従いユーザー確認、(2)変更なしと判定した範囲にはL99直後へ固定書式の改訂記録行を追加、(3)ADR-0186:34の部分修正注記へ評価条項の引き継ぎを追記し、ADR-0185にも同型の注記を追加する。判断と実施は主担当へ返す",
+        "limits": "改訂案の先頭注記（L1）は『承認後に改訂記録と必要な関連文書の処理を行う』と述べ、r1-disposition.md:40も分岐の区別を予告しているため、失念ではなく未処理の状態。指摘は『どの分岐に振るかが本文内容から見て非自明であり、C2/C8/C4は条件追加側に寄る』という範囲にとどまる。ファイル書き換え・実行は未実施"
+      },
+      {
+        "id": "N3",
+        "severity": "medium",
+        "target_lines": "review-input/proposed.md:97（原本 L96 と対比）",
+        "evidence": "原本L96・改訂案L97はいずれも『評価は実装後の最初の3件の対象レビューで』と規定。ここへ『ADR-0186の同じ定義・混同・参照負担に関する評価は本設計の評価へ引き継ぎ、同じ確認を別に重ねない』を追加。引き継ぎ元のADR-0186:44は『今後最初の3件の独立レビューで、既存報告から観点の混同による見落とし・重複と、必要な参照負担を確認する』（実装完了を条件にしていない）。一方ADR-0189本文L89は『現在の配布済みスキルは変更しておらず、Issue-0143は未完了とする』",
+        "problem": "起動条件の異なる窓を統合する際、引き継ぎ後の起点が『実装後』へ狭まることが明示されていない。実装（Issue-0143）が進まない間、ADR-0186由来の簡素化・撤回判定が起動しない経路が残る",
+        "impact": "0186の簡素化条件（ADR-0186:53『最初の3件の既存報告で、理解・検出が改善せず再説明・重複作業のみが増えた場合は定義と例を簡素化』）が実装待ちで無期限に保留され、定義・例の維持負担だけが継続し得る。ADR-0189自身がL76で保持を宣言する『効果の評価可能性と簡素化・廃止の条件』（ADR-0101/0102/0125）の適用が先行規範に対して弱まる",
+        "recommendation": "引き継ぎ文に起点の扱いを明記する。例: 実装前に実施された独立レビュー（2026-09-12のr1を含む）の既存報告も0186由来の評価材料に数える、または0186の窓は元の起点で残し重複計測のみを避ける、のいずれかを選ぶ",
+        "limits": "文書間の条件対比による指摘で、実際に評価が未実施のまま滞留した実績は観測していない（r1-disposition.md:27も『旧評価は未実施・機会不足という原因は未検証』とする）。実行・計測は行っていない"
+      },
+      {
+        "id": "N4",
+        "severity": "medium",
+        "target_lines": "review-input/proposed.md:85（追記後段）",
+        "evidence": "改訂案L85『人数判断に迷う場合は既存規定に従い3領域分離と独立した反証の4体を推奨する』。対応する既存規定は skills/pre-finalization-review/SKILL.md:96『判断に迷う場合は確認範囲を広くする側を推奨し、方式が未決ならフル実施、人数が未決なら観点分離とする』、同:90『担当は1〜4体とし』、同:94『人数を増やすこと自体を品質向上とは扱わない』、references/iteration-norms.md:42『担当1〜4体』、同:52『体数を増やす判断材料はコード量・未レビュー差分の大きさ・写経実行の要否』。既存規定は『観点分離』を求めるが体数4を既定にしていない",
+        "problem": "『既存規定に従い』という帰属で、原文にない具体数（4体）を迷い時の既定へ格上げしている。同段落前段の『4体を毎回必須とする決定ではなく』および過剰適合点検L108『4体の必須化は行わない』、Consequences L95『4体の便益は未実証』との緊張も生む",
+        "impact": "迷いの申告が事実上の4体既定として運用され、未実証の体制が費用側で常態化する。SKILL.md:98の実測（1体4観点兼務は観点分離比で約1/3の費用。支持実測は写像plan1件=Issue-0103）と逆向きの既定が、根拠の格上げなしに入る",
+        "recommendation": "『既存規定に従い』の帰属を外し、SKILL.md:96の写像として『人数が未決なら確認範囲の広い側＝領域を分離する側を選ぶ』と書く。分離の粒度（2〜4体）は対象で選ぶ旨を残し、4体は上限側の選択肢として位置づける",
+        "limits": "原文対比による指摘であり、実際に4体が常態化した運用実績は観測していない。現行スキルが旧設計であることは既知の段階差で、本指摘は帰属表現の正確さと既定の強さに限る"
+      },
+      {
+        "id": "N5",
+        "severity": "low",
+        "target_lines": "review-input/proposed.md:99",
+        "evidence": "改訂案L99『初回独立フルレビューを4担当で実施した』。『フル実施／フルレビュー』は references/iteration-norms.md:42 で『4観点（敵対的・実装整合性・仕様適合・前提実在）を全数走査で覆う回』と定義され、同:29の骨格安定の目安は『直近のフル実施 2 回』を数える。実施されたr1は本ADRの新区分（3領域＋反証）による4担当で、r1-disposition.md:14は固定資料に主担当の最終点検を含むため『資料の判断から完全に独立した無前提の検査ではない』と限定し、同:36は『骨格安定・実質的な収束とは判定しない』と記す",
+        "problem": "現行正本で別の意味を持つ用語『フルレビュー』を、現行4観点ではない区分の実施に当てている。同時にr1原記録が付していた独立性の限定（固定資料が作成側の判断を含む）が本文に落ちていない",
+        "impact": "後続の読み手が当該回を現行定義のフル実施として計数し、骨格安定（iteration-norms.md:29）や未レビュー範囲の判定を緩める余地が生じる。『独立』の語が限定なしで残ることで、実証の強さが実際より高く読まれ得る",
+        "recommendation": "『新設計の4担当（3領域＋独立した反証）による初回の独立レビュー』と書き、現行4観点のフル実施とは方式が異なる旨と、固定資料に作成側の点検が含まれた限定を1節で添える",
+        "limits": "用語一致の対比による指摘。誤計数が実際に起きた記録は観測していない（r1側は明確に骨格安定を否定している）"
+      },
+      {
+        "id": "N6",
+        "severity": "low",
+        "target_lines": "review-input/proposed.md:97, 99",
+        "evidence": "L99は4担当（＝3領域分離＋独立反証）の実施を記録する一方、L97は評価対象を『実装後の最初の3件』に限り、追記末尾で『分離した実施機会がなければ後者は未評価とする』と述べる。r1-disposition.md:48は『同じ題材を1体・2体で検査した比較がないため、4体が費用に見合うとの因果的な結論は出せない』とし、r1-original.json（敵対的F1）は『便益未実証→安価な1〜2体選択→分離運用の記録が生じない→未評価のまま』という循環を指摘している",
+        "problem": "改訂案は実際に生じた分離実施の観測（r1）を記録しながら、それを自ADRの評価材料として数えるか否かを定めていない。C5不採用の代替として置かれた『区別』は循環を明示するだけで、観測を得る経路は増えない",
+        "impact": "分離体制の効果が、実装後に分離実施が選ばれない限り恒久的に未評価となり、採用も撤回も判定できない状態が続き得る（原本L107の廃止条件も同じ3件に依存）",
+        "recommendation": "評価材料の定義に、実装前に分離実施された回の既存報告（本件r1・本差分再確認）を『問いの妥当性と重複・負担の観測に使える材料』として数える旨を1文加えるか、逆に数えない理由を明記する。人数の必須化は不要",
+        "limits": "設計条件の対比による指摘で、将来の人数選択の実績は観測していない。過去の分離実施回数についても、提示資料から確認できたのはr1の4担当1回に限る"
+      },
+      {
+        "id": "N7",
+        "severity": "info",
+        "target_lines": "review-input/proposed.md:99",
+        "evidence": "L99『本改訂案への差分再確認と、別題材での理解確認は未実施』。本レビュー（差分再確認）は本文書を対象に実施済みであり、適用時点ではこの記述が事実と食い違う",
+        "problem": "適用のタイミング依存で陳腐化する状態記述が本文に含まれる",
+        "impact": "そのまま適用すると、実施済みの確認を未実施と記す誤記が確定記録へ入る。ADR-0189自身がL74で扱う『前提誤り』型の軽微な例に当たる",
+        "recommendation": "適用時にL99を実績で書き換える（差分再確認の実施と記録所在、残る未実施＝別題材での理解確認）。判断・実施は主担当へ",
+        "limits": "本レビューの結果を主担当が採否判断する前提での指摘。現時点の改訂案作成時点では正しい記述である"
+      }
+    ],
+    "evidence_paths": [
+      "review-input/proposed.md",
+      "review-input/proposed.diff",
+      "review-input/r1-disposition.md",
+      "review-input/r1-original.json",
+      "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md",
+      "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md",
+      "docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md",
+      "docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md",
+      "docs/records/decisions/0079-overfitting-check-required-for-guideline-extensions.md",
+      "docs/records/decisions/0099-citation-consistency-via-existing-checkpoint-wording.md",
+      "skills/pre-finalization-review/SKILL.md",
+      "skills/pre-finalization-review/references/review-criteria.md",
+      "skills/pre-finalization-review/references/review-procedure.md",
+      "skills/pre-finalization-review/references/iteration-norms.md",
+      "skills/pre-finalization-review/references/examples-and-evidence.md",
+      "skills/start-work/references/plan-deviation-defaults.md",
+      "skills/decision-log/SKILL.md",
+      "skills/decision-log/references/status-updates.md",
+      "docs/working/issues/flow/0075-review-lacks-usability-check-for-normative-docs.md",
+      "README.md",
+      "CONTRIBUTING.md"
+    ],
+    "unknowns": [
+      "docs/records/reviews/2026-09-12-adr-0189-r1.md がスナップショット外の作業ツリーに存在するかは権限外で未確認。提示資料内では不在",
+      "ADR-0117の観点配置・5判定の原文は今回未読（C10の存続主張はADR-0186:24の記述で間接確認）。0117側の注記整合の必要性は未確認",
+      "docs/overview/principles.md と CONTRIBUTING.md の全体方針節は、差分が目的・方針に触れないため索引レベルの確認のみ（CONTRIBUTING.mdは過剰適合点検の該当節のみ読了）",
+      "Issue-0143 の現況と実装計画の具体（L89が求める走査の実施可能性）は未確認",
+      "ADR-0107/0120/0124など観点名を含む他ADRの個別注記必要性は、総称『関連ADRの注記』に委ねられており個別判定は未実施",
+      "実行・機械検査は一切行っていないため、改訂後の運用が実際にどう振る舞うかは未実証（本レビューは原文対比のみ）",
+      "過去の独立レビュー実施回数は、提示資料から確認できたr1（4担当・2026-09-12）と ADR-0186:38 のr1記録の言及の範囲を超えて断定しない"
+    ],
+    "created_paths": []
+  },
+  "manifest": {
+    "base_revision": "15bc4aab5f3509f6f55fc7f78155821f6a9e9537",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "bytes": 9317,
+        "sha256": "17793c481b41ac0103c856a0b165d92313ac8c132245db77574c8ef8c1d618eb"
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "bytes": 63091,
+        "sha256": "124f72f6d642be3ab873404a8d5960c2ab86a3fd51b93ce85985bcfea4bcf0dd"
+      },
+      {
+        "path": "docs/current/development-roadmap.md",
+        "bytes": 51702,
+        "sha256": "b4f58960f8faaf358c0773aaa1908d6bd5209437e197883f136e41263e4afdbf"
+      },
+      {
+        "path": "docs/current/specs/2026-04-12-meta-guidelines-design.md",
+        "bytes": 12873,
+        "sha256": "8913d479a6c3f96915f77d1a68fd03365c6436dd5d049e21952b4312774b0f22"
+      },
+      {
+        "path": "docs/current/specs/2026-04-13-contributing-and-gateway-skill-design.md",
+        "bytes": 7147,
+        "sha256": "0a71ecd5b057d18f3322c71c351184081d97b7231d547ea31b8d1370e1b65016"
+      },
+      {
+        "path": "docs/current/specs/2026-04-13-template-folder-and-sync-design.md",
+        "bytes": 6875,
+        "sha256": "faa6ec224b9aee1a84791555022c5f6336645d38e66eeef9c247e68990c29105"
+      },
+      {
+        "path": "docs/current/specs/2026-04-25-record-strengthening-design.md",
+        "bytes": 25951,
+        "sha256": "7893d33ede3f5b4806f405b29f4a9387a193ba98068153d08ecb2a7dd72f1143"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/00-overview.md",
+        "bytes": 12995,
+        "sha256": "524574e4cdf8dd049c930da016aadf06bb3a1056387a8e48006f5293b3f7634e"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/01-skill-feature-block-design.md",
+        "bytes": 8900,
+        "sha256": "fd601bb6bf8f64dfe4cf8b86d078a2fc45fdd447b6e0552ac9812666ee0217e5"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/02-principle-extension.md",
+        "bytes": 3263,
+        "sha256": "cbfd7ee033857a48a59f0f8f3644abc54724cadb5ecfc662fc7ffb8bd6350d35"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/03-instructions-update.md",
+        "bytes": 4839,
+        "sha256": "9e47048e3c0c5f03126e61a7e7dd2302a8dd469d1344d15de49654a3edb0790c"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-feature-block-design/04-template-and-docs-sync.md",
+        "bytes": 2565,
+        "sha256": "14250ab876b876858367cade47e81ccf545bdad4664c43dcf126aaa77fc08b59"
+      },
+      {
+        "path": "docs/current/specs/2026-05-01-retrospective-design.md",
+        "bytes": 13975,
+        "sha256": "d26bc2aef615e8a635cf274a988691da790ecec9a969794e3e0e9dba557d3e7c"
+      },
+      {
+        "path": "docs/current/specs/2026-06-15-naming-clarity-discipline-design.md",
+        "bytes": 3768,
+        "sha256": "d4ebdc7989ca6b17d4cee002e6bd726cabe6fc874810a337725258ba008b44e4"
+      },
+      {
+        "path": "docs/current/specs/2026-06-16-choice-with-recommendation-design.md",
+        "bytes": 4389,
+        "sha256": "55d8f32789ebfcd2b0d4c765182213a6fe77b573c9ac8f72d38f1cbd40eff5d7"
+      },
+      {
+        "path": "docs/current/specs/2026-06-16-claude-code-support-design.md",
+        "bytes": 7221,
+        "sha256": "b131338314358dc4d8256f7047e1959eb17610371ad6684ec0bb65ebf873d496"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/00-overview.md",
+        "bytes": 9419,
+        "sha256": "55255103aafbdfaec97e1804f1b54beedbfc2ec989145320276ec7334cbc523c"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/01-folder-structure-definition.md",
+        "bytes": 7490,
+        "sha256": "f8e52b4117cfafd4e52692a4b93f651d51d468f985440f9d3636005a26495c81"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/02-organize-inbox-skill.md",
+        "bytes": 4759,
+        "sha256": "402ef109d265f20c8b1050f888d648d0e304d7a6082ea85a0e4318df216f4302"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/03-skill-path-updates.md",
+        "bytes": 4040,
+        "sha256": "d44f5134475147439db54ae70d18324280ede833eb2c24e6380af23861b4fac4"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/04-layer-docs-updates.md",
+        "bytes": 4096,
+        "sha256": "56a27b8a7a90a6cfa7e90c688b0557d7d7c61f083c112c21aa2a32633900d9a0"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/05-template-sync-update.md",
+        "bytes": 3441,
+        "sha256": "2860d457ce69dec5d538c9d6543d2e7fb104079fc68faee975f110871d03713d"
+      },
+      {
+        "path": "docs/current/specs/2026-07-04-project-folder-structure/06-repo-docs-migration.md",
+        "bytes": 4637,
+        "sha256": "7c30f74040b11f6796f17e0dd949913395e92745a7206aa254249da65acf19d8"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-record-process-norms-design.md",
+        "bytes": 5905,
+        "sha256": "fd77960632ba7c337200f5e05f443cdbb7e84a9384eeadebcbe9f64a5333d305"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/00-overview.md",
+        "bytes": 6600,
+        "sha256": "a1a7027dbbe8a09cffb3c05c19cfe151ce982c0198c64cd9f64ddc1c8086afda"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/01-issue-management-structure.md",
+        "bytes": 5520,
+        "sha256": "5bb2f652169c8b3664b1422bdb10d9b0b4217e6b7a72a6202ddd5ee32cac5d91"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/02-retrospective-ticketing.md",
+        "bytes": 3604,
+        "sha256": "6822205f0b74db337975bf0778a9a834be6d5b36c00b3e910c2ca9e63e1e703d"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/03-related-doc-consistency.md",
+        "bytes": 3829,
+        "sha256": "c56bdeafbcad112cfbc4f7f4f3f690598636a1de611cf8e8bf967883cf1cd4c6"
+      },
+      {
+        "path": "docs/current/specs/2026-07-05-retrospective-issue-integration/04-migration-and-sync.md",
+        "bytes": 4475,
+        "sha256": "3a3ee018d0dbd618a558a37da3c4d1f4e261994280fd9c7eb9d66e11072cb81d"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/00-overview.md",
+        "bytes": 8909,
+        "sha256": "87291cc06f54e4c603a06ad68724a8e13bc5141eb3a271923c3a9fdedd3d64ef"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/01-worklog-store.md",
+        "bytes": 7791,
+        "sha256": "7bbe9602791fd378f003a36fc7c56152d648bcdf78f1c692496fc78e9715e3b5"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/02-skill1-record.md",
+        "bytes": 4948,
+        "sha256": "eca6aa5b74d80c6ea7c56f6a04ad82f87617e0eb9f2e1105b90ffda49a3d78d7"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/03-skill2-extract.md",
+        "bytes": 4172,
+        "sha256": "66416a1d3e6f79ebb33aef938c7a2c92016918338b2157b23462f3f073846327"
+      },
+      {
+        "path": "docs/current/specs/2026-07-17-worklog-skill-pipeline/04-skill3-skillify.md",
+        "bytes": 4300,
+        "sha256": "e307da37c0d5d73d59cab6ffb9bb6248c9e9560971db7dbede89d773b8cc12c8"
+      },
+      {
+        "path": "docs/current/specs/2026-08-05-dispatch-and-pre-review-skills-design.md",
+        "bytes": 31771,
+        "sha256": "a778393c756f2a8e6f111f01345c3188458feb512bf1d0d0abd153e06ea84597"
+      },
+      {
+        "path": "docs/current/specs/2026-08-06-handoff-pruning-and-status-design.md",
+        "bytes": 9870,
+        "sha256": "b81e8424888ba859adbaea3aaeebefd2abf6f42d256d77ca6c94dc0ceacbbe6f"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/00-overview.md",
+        "bytes": 17376,
+        "sha256": "85f7be305a99023a47eb20fff0997c9319a34ca82373aabd2dccaa93b3481d44"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/01-provenance-notation-convention.md",
+        "bytes": 16162,
+        "sha256": "4afed99ff13c1a1dbd075291749a35e9df718c9d88ffee689bf1f72e0a7c5cab"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/02-distribution-generator.md",
+        "bytes": 19464,
+        "sha256": "14d4b6d610d33155116786b1ba3542225629ce0e5a1848d4437c5f2450f9ea96"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/03-template-sync-integration.md",
+        "bytes": 8738,
+        "sha256": "f8ee098659d0e6a19fe3708b4d70e1a4011a16672d66f1cdcd6487c07d109b48"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/04-plugin-distribution-layout.md",
+        "bytes": 8730,
+        "sha256": "168fff7ba2e024b8453d93c024b3565151f459509f8ac819b7e890836ea3f9de"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-distributed-artifact-generation/05-source-migration.md",
+        "bytes": 13273,
+        "sha256": "d93643d7fe5e99099d9c31a540bbf075d6e5cca08245b4d711da62e0c9de5052"
+      },
+      {
+        "path": "docs/current/specs/2026-08-07-overfitting-check-for-extensions-design.md",
+        "bytes": 21878,
+        "sha256": "e2be44f99466b81f2d72b4d47ae887829ad8b9fb26f45a32c49fd773b841f0c2"
+      },
+      {
+        "path": "docs/current/specs/2026-08-13-handoff-bloat-control/00-overview.md",
+        "bytes": 10516,
+        "sha256": "fa1952abb0904faa21c392770a78f2e4331c6d22a4111f77c0e81928a5dbc2b6"
+      },
+      {
+        "path": "docs/current/specs/2026-08-13-handoff-bloat-control/01-relocation-standard.md",
+        "bytes": 7886,
+        "sha256": "69831730e5b27620a8c7d3fffb3e33c7131b81c996de85c5cb66413275d9a750"
+      },
+      {
+        "path": "docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md",
+        "bytes": 5626,
+        "sha256": "e3ea0bd0bd5eebbe0fbdee5881c7a4e310bcb12a3e93b695d178443e27f2c0b8"
+      },
+      {
+        "path": "docs/current/specs/2026-08-25-codex-support-design.md",
+        "bytes": 27980,
+        "sha256": "48c6e07559ce4e78468a12d077f973b93492935bb0ff923ee80638476d5f2e30"
+      },
+      {
+        "path": "docs/current/specs/2026-08-28-start-work-responsibility-split-design.md",
+        "bytes": 24895,
+        "sha256": "d570d478f45f5c501da86b1b8a7069f2b94c6ac3b9cc6a0856a00585036ca394"
+      },
+      {
+        "path": "docs/current/specs/2026-09-04-plain-language-vocabulary-design.md",
+        "bytes": 34033,
+        "sha256": "d4078a0e263b25bed6f3dfb119b2c5275a4740f30a02030e2ad6f107533f4502"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/00-overview.md",
+        "bytes": 9133,
+        "sha256": "03ea906ca759b5100e7fc4a56431b9ae6f94db6d5a10518d47e287e1421b601e"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/01-agreement.md",
+        "bytes": 4332,
+        "sha256": "9e62bb5310b1117b49d80d9cbbf75e70c0fb42312219a6ce37f0f4ac4de3bf3c"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/02-application.md",
+        "bytes": 5111,
+        "sha256": "8d7cd2f94f94d072ed8656d683ac848a991176d89418279857d9f35167d61f0e"
+      },
+      {
+        "path": "docs/current/specs/2026-09-07-delegated-decision-workflow/03-continuation.md",
+        "bytes": 3650,
+        "sha256": "bd0cbffd25b4d8c439cfe219267d7f107005d6c2f8924eaf16225861a68a2884"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/00-overview.md",
+        "bytes": 8855,
+        "sha256": "8bde3ae83c1ffef958e432238939bf4fd951224c3c9a667d0b578b0c2499da75"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/01-request-and-copy.md",
+        "bytes": 4939,
+        "sha256": "bc680a9b302f44374051f9d47be6cfb6f876eed4f18d30f3add3d77d98c3ad12"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/02-isolated-execution.md",
+        "bytes": 6392,
+        "sha256": "e407e219b42eae79bd23f0bfd27cc4bb765571ab6a1e56d81da9ddfb77994426"
+      },
+      {
+        "path": "docs/current/specs/2026-09-09-isolated-verification/03-result-collection.md",
+        "bytes": 4470,
+        "sha256": "33365a14bbd055702033be0ddc18361a75ddcd9207c2b030b32ce2f175142926"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/00-overview.md",
+        "bytes": 6124,
+        "sha256": "026374be3cd9aa82ea75d95a087f3cfddb0da6e84afbb02f4a853e1b030219fc"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/01-inputs.md",
+        "bytes": 7680,
+        "sha256": "e14406a135a48ff5b600b8966b9300f54fa23d631d10dbf2ab7d587e4e06d12e"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/02-execution.md",
+        "bytes": 9307,
+        "sha256": "560134471bf65b47079009f9393698625da0a1ea669dddd86c8abe8f0098abc1"
+      },
+      {
+        "path": "docs/current/specs/2026-09-10-model-discretion-comparison/03-assessment.md",
+        "bytes": 7676,
+        "sha256": "5e9c1da45922123a719ca29b0bdbfdf91a2ba40da28d217f0b4e9eff11ad4c20"
+      },
+      {
+        "path": "docs/overview/folder-structure.md",
+        "bytes": 10275,
+        "sha256": "f661a219f9dbac99f6df4cb63e6e74972a8e4e18703f463eecf2826465e05814"
+      },
+      {
+        "path": "docs/overview/issue-management.md",
+        "bytes": 15872,
+        "sha256": "7d6c80f7196c8162b6b1e96f6225ddc5b475f527d72e0def49b726ee9b63c838"
+      },
+      {
+        "path": "docs/overview/principles.md",
+        "bytes": 4365,
+        "sha256": "602e7c466102a0110cebc3baccea5505f2fd7727a874ed41f2cf5d1fbe1a0fbd"
+      },
+      {
+        "path": "docs/overview/wording-replacements.md",
+        "bytes": 4223,
+        "sha256": "f4f747c736300b7f17b91201fc29e3d1100cec7e11298a15ab15e533ed80b121"
+      },
+      {
+        "path": "docs/records/decisions/0001-adopt-layered-guidelines.md",
+        "bytes": 2094,
+        "sha256": "b639a0df0c4ffb91c3b31b399064e31a93bfaa9c50e415bbb94613ea35d69574"
+      },
+      {
+        "path": "docs/records/decisions/0002-add-contributing-and-gateway-skill.md",
+        "bytes": 1906,
+        "sha256": "eb2b60a5906c4914a96fe3c3b250e0881573207f44030aa493074af36a13b554"
+      },
+      {
+        "path": "docs/records/decisions/0003-template-folder-and-manifest-sync.md",
+        "bytes": 2760,
+        "sha256": "c5336e02858ff4da4c4c2d5bc116d9e8404d11e00bb1f98483514b94daa33d08"
+      },
+      {
+        "path": "docs/records/decisions/0004-introduce-start-work-skill.md",
+        "bytes": 2465,
+        "sha256": "f07c5351b08cc6a37d080367916c71753ce878f09a6269f79b444c1a73ac7ba8"
+      },
+      {
+        "path": "docs/records/decisions/0005-adopt-handoff-file-scheme.md",
+        "bytes": 2595,
+        "sha256": "b5537734767bca3162c86dfaa7de65ae14471a4e7836a2fd247d0282a1999dd3"
+      },
+      {
+        "path": "docs/records/decisions/0006-continuous-adr-detection-rule.md",
+        "bytes": 2285,
+        "sha256": "db08a2ce583fe28fb9d908a03fad529bf08cfd1dbd9c20b911304d931d790c50"
+      },
+      {
+        "path": "docs/records/decisions/0007-introduce-feature-block-design-skill.md",
+        "bytes": 2310,
+        "sha256": "aff7d5cd32e4d157add72a983f08a6c197a1e0b62fbb2a8a97e60c3e5b7dcd08"
+      },
+      {
+        "path": "docs/records/decisions/0008-adopt-spec-directory-split-and-snapshot-rule.md",
+        "bytes": 2241,
+        "sha256": "3bd70d98b810fe1452e3595a7f19deb5e3107400ff2b135bf87f17fe69b8bc6c"
+      },
+      {
+        "path": "docs/records/decisions/0009-extend-principle-2-scope.md",
+        "bytes": 1933,
+        "sha256": "9a668f784b9a32dfffa288f45cf2b115134764a768761ea67c17013d11ba90fb"
+      },
+      {
+        "path": "docs/records/decisions/0010-introduce-retrospective-phase.md",
+        "bytes": 3229,
+        "sha256": "96b7d41fb7e52dc7098466779063328a01414f71883e13ee08c242d77f092316"
+      },
+      {
+        "path": "docs/records/decisions/0011-retrospective-storage-policy.md",
+        "bytes": 3132,
+        "sha256": "99e76392eb1bc680cffaddefddf20c6412a33f349b7d738c5c63525471fbf8c4"
+      },
+      {
+        "path": "docs/records/decisions/0012-domain-knowledge-out-of-scope-for-c.md",
+        "bytes": 2989,
+        "sha256": "1c72253202e54eaf77b4c71a3c0324b9520099cc0d799b9b0337831f48533a3b"
+      },
+      {
+        "path": "docs/records/decisions/0013-introduce-knowledge-distillation-skill.md",
+        "bytes": 3404,
+        "sha256": "ae6298f5eb86280d90f21ec8a4c0fb3b4292e23a0c6ff72c62e8d9bcfef3f04a"
+      },
+      {
+        "path": "docs/records/decisions/0014-parent-dir-check-before-file-create.md",
+        "bytes": 2903,
+        "sha256": "4234b2b0cccf814cd26f7035cbc6dfd967861e94e911a88834b6317d5c6ab618"
+      },
+      {
+        "path": "docs/records/decisions/0015-distribute-skills-as-copilot-cli-plugin.md",
+        "bytes": 4927,
+        "sha256": "dc979a6767cf9e00cfbdc3706bb12b10cb55a7155704c80665f91ac78133be59"
+      },
+      {
+        "path": "docs/records/decisions/0016-redesign-template-workflow-plugin-only.md",
+        "bytes": 5791,
+        "sha256": "4320a86df059fb451195bb1fce28eedba5b26d912e5a74b5512bf6f1275c6064"
+      },
+      {
+        "path": "docs/records/decisions/0017-correct-local-marketplace-registration.md",
+        "bytes": 7426,
+        "sha256": "1731476a367e5a14ef42855dda9d59b91eba1d28dfd6541efa2535bb3f28d6a5"
+      },
+      {
+        "path": "docs/records/decisions/0018-mandate-brainstorming-for-medium-or-multi-option-work.md",
+        "bytes": 7274,
+        "sha256": "db23c18fcb52abba5cf745f019ff2c4f69fda87e6214b7eef87ea89c7c8ccc50"
+      },
+      {
+        "path": "docs/records/decisions/0019-adr-authoring-discipline.md",
+        "bytes": 3705,
+        "sha256": "8e335e6aec91a7719171f6475db9e608e2f1fe28d1170e18ffe9ecb7e828d35b"
+      },
+      {
+        "path": "docs/records/decisions/0020-retire-responding-to-user-enforcement.md",
+        "bytes": 2641,
+        "sha256": "911b2c14c407dc60498e0b8f8f15605e74c2980d4fd365934bfd383db8476851"
+      },
+      {
+        "path": "docs/records/decisions/0021-retrospective-issue-extraction-only.md",
+        "bytes": 6102,
+        "sha256": "dcbe349827fafe432748707b6a06d4168717cfb5d757ae7bd8aea993244714c3"
+      },
+      {
+        "path": "docs/records/decisions/0022-naming-clarity-discipline.md",
+        "bytes": 4349,
+        "sha256": "f889a36f4d0986d297fc0c482a21ff5c34b5dd44b5e68faab304f84499adf6eb"
+      },
+      {
+        "path": "docs/records/decisions/0023-unify-layer2-into-claude-md.md",
+        "bytes": 5814,
+        "sha256": "34327989fb86972e8bbfa8fbd9d27dc1d9e7b1ac416b2a7ce1619bb82aae2938"
+      },
+      {
+        "path": "docs/records/decisions/0024-choice-with-recommendation-norm.md",
+        "bytes": 4399,
+        "sha256": "ee71501ba39714e126560cdd2706a88be109d807c9fbdb0a4c56b669337a2a2c"
+      },
+      {
+        "path": "docs/records/decisions/0025-five-class-information-taxonomy.md",
+        "bytes": 6719,
+        "sha256": "3627b4840f587398c19b346171b3ad4dbbe49b26332dd0f1501f485e8e15e9b6"
+      },
+      {
+        "path": "docs/records/decisions/0026-inbox-and-organize-inbox-skill.md",
+        "bytes": 3972,
+        "sha256": "9054e0bff45007658de94209af85368d48a472f497f5ee9f17fe2f8fd816af4c"
+      },
+      {
+        "path": "docs/records/decisions/0027-template-seed-criteria.md",
+        "bytes": 5088,
+        "sha256": "c56100e840e615f3e5242c340c8c7896136e3b0c365184c8fc06178bbf00ba30"
+      },
+      {
+        "path": "docs/records/decisions/0028-retrospective-issue-ticketing-integration.md",
+        "bytes": 8622,
+        "sha256": "791d9e3af556390f6764979ff9412bb7dedef175958a2f49e0a5633d3ba3fccd"
+      },
+      {
+        "path": "docs/records/decisions/0029-question-tool-display-countermeasure.md",
+        "bytes": 6057,
+        "sha256": "1558e76c613d0ffb64fdbb104ebf57e53e27e5a9a494daac41542eefdc9674cb"
+      },
+      {
+        "path": "docs/records/decisions/0030-adr-draft-commit-deferral.md",
+        "bytes": 5181,
+        "sha256": "aeb512cc456268e13083cfa59a59ea9470eaba686326285f6e93b745d584fa34"
+      },
+      {
+        "path": "docs/records/decisions/0031-issue-recurrence-recording.md",
+        "bytes": 3704,
+        "sha256": "e095f8b9c26e9a965a53d09f2d0e4664f629de2e2003922c411fb7dc1a1dc9dd"
+      },
+      {
+        "path": "docs/records/decisions/0032-agent-executability-check.md",
+        "bytes": 4053,
+        "sha256": "7cd111c827ed0ca13ce1d61791f877f21be469376e788f8d454e64062b6c9ce4"
+      },
+      {
+        "path": "docs/records/decisions/0033-sync-template-lf-output.md",
+        "bytes": 3167,
+        "sha256": "94630dfe161d6c4de6dbc43ffd3a6d9a06453f131552054c2e3e8e914f5b8f68"
+      },
+      {
+        "path": "docs/records/decisions/0034-plan-verification-edit-consistency-check.md",
+        "bytes": 4134,
+        "sha256": "518648663e565a4f6007a3fd9b3a4423a5faa7945886fa7e503a8abda1350cda"
+      },
+      {
+        "path": "docs/records/decisions/0035-question-tool-timeout-stop-norm.md",
+        "bytes": 8589,
+        "sha256": "f9162db3236864f61b99a6eeeac177484879bbb8c4b8808a58d7a201cd0b2f98"
+      },
+      {
+        "path": "docs/records/decisions/0036-selection-ui-env-setting-and-text-fallback.md",
+        "bytes": 5924,
+        "sha256": "e0a3eb04246375ae4f649a181121a89b0740b949a96af10017c0a870a969995e"
+      },
+      {
+        "path": "docs/records/decisions/0037-gitattributes-eol-normalization.md",
+        "bytes": 3914,
+        "sha256": "f77955ce71c72dd25184b28fc590db8fb33b95b50769cc74c42810265ae1fb4b"
+      },
+      {
+        "path": "docs/records/decisions/0038-read-back-verification-norm.md",
+        "bytes": 3288,
+        "sha256": "4389091a55fa5fdd8dd0ddc0db8fea9cb216307bf7d36efb8f20642b2523973a"
+      },
+      {
+        "path": "docs/records/decisions/0039-environment-solution-survey-first.md",
+        "bytes": 3544,
+        "sha256": "cc5ead0541ed23bd20f76af915ccf9110af1b6afc255e95900dd19778633f3c2"
+      },
+      {
+        "path": "docs/records/decisions/0040-claude-md-growth-governance.md",
+        "bytes": 6864,
+        "sha256": "3d9aa0b17718192679d318c84c1369a0e8fb8e6e38fc11d0bc0a1c1d06995425"
+      },
+      {
+        "path": "docs/records/decisions/0041-adr-rejected-status-and-ledger-audit.md",
+        "bytes": 5119,
+        "sha256": "ac01f2e038f5b95790fc62bf22707ed7f51a255cac11692cc4a89b62e144f07f"
+      },
+      {
+        "path": "docs/records/decisions/0042-superseded-identification-and-ledger-audit.md",
+        "bytes": 5499,
+        "sha256": "c937aa840e72344f1b25d2c4935a175c19b5787ed8c15d34c3573b80033de510"
+      },
+      {
+        "path": "docs/records/decisions/0043-loop-engineering-poc-first-direction.md",
+        "bytes": 5925,
+        "sha256": "3aa70a3bf45d34e27cfe9039ef07db27cd993d449aeab98335ad335fe3b020b6"
+      },
+      {
+        "path": "docs/records/decisions/0044-worklog-skill-pipeline-central-aggregation.md",
+        "bytes": 5520,
+        "sha256": "f6710d8a6502f144b18c2ee1bf186c035a9149ee301746db714df6329f4f220a"
+      },
+      {
+        "path": "docs/records/decisions/0045-worklog-entry-schema-and-lifecycle.md",
+        "bytes": 6826,
+        "sha256": "b859205dc29697c2c53dd87dfc8972ad6fdc134c90dae12be62fd29668b3e280"
+      },
+      {
+        "path": "docs/records/decisions/0046-skill3-engine-borrowing-and-env-guard.md",
+        "bytes": 3250,
+        "sha256": "185bf4e7e2e7d0be080d351f4ba0ab36b9d9794e70c22cffabe3e30140c8b0b1"
+      },
+      {
+        "path": "docs/records/decisions/0047-worklog-record-wired-into-start-work-post.md",
+        "bytes": 3037,
+        "sha256": "6e5ddfc02b46dc40826b1600df9deddaa4ab6aba69f9b7761d93a09bffa1fd33"
+      },
+      {
+        "path": "docs/records/decisions/0048-worklog-entry-model-field-required.md",
+        "bytes": 2803,
+        "sha256": "63e7891a88c0742c85307464336ace624a53e26e39d4051f5e381fb0b4604f90"
+      },
+      {
+        "path": "docs/records/decisions/0049-worklog-schema-version-field.md",
+        "bytes": 2534,
+        "sha256": "d0bfcb869a813242394d6ff6efd7580fcfad1be36c825e344ba26dd5aac8d805"
+      },
+      {
+        "path": "docs/records/decisions/0050-worklog-id-collision-recount-and-readback.md",
+        "bytes": 2446,
+        "sha256": "504baf33d02a6f436321375d6b03781c7117d0f71142a13137ab04fb1b566853"
+      },
+      {
+        "path": "docs/records/decisions/0051-worklog-friction-array-symmetry.md",
+        "bytes": 1592,
+        "sha256": "6a26b6fddb473d5ce7dd7e25a7e8b705223b2f92846271bfd03d115be10b6479"
+      },
+      {
+        "path": "docs/records/decisions/0052-worklog-qualitative-material-guides-over-fields.md",
+        "bytes": 2751,
+        "sha256": "e615bbd34c6d880fea937a56f36d0b682f332d0824b497c39f5bbdfacf3f03e8"
+      },
+      {
+        "path": "docs/records/decisions/0053-worklog-entry-unit-theme-based.md",
+        "bytes": 2019,
+        "sha256": "4c2d4c1ca869d77c4b2874e648348eccc26e92ee7f541d60e3c8b34ba4f214e0"
+      },
+      {
+        "path": "docs/records/decisions/0054-worklog-store-encoding-eol-contract.md",
+        "bytes": 4631,
+        "sha256": "d1a4b9a9654833aae9afae192c918fc358b7055653920a72da2ff672a0a16927"
+      },
+      {
+        "path": "docs/records/decisions/0055-start-work-skill-availability-ai-side-check.md",
+        "bytes": 3229,
+        "sha256": "0bcc481f9b61cfbb48d58e4d342b9eaee8110ae02150318812e92578627527ce"
+      },
+      {
+        "path": "docs/records/decisions/0056-retrospective-issue-extraction-core-worklog-delegation.md",
+        "bytes": 12750,
+        "sha256": "c9e374fa2ca9a1cdd233b0c3faa17a473937972c9e909e30311ae6a8ac34cbec"
+      },
+      {
+        "path": "docs/records/decisions/0057-post-wrapper-consumption-visibility-and-reconciliation.md",
+        "bytes": 6574,
+        "sha256": "b0f8cedf65676bedef2634a3cac835f12bb8a7854a024f674cf5851f5446fdd3"
+      },
+      {
+        "path": "docs/records/decisions/0058-worklog-record-session-switch-trigger.md",
+        "bytes": 4296,
+        "sha256": "fe26dcb73c0838716e4b258c3998c2b8cb1d7d6989bd630c46bc76cb559e103d"
+      },
+      {
+        "path": "docs/records/decisions/0059-adr-granularity-by-question-not-length.md",
+        "bytes": 5409,
+        "sha256": "1e07a79924e4763743c77b7b876e5118b65337f61a49175df8dd0c5563f965c8"
+      },
+      {
+        "path": "docs/records/decisions/0060-adr-granularity-check-on-append.md",
+        "bytes": 4997,
+        "sha256": "7c699de42f7909a2e8528190fa399748f465431a68c3ba3c33039f81d08bd8a2"
+      },
+      {
+        "path": "docs/records/decisions/0061-distributed-flow-issue-intake-routing.md",
+        "bytes": 5377,
+        "sha256": "0d92e7f98753760cc0a687847f3ebf50e4a929bf1771413ea6fb22f97538ed5a"
+      },
+      {
+        "path": "docs/records/decisions/0062-cycle-scope-worklog-pipeline-throughput-first.md",
+        "bytes": 4779,
+        "sha256": "e716b1e7273b55c302b9b26942fea3063f9bc5883b9c00991cfe6b7844c38a87"
+      },
+      {
+        "path": "docs/records/decisions/0063-distributed-issue-handover-path.md",
+        "bytes": 5593,
+        "sha256": "1ffc687fd924ca4fd0c9f58caec1354c014ce36a44014fd12aadf29bab366977"
+      },
+      {
+        "path": "docs/records/decisions/0064-worklog-store-write-api-and-health-check.md",
+        "bytes": 7213,
+        "sha256": "d44ae6dc2fede93017521127724bff8fca7fc1c5cff32efa49acfb40e0e09e3d"
+      },
+      {
+        "path": "docs/records/decisions/0065-skillify-requires-applicability-design-first.md",
+        "bytes": 5225,
+        "sha256": "98f0028a7b92ab49dcc48db6d8772be03d711363e6fe9a474a05482dbb933aec"
+      },
+      {
+        "path": "docs/records/decisions/0066-subagent-dispatch-items-split-by-workload-cost.md",
+        "bytes": 6150,
+        "sha256": "f2ff617b55355e91f87b248d682022325d9408db23ac5a8dfe9f9773819a9afc"
+      },
+      {
+        "path": "docs/records/decisions/0067-pre-finalization-review-as-new-skill.md",
+        "bytes": 6983,
+        "sha256": "4d2333de43afb3ebeeaeda5938a79e79581b081de319a8c472d2f72913d45f27"
+      },
+      {
+        "path": "docs/records/decisions/0068-cross-repo-issue-reference-format.md",
+        "bytes": 4440,
+        "sha256": "f3f290b649736d3cda669f697081bf1ea5edf15787aafef2f713cdbee8c8410d"
+      },
+      {
+        "path": "docs/records/decisions/0069-general-skill-extension-target-own-repo-only.md",
+        "bytes": 4323,
+        "sha256": "691dff3b67eecf4b3c7ecbafd031ce4d14bf443ad11f203ff27b81230ef7317f"
+      },
+      {
+        "path": "docs/records/decisions/0070-dispatch-constraints-as-norm-not-hook-injection.md",
+        "bytes": 5042,
+        "sha256": "ddbc6c209cec1ef64abc4d195479a85220a332c6c808edad62d0887b30570617"
+      },
+      {
+        "path": "docs/records/decisions/0071-b-group-firing-check-as-mandatory-table-walk.md",
+        "bytes": 4474,
+        "sha256": "9609c23e4eb6937f2d194b2e92c1c02c425cbe482abba3c40578a4e4876868a2"
+      },
+      {
+        "path": "docs/records/decisions/0072-pre-finalization-review-triggered-by-user-only.md",
+        "bytes": 5268,
+        "sha256": "eaf8ff6d7d9197e255350a116ff29041137d695983aa14de9127daa0c450cd50"
+      },
+      {
+        "path": "docs/records/decisions/0073-dispatch-norms-carry-provenance-and-sunset-path.md",
+        "bytes": 5233,
+        "sha256": "1758084ca7d9d8edab82e74813cb2c406d35fef8fc0e00f354fa3d876b87f3c5"
+      },
+      {
+        "path": "docs/records/decisions/0074-handoff-pruning-recovery-via-git-history-only.md",
+        "bytes": 3312,
+        "sha256": "6a4ae88c0009690170518b1458a1064e82892e79fda19b386eb24779160773d3"
+      },
+      {
+        "path": "docs/records/decisions/0075-handoff-two-stage-pruning-discipline.md",
+        "bytes": 5213,
+        "sha256": "98ba3f6d39c65165fe582621a9f67127bae989dcd16f72cd6a75697810826baf"
+      },
+      {
+        "path": "docs/records/decisions/0076-handoff-status-add-ready-for-next-cycle.md",
+        "bytes": 2868,
+        "sha256": "f1fe3a6cdc46cfeec7579280d4b30ebcce073d174755ce35d889434cd1cae10b"
+      },
+      {
+        "path": "docs/records/decisions/0077-handoff-external-references-use-stable-identifiers.md",
+        "bytes": 2376,
+        "sha256": "8a5a55b9e727739026b60bd34d2b7f8d100a18f0ed8a0a27b9f292c7ed6e4540"
+      },
+      {
+        "path": "docs/records/decisions/0078-rename-meta-guidelines-to-ai-driven-dev-guidelines.md",
+        "bytes": 4278,
+        "sha256": "a3172aaf0074e77675206c664e8405b8028b17a5e0c3570d0f113f5090efc2bf"
+      },
+      {
+        "path": "docs/records/decisions/0079-overfitting-check-required-for-guideline-extensions.md",
+        "bytes": 9846,
+        "sha256": "09029ff0a8358e4137d8784b992bed27525143715b7eef55abf77b5176c89c62"
+      },
+      {
+        "path": "docs/records/decisions/0080-review-presentation-scaled-by-unreviewed-normative-content.md",
+        "bytes": 24710,
+        "sha256": "a65938a1487a1c5d2e4223871e1316b748c506a1b88d04d912b2d248d5bd5595"
+      },
+      {
+        "path": "docs/records/decisions/0081-distributed-artifact-adr-reference-scope.md",
+        "bytes": 9051,
+        "sha256": "1e7a8230e74f6d0d4e5142cad7b58480da9f3faf466ffbfe0c7472242efc16b4"
+      },
+      {
+        "path": "docs/records/decisions/0082-distribute-generated-artifact-not-source.md",
+        "bytes": 5019,
+        "sha256": "d0a8b81e8c5e4d0f15e6f453b9b39f47787b85ee0489d7a12dcd258ecf70e8c5"
+      },
+      {
+        "path": "docs/records/decisions/0083-provenance-notation-convention-enforced-by-generator.md",
+        "bytes": 8602,
+        "sha256": "d6a3ac4fc0d680680d2d1ddeabe34613cb09ff3fddf6bb0116b336973ae7e451"
+      },
+      {
+        "path": "docs/records/decisions/0084-convention-scope-exceeds-machine-check-scope.md",
+        "bytes": 7636,
+        "sha256": "da1d08cf9a0bd1aec643db1f729d3e3005df00ff1297e52d4543b4b805af2058"
+      },
+      {
+        "path": "docs/records/decisions/0085-no-structured-question-tool-on-affected-models.md",
+        "bytes": 9415,
+        "sha256": "ea04be19b26213cff48221cd0688816e4af28bb1953ae411fecc3c86e346bbc3"
+      },
+      {
+        "path": "docs/records/decisions/0086-handoff-canonical-relocation-standard.md",
+        "bytes": 9111,
+        "sha256": "7cf7773f5592c14150f6affc7b1813454ce1f3f1daf8479124b94c8f736e89dc"
+      },
+      {
+        "path": "docs/records/decisions/0087-handoff-pruning-trigger-system.md",
+        "bytes": 7032,
+        "sha256": "b0f8da8989b7b27d7096226367774ce4cb24eb713f71bba1fbd289e0bca00d1f"
+      },
+      {
+        "path": "docs/records/decisions/0088-handoff-section-volume-norms.md",
+        "bytes": 6392,
+        "sha256": "080fe48829b3618fe299a9f8bf4770498a5a4e241d121f7984e8a0d3ca1b3e5b"
+      },
+      {
+        "path": "docs/records/decisions/0089-placement-definition-vs-skill-procedure-boundary.md",
+        "bytes": 3766,
+        "sha256": "5028d9c7f0baae2306e596802d0da7198b281c19e3515b6d5ad10cc43e946a3a"
+      },
+      {
+        "path": "docs/records/decisions/0090-version-bump-required-for-plugin-redistribution.md",
+        "bytes": 4919,
+        "sha256": "a7b7856378817f203486baf54e864c535fc45cba0ee0dc9e197b6dac53907c8a"
+      },
+      {
+        "path": "docs/records/decisions/0091-session-handoff-doc-clarity-fixes.md",
+        "bytes": 12912,
+        "sha256": "0cc4f94836ebade2476b5148d474f1f70dc4b69f396864673d40b576887bc405"
+      },
+      {
+        "path": "docs/records/decisions/0092-cycle-wide-consistency-check-before-adr-promotion.md",
+        "bytes": 18266,
+        "sha256": "41bd3f02264aea9e81f487ebeccac9f9c17ff05b5071bf6b3312b477c43fb4dd"
+      },
+      {
+        "path": "docs/records/decisions/0093-destructive-verification-dispatch-isolation-constraints.md",
+        "bytes": 14733,
+        "sha256": "f8fb9d6bf515684d4ea91b4a1dc23740a81ca256b3cb23cf71fb978ca988d90f"
+      },
+      {
+        "path": "docs/records/decisions/0094-artifact-bloat-addressed-as-growth-pattern.md",
+        "bytes": 4855,
+        "sha256": "2192ac2aa9326c00a740b6f69093538bd092630c0f77cdf294e4bb21b4c4b12f"
+      },
+      {
+        "path": "docs/records/decisions/0095-issue-materials-lifecycle-split-colocation.md",
+        "bytes": 8023,
+        "sha256": "5ba0ce637469d3034b85b2017bf055c9232b83f573fc39bf7dcfac904b1256d9"
+      },
+      {
+        "path": "docs/records/decisions/0096-issue-folder-promotion-trigger-and-role-system.md",
+        "bytes": 14157,
+        "sha256": "9959c5e3e63c410251393db6a6f8e105df8064b97cd77f20be9aa6c03969d1e4"
+      },
+      {
+        "path": "docs/records/decisions/0097-issue-granularity-one-problem-many-questions.md",
+        "bytes": 4841,
+        "sha256": "f3291c12b2e8db5f716b48e94cddc150c8bf91a6a090259de94bc8f28bffcafd"
+      },
+      {
+        "path": "docs/records/decisions/0098-norm-placement-behavior-in-skills-structure-in-docs.md",
+        "bytes": 5994,
+        "sha256": "23ff3c870f2e93b8d87bc8a99d5f72ae78fa5272abf449b3581aa33ab1d81e13"
+      },
+      {
+        "path": "docs/records/decisions/0099-citation-consistency-via-existing-checkpoint-wording.md",
+        "bytes": 16554,
+        "sha256": "3f011410b95f849f0aea7bb451d150a2e18a1cea555f6cc7c0bc86faf72e7e2d"
+      },
+      {
+        "path": "docs/records/decisions/0100-one-shot-guideline-audit-with-two-track-judgment.md",
+        "bytes": 20641,
+        "sha256": "565b16ad337a9e87c919cd2d7599bb20ae733a89c9672656058c116a37f21e61"
+      },
+      {
+        "path": "docs/records/decisions/0101-audit-verdict-keep-integrate-hold-and-weak-brake.md",
+        "bytes": 7846,
+        "sha256": "457db416f1e46a9ddf4b673f4d511c2b05454efd055000c73fb706b6e75788e4"
+      },
+      {
+        "path": "docs/records/decisions/0102-codify-evaluability-mandate-in-contributing.md",
+        "bytes": 20210,
+        "sha256": "250336f27fe9ed8b865ea737a1fc1dcf77787e4cdcf2e66b56c1d8d45e00cd9d"
+      },
+      {
+        "path": "docs/records/decisions/0103-single-cycle-scope-for-integration-and-simplification.md",
+        "bytes": 5205,
+        "sha256": "92a03d10add8bece1466789c2a83b492c20735ae776d300a9f0b1f27a54cf226"
+      },
+      {
+        "path": "docs/records/decisions/0104-integration-design-by-source-collation-with-audit-proposal-as-default.md",
+        "bytes": 3839,
+        "sha256": "58e4bc33cb0400be025741c8007e9d5fa8d49178884f30eb605e9c84181c111d"
+      },
+      {
+        "path": "docs/records/decisions/0105-integration-design-wiring-two-commons-and-simplification.md",
+        "bytes": 41592,
+        "sha256": "1be2214042ba34f241dd590dd69721867cb0bde2ed897924ea183d8a46065214"
+      },
+      {
+        "path": "docs/records/decisions/0106-two-layer-wiring-for-merge-mode-norm.md",
+        "bytes": 32902,
+        "sha256": "986cf98df8a741bdd6ad7406e73fb3870d5cead1d77d8c1d295f81315aa9f398"
+      },
+      {
+        "path": "docs/records/decisions/0107-iterative-review-recommendation-by-revision-nature.md",
+        "bytes": 65656,
+        "sha256": "49903c0b63445b913f6581007140705af44a753fa3cb9bc9944927b89c744e96"
+      },
+      {
+        "path": "docs/records/decisions/0108-accepted-adr-revision-status-handling.md",
+        "bytes": 18259,
+        "sha256": "dac0c4d6dcefb6ea388ff443ab0d312aaf1e144ea379151e1fcba16c869b1bc4"
+      },
+      {
+        "path": "docs/records/decisions/0109-retire-structured-question-tool-unconditionally.md",
+        "bytes": 17743,
+        "sha256": "f4f58d91e3f789a39d32716591c987ca12dc4fec7a60134dc968c8ee284444ce"
+      },
+      {
+        "path": "docs/records/decisions/0110-full-scope-codex-support.md",
+        "bytes": 3495,
+        "sha256": "d00e94f91d93ff91b4ccc829f47ec181c6b8b0f0dca3f4fff983b5e2a3161723"
+      },
+      {
+        "path": "docs/records/decisions/0111-agents-md-as-layer2-source-of-truth.md",
+        "bytes": 5523,
+        "sha256": "eec516ae0328a70ae7094f9d7b157ae5f5bb8663ff0809d96c45dc6b4fe11a0b"
+      },
+      {
+        "path": "docs/records/decisions/0112-codex-native-marketplace-generated.md",
+        "bytes": 7037,
+        "sha256": "d3eb52a908616a746b3671b886c9f5bebaa396ef87b25485b3e7888d61a0c620"
+      },
+      {
+        "path": "docs/records/decisions/0113-json-input-guards-consolidated-into-codex-generation-task.md",
+        "bytes": 11316,
+        "sha256": "4140c645423d422df1ff25aa9e1b9dbd8d1526b4351456631f0206e415cedce4"
+      },
+      {
+        "path": "docs/records/decisions/0114-layer2-reference-neutralization-finish.md",
+        "bytes": 13462,
+        "sha256": "f20fd22bc9300057ce1525421c73e5e95b886f22f852dc13a41e26a54c994e56"
+      },
+      {
+        "path": "docs/records/decisions/0115-focus-cycle-on-start-work-split-only.md",
+        "bytes": 3009,
+        "sha256": "a72b29e5cea1d6d84956ad98abd8aef3e378c31c82017895b217b6881e6875f8"
+      },
+      {
+        "path": "docs/records/decisions/0116-relocate-start-work-domain-norms-by-ownership.md",
+        "bytes": 8026,
+        "sha256": "e4d350ff8817918fec6556c3958174953d794f000b30867a7c5b4166e154073c"
+      },
+      {
+        "path": "docs/records/decisions/0117-premise-existence-viewpoint-and-premise-checks.md",
+        "bytes": 28108,
+        "sha256": "9b06ae5963df04dc922c5a7a3d5c827843e68fd7ffba11e580f6ab69f203cec3"
+      },
+      {
+        "path": "docs/records/decisions/0118-bulk-reflux-of-lfa-review-flow-issues.md",
+        "bytes": 7020,
+        "sha256": "71052ba9c4c7f3ce54c3afd6bfbb169a3d4986281214665aa38fa832df3bde2c"
+      },
+      {
+        "path": "docs/records/decisions/0119-plan-deviation-decision-defaults.md",
+        "bytes": 29417,
+        "sha256": "74272a6f62b5b03d557fe38758e86264bcf46d08b0870af365679d33bc3bea6e"
+      },
+      {
+        "path": "docs/records/decisions/0120-stratified-initial-review-bodies-and-round-outlier-detection.md",
+        "bytes": 43465,
+        "sha256": "0c8ccd188a1089a1b923ed30f2249b6da84daa162ff0de95e12b964545c05b64"
+      },
+      {
+        "path": "docs/records/decisions/0121-skill-md-size-trigger-and-split-norm.md",
+        "bytes": 31248,
+        "sha256": "09dfb7524968d4876ef64cdb903a7084109f31f372ecbdc5898868dd9765c7b9"
+      },
+      {
+        "path": "docs/records/decisions/0122-split-session-handoff-and-decision-log-by-firing-unit.md",
+        "bytes": 33728,
+        "sha256": "31ab048283a01b412498120f06c0e7873d3b87fd80439f513f4421dff8caa05c"
+      },
+      {
+        "path": "docs/records/decisions/0123-plain-language-vocabulary-in-normative-documents.md",
+        "bytes": 22082,
+        "sha256": "88b2827e647f311db840649b83a6a51be8e273c276b2592009b25b8642c68124"
+      },
+      {
+        "path": "docs/records/decisions/0124-review-minimum-as-recommendation-with-user-discretion.md",
+        "bytes": 6862,
+        "sha256": "7e8ed14272bfce554d677098ac1e6ee53f61cfeebfdb4cef68236e7c9986da47"
+      },
+      {
+        "path": "docs/records/decisions/0125-evaluate-cost-of-review-driven-additions.md",
+        "bytes": 5145,
+        "sha256": "ba1309784f6c73103c6b37da2997c384250cf7af7ac6492bf78f2ed14448ff5c"
+      },
+      {
+        "path": "docs/records/decisions/0126-compare-workflow-continuation-from-fixed-baseline.md",
+        "bytes": 2663,
+        "sha256": "47b9006898d6da1de33132a9daccd26452b47168b645f55111609742ec5854f9"
+      },
+      {
+        "path": "docs/records/decisions/0127-document-codex-mode-instruction-workaround.md",
+        "bytes": 1838,
+        "sha256": "15da7cbeaaa2ae5803c95bb2eb8dbe1ab3d8263180ccf4de3ed85f64e5170e4c"
+      },
+      {
+        "path": "docs/records/decisions/0128-investigate-removing-human-involvement-cost-axis.md",
+        "bytes": 1761,
+        "sha256": "5fa2a1da9feb077f4a2d223e06cdb310ea5da4a313fe108e7eb2925bd6a8e168"
+      },
+      {
+        "path": "docs/records/decisions/0129-use-lightweight-estimates-in-objective-design.md",
+        "bytes": 2451,
+        "sha256": "0453f4384916ef1008907af43781aea766975865b1326368afaa7b753e9f2993"
+      },
+      {
+        "path": "docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md",
+        "bytes": 12051,
+        "sha256": "93e870782da3d0b3256e67809cf52f3ee3819eb24ff9432247c676d1cbaf7319"
+      },
+      {
+        "path": "docs/records/decisions/0131-connect-completed-work-to-integration.md",
+        "bytes": 12679,
+        "sha256": "ba0e898a7b8ac44017222bcbf58c76f33e15b4d2b85755a99352da4d2f3853ab"
+      },
+      {
+        "path": "docs/records/decisions/0132-complete-distribution-with-version-update.md",
+        "bytes": 10198,
+        "sha256": "745b54a5f3d1b1fb8349adb52c4a2e702fd7fca59850d1abc4c78c34045623c0"
+      },
+      {
+        "path": "docs/records/decisions/0133-delegate-decisions-by-agreed-impact-boundaries.md",
+        "bytes": 5057,
+        "sha256": "bdf03c4a367b50e97e3f9803588398d94e5acf20e78951e97e47c7b2200ff976"
+      },
+      {
+        "path": "docs/records/decisions/0134-pass-wording-rules-to-document-subagents.md",
+        "bytes": 7505,
+        "sha256": "b091f6989dc69f5de8ad456184ac3b4b87f41c39e3e54abdb7a24b095e32ada8"
+      },
+      {
+        "path": "docs/records/decisions/0135-defer-retrospective-timing-change.md",
+        "bytes": 2464,
+        "sha256": "2fef4063bfeb15c3897e2a864d2af5f339b381bc0d6044a33792ef505b50e5b6"
+      },
+      {
+        "path": "docs/records/decisions/0136-examine-post-proposal-reconsideration-method.md",
+        "bytes": 1586,
+        "sha256": "f0e8682d44160f08c1bdbf0eed9532aa8838ba56fe88b95572f47d645c00634b"
+      },
+      {
+        "path": "docs/records/decisions/0137-prepare-small-reconsideration-comparison.md",
+        "bytes": 3979,
+        "sha256": "33e9320ca84dd8bf21d68c38f8835b15c2db6f146a04a130fe5bd4fea6bd0ad5"
+      },
+      {
+        "path": "docs/records/decisions/0138-use-existing-worklogs-for-reconsideration-observations.md",
+        "bytes": 2905,
+        "sha256": "7573626c89e37fadf17ab8f63a653f49acc30a9cb8d30de5bf0c849ea8cf8d01"
+      },
+      {
+        "path": "docs/records/decisions/0139-reuse-official-agent-runtimes-for-development-pilots.md",
+        "bytes": 5532,
+        "sha256": "cb16cf27daa713ea0e68af93c2bd231fe1d160a20bec487376940f5fb2215ae4"
+      },
+      {
+        "path": "docs/records/decisions/0140-stage-guideline-improvements-before-agent-pilots.md",
+        "bytes": 7862,
+        "sha256": "ae905bfdbe77297fb0fd4d94dfd93d3b145040af733e34121a74efda307e29f6"
+      },
+      {
+        "path": "docs/records/decisions/0141-keep-inspection-protection-tool-independent.md",
+        "bytes": 7155,
+        "sha256": "5fc1a982b0ab2188218a4f0b88867a12c112e39678f27aabda2ffe78a3a50599"
+      },
+      {
+        "path": "docs/records/decisions/0142-verify-claude-through-existing-codex-sandbox.md",
+        "bytes": 2156,
+        "sha256": "13c1189d21ee734638f3ebfbb31909e49a57bbbe3a609ebe2989f1eb0998f07c"
+      },
+      {
+        "path": "docs/records/decisions/0143-protect-claude-native-subagents-by-removing-write-tools.md",
+        "bytes": 10814,
+        "sha256": "fe83c38b3107a553df696a2b3fe48fdf3d5edf1635ddb73aa05e2d16f6a1a92a"
+      },
+      {
+        "path": "docs/records/decisions/0144-protect-claude-native-subagents-with-allowlist-only.md",
+        "bytes": 10910,
+        "sha256": "1d7940ae83be591c3d7c19418ff898564e87b847d47a8a94a964a90c0e07d1b3"
+      },
+      {
+        "path": "docs/records/decisions/0145-enable-autonomous-test-creation-within-isolation.md",
+        "bytes": 2898,
+        "sha256": "01e4d7941cc47f74343501cdbb6abb8ef742f08e369dc71529a73d26b253d387"
+      },
+      {
+        "path": "docs/records/decisions/0146-delegate-verification-from-claude-to-codex.md",
+        "bytes": 4857,
+        "sha256": "daceb71632636aa29327bf972b28f55393affe27b3d650110e8e450577a1be48"
+      },
+      {
+        "path": "docs/records/decisions/0147-use-common-cli-for-isolated-verification.md",
+        "bytes": 4337,
+        "sha256": "0c4144024d438acfb2d5dab325b1931d42cd8ff767d45a3054a9d1679ed278a0"
+      },
+      {
+        "path": "docs/records/decisions/0148-initialize-independent-git-metadata-for-verification.md",
+        "bytes": 3911,
+        "sha256": "c4d1e8d3c8a9fddd4c3b6319b1aaf6f21fdaac370feab487a29775827c10908d"
+      },
+      {
+        "path": "docs/records/decisions/0163-prioritize-guideline-operating-cost-improvements.md",
+        "bytes": 4643,
+        "sha256": "fd62b3191de2f3c210611a2a1e27f4da00c62e4eecd4dc5397b4c91999f6e794"
+      },
+      {
+        "path": "docs/records/decisions/0164-exclude-behavior-preserving-observations-from-full-review-default.md",
+        "bytes": 4222,
+        "sha256": "d1801753e35f2202745337d197f009c14427443e8c6477256110f01d2f68f399"
+      },
+      {
+        "path": "docs/records/decisions/0165-apply-cost-comparison-before-review-disposition.md",
+        "bytes": 6869,
+        "sha256": "fdce2c7bd8d9a3a9f26cea91f425ab026b6cbba94ea8c9034a2740dda307b0d8"
+      },
+      {
+        "path": "docs/records/decisions/0166-compare-model-discretion-before-detailed-workflows.md",
+        "bytes": 7591,
+        "sha256": "066c118046dbc50eacb6d0865baeb7e3f2d3a1a1cef8a09a0f1014305e723db5"
+      },
+      {
+        "path": "docs/records/decisions/0167-use-existing-subscriptions-for-workflow-comparison.md",
+        "bytes": 1952,
+        "sha256": "615c1676007eed7af422539ca183d3f86b6f33433f209c4b22661b773b084a92"
+      },
+      {
+        "path": "docs/records/decisions/0168-compare-two-models-on-process-trace-tasks.md",
+        "bytes": 4312,
+        "sha256": "d56225ce891146c021c483fd357454d5aff8901e9797c0e64d3151a9e681d254"
+      },
+      {
+        "path": "docs/records/decisions/0169-resume-essential-comparison-preparation-with-progress.md",
+        "bytes": 2481,
+        "sha256": "84c65ba69d82b7521f1bcc182e3d9c12438a9a568da06fc821ee48edd3a4805b"
+      },
+      {
+        "path": "docs/records/decisions/0170-verify-installed-codex-plugin-content-for-comparison.md",
+        "bytes": 2275,
+        "sha256": "93baa6e572d916df4aff5e6c0e3ca966894beb3cd41756aaca15b34d0d49fc54"
+      },
+      {
+        "path": "docs/records/decisions/0171-copy-test-dependencies-for-protected-comparison.md",
+        "bytes": 2303,
+        "sha256": "5cdbb4519179b7843174ece2086a44871e53698deb5df03dbe17ffeb0c8908f6"
+      },
+      {
+        "path": "docs/records/decisions/0172-align-common-codex-skills-for-comparison.md",
+        "bytes": 2257,
+        "sha256": "70dd8cc5a0d73eb168ba25d0b8533258539edb2ca0c197706c0a5643e8dc08ce"
+      },
+      {
+        "path": "docs/records/decisions/0173-use-accept-edits-for-claude-preflight.md",
+        "bytes": 1805,
+        "sha256": "b2fdc832252d8681234dcd9e92e4455eb76ae4be1a074e9f1b34316ad57a720e"
+      },
+      {
+        "path": "docs/records/decisions/0174-diagnose-claude-plugin-write-permission.md",
+        "bytes": 2352,
+        "sha256": "3c85f133e28abb42c7735ec522b722e5a57ac3b2306e414e7b5bd432e0c665a4"
+      },
+      {
+        "path": "docs/records/decisions/0175-isolate-init-only-runtime-state.md",
+        "bytes": 2135,
+        "sha256": "9dcad0b0fda2dae7aede41beeca1534acf99f788109238256e60bfb09a58f4a2"
+      },
+      {
+        "path": "docs/records/decisions/0176-permit-single-session-runtime-directory.md",
+        "bytes": 2623,
+        "sha256": "119f8ecfbb7e7f8cc0be6938203c18a621cb52333b31166e42ce14b50dc581b8"
+      },
+      {
+        "path": "docs/records/decisions/0177-verify-write-after-hook-initialization.md",
+        "bytes": 2646,
+        "sha256": "bb1a4bb7f054ffbc8cae8dd05a3eccad95271b7c9d2f38ed53c2cd12dfbfe160"
+      },
+      {
+        "path": "docs/records/decisions/0178-diagnose-plugins-individually.md",
+        "bytes": 2096,
+        "sha256": "8a5154ba84a54e8c158741184416aa2d958203c21b80929ca796f0eb10f314c0"
+      },
+      {
+        "path": "docs/records/decisions/0179-prepare-normal-user-claude-control.md",
+        "bytes": 2591,
+        "sha256": "12ea097c47f3c2962eea07808e6058e5992d361efb4eaab6617733a6ffd596ab"
+      },
+      {
+        "path": "docs/records/decisions/0180-evaluate-astra-before-expanding-model-coverage.md",
+        "bytes": 3671,
+        "sha256": "33e2980dff0938193140f77b71b03b729767b36b5ca60e1b882028b16cc53659"
+      },
+      {
+        "path": "docs/records/decisions/0181-run-sol-comparison-at-low-effort.md",
+        "bytes": 1644,
+        "sha256": "fc42883993020a2ed9c62f4c57bda6ea0e01618aed40ab7a6a0716d16d07c789"
+      },
+      {
+        "path": "docs/records/decisions/0182-reject-unknown-session-id-from-first-stage.md",
+        "bytes": 1693,
+        "sha256": "dcd29371ad0ec4e096cd4480f483984761dcc86aed163da8f3c00aff4c9d4c87"
+      },
+      {
+        "path": "docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md",
+        "bytes": 5770,
+        "sha256": "7ec4a902995892df88f0d6df7cb639d0439381799da4a6368d3c9fb03201417f"
+      },
+      {
+        "path": "docs/records/decisions/0184-reassess-preparation-by-outcome-and-remaining-cost.md",
+        "bytes": 5324,
+        "sha256": "148b698ea7fd7ad0c71ea14239c777fe347cdd00a17fb02ce0c96e05d90126f6"
+      },
+      {
+        "path": "docs/records/decisions/0185-check-project-purpose-in-independent-reviews.md",
+        "bytes": 6226,
+        "sha256": "06aa268cc0a7aff354a957c06984f2654ec0184a573ae5cf1c70ab9b9388387e"
+      },
+      {
+        "path": "docs/records/decisions/0186-define-review-questions-evidence-and-boundaries.md",
+        "bytes": 7696,
+        "sha256": "1db9c7f9f2b0b60d6174be77eb4d5d00503600b1ad1f731b8728856d8c1b5960"
+      },
+      {
+        "path": "docs/records/decisions/0187-track-review-coverage-and-independent-evidence-access.md",
+        "bytes": 4305,
+        "sha256": "f2df07ee9422f1998d39b49272052fb7446c2715ccf51dea39a8f148beb946ed"
+      },
+      {
+        "path": "docs/records/decisions/0188-develop-read-glob-grep-evidence-access.md",
+        "bytes": 2752,
+        "sha256": "323d72185e5c8a09ce87e70b3541c30554a56c8369b7437332344e80bcf69c61"
+      },
+      {
+        "path": "docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md",
+        "bytes": 14725,
+        "sha256": "1af0b3a1d8568b884b5e366ab0555ec30a238e3ca7332373d36c866fe21d7772"
+      },
+      {
+        "path": "docs/records/decisions/README.md",
+        "bytes": 34230,
+        "sha256": "eee1897c937e7b4b8c692be31641d8b472dc91194b922c0affd74be1546fb6b5"
+      },
+      {
+        "path": "docs/records/experiments/2026-09-12-review-evidence-access-result.md",
+        "bytes": 6128,
+        "sha256": "ea0fe61097d9d65238cf0c40390cdf0e6cd001fc2dd1774654c35d5a0dc94ce9"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-11-premise-intent-audit.md",
+        "bytes": 5994,
+        "sha256": "8b869b453877688fedf95d80ab670aff686c89daaf270a6dd3476d38e983fd26"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-11-review-criteria-r1.md",
+        "bytes": 6505,
+        "sha256": "c600e1f17510a6086d373a8070d7ededfca1f2a0563265e84614b88036b267ca"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-11-review-criteria-r2.md",
+        "bytes": 5635,
+        "sha256": "29331c6e6dce7b7ed31abeee0b67a9302da8454ca01201cd31071988593717c4"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-four-review-perspectives-coverage.md",
+        "bytes": 11865,
+        "sha256": "6c02d2376f7f0bc4b60f2e65ca662029ec9a63e912f24374941c863ad4a5f0c5"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-reusable-review-insights-from-adrs.md",
+        "bytes": 8120,
+        "sha256": "40fcc8144701b367b51f8c32e720aad39433bd70718b01c83ed7bff77b07095f"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-review-design-finalization.md",
+        "bytes": 4900,
+        "sha256": "6a672e2914b5ced2490178ccce86dded78aaf65edefabafc63bbc61bb21d1208"
+      },
+      {
+        "path": "docs/records/reviews/2026-09-12-review-scope-reassessment.md",
+        "bytes": 8970,
+        "sha256": "4c467e771d930cf41b70fb0905c630d8dcf114dbae14b9b8420e419e92a1b279"
+      },
+      {
+        "path": "docs/working/issues/flow/0075-review-lacks-usability-check-for-normative-docs.md",
+        "bytes": 3627,
+        "sha256": "182297c5fb211a85931823b4d699c87776570dac5f416ec709d737619e09d04e"
+      },
+      {
+        "path": "docs/working/issues/flow/0112-multilayer-review-role-separation-not-codified.md",
+        "bytes": 5036,
+        "sha256": "ca6100fe7bdf405fc692b2049ce4275c8510a2f6fff5d3bb53350491d626598c"
+      },
+      {
+        "path": "docs/working/issues/flow/0133-design-review-lacks-cleanroom-stage/0133-design-review-lacks-cleanroom-stage.md",
+        "bytes": 5871,
+        "sha256": "7d3064b62b0c1646c90a94bbc527eca2e5382afc80ddc6a6fce49ccdf1512579"
+      },
+      {
+        "path": "docs/working/issues/flow/0133-design-review-lacks-cleanroom-stage/lfa-0165-full-read-reviewers-anchor-on-existing-decisions-add-a-cleanroom-stage.md",
+        "bytes": 7066,
+        "sha256": "5d3b539b7c06d3752a0321dcee5fb8c3c56305462a59fcb11a94eb84c052f6c5"
+      },
+      {
+        "path": "docs/working/issues/flow/0133-design-review-lacks-cleanroom-stage/lfa-0165-multi-stage-review-protocol.md",
+        "bytes": 21813,
+        "sha256": "38bafcf680ed5c06c1bcb2dea6ef61455b40000c54df1ba1dae630fe2c548938"
+      },
+      {
+        "path": "docs/working/issues/flow/0143-review-coverage-and-meaning-unverified.md",
+        "bytes": 6030,
+        "sha256": "d6a40217ad9b5f4c4e24630589a0cc3844f6aff658e4e204d24118dfde9310c8"
+      },
+      {
+        "path": "docs/working/issues/flow/0144-reviewer-cannot-discover-omitted-evidence.md",
+        "bytes": 5312,
+        "sha256": "3fc515984706e8ccf6f2ef3e4244adb29f6c1b1898452b1d72bf92e04cadaedb"
+      },
+      {
+        "path": "README.md",
+        "bytes": 16493,
+        "sha256": "070efc025f56183baf48f672d5a99622a65da65ac44bebbf947e1c9ead2287f1"
+      },
+      {
+        "path": "review-input/proposed.diff",
+        "bytes": 12785,
+        "sha256": "331ead0335f0e460f03ed4b13abc5d5b09163187ed6ddedf57468c99db0878e1"
+      },
+      {
+        "path": "review-input/proposed.md",
+        "bytes": 17763,
+        "sha256": "4354054af75214610e615014dfe2c87436303e7206e02cdb950af6ef370d076f"
+      },
+      {
+        "path": "review-input/r1-disposition.md",
+        "bytes": 9830,
+        "sha256": "42b42662e2ebb15cbfc88638bb4374731d14e36bb8154f3a0c38331b4a770439"
+      },
+      {
+        "path": "review-input/r1-original.json",
+        "bytes": 200923,
+        "sha256": "7d3c6ff7b1d8aaced7236aa1f67b01149dc8ad8b4cc400b92cf4772d3bdfaf99"
+      },
+      {
+        "path": "skills/decision-log/references/adr-authoring.md",
+        "bytes": 9346,
+        "sha256": "ae321f776b46312c4c6114b9a612d98367dff38afa49029da627a5ace31cae4b"
+      },
+      {
+        "path": "skills/decision-log/references/cycle-consistency-check.md",
+        "bytes": 6947,
+        "sha256": "c98c877fceb5751319b39ca6e29e526a08e91bd65655c9832159cb826f7665e6"
+      },
+      {
+        "path": "skills/decision-log/references/open-questions.md",
+        "bytes": 2852,
+        "sha256": "727b4261253bfa80d1329abed6782f77159149fc28e959dd7ccc3692c9b9bba7"
+      },
+      {
+        "path": "skills/decision-log/references/status-updates.md",
+        "bytes": 7195,
+        "sha256": "e0b6c2f7428337f984933140c47874789b39ebf7293eb2d54b445a903498c16f"
+      },
+      {
+        "path": "skills/decision-log/SKILL.md",
+        "bytes": 4073,
+        "sha256": "26b71b7dd5dbbda432eef8d62d2fbac412bcf1a7983818f71027db4460548bbc"
+      },
+      {
+        "path": "skills/extend-guidelines/SKILL.md",
+        "bytes": 3309,
+        "sha256": "bb8f2eb4e05ed6c5a3b5d99773d31a37197b1842532d0292bcc196a5e6b940a1"
+      },
+      {
+        "path": "skills/feature-block-design/SKILL.md",
+        "bytes": 9271,
+        "sha256": "56ca645fbbfbba04ec7c5c7f964e7b71428a6905817f00ed7a5a9194bd78b5a9"
+      },
+      {
+        "path": "skills/organize-inbox/SKILL.md",
+        "bytes": 3848,
+        "sha256": "0ba3af3b89a4a3d22e80ec19c23eac5a8a0d26e65cbae63633a85db3c01d5908"
+      },
+      {
+        "path": "skills/pre-action-review/SKILL.md",
+        "bytes": 3018,
+        "sha256": "e06e9cda7162729f352f14d92d673c52fb00bec645b5bc9466e38188ffe0d00f"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/examples-and-evidence.md",
+        "bytes": 8752,
+        "sha256": "13e6a2e916cbd1c8091c3f340f75d3562c2231560fee426d559d78b29cfa3ec1"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/iteration-norms.md",
+        "bytes": 17583,
+        "sha256": "7aaefc4445c28d685732984830837271e7c11af4b26a5c884c07d39df823ec25"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/review-criteria.md",
+        "bytes": 9178,
+        "sha256": "7997e770869268b1124e252a34422756cd5637d0c7418f4ccf336138f024d9e1"
+      },
+      {
+        "path": "skills/pre-finalization-review/references/review-procedure.md",
+        "bytes": 6689,
+        "sha256": "6a4718cf592aea6afced51aac2274be20857db915fb40fb188acc016dea828c5"
+      },
+      {
+        "path": "skills/pre-finalization-review/SKILL.md",
+        "bytes": 18300,
+        "sha256": "a7ea177c52d8458381fd114d97ab93763efd5966c52e9692f83415b1cc7411cc"
+      },
+      {
+        "path": "skills/retrospective/flow-template.md",
+        "bytes": 1629,
+        "sha256": "c95f10fe1217dc08ef2ce323b1b563ee6e4c3bb5386526e48de3bfff7fc27d4e"
+      },
+      {
+        "path": "skills/retrospective/SKILL.md",
+        "bytes": 19051,
+        "sha256": "b9b3b9c0f5ee1e4397f4b7ce5919b0abf797b5b834372ab47d3b35260ed4f893"
+      },
+      {
+        "path": "skills/retrospective/template.md",
+        "bytes": 2128,
+        "sha256": "c68034e55279d9fa8c60563a3f033b797f034446e00e17a7d62d321f28aae0d4"
+      },
+      {
+        "path": "skills/session-handoff/references/op-create.md",
+        "bytes": 723,
+        "sha256": "825d65bd9b03695c54bef18a66c0022e846c5ea3330b3b1d541855cbc6ef2bb9"
+      },
+      {
+        "path": "skills/session-handoff/references/op-cycle-reset.md",
+        "bytes": 2151,
+        "sha256": "bf8f6f5e93dc341b12ea6c97803e84ba4255a1ea7aa36b46f389734c86ae0cb9"
+      },
+      {
+        "path": "skills/session-handoff/references/op-finalize.md",
+        "bytes": 4196,
+        "sha256": "4119f917c9ff70d21fc23912a47faf958d1263e50260540432da74667d61c063"
+      },
+      {
+        "path": "skills/session-handoff/references/op-read.md",
+        "bytes": 2796,
+        "sha256": "24c44cee301b6f44ac4983195c50fc66b30bf57c3d4c18bd8ea0bd3ab3310edc"
+      },
+      {
+        "path": "skills/session-handoff/references/op-update.md",
+        "bytes": 4847,
+        "sha256": "7d3ba621dfcad81b4a531f03353be201b9f54b2a28291bfbefe23deafee23f73"
+      },
+      {
+        "path": "skills/session-handoff/references/relocation-map.md",
+        "bytes": 3707,
+        "sha256": "e324ca3ca3d2bf77fa2ff13822a52f925775bf7c81d133bd41705a8e75904d7b"
+      },
+      {
+        "path": "skills/session-handoff/references/relocation-procedure.md",
+        "bytes": 2812,
+        "sha256": "9f7c7d23d2baf292c44a272c5deff199251b4b6910e264a06b92bf78d4f10fcc"
+      },
+      {
+        "path": "skills/session-handoff/references/review-field-values.md",
+        "bytes": 5106,
+        "sha256": "885dc35120df46eb03d953047251572da1d279d9e70d7e84bfe55dd5fa544dfe"
+      },
+      {
+        "path": "skills/session-handoff/references/section-volume-norms.md",
+        "bytes": 2601,
+        "sha256": "9cdeb243d3e7a6632b11d00b88a6017b5a72354ce293ee2cb3c9e1d05d3ce555"
+      },
+      {
+        "path": "skills/session-handoff/SKILL.md",
+        "bytes": 8796,
+        "sha256": "dcf07f36b77c2e2e64d7abb60b547ee9bcbc6bb8692a551d0c011aeed8a2d620"
+      },
+      {
+        "path": "skills/start-work/references/decision-delegation.md",
+        "bytes": 6221,
+        "sha256": "bc1274c4ba24d3194403f42742662f2cd8f7c11098e1e4d607ca5bee22e5ad87"
+      },
+      {
+        "path": "skills/start-work/references/merge-practice.md",
+        "bytes": 4490,
+        "sha256": "0c10a4c889d01fc091a4b5adac9bb8918b3a08c7801a3832ebbe72bb5cb35df4"
+      },
+      {
+        "path": "skills/start-work/references/plan-deviation-defaults.md",
+        "bytes": 13441,
+        "sha256": "89ce2aebacdf21de1acf3f9ed0f8203eb5d224743d02a0bd12e701b521ff1693"
+      },
+      {
+        "path": "skills/start-work/SKILL.md",
+        "bytes": 19871,
+        "sha256": "f21327159c911f5c04914ad69aa3555b8fcfbf8c4b3de8ae183d3ea2a5f56139"
+      },
+      {
+        "path": "skills/subagent-dispatch/references/inspection-isolation.md",
+        "bytes": 12289,
+        "sha256": "1909c0ae4a4df294d74d4d8706d5e076c90ea40a743a371a71c4fee80df165f7"
+      },
+      {
+        "path": "skills/subagent-dispatch/SKILL.md",
+        "bytes": 13775,
+        "sha256": "1f4d36917fc230a474f07aeb5e0283a2c8ce48438e3feeaa23b715e4c0a1fce4"
+      },
+      {
+        "path": "skills/worklog-extract/scripts/check-store-health.py",
+        "bytes": 7750,
+        "sha256": "f9882523712c78a00000a6b3968e355b5900600fba57b6290cdda63432c7b0da"
+      },
+      {
+        "path": "skills/worklog-extract/SKILL.md",
+        "bytes": 7351,
+        "sha256": "3220361dd52d7c9e79a59ad2304133c951d976a3092a62fe162fdf1c78acd103"
+      },
+      {
+        "path": "skills/worklog-record/references/store-format.md",
+        "bytes": 8960,
+        "sha256": "f31c4986ee2c33e0cdff92ad578d51d295871037384b2d5bfcfb9197537452e5"
+      },
+      {
+        "path": "skills/worklog-record/SKILL.md",
+        "bytes": 7792,
+        "sha256": "a7234b5eb57b7c264ad8ececdc91585fc2ad64b378ce2f4640fd8e885aa8ca5f"
+      },
+      {
+        "path": "skills/worklog-skillify/references/skill-authoring-techniques.md",
+        "bytes": 2073,
+        "sha256": "96cb60b82e71364938bbc1a01d226fad11ac9c3daa175bfd1ef63ff3e767bfd7"
+      },
+      {
+        "path": "skills/worklog-skillify/SKILL.md",
+        "bytes": 4845,
+        "sha256": "4ef507877725e791af1c88469279d529f299884bb0cc701cc9f5adfb81b5fb0f"
+      }
+    ]
+  }
+}

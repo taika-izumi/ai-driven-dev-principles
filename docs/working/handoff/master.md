@@ -1,7 +1,7 @@
 # Handoff: レビュー観点再編の完了と次の作業候補
 
 - **Branch**: master
-- **Last Updated**: 2026-09-12 14:14 (Asia/Tokyo)
+- **Last Updated**: 2026-09-12 14:21 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: 0.1.28統合・検証、Issue-0145起票、振り返り完了 / セッション終了
 
@@ -27,7 +27,7 @@ ADR-0189のレビュー観点再編を0.1.28へ反映し、7dec143でmasterへ�
 ## 現在の状態と次の作業
 
 - ユーザーが本セッション終了とorigin/masterへのpushを明示承認。公開対象は0.1.28のスキル・配布物、設計・試験・レビュー記録、課題、振り返り・handoff。次回はgit ls-remote origin refs/heads/masterとローカルHEADで公開先端を照合する。公開確認のためにモデル試験を再実行しない。
-- 利用側のプラグイン更新は未実施。前回確認済みのCodex導入版は0.1.27（docs/records/experiments/2026-09-11-codex-plugin-0.1.27-installation.json）。ディスクの導入版は必要時に再確認する。
+- ユーザーの追加指示で、このPCのCodexを0.1.28へ更新・有効化済み。全39ファイルが配布物とSHA256一致。記録はdocs/records/experiments/2026-09-12-codex-plugin-0.1.28-installation.json。長いパス対応は更新プロセス限定。現在の会話へのスキル一覧の再読込は未確認。
 - Issue-0145の対策設計・着手は未承認。起票だけを実施した。Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
 - .worktrees/issue-0143-review-questionsと同branchは未追跡証跡のため保全。主担当の正本はmaster側。本件の旧・新15題と実装レビューは3実行とも完了済み。各.tmp/issue-0143-*の資材を再起動・削除しない。
 

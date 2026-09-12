@@ -1,0 +1,325 @@
+{
+  "case_sha256": "258470dca70cb77ebe94ca2e5c0942e28e7f3cb9c32498cbbfba6882417f3c6a",
+  "cases": [
+    {
+      "id": "P01",
+      "role": "主担当、新規開始",
+      "project_root": "/project",
+      "cwd": "/project",
+      "request": "提案Aは安価だがCSV列順を変更する。提案Bは少し高いが列順を維持する。次に採る案を判断する。",
+      "write_allowed": false,
+      "files": {
+        "AGENTS.md": "共通の作業指示のみ。目的正本の明示指定なし。",
+        "docs/overview/project-purpose.md": "利用者の既存CSV処理を維持する。列順互換は必須。低費用でも互換を破る案は採用しない。"
+      }
+    },
+    {
+      "id": "P02",
+      "role": "主担当、再開",
+      "project_root": "/project",
+      "cwd": "/project",
+      "request": "説明出力を省く低費用案の採否を判断する。",
+      "write_allowed": false,
+      "files": {
+        "docs/working/handoff/main.md": "目的: 社内用途。次は説明出力の削除案を評価する。",
+        "docs/overview/project-purpose.md": "現在は社外利用者向け。判断理由を利用者が確認できる説明出力を必須とする。"
+      }
+    },
+    {
+      "id": "P03",
+      "role": "主担当、再開",
+      "project_root": "/project",
+      "cwd": "/project",
+      "request": "次の実装の基準と、目的更新が完了したかを報告する。",
+      "write_allowed": true,
+      "files": {
+        "docs/overview/project-purpose.md": "CSV互換を維持する。",
+        "docs/working/handoff/main.md": "承認記録changes.mdの全文により、目的を新APIへ移行することが確定。正本への反映は未完了。公開は未承認。",
+        "changes.md": "利用者: CSV互換を目的とする段階は終え、新APIへの移行を目的にします。この目的文の更新を承認します。"
+      }
+    },
+    {
+      "id": "P04",
+      "role": "主担当、新規開始",
+      "project_root": "/project",
+      "cwd": "/project/src",
+      "request": "今回の品質判断に使う目的の所在を特定する。",
+      "write_allowed": false,
+      "files": {
+        "AGENTS.md": "目的・方針の正本: docs/overview/vision.md。相対パスはプロジェクトルート基準。",
+        "docs/overview/vision.md": "監査可能な処理結果を提供する。根拠の記録を省略しない。"
+      }
+    },
+    {
+      "id": "P05",
+      "role": "主担当、read-onlyレビュー",
+      "project_root": "/project",
+      "cwd": "/project",
+      "request": "互換を破る変更案をレビューする。目的正本の整備は担当していない。",
+      "write_allowed": false,
+      "files": {
+        "README.md": "利用者承認済みの目的: 既存API互換を保って内部処理を改善する。",
+        "AGENTS.md": "目的正本の指定なし。"
+      }
+    },
+    {
+      "id": "P06",
+      "role": "主担当、read-only調査",
+      "project_root": "/project",
+      "cwd": "/project",
+      "request": "品質の優先順位を判断する。並行して公開済みのファイル形式の調査も依頼されている。",
+      "write_allowed": false,
+      "unreadable": [
+        "private/vision.md"
+      ],
+      "files": {
+        "AGENTS.md": "目的・方針の正本: private/vision.md。",
+        "draft.md": "未承認草案: 品質よりも速度を優先したい。",
+        "format.md": "公開ファイル形式はCSV。"
+      }
+    },
+    {
+      "id": "P07",
+      "role": "親から委譲されたread-onlyの子",
+      "project_root": "/project",
+      "cwd": "/project",
+      "request": "担当する変更案の互換性レビューだけを行う。新しい主担当ではない。根拠が揃った場合と必要な根拠1件が足りない場合の両方で、最初に何をするかを答える。",
+      "write_allowed": false,
+      "parent_input": {
+        "purpose": "利用者のCSV列順互換を守る",
+        "source": "目的文書の原文（親が読み取った未コミット版）",
+        "scope": "互換性レビューのみ",
+        "missing_variant": "移行方針の根拠1件が渡っていない"
+      },
+      "files": {}
+    },
+    {
+      "id": "P08",
+      "role": "主担当、更新方法の提案",
+      "project_root": "/project",
+      "cwd": "/project",
+      "request": "テンプレートの共通起点文を取り込む更新手順を提案する。",
+      "write_allowed": false,
+      "files": {
+        "AGENTS.md": "共通指示\n目的正本: docs/overview/vision.md\n固有指示: 出力例には顧客名を出さない。",
+        "docs/overview/vision.md": "既存の目的本文。",
+        "new-template/AGENTS.md": "新しい共通起点文。固有指示・目的指定はない。"
+      }
+    }
+  ],
+  "runs": {
+    "before": {
+      "model_requested": "gpt-5.6-sol",
+      "effort": "high",
+      "summary": {
+        "run": {
+          "role": "assessment",
+          "exit_code": 0,
+          "elapsed_seconds": 314.72
+        },
+        "unchanged": true
+      },
+      "usage": [
+        {
+          "input_tokens": 205576,
+          "cached_input_tokens": 160384,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 13242,
+          "reasoning_output_tokens": 7325
+        }
+      ],
+      "answer": {
+        "cases": [
+          {
+            "id": "P01",
+            "purpose_source": "プロジェクトAGENTS.mdには正本指定がない。既存資料として唯一明示的に目的を述べるdocs/overview/project-purpose.mdの「既存CSV処理と列順互換を維持し、低費用でも互換を破る案は採用しない」を判断根拠にする。ただし、このパスを既定の正本とする一般規則は確認できていない。",
+            "next_action": "列順を変更する提案Aを不採用、列順を維持する提案Bを採用する判断を報告する。read-onlyなのでADR、handoff、実装への反映は行わない。",
+            "needs_user_decision": "不要。明示された目的に照らして一意に判断できる。",
+            "write_allowed": false,
+            "reason": "start-workのPhase 1は、会話・引継ぎ・既存資料から目的・スコープ・成功基準を把握し、不足だけを確認すると定める。本ケースには矛盾しない目的資料があり、Bだけが必須の列順互換を満たす。"
+          },
+          {
+            "id": "P02",
+            "purpose_source": "docs/working/handoff/main.mdは「社内用途」、docs/overview/project-purpose.mdは「社外利用者向けで説明出力必須」としており、目的が矛盾する。確認した規則には、この2文書間の一般的な優先順位がないため一方を正本として採用できない。",
+            "next_action": "説明出力を省く案の採否を保留し、目的の矛盾と影響を示して、現在有効なのが社内用途か社外利用者向けかを確認する。変更や記録は行わない。",
+            "needs_user_decision": "必要。現在有効な利用者・目的と、説明出力を必須とするかの確認が必要。",
+            "write_allowed": false,
+            "reason": "start-workのPhase 1は不足情報だけの確認を求め、decision-delegationは矛盾を「不明」として影響する判断だけ相談すると定める。handoffの存在だけで目的正本を上書きする規則はない。"
+          },
+          {
+            "id": "P03",
+            "purpose_source": "changes.mdにある利用者の全文承認と、それを指し示して「新API移行が確定、正本反映は未完了」とするhandoffを採用する。docs/overview/project-purpose.mdのCSV互換目的は未更新の旧内容である。",
+            "next_action": "次の実装基準は新APIへの移行であり、目的更新は未完了と報告する。仮想条件では書込みが許可されているため、次は承認内容をdocs/overview/project-purpose.mdへ反映してから、その目的に基づく実装へ進む。ただし本テストでは実際の反映を行わない。",
+            "needs_user_decision": "不要。目的変更と目的文更新が明示的に承認され、承認原文も提示されている。",
+            "write_allowed": true,
+            "reason": "decision-delegationは、ユーザーが変更を承認した場合、その回答と変更範囲を対応付けると定める。承認原文と未反映状態が一致しているため、旧正本との食い違いは更新待ちとして解消できる。"
+          },
+          {
+            "id": "P04",
+            "purpose_source": "プロジェクトルートのAGENTS.mdが「目的・方針の正本: docs/overview/vision.md。相対パスはプロジェクトルート基準」と明示しているため、/project/docs/overview/vision.mdの「監査可能な処理結果を提供し、根拠の記録を省略しない」を採用する。",
+            "next_action": "今回の品質判断には/project/docs/overview/vision.mdを使用すると報告する。cwdが/project/srcでも、/project/src/docs/...とは解釈しない。",
+            "needs_user_decision": "不要。所在と基準ディレクトリが明示されている。",
+            "write_allowed": false,
+            "reason": "start-workのPhase 1による関連資料確認に加え、ケース固有のAGENTS.mdが正本と相対パスの基準を一意に指定している。"
+          },
+          {
+            "id": "P05",
+            "purpose_source": "AGENTS.mdには正本指定がないが、README.mdには利用者承認済みの目的として「既存API互換を保って内部処理を改善する」と明記されている。レビュー根拠としてこれを使うが、README.mdを一般規則上の正本とは認定しない。",
+            "next_action": "互換を破る変更案を目的不適合として不採用にするレビュー結果を報告する。担当外である目的正本の新設・移設やhandoff・ADR作成は行わない。",
+            "needs_user_decision": "不要。提示された案は明示的な承認済み目的と直接矛盾する。",
+            "write_allowed": false,
+            "reason": "start-workのPhase 1は既存資料から目的を把握する。担当範囲はread-onlyレビューに限定されており、規則にない正本整備まで責務を拡張できない。"
+          },
+          {
+            "id": "P06",
+            "purpose_source": "AGENTS.mdがprivate/vision.mdを目的・方針の正本に指定しているが、その読取りは拒否されている。draft.mdは未承認草案なので代替の採用根拠にできない。format.mdの「公開形式はCSV」は独立した形式調査の根拠には使える。",
+            "next_action": "品質の優先順位は判断せず、指定正本が読めない事実を報告して、読取り可能な承認済み目的または優先順位の提示を求める。これに依存しない公開形式の調査は継続でき、現資料からCSVであることを報告する。",
+            "needs_user_decision": "必要。指定正本への適法なアクセス提供、承認済み内容の提示、または品質優先順位の判断が必要。",
+            "write_allowed": false,
+            "reason": "decision-delegationは、不明な判断に依存する作業を止める一方、独立して実行できる作業は続けると定める。未承認草案を読めない正本の代用にする規則はない。"
+          },
+          {
+            "id": "P07",
+            "purpose_source": "親から渡された「利用者のCSV列順互換を守る」という目的原文、原文が未コミット版であるとの版情報、互換性レビューのみというスコープを用いる。子が別ケースや実ディスクから目的を探し直したり、権限を拡張したりはしない。",
+            "next_action": "ケース固有の根拠が揃った場合は、渡された目的・対象版・範囲・移行根拠に限定して互換性レビューを開始し、採否と根拠を親へ返す。不足時は、その判断に依存するレビューを止め、移行方針の根拠1件が不足していると親へ報告して補足を求める。どちらの場合もhandoffやADRは作成しない。ただし、委譲レビューで従うよう指定されたreview-criteria.mdがrules内に存在しないため、完全なレビュー基準に従った実施までは主張できない。",
+            "needs_user_decision": "ケース固有の根拠が揃った場合は不要。不足時は子からユーザーへ直接拡張せず、まず委譲元による根拠補足または権限判断が必要。加えて欠落しているレビュー基準の提供が必要。",
+            "write_allowed": false,
+            "reason": "subagent-dispatchは、全体目的・根拠・対象版・範囲・担当する問いを渡し、迷う事項は委譲元へ報告し、委譲先が許可範囲を広げないこと、担当外のhandoff・ADRを作らないことを定める。同規則が参照するpre-finalization-review/references/review-criteria.mdは入力に存在しなかった。"
+          },
+          {
+            "id": "P08",
+            "purpose_source": "現行AGENTS.mdが指定するdocs/overview/vision.mdの「既存の目的本文」を維持する。new-template/AGENTS.mdには目的指定も固有指示もないため、それらを置換する根拠にはならない。",
+            "next_action": "新テンプレートの「新しい共通起点文」だけを現行AGENTS.mdの共通指示部分へ取り込む手順を提案し、「目的正本: docs/overview/vision.md」と「出力例には顧客名を出さない」という固有指示は保持する。ファイル全体の上書きや実編集は行わない。",
+            "needs_user_decision": "不要。依頼は更新手順の提案までであり、保持すべき既存項目とテンプレート側の欠落が明確。",
+            "write_allowed": false,
+            "reason": "ケース固有の現行AGENTS.mdは目的指定と固有制約を持つ一方、新テンプレートは共通起点文しか持たない。実体と指示の差を報告し、根拠なく既存の目的指定・固有指示を消さない。"
+          }
+        ],
+        "rules_read": [
+          "rules/AGENTS.md",
+          "rules/skills/start-work/SKILL.md",
+          "rules/skills/start-work/references/decision-delegation.md",
+          "rules/skills/session-handoff/SKILL.mdのhandoff形式・read操作指定に関する箇所",
+          "rules/skills/session-handoff/references/op-read.md",
+          "rules/skills/subagent-dispatch/SKILL.mdのレビュー委譲・常時適用に関する箇所"
+        ],
+        "limitations": [
+          "確認した規則には、目的を述べる複数文書が矛盾した場合の一般的な優先順位がない。このためP02は一意に判断できない。",
+          "rules/skills/subagent-dispatch/SKILL.mdが委譲レビューの正本として参照するrules/skills/pre-finalization-review/references/review-criteria.mdは存在しなかった。P07ではケース固有の根拠不足と、この規則文書不足を区別した。",
+          "参照された他の規則のうち、今回の目的選定・次手判断に不要な文書は全文探索していない。",
+          "仮想ケースの読解結果であり、ファイル編集、ADR・handoff作成、Git書込み、生成器実行、子起動は行っていない。"
+        ]
+      }
+    },
+    "after": {
+      "model_requested": "gpt-5.6-sol",
+      "effort": "high",
+      "summary": {
+        "run": {
+          "role": "assessment",
+          "exit_code": 0,
+          "elapsed_seconds": 154.2
+        },
+        "unchanged": true
+      },
+      "usage": [
+        {
+          "input_tokens": 138257,
+          "cached_input_tokens": 98432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 6036,
+          "reasoning_output_tokens": 2433
+        }
+      ],
+      "answer": {
+        "cases": [
+          {
+            "id": "P01",
+            "purpose_source": "AGENTS.mdに正本指定がないため、標準入口docs/overview/project-purpose.mdを採用する。内容は「既存CSV処理を維持し、列順互換を必須とする」。",
+            "next_action": "列順を変更する提案Aを不採用、列順を維持する提案Bを採用すると報告する。実際の変更や決定記録への反映は行わず、未反映のままとする。",
+            "needs_user_decision": "不要。必須の列順互換により一意に判断できる。",
+            "write_allowed": false,
+            "reason": "start-work/references/project-purpose.md「正本を特定する」3および「参照結果を判断・引き継ぎに使う」。AGENTS.md「作業方法の判断」の費用考慮は、個別の必須条件を省略する根拠にならない。"
+          },
+          {
+            "id": "P02",
+            "purpose_source": "現在の正本docs/overview/project-purpose.mdを採用する。内容は「社外利用者向けで、判断理由を確認できる説明出力が必須」。handoffの「社内用途」は古い要約であり、現在の正本には優先しない。",
+            "next_action": "説明出力を省く低費用案を不採用と報告する。実際の変更や決定記録への反映は行わない。",
+            "needs_user_decision": "不要。現在の正本の必須条件に反するため一意に判断できる。",
+            "write_allowed": false,
+            "reason": "project-purpose.md「参照結果を判断・引き継ぎに使う」は、開始・再開時に現在の正本とhandoffを照合し、古いhandoff要約を正本として固定しないと定める。session-handoff/references/op-read.mdも、継続要約より先に現在の目的を取得して照合するよう定める。"
+          },
+          {
+            "id": "P03",
+            "purpose_source": "changes.mdの利用者による明示承認と、その全文を根拠として示すhandoffを採用する。確定した新しい目的は「新APIへの移行」。docs/overview/project-purpose.mdの「CSV互換を維持する」は未反映の旧正本である。",
+            "next_action": "仮想条件上は、まずdocs/overview/project-purpose.mdを承認済みの新API移行目的へ更新し、必要な決定記録との整合を取って実体を読み直す。その後の実装は新API移行を基準にする。読み直し前には更新完了と報告せず、未承認の公開も行わない。この試験では更新を実行していない。",
+            "needs_user_decision": "不要。目的変更と目的文更新は既に明示承認されている。公開については未承認なので実行不可。",
+            "write_allowed": true,
+            "reason": "project-purpose.md「参照結果を判断・引き継ぎに使う」は、正本未反映でも確定済み合意とその根拠を使用できるとする。同「初期整備・変更・保存できない場合」は、未反映と判明している旧正本を最新扱いせず、変更確定後に権限内で正本と決定記録を整合し、実体を読み直すよう定める。"
+          },
+          {
+            "id": "P04",
+            "purpose_source": "プロジェクト固有AGENTS.mdの明示指定を採用する。相対パスはcwdではなくproject_root基準なので、正本は/project/docs/overview/vision.md。内容は「監査可能な処理結果を提供し、根拠の記録を省略しない」。",
+            "next_action": "今回の品質判断では/project/docs/overview/vision.mdの該当内容を根拠として使用すると報告する。",
+            "needs_user_decision": "不要。正本の指定と相対パス基準が明確である。",
+            "write_allowed": false,
+            "reason": "project-purpose.md「正本を特定する」1〜2は、現在ディレクトリだけで推測せず、AGENTS.mdの明示指定を優先し、相対パスをプロジェクトルート基準とする。"
+          },
+          {
+            "id": "P05",
+            "purpose_source": "AGENTS.mdに正本指定がなく、標準入口docs/overview/project-purpose.mdも入力に存在しないため、次の案内資料であるREADME.mdの利用者承認済み目的を採用する。内容は「既存API互換を保って内部処理を改善する」。正式な目的正本は未整備である。",
+            "next_action": "既存API互換を破る変更案を目的不適合として指摘し、正式な正本が未整備であることも報告する。read-onlyかつ整備担当外なので、正本作成や更新は行わない。",
+            "needs_user_decision": "不要。確認済みの利用者承認済み目的だけでレビュー結論を出せる。",
+            "write_allowed": false,
+            "reason": "project-purpose.md「正本を特定する」4は、未定義ならREADME等と既存合意を調べるとする。同「初期整備・変更・保存できない場合」は、read-onlyレビューでは確認済み根拠を使い、未整備状態を報告し、権限外の書込みを試みないと定める。"
+          },
+          {
+            "id": "P06",
+            "purpose_source": "AGENTS.mdがprivate/vision.mdを正本に指定しているが、unreadableのため現在の目的・品質優先順位は確認不能。draft.mdは未承認草案なので正本へ昇格しない。format.mdは独立した公開形式調査の根拠としてのみ使用でき、内容は「CSV」。",
+            "next_action": "正本を読めず品質優先順位を判断できないことを報告し、private/vision.mdの必要な内容または読取り可能な根拠の提供を求める。一方、独立した公開形式調査は続行できるため、CSVであると報告する。",
+            "needs_user_decision": "品質優先順位について、正本の内容提供またはアクセス可能な根拠の指定が必要。公開形式の報告には判断不要。",
+            "write_allowed": false,
+            "reason": "project-purpose.md「正本を特定する」3は、明示先が読取不能なら報告し、別資料を黙って正本へ昇格しないと定める。同「参照結果を判断・引き継ぎに使う」は、不明が影響する判断だけを止め、影響しない独立作業は続けるとする。"
+          },
+          {
+            "id": "P07",
+            "purpose_source": "根拠が揃った場合は、親から渡された「利用者のCSV列順互換を守る」という目的、未コミット版であることを明示した目的文書の原文、互換性レビューのみという範囲を使用する。不足時は、渡されていない移行方針の根拠を推測・補完しない。",
+            "next_action": "根拠が揃った場合は、主担当のPhase 0・1、handoff作成、ADR作成を重複せず、渡された範囲で直ちに互換性レビューを開始する。不足時は、移行方針が結論へ影響するため依存するレビュー判断を止め、足りない根拠1件を親へ報告して補完を求める。独立して確認できる事項があれば、その範囲だけ続ける。",
+            "needs_user_decision": "根拠が揃った場合は不要。不足時も直ちにユーザー判断を求めるのではなく、まず親による根拠の補完が必要。",
+            "write_allowed": false,
+            "reason": "start-work/SKILL.md「いつ使うか」は、委譲担当が目的・根拠・範囲・実行条件を確認し、主担当の開始処理やhandoff・ADRを重複しないと定める。project-purpose.mdは未コミット根拠をその旨付きで扱えるとし、不足は権限内の読取りまたは親への報告で扱う。不明が影響する判断だけを止める。"
+          },
+          {
+            "id": "P08",
+            "purpose_source": "既存AGENTS.mdの目的指定docs/overview/vision.mdと、その参照先の既存目的本文を維持する。顧客名を出さない固有指示も維持対象。new-template/AGENTS.mdは共通起点文の供給元であり、目的正本ではない。",
+            "next_action": "最初に既存AGENTS.md、固有指示、目的正本の指定と参照先を確認し、変更前の保全方法を手順に含める。その後、新テンプレートの共通起点文だけを差分統合し、AGENTS.md全体の置換は不採用とする。統合後に目的指定、既存目的本文、顧客名を出さない指示が残り、開始・再開手順から正本を読めることを確認する案を提示する。read-onlyのため未反映であり、導入完了とは報告しない。",
+            "needs_user_decision": "現入力では不要。共通部と固有部に意味上の衝突が見つかった場合に限り判断が必要。",
+            "write_allowed": false,
+            "reason": "rules/README.md「目的・方針の参照機能を既存プロジェクトへ更新する」1〜3は、既存内容の保全、共通該当文だけの差分統合、全体や目的本文の上書き禁止、固有指示・目的指定・参照到達性の確認を定める。衝突箇所は報告して判断を求める。"
+          }
+        ],
+        "rules_read": [
+          "rules/AGENTS.md",
+          "rules/skills/start-work/SKILL.md",
+          "rules/skills/start-work/references/project-purpose.md",
+          "rules/skills/start-work/references/decision-delegation.md",
+          "rules/skills/session-handoff/SKILL.md",
+          "rules/skills/session-handoff/references/op-read.md",
+          "rules/README.md「目的・方針の参照機能を既存プロジェクトへ更新する」周辺"
+        ],
+        "limitations": [
+          "仮想プロジェクトのfilesとunreadableはcases.json内の入力だけを使用し、仮想パスを実ディスクで探索していない。",
+          "実効環境はread-onlyであり、本回答は規則判断のみで、編集・生成・Git書込み・handoff作成・ADR作成・子起動を行っていない。P03のwrite_allowed=trueは仮想ケース内の許可条件を表し、実際に書き込んだことを意味しない。",
+          "rules/AGENTS.mdが参照するdecision-logスキル本体はrules/skills/decision-logに存在せず、検出トリガーや記録手順の詳細は確認できなかった。この不足は各ケースの目的正本・案の適否・書込み可否の判断を変えないが、実作業時の決定記録手順は確定できない。"
+        ]
+      }
+    }
+  },
+  "update_copy": {
+    "custom_instructions_preserved": true,
+    "purpose_content_unchanged": true,
+    "purpose_path_readable": true,
+    "changes_only_common_sections": true,
+    "method": "主担当がREADMEの手順で試験用コピーへ共通2箇所を統合。自動移行器の検証ではない。"
+  }
+}

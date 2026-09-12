@@ -10,5 +10,6 @@
    - Branch, Last Updated, Status (in_progress), Current Phase
    - 作業の目的・背景（ヒアリング結果）
    - 関連ドキュメント（あれば）
+   - プロジェクトの目的・方針の参照結果（`start-work` の `references/project-purpose.md`）。正本未整備・不明・未反映も区別し、未確認の目的を確定済みとしない
 3. 完了/進行中/未着手のタスクは空でも可（更新で埋める）
 4. ファイルを git に add するが、コミットは update（`op-update.md`）/ finalize（`op-finalize.md`）にゆだねる

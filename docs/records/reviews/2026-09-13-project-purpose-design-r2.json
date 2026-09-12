@@ -1,0 +1,115 @@
+{
+  "model_requested": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "approval": "2026-09-13: 修正資料と必要な根拠のOpenAI送信を明記したSol/high 1体差分再確認への選択肢1",
+  "source_files": 295,
+  "source_bytes": 2487889,
+  "execution": {
+    "run": {
+      "role": "diff",
+      "exit_code": 0,
+      "elapsed_seconds": 449.23
+    },
+    "snapshot_unchanged": true
+  },
+  "usage": [
+    {
+      "input_tokens": 1239269,
+      "cached_input_tokens": 1107840,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 16501,
+      "reasoning_output_tokens": 9992
+    }
+  ],
+  "item_types": {
+    "error": 1,
+    "agent_message": 5,
+    "command_execution": 44
+  },
+  "review": {
+    "role": "独立文書レビュアー（差分再確認、gpt-5.6-sol/high 1体）",
+    "reviewed_targets": [
+      "docs/records/decisions/0190-read-project-purpose-at-start-resume-and-delegation.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/00-overview.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/01-purpose-context.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/02-workflow-integration.md",
+      "docs/current/specs/2026-09-12-project-purpose-context/03-distribution-and-validation.md"
+    ],
+    "evidence_read": [
+      "before/0190-before.md 全文",
+      "before/0190.diff 全文",
+      "docs/records/reviews/2026-09-12-project-purpose-design-r1.md 全文、特に54-72行「主担当の照合と対応案」「退避・残る確認と次手」",
+      "skills/pre-finalization-review/references/iteration-norms.md「反復の実施」の差分再確認",
+      "skills/pre-finalization-review/references/review-criteria.md 全文（目的・要求、根拠・設計判断、動作・検証・運用、反例・失敗経路）",
+      "docs/current/development-roadmap.md 4-8行、54-94行の4.0節",
+      "AGENTS.md 25-35行「作業方法の判断」「作業の起点」",
+      "docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md 全文",
+      "docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md 全文",
+      "skills/feature-block-design/SKILL.md 15-22行、32-39行、67-84行",
+      "skills/start-work/SKILL.md 8-16行、26-54行、90-119行",
+      "skills/start-work/references/decision-delegation.md「承認基準と適用範囲」「相談・記録・再開」",
+      "skills/subagent-dispatch/SKILL.md 8-24行、34-59行",
+      "skills/session-handoff/SKILL.md と references/op-read.md・op-create.md・op-update.md・op-cycle-reset.md の該当契約",
+      "README.md 149-203行のプラグイン更新・新規導入・既存AGENTS移行",
+      "template.manifest 全文",
+      "docs/overview/folder-structure.md 79-86行「仕様書の運用規約」"
+    ],
+    "findings": [
+      {
+        "id": "ADR0190-R2-01",
+        "layer": "設計骨格",
+        "severity": "Major",
+        "target": "docs/current/specs/2026-09-12-project-purpose-context/02-workflow-integration.md 32-38行、特に36行",
+        "problem": "目的を受け取った子に不要なstart-workを繰り返させない契約と、現行AGENTS／start-workの無条件発火契約が衝突している。改訂仕様は委譲済みタスクをstart-workの対象外にする条件も、委譲用の縮退入口も定義していない。",
+        "evidence": "旧版49行は「目的を把握した担当に同じ開始儀式を繰り返させない」と要求し、改訂後02の36行も「不要なstart-work」を始めないとしている。一方、AGENTS.md 35行はレビュー・調査を含む新しい作業で必ずstart-workを呼ぶとし、skills/start-work/SKILL.md 8-12行も全作業の入口として例外なく必須化している。subagent-dispatchにも子を除外する接続はない。状態→操作→失敗経路は、親が目的の参照結果を添えてread-onlyレビューを委譲する→子がAGENTSに従いstart-workを起動する→Phase 0でhandoffを再読し、handoff不在ならPhase 1の54行でcreateへ進む→開始処理・確認を重複し、read-onlyでは書込み拒否または不要停止になる、である。03の29行の委譲検証ケースも目的・範囲だけを期待値にし、この二重起動を検出しない。",
+        "impact": "委譲時の目的再利用による費用・時間削減が成立せず、read-only担当では権限外書込みの試行または作業停止を招く。子がstart-workを省けば上流必須規範違反となるため、現状のままでは両契約を同時に実装できない。",
+        "suggested_fix": "02で、subagent-dispatchによって目的・範囲・実行条件を受け取った委譲タスクは新しいトップレベル作業のstart-work発火対象外であると定義し、AGENTS.mdとstart-workの発火文へ同じ例外への短い接続を追加する。03の委譲ケースには、子がPhase 0・1やhandoff作成を重複実行しないことを期待結果として加える。"
+      }
+    ],
+    "prior_findings": [
+      {
+        "id": "ADR0190-F01",
+        "status": "解消",
+        "evidence": "feature-block-design 17-20行の「コンポーネント3つ以上」に対し、ADR-0190 27行と00-overview 7-17行が3責務、依存方向、共通受け渡しを定義し、ADRを理由へ限定した。"
+      },
+      {
+        "id": "ADR0190-F02",
+        "status": "解消",
+        "evidence": "01-purpose-context 24-28行がプロジェクトルート、パス・節、コミットまたは内容保持記録、未コミット状態、確定・草案・不明を参照結果として定義した。全件ハッシュは要求していない。"
+      },
+      {
+        "id": "CF-01",
+        "status": "解消",
+        "evidence": "01-purpose-context 34-36行が正本と決定記録の部分保存失敗、未反映変更と合意根拠の保全、旧正本を最新版としない条件を定め、02-workflow-integration 26-30行がhandoff保存・cycle-resetへ接続した。"
+      },
+      {
+        "id": "CF-02",
+        "status": "解消",
+        "evidence": "01-purpose-context 13-18行がプロジェクトルートの決定順、相対パスのルート基準、指定→標準入口→必要な案内資料という探索順と終了条件を定義した。03-distribution-and-validation 26行にサブディレクトリ開始の検証例もある。"
+      },
+      {
+        "id": "ADR0190-F03",
+        "status": "解消",
+        "evidence": "01-purpose-context 38-42行が目的の取得・判断と正本の永続化を分離し、read-onlyでは既存根拠による継続、未整備状態の報告、権限外書込み禁止を定義した。"
+      },
+      {
+        "id": "CF-03",
+        "status": "解消",
+        "evidence": "03-distribution-and-validation 27-28行が、read-onlyかつ正本未整備の場合と目的自体が不明な場合を別ケースにし、前者では書込みや整備だけを理由とする停止を要求していない。"
+      },
+      {
+        "id": "ADR0190-F04",
+        "status": "解消",
+        "evidence": "03-distribution-and-validation 11-17行が変更前保全→共通部の差分統合→固有指定・指示の保持と到達確認を定義し、30・34行が固有指定を持つ試験用コピーでの検証を要求した。template.manifest 16行のAGENTS全体配布とREADME 192行のスキル更新経路の分離にも対応している。"
+      }
+    ],
+    "unverified": [
+      "対象は未実装であり、開始・再開・handoff・委譲・目的変更・利用側更新の実動作は未確認。",
+      "将来作成予定のdocs/overview/project-purpose.md、skills/start-work/references/project-purpose.md、実装計画が現時点で存在しないことは欠陥に数えていない。",
+      "build-dist、sync-template、両Check、AGENTSサイズ再測定、試験用コピーへの更新は未実行。",
+      "追加モデル・他ツール・実プロジェクトへの導入効果は未確認。文書検査を動作成功の証拠にはしていない。"
+    ],
+    "created_artifacts": [],
+    "verdict": "修正後文書5/5、R1統合論点5/5を全数確認し、3領域と兼務による反例探索を改訂範囲へ適用した。R1の7指摘に対する直接の設計対応は解消しているが、委譲された子のstart-work発火に新規Major 1件があり、設計骨格は未収束。修正後の差分再確認が必要である。"
+  }
+}

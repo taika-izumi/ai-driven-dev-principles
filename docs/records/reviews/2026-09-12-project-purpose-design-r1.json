@@ -1,0 +1,246 @@
+{
+  "target_original_sha256": "c3acc6d73cf527b5690cc13bfb74f0495b75e7b2b3592afe324bad45ce0b7a41",
+  "corpus_files": 285,
+  "corpus_bytes": 2389196,
+  "send_approval": "2026-09-12: ユーザーが資料285件のOpenAI Sol送信への選択肢1を選択",
+  "runs": [
+    {
+      "role": "domains",
+      "exit_code": 0,
+      "elapsed_seconds": 59.92,
+      "model_requested": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "review_completed": false,
+      "usage": [
+        {
+          "input_tokens": 66177,
+          "cached_input_tokens": 53248,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 2101,
+          "reasoning_output_tokens": 789
+        }
+      ],
+      "thread_id": "01a095d8-3a3f-7252-9b46-87756cb17b7c"
+    },
+    {
+      "role": "challenge",
+      "exit_code": 0,
+      "elapsed_seconds": 203.95,
+      "model_requested": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "review_completed": false,
+      "usage": [
+        {
+          "input_tokens": 250090,
+          "cached_input_tokens": 215296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 5190,
+          "reasoning_output_tokens": 3046
+        }
+      ],
+      "thread_id": "01a095d8-3a5b-7043-8197-4cf6a5aef653"
+    },
+    {
+      "role": "domains-git",
+      "exit_code": 0,
+      "elapsed_seconds": 53.73,
+      "model_requested": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "review_completed": false,
+      "usage": [
+        {
+          "input_tokens": 55024,
+          "cached_input_tokens": 49920,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 2059,
+          "reasoning_output_tokens": 906
+        }
+      ],
+      "thread_id": "01a095da-f26d-7471-a1ef-c5ca4489904e"
+    },
+    {
+      "role": "challenge-git",
+      "exit_code": 0,
+      "elapsed_seconds": 60.71,
+      "model_requested": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "review_completed": false,
+      "usage": [
+        {
+          "input_tokens": 55437,
+          "cached_input_tokens": 42880,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 2109,
+          "reasoning_output_tokens": 1002
+        }
+      ],
+      "thread_id": "01a095da-f245-76f1-921c-46c1e0f01b07"
+    },
+    {
+      "role": "domains-sandbox",
+      "exit_code": 0,
+      "elapsed_seconds": 421.01,
+      "model_requested": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "review_completed": true,
+      "usage": [
+        {
+          "input_tokens": 1318444,
+          "cached_input_tokens": 1184640,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 17480,
+          "reasoning_output_tokens": 9677
+        }
+      ],
+      "thread_id": "01a095dc-c1cd-7d01-a115-e91a22d19c4d"
+    },
+    {
+      "role": "challenge-sandbox",
+      "exit_code": 0,
+      "elapsed_seconds": 390.05,
+      "model_requested": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "review_completed": true,
+      "usage": [
+        {
+          "input_tokens": 872827,
+          "cached_input_tokens": 778240,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 14400,
+          "reasoning_output_tokens": 8130
+        }
+      ],
+      "thread_id": "01a095dc-c18f-7761-b6a4-d54e528319d1"
+    }
+  ],
+  "reviews": {
+    "domains-sandbox": {
+      "role": "目的・要求、根拠・設計判断、動作・検証・運用を兼務する独立フルレビュアー",
+      "reviewed_targets": [
+        "D:/Dev/002_AiDev/MakeAiInstructions/.tmp/adr-0190-sol-review/snapshot/docs/records/decisions/0190-read-project-purpose-at-start-resume-and-delegation.md（全文、全数走査1/1）"
+      ],
+      "evidence_read": [
+        "AGENTS.md 25-35行「作業方法の判断」「作業の起点」",
+        "docs/current/development-roadmap.md 1-24行、56-95行「冒頭」「4.0 初期比較の結論と次の評価の位置づけ」",
+        "docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md 全文",
+        "docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md 全文",
+        "skills/pre-finalization-review/references/review-criteria.md 全文",
+        "skills/start-work/SKILL.md 10-16行、22-79行、90-121行",
+        "skills/start-work/references/decision-delegation.md 全文",
+        "skills/feature-block-design/SKILL.md 10-39行、67-85行",
+        "skills/subagent-dispatch/SKILL.md 全文",
+        "skills/session-handoff/SKILL.md 20-127行",
+        "skills/session-handoff/references/op-read.md、op-create.md、op-update.md、op-finalize.md、op-cycle-reset.md",
+        "README.md 1-35行、149-202行",
+        "template.manifest 全文",
+        "CONTRIBUTING.md 配布対象・start-work変更・機能ブロック変更の該当節",
+        "docs/reference/stage-three-preparation-and-delegation.md 38-88行",
+        "docs/records/decisions/0184-reassess-preparation-by-outcome-and-remaining-cost.md 全文"
+      ],
+      "findings": [
+        {
+          "id": "ADR0190-F01",
+          "severity": "Major",
+          "target": "Decision 24行、6.変更対象と責務 63-69行",
+          "problem": "機能ブロック分割を非適用とした根拠が、現行の適用基準と対象ADR自身の変更構成に一致しない。",
+          "evidence": "ADR-0190の24行は「3つ以上の実装モジュールを設けない」とするが、63-69行は少なくともstart-work、session-handoff、subagent-dispatch、pre-finalization-reviewという4つの既存コンポーネントにまたがる契約変更を列挙する。skills/feature-block-design/SKILL.md 17-22行の発火条件は、新設か既存かを限定せず「想定モジュール／コンポーネント／サービスが3つ以上」である。状態＝本ADRを承認済み設計として実装へ渡す、操作＝非適用判定のまま各スキルを個別変更する、結果＝取得結果の受渡し形式、handoffとの同期、委譲時の版識別などのコンポーネント間契約を分割仕様なしで実装する経路になる。",
+          "impact": "開始・再開・委譲の一部だけが異なるデータ契約で実装され、目的や承認範囲の継続情報を落とす可能性がある。現行必須手順との不整合でもある。",
+          "suggested_fix": "24行の非適用判断を撤回し、現行しきい値に従って機能ブロック分割を適用する。少なくとも「目的の特定・照合」「handoffでの継続」「委譲・レビュー入力」「配布・導入」を責務と接続点で整理し、実装計画へ進む前に分割仕様を確定する。"
+        },
+        {
+          "id": "ADR0190-F02",
+          "severity": "Major",
+          "target": "Decision 35-37行、45行、49行",
+          "problem": "正本の「対象版」と鮮度を識別するデータ契約が未定義で、目的変更後にどの内容をhandoffや子へ渡すか一意に決まらない。",
+          "evidence": "ADR-0190の49行は委譲入力へ「正本の所在・対象版」を要求する一方、45行のhandoff記録はパス・節・状態だけで対象版を含めず、35-37行も「最新」「変更の兆候」「有効に参照できる」の判定方法を定めない。review-criteria.md 7行は資料の所在・版・関連箇所、10-11行は正本のパス・節と有効性を要求し、decision-delegation.md 18行も承認時点を一意に特定できる根拠を要求する。状態＝親が正本Aを読んだ後に目的文書がBへ変更される、操作＝同一作業中の再利用としてhandoff更新または子へ委譲する、結果＝対象版欄の作り方がなく、Aの要約とBのパスを組み合わせたり、変更済みBを未確認のままAで判断したりできる。",
+          "impact": "目的変更後の再開・委譲で旧目的を採用し、要求、品質条件、承認範囲を誤る可能性がある。目的変更を保全するという主要要求を満たせない。",
+          "suggested_fix": "正本参照の最小識別形式をDecisionで定義する。例えば、パス・節に加えてコミットID、未コミットなら作業ツリー版である旨と内容を一意に照合できる識別子を用いる。handoffには次回最新を再取得するための所在と前回参照版・未確認状態を残し、委譲直前に変更兆候がある場合だけ再読する分岐を明記する。"
+        },
+        {
+          "id": "ADR0190-F03",
+          "severity": "Major",
+          "target": "Decision 35-44行、検証の設計 83行",
+          "problem": "正本がない状態で書込み権限もない作業を開始する経路が定義されていない。",
+          "evidence": "start-work/SKILL.md 12行はレビュー・調査を含む全作業に適用され、ADR-0190の35行は新規・継続分岐より前の取得を要求する。42行は正本または所在案内を「整える」とするが、書込み不可の場合に会話内草案だけで続けるのか、保留するのかを定めない。36行は目的変更で操作許可を拡張しないとし、38行は影響のない読取りまで一律停止しないとするため、無断作成と全作業停止の双方を避ける具体的分岐が必要である。状態＝目的文書のない既存プロジェクトでread-onlyのレビューを依頼、操作＝start-workが目的取得を実行、結果＝正本作成による権限超過、または正本を作れないためレビュー全体を停止する二つの失敗経路が残る。83行の検証ケースも未定義・読取不能を一括し、書込み権限の有無を区別していない。",
+          "impact": "権限の保全か作業継続性のどちらかを損ない、読み取り専用のレビュー・調査で不要な確認や文書作成を発生させる可能性がある。",
+          "suggested_fix": "未定義時の分岐に「書込みが許可されない場合は、確認済み資料から会話内草案と不明点を示し、確定目的として保存・委譲せず、独立して可能な作業は続行する」を追加する。永続化は文書変更が許可された作業へ限定し、検証ケースにもread-only開始を追加する。"
+        },
+        {
+          "id": "ADR0190-F04",
+          "severity": "Major",
+          "target": "Decision 56-57行、6.変更対象と責務 63-71行",
+          "problem": "既存プロジェクトへAGENTS.mdの新しい接続を届けつつ、プロジェクト固有の正本指定を保つ更新操作が決まっていない。",
+          "evidence": "template.manifest 13-17行ではAGENTS.md全体がtemplateへの同期対象である。一方、README.md 186-187行は新規プロジェクトへのtemplateコピーと固有指示追記を規定し、192行の通常更新はスキルのプラグイン更新だけで、既存AGENTS.mdの共通部分を更新する経路を持たない。ADR-0190の57行は丸ごとの上書きを禁止するだけで、差分統合、固有部分の退避、衝突時の停止、更新後の到達確認を定義していない。状態＝既存プロジェクトのAGENTS.mdに目的正本の固有パスがある、操作＝新しいAGENTS接続を配布・導入する、結果＝templateを置換すれば固有パスを失い、置換しなければ「根拠を失った場合の再取得」接続が届かない。",
+          "impact": "配布時の目的保全という承認済み要求を満たせず、利用側で目的を消失させるか、更新機能を受け取れない状態になる。",
+          "suggested_fix": "Decision 5へ既存プロジェクト向けの正方向の更新契約を追加する。プラグイン更新で届くスキルと、手動統合が必要なAGENTS.mdを分け、固有指示・目的正本指定を先に保持して共通節だけを更新し、衝突時は上書きせず報告すること、更新後に正本への到達を確認することを明記する。"
+        }
+      ],
+      "unverified": [
+        "対象ADRは未実装のため、開始・再開・委譲・変更・配布の実動作は未確認。",
+        "read-only静的レビューのため、検証表のモデル実行、生成器、配布更新、プラグイン導入は実行していない。",
+        "将来作成すると明記されたdocs/overview/project-purpose.mdとskills/start-work/references/project-purpose.mdの不存在は欠陥に含めていない。",
+        "snapshot外の会話履歴、LoopForAlpha原文、外部環境・個人ファイル・認証情報は確認していない。",
+        "ファイルの作成・編集・削除・コミットは0件。elevated指定のWindowsサンドボックス上でも操作権限はread-onlyに限定した。"
+      ],
+      "verdict": "対象全文1件中1件を全数確認。目的・費用・品質下限・権限・対象外範囲の記述は指定根拠と概ね整合するが、コンポーネント分割判定、目的の版識別、read-only時の未定義処理、既存プロジェクトへの安全な配布更新にMajor欠陥がある。実装計画へ進む前に修正し、該当経路を再レビューする必要がある。"
+    },
+    "challenge-sandbox": {
+      "role": "独立した反例・失敗経路レビュアー（Windows既存sandbox=elevated、実効操作権限=read-only）",
+      "reviewed_targets": [
+        "docs/records/decisions/0190-read-project-purpose-at-start-resume-and-delegation.md（全文1文書・110行）"
+      ],
+      "evidence_read": [
+        "docs/records/decisions/0190-read-project-purpose-at-start-resume-and-delegation.md 全文",
+        "docs/current/development-roadmap.md 冒頭1〜20行、4.0節54〜94行",
+        "AGENTS.md「作業方法の判断」「作業の起点」25〜37行",
+        "docs/records/decisions/0130-apply-cost-guidance-through-local-discretion.md 全文",
+        "docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md 全文",
+        "skills/pre-finalization-review/references/review-criteria.md 全文",
+        "skills/start-work/SKILL.md 全文",
+        "skills/start-work/references/decision-delegation.md 全文",
+        "skills/subagent-dispatch/SKILL.md 全文",
+        "skills/session-handoff/SKILL.md、およびreferences/op-create.md・op-read.md・op-update.md・op-finalize.md・op-cycle-reset.mdの関連箇所",
+        "template.manifest 全文、README.mdの導入・更新・移行箇所",
+        "docs/reference/stage-three-preparation-and-delegation.mdの2026-09-12再照合・対話補足",
+        "docs/records/decisions/0184-reassess-preparation-by-outcome-and-remaining-cost.md 全文"
+      ],
+      "findings": [
+        {
+          "id": "CF-01",
+          "severity": "Major",
+          "target": "Decision 1〜4（28〜49行）、検証ケース（80〜82行）",
+          "problem": "「最新の正本」「対象版」を識別する契約と、目的変更を正本・決定記録・handoffへ保全する完了順序が定義されていない。委譲では対象版を要求する一方、handoffの必須情報はパス・節・状態だけで版を含まず、「必要に応じて更新する」ため、読めるが古い正本を最新版と誤認する経路が残る。",
+          "evidence": "対象ADR 36行は「最新の正本」を照合するとするが鮮度の判定材料を定義せず、45行はhandoffにパス・節・状態だけを要求し、49行だけが子への「対象版」を要求する。これに対し既存のdecision-delegation.md 18行は、日付と現行パスだけでは承認版にならず、コミットとパスまたは内容を保持した記録が必要と明記する。review-criteria.md 7行も対象版と変更範囲の識別を要求する。失敗経路は、状態＝AGENTSが指す可読な可変ファイルは版Aのまま、目的変更の承認またはADRは版Bを示す／操作＝中断後に再開し、そのパスを「最新」として読むか、親が版の識別子なしに子へ渡す／結果＝版Aの目的で判断し、80〜82行の「最新の正本」「新しい合意」を使う期待結果を再現可能に判定できない、となる。",
+          "impact": "中央目的を古いまま再開・委譲し、品質条件や優先順位を落とす。目的変更の保全という今回の主要要求を直接損なう。",
+          "suggested_fix": "共通手順の契約に、正本の版を識別する最小情報（例：パス・節・コミットまたは内容識別子。未コミット時はその状態）を定義する。目的変更は、依存判断またはセッション終了前に正本とdecision-logを整合させ、未完ならhandoffへ「変更保留・旧版・新根拠」を残す。再開時は実体の版と照合し、影響する判断だけを保留する。専用台帳は追加しない。"
+        },
+        {
+          "id": "CF-02",
+          "severity": "Minor",
+          "target": "Decision 1・3（28〜29行、42〜43行）",
+          "problem": "正本パスの相対基準、複数AGENTS.mdがある場合の適用範囲、未定義時に調べる資料の順序と終了条件がない。このため、正本が存在しても取得失敗したり、未定義のたびに広い履歴探索を繰り返したりし得る。",
+          "evidence": "対象ADR 28行は相対パス`docs/overview/project-purpose.md`を標準入口とするが、リポジトリルート・AGENTS.md所在・現在ディレクトリのどれを基準にするかを示さない。42行は「既存資料・合意を調べる」とするだけで探索順序・上限がない。review-criteria.md 11、15行は案内文書から対象範囲を確認して特定し、全資料を一律読破しないことを要求する。失敗経路は、状態＝ルートのAGENTS.mdと目的文書が存在するが担当の作業ディレクトリはサブディレクトリ／操作＝標準入口を現在ディレクトリ基準で解決／結果＝不存在扱いとなり、既存資料探索や利用者確認へ迂回する、となる。別経路では、標準入口のない既存プロジェクトで開始ごとにADR・履歴を無限定に探索し、時間とトークンを増やす。",
+          "impact": "目的取得の信頼性を落とし、既知事項の再探索・再質問という本案が削減するはずの負担を発生させる。",
+          "suggested_fix": "パスは適用対象となるプロジェクト固有AGENTS.mdのルート基準など、一つの基準を明記する。複数AGENTS.mdでは最も近い適用範囲を優先する等の規則を定める。未定義時はAGENTS指定→標準入口→README・overview・roadmap等の案内文書→そこから直接参照された合意、のような限定順序と、判断可能になった時点で止める条件を設ける。"
+        },
+        {
+          "id": "CF-03",
+          "severity": "Minor",
+          "target": "Decision 3（42〜45行）",
+          "problem": "目的が確定していて記載場所だけがない場合の「正本または所在の案内を整える」が、文書変更を許可されていない開始・レビューでの非変更分岐を明示していない。既存の一般的な権限保護は維持すると書かれているが、この新しい初期整備操作への適用が設計上曖昧である。",
+          "evidence": "対象ADR 42行は正本または案内を整えるよう規定する一方、36行の権限保護は「目的変更だけで過去の操作許可や作業範囲を拡張しない」という場面に限定される。93行はADR-0133の許可境界を維持するとする。AGENTS.md 27行は個別の必須手順・権限を省略しないと定め、decision-delegation.md 52行も実行環境の権限を維持する。失敗経路は、状態＝正本未指定でREADMEから目的は確定できるが、今回の作業はread-onlyレビュー／操作＝start-workが42行を文書整備の必須処理として実行／結果＝権限外の作成・編集を試みる、または不要な許可確認で本来独立して可能なレビューを停止する、となる。",
+          "impact": "権限境界を破るか、正常な読取り専用作業を止めて確認負担を増やす可能性がある。",
+          "suggested_fix": "「取得」と「正本の初期整備」を分岐し、文書変更が今回の承認範囲・実効権限内の場合だけ作成・更新する、と明記する。範囲外なら確認済みの既存根拠を今回の判断に使い、未整備状態と候補パスだけ報告して、影響のない作業を継続する。"
+        }
+      ],
+      "unverified": [
+        "対象ADRは未実装のため、開始・再開・委譲の代表操作、目的を使った判断、検証ケースの動作は未実行・未確認。文書検査を動作成功の証拠にはしていない。",
+        "snapshotにはscripts/build-dist.ps1、scripts/sync-template.ps1、dist、templateが含まれていないため、生成整合・配布更新・既存プロジェクト保全の実動作は未確認。欠落自体は今回の指摘にしていない。",
+        "対象ADRが述べる別プロジェクトへのアクセス拒否や過去セッションの因果は独立に実証していない。",
+        "編集・作成・削除・コミットは実施しておらず、作成物はない。"
+      ],
+      "verdict": "全数走査対象は1文書（110行）で、全文を確認した。目的・品質・費用・権限・継続情報の基本境界、ADR-0184を再採用しない範囲、通常作業を一律停止しない規定は根拠原文と概ね整合する。ただし、古い正本を排除して目的変更を再開・委譲へ確実に届けるための版識別・更新保全契約にMajorの欠落があるため、現状のまま確定するのは非推奨。CF-01を必須修正、CF-02・CF-03を小規模な契約明確化として修正した後に再確認するのが妥当。"
+    }
+  },
+  "snapshot_unchanged": true
+}

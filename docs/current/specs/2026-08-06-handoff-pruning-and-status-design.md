@@ -7,6 +7,12 @@
 - **関連 ADR**: ADR-0074（受け皿は git 履歴のみ）/ ADR-0075（二段階剪定）/ ADR-0076（Status 4 値化）/ ADR-0077（外部参照は安定識別子）
 - **スコープ外**: Issue-0053（セッション再起動での振り返り素材消失）。ただし剪定規約は素材消失と逆方向のリスクを持つため、「正本が handoff 以外にないものは圧縮しない」制約として設計に反映済み
 
+## 目的・方針の参照を保持する契約
+
+目的の現在の正本は `skills/start-work/references/project-purpose.md` で特定し、handoffの関連資料へ所在・適用範囲・参照内容の根拠を置く。未確定・未反映と影響は状態欄へ置き、目的本文を毎回複写しない。readでは現在の正本と前回の参照内容・未反映変更を照合し、start-workで取得済みなら再利用する。
+
+create/updateと、update同様の更新を行うfinalizeにも同じ契約を適用する。cycle-resetでは有効な目的の所在・未反映事項を消さず、完了作業の許可は流用しない。詳細仕様は `docs/current/specs/2026-09-12-project-purpose-context/02-workflow-integration.md` を参照（ADR-0190）。
+
 ## 設計の骨子
 
 ハンドオフ肥大の根本原因は剪定機会の不足ではなく、**剪定の許可と基準が明文化されていないこと**。対処は「イベント駆動の構造的剪定規約」を `session-handoff` / `retrospective` の 2 スキルに組み込むことで行う。サイズの実測トリガーは本設計の対象外とし、後続設計 `docs/current/specs/2026-08-13-handoff-bloat-control/02-volume-norms.md`（ADR-0087）が定める。

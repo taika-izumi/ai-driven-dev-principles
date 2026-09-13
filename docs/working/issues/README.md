@@ -130,7 +130,7 @@
 | [0114](flow/0114-quality-investment-marginal-utility-and-stratified-defaults/0114-quality-investment-marginal-utility-and-stratified-defaults.md) | 品質・設計投資の限界効用を実測し、レビュー・検査の既定を層別に再設計する（LoopForAlpha#Issue-0117 委譲） | open | 2026-08-30 |
 | [0115](flow/0115-session-handoff-size-split-candidate.md) | session-handoff の SKILL.md が分割候補のまま暫定登録されている | closed | 2026-09-01 |
 | [0116](flow/0116-decision-log-size-split-candidate.md) | decision-log の SKILL.md が分割候補のまま暫定登録されている | closed | 2026-09-01 |
-| [0118](flow/0118-information-reachability-mechanism-undesigned.md) | 総情報量の増加に対し、AI が必要な情報へ到達する仕組みが体系として設計されていない | open | 2026-09-03 |
+| [0118](flow/0118-information-reachability-mechanism-undesigned/0118-information-reachability-mechanism-undesigned.md) | 総情報量の増加に対し、AI が必要な情報へ到達する仕組みが体系として設計されていない | open | 2026-09-03 |
 | [0119](flow/0119-guideline-wording-violates-its-own-plain-language-norm/0119-guideline-wording-violates-its-own-plain-language-norm.md) | 配信ガイドラインの文面が、自ら定める「文章だけで意味が推測できる表現」に反する語と記号的ラベルを多用し、配布先の対話・成果物へ伝播する（LoopForAlpha#Issue-0130 申し送り・フォルダ昇格済み） | closed | 2026-09-03 |
 | [0120](flow/0120-promoted-issue-file-has-no-shrink-mechanism.md) | フォルダ昇格済みの課題ファイルに縮める手段が無く、4 役割の規律を守っても「現在地の要約」が単調増加する | open | 2026-09-03 |
 | [0121](flow/0121-subfolder-split-trigger-missing-in-placement-norm.md) | 配置の正本に「種別サブフォルダをいつ作るか」の判定則が無く、同じ議論が分類フォルダごとに再演する（LoopForAlpha#Issue-0140 申し送り） | open | 2026-09-03 |

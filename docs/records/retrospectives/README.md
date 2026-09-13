@@ -87,6 +87,7 @@
 | 2026-09-10 | レビュー採否時の費用比較の具体化（Issue-0124） | [system](system/2026-09-10-issue-0124-cost-comparison.md) | codex/issue-0124-cost-comparison（取り込み方式: マージコミット 06b8fa7） | 新規起票0件、worklog 1件。ADR-0165 Accepted、Issue-0124 closed。0.1.26未公開 |
 | 2026-09-12 | レビューの問いと担当分担の反映 | [system](system/2026-09-12-review-questions.md) / [flow](flow/2026-09-12-review-questions.md) | codex/issue-0143-review-questions（取り込み方式: マージコミット 7dec143） | Issue-0145をユーザー指示で起票、対策未決。0.1.28のローカル統合・検証完了 |
 | 2026-09-13 | 正本未確認時の整備候補提示 | [system](system/2026-09-13-purpose-maintenance-candidate.md) | codex/purpose-maintenance-candidate（取り込み方式: マージコミット 09cf903） | 新規起票0件。ADR-0191 Accepted、0.1.29の追加修正を統合・検証済み。公開・導入未実施 |
+| 2026-09-13 | プロジェクトの目的・方針の参照 | [system](system/2026-09-13-project-purpose-context.md) | codex/project-purpose-context（取り込み方式: マージコミット fa9e6f9） | 保留していた後処理を実施。新規起票0件、worklog記録済み2件、Issue-0118へ部分進展を追記・文書整理。公開・導入未実施 |
 
 > 注: 2026-06-15 以前の振り返りは旧フラット配置（`docs/records/retrospectives/YYYY-MM-DD-<topic>.md`）で作成されており、移動していない。当時は「採用提案を ADR ドラフト化する」方式だったが、これは ADR-0021 で廃止された。`system/` `flow/` への2フォルダ分割と課題抽出限定スコープは、ADR-0021 以降に作成する振り返りから適用する。
 

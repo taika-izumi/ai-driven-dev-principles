@@ -1,13 +1,13 @@
 # Handoff: 正本未確認時の整備候補提示
 
 - **Branch**: codex/purpose-maintenance-candidate
-- **Last Updated**: 2026-09-13 17:46 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 実装・配布生成・検証完了、ローカル統合待ち
+- **Last Updated**: 2026-09-13 17:53 (Asia/Tokyo)
+- **Status**: ready-for-next-cycle
+- **Current Phase**: 統合・振り返り完了、次の作業待ち
 
 ## 作業の目的・背景
 
-start-workで目的・方針の正本を確認できない場合、そのセッションの作業候補に整備を毎回含める。ユーザーの明示依頼とSol/high 1体のレビュー後に実装する選択に基づく。
+start-workで正本を確認できない場合に整備を作業候補へ含める追加修正を統合した。振り返りは新規起票なしで保存済み。次の作業はmasterのhandoffから選ぶ。
 
 ## 関連ドキュメント
 
@@ -18,26 +18,21 @@ start-workで目的・方針の正本を確認できない場合、そのセッ�
 
 ## 完了済みタスク
 
-- Sol/high新規1体のフルレビュー。Major 0・Minor 1、F01を採用し明示指定なしと正本未確認を区別。
-- start-work本体と参照手順、README、現行仕様を更新。機能1件、既存start-workの責務内の変更で追加分割不要。
-- 主担当の8条件の机上確認、両生成器・両Check、配布本文、差分・サイズ、固定5観点のサイクル整合を確認。0.1.29を維持。
+過去サイクルはdocs/records/retrospectives/system/2026-09-13-purpose-maintenance-candidate.mdとgit履歴参照。
 
 ## 進行中・未着手
 
-- masterへの統合選択待ち。起点はfa9e6f9。作業は既存checkout内の専用ブランチで行い、新worktreeは作成していない。
 - 公開・導入、独立エージェントの行動比較、最初の3件の運用評価は未実施。
 - 前サイクルの振り返りは保留。分割判定の事例はworklog13-01のみで扱うことをユーザー承認済み。Issue-0118の追記・フォルダ整理は未承認。
 
 ## 既知のブロッカー・懸念
 
-- 作業開始前からのmaster.md、codex_project-purpose-context.mdの未コミット変更を保持し、今回のコミットへ混ぜない。master.mdには今回の案内を追加済み。
+- 前サイクルのcodex_project-purpose-context.mdの未コミット変更は保持し、今回の完了記録へ混ぜない。master.mdは全体の保留事項を保持して更新する。
 - .claude/、.tmp/、docs/conversation_log.md、inbox3件、既存worktree・stashを保全。
 
 ## 節目ごとの確認記録
 
-- 2026-09-13 spec確定: ADR=0191 / worklog=棄却（既存レビュー手順で修正） / review=フル1回・Sol/high、F01反映後は主担当照合、追加独立レビューなし（レビュー記録参照）
-- 2026-09-13 実装完了・Accepted昇格: ADR=0191 / worklog=棄却（既存手順内の変更・検査） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 
-正本・本handoff・レビュー記録を確認し、統合選択から再開。モデル追加実行・公開・導入・旧検証の再開は行わない。
+正本とmasterのhandoffを読み、保留中の前サイクルの振り返り、または利用者の新しい依頼から再開。今回の新規Issueはない。完了作業の許可を次作業へ流用せず、モデル追加実行・公開・導入・旧検証を自動再開しない。

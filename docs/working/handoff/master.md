@@ -1,16 +1,17 @@
 # Handoff: 目的参照機能の統合と振り返り
 
 - **Branch**: master
-- **Last Updated**: 2026-09-13 18:01 (Asia/Tokyo)
+- **Last Updated**: 2026-09-13 18:08 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: 目的参照機能と追加改修の振り返り完了、次の作業待ち
 
 ## 作業の目的・背景
 
-ADR-0190の目的参照機能とADR-0191の整備候補提示をローカルmasterへ統合し、両サイクルの振り返りを保存した。Issue-0118へ部分進展を追記し、既存規約に沿って文書を整理した。0.1.29の公開・利用環境への導入と実運用評価は未実施。次の作業は利用者の指示から選ぶ。
+ADR-0190の目的参照機能とADR-0191の整備候補提示を統合し、両サイクルの振り返りとIssue-0118の後処理を完了した。ユーザーの指示により0.1.29をGitHub masterへ公開し、このPCのCodexへ導入・有効化済み。実運用評価は未実施。次の作業は利用者の指示から選ぶ。
 
 ## 関連ドキュメント
 
+- 公開・導入確認: docs/records/experiments/2026-09-13-codex-plugin-0.1.29-installation.json。配布コミット004f87c、導入先0.1.29の全42ファイルがdistとSHA256一致。CLI表示はinstalled, enabled。この会話の開始時スキル一覧は0.1.28のため、実行中セッションへの再読み込みは未確認。
 - 後処理の正本: docs/records/retrospectives/system/2026-09-13-project-purpose-context.md。Issue-0118はdocs/working/issues/flow/0118-information-reachability-mechanism-undesigned/0118-information-reachability-mechanism-undesigned.md（open）。
 
 - 目的・方針の正本: docs/overview/project-purpose.md。対象ルートD:/Dev/002_AiDev/MakeAiInstructions、参照内容は5350b9fの同パス。判断根拠はADR-0130・0183。
@@ -36,7 +37,6 @@ ADR-0190の目的参照機能とADR-0191の整備候補提示をローカルmast
 
 ## 未着手のタスク
 
-- [ ] 0.1.29の公開・利用環境への導入（個別の指示待ち）。
 - [ ] 最初の3件の開始・再開における目的参照の実運用評価。
 
 - [ ] Issue-0145の対策設計・着手は未承認。起票だけを実施した。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
@@ -74,7 +74,7 @@ ADR-0190の目的参照機能とADR-0191の整備候補提示をローカルmast
 ## 次セッション開始時のアクション
 
 1. docs/overview/project-purpose.md、masterのhandoffと必要な現行仕様を読む。
-2. 次の利用者の依頼を確認する。候補は0.1.29の公開・導入、ADR-0184に関連する継続判断の規範検討、Issue-0118などの既存課題。着手・公開は別途指示に従う。
+2. 次の利用者の依頼を確認する。候補はADR-0184に関連する継続判断の規範検討、Issue-0118などの既存課題。0.1.29は公開・導入済み。新セッションではスキル一覧・実体の版を確認する。
 3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・Issue-0136を自動再開しない。既存の証跡・stashを保全する。
 
 ## 重要な意思決定の履歴

@@ -11,6 +11,8 @@ start-workで正本を確認できない場合に整備を作業候補へ含め�
 
 ## 関連ドキュメント
 
+- 公開・導入状態: masterのhandoffとdocs/records/experiments/2026-09-13-codex-plugin-0.1.29-installation.json参照。
+
 - 全体目的の正本: docs/overview/project-purpose.md。対象ルートD:/Dev/002_AiDev/MakeAiInstructions、5350b9f由来の本文、確定済み・目的変更なし。
 - ADR-0191、現行仕様docs/current/specs/2026-09-12-project-purpose-context/。
 - 設計レビューと実装・整合確認: docs/records/reviews/2026-09-13-purpose-maintenance-candidate.mdと同JSON。
@@ -22,7 +24,7 @@ start-workで正本を確認できない場合に整備を作業候補へ含め�
 
 ## 進行中・未着手
 
-- 公開・導入、独立エージェントの行動比較、最初の3件の運用評価は未実施。
+- 独立エージェントの行動比較、最初の3件の運用評価は未実施。公開・このPCへの導入は完了済み。
 - 前サイクルの振り返り・Issue-0118への追記と文書整理も完了。正本は同日project-purpose-contextの振り返り。分割判定はworklog13-01のみで扱う。
 
 ## 既知のブロッカー・懸念

@@ -1,0 +1,224 @@
+{
+  "date": "2026-09-13",
+  "version": "0.1.29",
+  "pluginId": "ai-driven-dev-principles@ai-driven-dev-principles",
+  "installedPath": "C:/Users/d12an/.codex/plugins/cache/ai-driven-dev-principles/ai-driven-dev-principles/0.1.29",
+  "publishedCommit": "004f87c76ac0d5e9dc6557d462cc06adc9d5acea",
+  "checkedFiles": 42,
+  "installedFiles": 42,
+  "missing": [],
+  "extra": [],
+  "mismatches": [],
+  "files": [
+    {
+      "path": ".claude-plugin/plugin.json",
+      "sha256": "14cd476338fd9303a11109226f1718acff538b651aed3db602d3df5b1b75e89e",
+      "match": true
+    },
+    {
+      "path": ".codex-plugin/plugin.json",
+      "sha256": "291ceb60a2c0a57bce40dbf677684c44d41310acec758b6c5531e42fa88c42a0",
+      "match": true
+    },
+    {
+      "path": "skills/decision-log/references/adr-authoring.md",
+      "sha256": "f1e130fb4f6be38fc2df5883f3ae9d19e0794298df40fcb8ffc5306754c4cfb4",
+      "match": true
+    },
+    {
+      "path": "skills/decision-log/references/cycle-consistency-check.md",
+      "sha256": "2995336348a582b5283721b11d367483a6ec6af9ec61d84ad6539b1e775122ac",
+      "match": true
+    },
+    {
+      "path": "skills/decision-log/references/open-questions.md",
+      "sha256": "727b4261253bfa80d1329abed6782f77159149fc28e959dd7ccc3692c9b9bba7",
+      "match": true
+    },
+    {
+      "path": "skills/decision-log/references/status-updates.md",
+      "sha256": "659e64616793da69195a531d2db9814e28c780b5340a20141f529c79b918930f",
+      "match": true
+    },
+    {
+      "path": "skills/decision-log/SKILL.md",
+      "sha256": "f7772c410fa0e44e22eaf28eebd5940f8ad94a1d048b8aaeb5e496f00096ab30",
+      "match": true
+    },
+    {
+      "path": "skills/extend-guidelines/SKILL.md",
+      "sha256": "175fdcc707f2c9909b9a418718f868678e0a2c9598111531aa1be6afefb6f8d8",
+      "match": true
+    },
+    {
+      "path": "skills/feature-block-design/SKILL.md",
+      "sha256": "ef42b4a34a0de96817e7f98a1e89d397f43c80ba4eb1d94d0951cbbc29ddb218",
+      "match": true
+    },
+    {
+      "path": "skills/organize-inbox/SKILL.md",
+      "sha256": "630de71978b2658b02a76a57a164c03ebc082d28f8e186be9b644103bd69f170",
+      "match": true
+    },
+    {
+      "path": "skills/pre-action-review/SKILL.md",
+      "sha256": "e06e9cda7162729f352f14d92d673c52fb00bec645b5bc9466e38188ffe0d00f",
+      "match": true
+    },
+    {
+      "path": "skills/pre-finalization-review/references/examples-and-evidence.md",
+      "sha256": "17d953f0eab4d892c898263f9beab8a1f89d44b85a679a4d31f9f3fa5a8feeed",
+      "match": true
+    },
+    {
+      "path": "skills/pre-finalization-review/references/iteration-norms.md",
+      "sha256": "2d91fcb3f6f50f2df337e6f7a012e113be907cf2d16fd841c66a2f5a3a377a2f",
+      "match": true
+    },
+    {
+      "path": "skills/pre-finalization-review/references/review-criteria.md",
+      "sha256": "4d603b2d3782c00aa70215fee45d41114fda1c2e76007417c460a5f5135de113",
+      "match": true
+    },
+    {
+      "path": "skills/pre-finalization-review/references/review-procedure.md",
+      "sha256": "6ac77f6307a8acaf21d6e0e37bb682936c36145ef53d383c8cc64a7f5cd54764",
+      "match": true
+    },
+    {
+      "path": "skills/pre-finalization-review/SKILL.md",
+      "sha256": "5dc4e95945ce522694bc25c16c9d508b539f94432a112d23490802f25626ea3a",
+      "match": true
+    },
+    {
+      "path": "skills/retrospective/flow-template.md",
+      "sha256": "7546236d607b26ec1680eb019d3927ad5e8555cfc4b6cddf0a26abe06ef87bda",
+      "match": true
+    },
+    {
+      "path": "skills/retrospective/SKILL.md",
+      "sha256": "1d7a0ca49e5b62735c236711e3b90e7214a8a1284de39782b85b5747d94e4eb8",
+      "match": true
+    },
+    {
+      "path": "skills/retrospective/template.md",
+      "sha256": "37a36e40b7b19f9e166b85527dee64c460950fda26bb851ee77afddeb14a797c",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/op-create.md",
+      "sha256": "3595c1fbc080703887ca5f59117e99a43ca203e308f8dd814b68f4e6ac51c5ac",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/op-cycle-reset.md",
+      "sha256": "fb1e1ec99f3f99df2cacdfff9b15b961b5ac4621eefabfabd8979175a8ddea22",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/op-finalize.md",
+      "sha256": "6a6ccfb91acc8257d920b82a259f4db91833b65385dad19e384913f19109c3a6",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/op-read.md",
+      "sha256": "003f2c73502833fd540425fb4d2dc8d0dae2fc4c7fd1418f23bd2357c44aca4c",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/op-update.md",
+      "sha256": "45ea63034e2ecc9bdd14c6dcc00ccc25c5e4e7b50ecd3b1b1d48d243b2504709",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/relocation-map.md",
+      "sha256": "91e34148e32c8a4ad336c2322f1f45dc45f7f2da67f70a8f9cce1ad097b0bf7c",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/relocation-procedure.md",
+      "sha256": "2a891a3a615de6846f2a5031ccd9c45646fd63cb4805f1e59e07144f32d7a494",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/review-field-values.md",
+      "sha256": "77a6acf7619c08879d410d122cf8562fb313830aab7cc84777b77ddb17bb09e4",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/references/section-volume-norms.md",
+      "sha256": "4c308b3f522c876299bf076b6f1d0d0398be5301aec7b7904326f8e19834ad04",
+      "match": true
+    },
+    {
+      "path": "skills/session-handoff/SKILL.md",
+      "sha256": "9a83edb8dba610734a663c8357ecfb5dc557652e13079b33805d4c16322d7c85",
+      "match": true
+    },
+    {
+      "path": "skills/start-work/references/decision-delegation.md",
+      "sha256": "64c4b67aa148644c2cecaaf8a8b264bcb0f6984a1775fdad2cdc61e14709c805",
+      "match": true
+    },
+    {
+      "path": "skills/start-work/references/merge-practice.md",
+      "sha256": "0c10a4c889d01fc091a4b5adac9bb8918b3a08c7801a3832ebbe72bb5cb35df4",
+      "match": true
+    },
+    {
+      "path": "skills/start-work/references/plan-deviation-defaults.md",
+      "sha256": "7da20f053e68f6141b19090962d7a78ac8d3988d6d4b74b4e15e510992b0be70",
+      "match": true
+    },
+    {
+      "path": "skills/start-work/references/project-purpose.md",
+      "sha256": "75ceb81d6777f8613ea10731f0ffa48eac91a3edf4411a131d8a7c3b090157ad",
+      "match": true
+    },
+    {
+      "path": "skills/start-work/SKILL.md",
+      "sha256": "f379d80de50f642f0726ff55e60f4384c24411b2395ab413caf19e69358addc6",
+      "match": true
+    },
+    {
+      "path": "skills/subagent-dispatch/references/inspection-isolation.md",
+      "sha256": "09a97f26a62a0f92d62e219871b7430800b6fedc7b2f0aec1f595da4e942c5ea",
+      "match": true
+    },
+    {
+      "path": "skills/subagent-dispatch/SKILL.md",
+      "sha256": "c891bbff91b6e3e687809036c1c67c0c4f4fe693bdf070ff0a440e2c817a164f",
+      "match": true
+    },
+    {
+      "path": "skills/worklog-extract/scripts/check-store-health.py",
+      "sha256": "9558be0ed10e0b39a8a9aeeef2ae57addfbe800ce4ef53a0f575984023f8e80c",
+      "match": true
+    },
+    {
+      "path": "skills/worklog-extract/SKILL.md",
+      "sha256": "6b3839b3424ac3c850e6703d760d96596851663dcaa4406d43ec953523179000",
+      "match": true
+    },
+    {
+      "path": "skills/worklog-record/references/store-format.md",
+      "sha256": "ef38460a5fe55cb465aef245e5584a1416fbdacc6bd52e1fa71c702a639d1c0b",
+      "match": true
+    },
+    {
+      "path": "skills/worklog-record/SKILL.md",
+      "sha256": "4e26ebe16272a30ecffa4c885de2c3d43f8dc92498a5d86af7cd5f554aa7ae6f",
+      "match": true
+    },
+    {
+      "path": "skills/worklog-skillify/references/skill-authoring-techniques.md",
+      "sha256": "3c45b40093b46086f63cd167c95a3be180aebcfd38cb34c73c95c40943c28987",
+      "match": true
+    },
+    {
+      "path": "skills/worklog-skillify/SKILL.md",
+      "sha256": "f5b1168263a78844d1c50b1972ad91c761ad5c8b392b1197dd63f2088c3c5625",
+      "match": true
+    }
+  ]
+}

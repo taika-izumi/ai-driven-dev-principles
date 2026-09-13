@@ -37,7 +37,7 @@ start-work が正本として持つのはオーケストレーション（フェ
 
 ### Phase 0: セッション継続チェック
 
-分岐前に `references/project-purpose.md` で現在の目的・方針を取得し、handoff要約と次手判断へ使う。根拠を失った場合も再取得する。
+分岐前に `references/project-purpose.md` で目的取得・整備候補提示を行い、handoff要約と次手判断へ使う。根拠を失った場合も再取得する。
 
 1. `session-handoff` スキルの **read** 操作を呼ぶ
 2. 結果に応じて分岐:

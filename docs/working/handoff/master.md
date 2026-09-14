@@ -1,9 +1,9 @@
 # Handoff: Issue-0136 残り実測と隔離系の整理
 
 - **Branch**: master
-- **Last Updated**: 2026-09-14 11:29 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 調査・実測/Issue-0136 の残り未確認事項の実測完了、記録更新済み、コミット未実施
+- **Last Updated**: 2026-09-14 11:50 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: 調査・実測/Issue-0136 の残り実測と記録のコミット完了、次の利用者の依頼待ち
 
 ## 作業の目的・背景
 
@@ -35,14 +35,13 @@
 
 - [x] Issue-0136 残り実測: 固定検査の子の対話セッション実行（2.1.270）、Write・Bash の実呼び出し拒否、保護対象9件のハッシュ照合（2026-09-14 完了）。
 - [x] 記録更新: 実験記録・Issue-0136 本文とログ・参照知識第10節（2026-09-14 完了）。規範本文は変更しない判断。
+- [x] コミット: master 61ddef3（記録5ファイル）。codex/isolated-verification の handoff へ master 61ddef3 を先に読む案内を追加し同branchで e2e28c0（2026-09-14 完了）。
 
 過去サイクルはdocs/records/retrospectives/system/2026-09-13-project-purpose-context.md、同日purpose-maintenance-candidate.mdとgit履歴参照。
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 今回の記録のコミット
-  - 状態: 変更3ファイル＋新規1ファイルは未コミット（docs/reference/inspection-isolation-costs.md、Issue-0136 本文・ログ、docs/records/experiments/2026-09-14-…json）。
-  - 残り: 利用者の指示でコミットする。master 直接コミット（過去の Issue-0136 実測と同じ慣行）。
+なし。今回の範囲（Issue-0136 の残り実測・記録・コミット）は完了。
 
 ## 未着手のタスク
 
@@ -82,10 +81,11 @@
 ## 節目ごとの確認記録
 
 - 2026-09-14 Issue-0136 残り実測と記録更新の完了: ADR=なし（既存規範ADR-0143・0144の確認に留まり、試験手順・版更新・課題の追跡経路は既存規約に従う運用判断） / worklog=`MakeAiInstructions-2026-09-14-01`
+- 2026-09-14 セッション終了の引き継ぎ確定: ADR=なし（同日の運用判断のみ、方針変更なし） / worklog=棄却（同日01に記録済みの差分以外なし）
 
 ## 次セッション開始時のアクション
 
-1. docs/overview/project-purpose.md、masterのhandoffを読む。未コミットなら今回の記録4ファイルをコミットする。
+1. docs/overview/project-purpose.md、masterのhandoffを読む。隔離検証を再開する場合は `.worktrees/isolated-verification` で start-work し、同branchの handoff（e2e28c0）の案内どおり master 61ddef3 の記録を先に読む。
 2. 次の利用者の依頼を確認する。候補は codex/isolated-verification の再開（利用者の明示指示が必要）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。
 3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・隔離検証を自動再開しない。既存の証跡・stashを保全する。
 

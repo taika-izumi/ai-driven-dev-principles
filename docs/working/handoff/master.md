@@ -1,15 +1,19 @@
-# Handoff: 目的参照機能の統合と振り返り
+# Handoff: Issue-0136 残り実測と隔離系の整理
 
 - **Branch**: master
-- **Last Updated**: 2026-09-13 18:08 (Asia/Tokyo)
-- **Status**: ready-for-next-cycle
-- **Current Phase**: 目的参照機能と追加改修の振り返り完了、次の作業待ち
+- **Last Updated**: 2026-09-14 11:29 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 調査・実測/Issue-0136 の残り未確認事項の実測完了、記録更新済み、コミット未実施
 
 ## 作業の目的・背景
 
-ADR-0190の目的参照機能とADR-0191の整備候補提示を統合し、両サイクルの振り返りとIssue-0118の後処理を完了した。ユーザーの指示により0.1.29をGitHub masterへ公開し、このPCのCodexへ導入・有効化済み。実運用評価は未実施。次の作業は利用者の指示から選ぶ。
+利用者が隔離系（Issue-0136 と codex/isolated-verification）を選び、Issue-0136 の残り未確認事項のうち「固定検査1操作だけの子の対話セッション実行」を Claude Code 2.1.270 で実測した。結果は既存規範（ADR-0143・0144）どおりで、ガイドライン本文の変更はない。状態変更系ツール3件は測定せず記録で閉じ、規範本文は版更新規約に従い変更しない。Issue-0136 は、専用 Issue を持たない中断中の共通起動処理（codex/isolated-verification）の再開経路を担うため open を維持する（いずれも 2026-09-14 の利用者判断）。
+
+前サイクル（ADR-0190・0191 の統合、0.1.29 の公開・Codex 導入）は完了済み。目的参照の実運用評価は本セッションの開始が1件目にあたる（正本の読取りと版照合が成立）。
 
 ## 関連ドキュメント
+
+- 今回の実測: docs/records/experiments/2026-09-14-claude-native-subagent-interactive-fixed-inspection.json。退避・照合・子の報告は .tmp/issue-0136-interactive-20260914/records/。Issue-0136 本文「現在地の要約」「結論」と 0136-log.md の 2026-09-14 行、docs/reference/inspection-isolation-costs.md 第10節「固定検査の対話セッション実行（2026-09-14）」へ反映済み。
 
 - 公開・導入確認: docs/records/experiments/2026-09-13-codex-plugin-0.1.29-installation.json。配布コミット004f87c、導入先0.1.29の全42ファイルがdistとSHA256一致。CLI表示はinstalled, enabled。この会話の開始時スキル一覧は0.1.28のため、実行中セッションへの再読み込みは未確認。
 - 後処理の正本: docs/records/retrospectives/system/2026-09-13-project-purpose-context.md。Issue-0118はdocs/working/issues/flow/0118-information-reachability-mechanism-undesigned/0118-information-reachability-mechanism-undesigned.md（open）。
@@ -29,15 +33,21 @@ ADR-0190の目的参照機能とADR-0191の整備候補提示を統合し、両�
 
 ## 完了済みタスク
 
+- [x] Issue-0136 残り実測: 固定検査の子の対話セッション実行（2.1.270）、Write・Bash の実呼び出し拒否、保護対象9件のハッシュ照合（2026-09-14 完了）。
+- [x] 記録更新: 実験記録・Issue-0136 本文とログ・参照知識第10節（2026-09-14 完了）。規範本文は変更しない判断。
+
 過去サイクルはdocs/records/retrospectives/system/2026-09-13-project-purpose-context.md、同日purpose-maintenance-candidate.mdとgit履歴参照。
 
 ## 進行中のタスク
 
-なし。保留していた後処理は完了。
+- [ ] **現在の作業**: 今回の記録のコミット
+  - 状態: 変更3ファイル＋新規1ファイルは未コミット（docs/reference/inspection-isolation-costs.md、Issue-0136 本文・ログ、docs/records/experiments/2026-09-14-…json）。
+  - 残り: 利用者の指示でコミットする。master 直接コミット（過去の Issue-0136 実測と同じ慣行）。
 
 ## 未着手のタスク
 
-- [ ] 最初の3件の開始・再開における目的参照の実運用評価。
+- [ ] 目的参照の実運用評価（残り2件。1件目は 2026-09-14 の開始で成立）。
+- [ ] codex/isolated-verification の再開判断。正本は .worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md。利用者の再開指示が必要。専用 Issue は無く、Issue-0136 が再開経路。
 
 - [ ] Issue-0145の対策設計・着手は未承認。起票だけを実施した。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
 - [ ] Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
@@ -58,7 +68,9 @@ ADR-0190の目的参照機能とADR-0191の整備候補提示を統合し、両�
 - 隔離検証の既存資料照合・Git対照試験を、通信拒否や実環境の保護成立へ読み替えない。再開時は専用worktreeの再利用検討ノートを読む。
 - Claude標準の子の制限・検索範囲の実測は `docs/records/retrospectives/system/2026-09-09-claude-native-subagent-interactive.md` とIssue-0136を参照。過去のレビュー経路は同記録を参照。
 - 開始時スキル一覧は0.1.24の旧パスだったが、ディスクの0.1.26を発見して読み込み使用した。開始時の一覧だけで導入版を推定しない。
-- `.tmp/`、`.claude/agents/`の試験定義、`docs/conversation_log.md`、inbox3件を保全。一括ステージ・削除しない。inboxは手動整理待ち。
+- `.tmp/`、`.claude/agents/`の試験定義、`docs/conversation_log.md`、inbox3件を保全。一括ステージ・削除しない。inboxは手動整理待ち（2026-09-14 も後回し、3件滞留）。
+- 2026-09-14 の実測で `.tmp/issue-0136-claude-native-20260908/run/attempt-c14f2654b5e4499084717101f2974138/` が追加され、同 controller/last-result.json は上書き（実行前の複製は `.tmp/issue-0136-interactive-20260914/records/last-result-before-20260914.json`）。いずれも削除・復元していない。今回の記録領域 `.tmp/issue-0136-interactive-20260914/` も保全。
+- Bash ツールの引用ヒアドキュメントで Windows パスのバックスラッシュが欠落した（JSON 記録が2回パース失敗）。バックスラッシュを含む本文は専用 Write ツールで書く。
 - Issue-0136・0140の退避とレビュー証跡は対応レビュー記録を参照して保全。統合済みの `.worktrees/issue-0140-review-cost` とブランチも未追跡証跡のため残存。
 - Issue-0135の起動・操作承認の制約を確認してから実機検証を組む。子の書き込みで承認プロンプトが出ない場合があり、許可を保護成立の証拠にしない。
 - 他のissue-0122 worktreeとstash `6e959892b6e00600006456172237f27d7957fa01` は操作しない。古い草案を適用しない。
@@ -69,13 +81,13 @@ ADR-0190の目的参照機能とADR-0191の整備候補提示を統合し、両�
 
 ## 節目ごとの確認記録
 
-
+- 2026-09-14 Issue-0136 残り実測と記録更新の完了: ADR=なし（既存規範ADR-0143・0144の確認に留まり、試験手順・版更新・課題の追跡経路は既存規約に従う運用判断） / worklog=`MakeAiInstructions-2026-09-14-01`
 
 ## 次セッション開始時のアクション
 
-1. docs/overview/project-purpose.md、masterのhandoffと必要な現行仕様を読む。
-2. 次の利用者の依頼を確認する。候補はADR-0184に関連する継続判断の規範検討、Issue-0118などの既存課題。0.1.29は公開・導入済み。新セッションではスキル一覧・実体の版を確認する。
-3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・Issue-0136を自動再開しない。既存の証跡・stashを保全する。
+1. docs/overview/project-purpose.md、masterのhandoffを読む。未コミットなら今回の記録4ファイルをコミットする。
+2. 次の利用者の依頼を確認する。候補は codex/isolated-verification の再開（利用者の明示指示が必要）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。
+3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・隔離検証を自動再開しない。既存の証跡・stashを保全する。
 
 ## 重要な意思決定の履歴
 

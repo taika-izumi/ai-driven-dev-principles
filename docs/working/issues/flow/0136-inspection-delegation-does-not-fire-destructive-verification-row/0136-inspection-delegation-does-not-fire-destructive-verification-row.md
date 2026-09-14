@@ -33,9 +33,11 @@
 - 2026-09-08: 共通改定と限定構成の実証は完了。ユーザーはClaude Codeの新規セッションで標準サブエージェントの追加検証を依頼したため、Issueをopenへ戻して継続。別プロセスClaude＋固定MCPの成功と標準サブエージェントの制限継承を区別する。入口は0136-note-claude-native-followup.md。
 - 2026-09-08: Claude Codeの新規セッションで標準のサブエージェント機能を実測し、ツール制限・実行を伴う検査・再委譲の成立と、権限モードが保護の代わりにならないことを確認（ADR-0143、`docs/records/experiments/2026-09-08-claude-native-subagent.json`、`docs/reference/inspection-isolation-costs.md` 第10節）。規範は `skills/subagent-dispatch/references/inspection-isolation.md` のツール別の表へ反映済み。定義ファイルのfrontmatterによる拒否リストと接続の限定公開も同日に実測し、成立条件（`--strict-mcp-config` とは併用不可）まで確認した。親の権限チェックを無効にした起動でも実測し、この起動では作業ディレクトリの境界も保護にならないことを確認した。対話セッションでの実挙動、別OS・別版は未確認のため open を継続する。
 - 2026-09-09: 対話セッション（autoモード）での実挙動を実測し、この未確認を解消。許可リスト方式の子は書き込み系ツールを持たず後から取得もできない一方、拒否リスト方式の子には列挙外の書き込み可能ツールが残り NotebookEdit が保護対象を承認要求なしで上書きした。保護は許可リスト方式に限ると決定し規範へ反映（ADR-0144、`docs/records/experiments/2026-09-09-claude-native-subagent-interactive.json`、`docs/reference/inspection-isolation-costs.md` 第10節の追加実測）。残る未確認は別OS・別版、外向きツール（Artifact・SendMessage）と状態変更系ツールの実効性、固定検査の対話セッション実行のため open を継続する。検査で派生した論点は Issue-0141、フロー課題は Issue-0142 として起票済み。
+- 2026-09-14: 固定検査1操作だけを持つ子の対話セッション実行を Claude Code 2.1.270（autoモード）で実測し、正常・変異・復元と保護代用品4件の拒否、Write・Bash の実呼び出し拒否、委譲元のハッシュ照合による保護対象9件の無変更を確認（`docs/records/experiments/2026-09-14-claude-native-subagent-interactive-fixed-inspection.json`、`docs/reference/inspection-isolation-costs.md` 第10節の追加実測）。2.1.263→2.1.270 の別版でも同じ結果。状態変更系ツール3件はユーザー判断で測定せず、拒否リスト方式が ADR-0144 で保護手段外のため規範上の影響なしとして閉じる。残る未確認は別OS と外向きツール（Artifact・SendMessage）で、いずれもこの環境では測らない方針。ADR の新規・変更なし。
 
 ## 関連資料
 
+- docs/records/experiments/2026-09-14-claude-native-subagent-interactive-fixed-inspection.json — 固定検査の対話セッション実行（2.1.270）の実行記録と委譲元の照合。
 - 0136-note-claude-native-followup.md — Claude Code新規セッションでの追加検証の入口・確認済み範囲・制約。
 
 - 0136-note-implementation-verification.md — 共通改定、実行環境の確認結果と残る判断。
@@ -61,7 +63,9 @@
 
 ## 結論
 
-追加検証の一部を完了し、残りは未確認のため open。2026-09-08にClaude Code 2.1.263・Windows 11の `--print` 実行で標準のサブエージェント機能を実測し、子の許可リストから書き込み可能な内蔵ツールを外す構成で保護が成立すること、固定検査1操作だけを渡せば実行を伴う検査も成立すること、権限モードは保護の代わりにならないこと、再委譲は既定で成立することを確認した（ADR-0143）。対話セッションでの実挙動、別OS・別版は未確認として残る。
+規範に関する実測は 2026-09-14 で完了した。open を維持する理由は、本 Issue から派生した「Claude Code と Codex から利用する隔離検証の共通起動処理」（仕様 `docs/current/specs/2026-09-09-isolated-verification/`、ハンドオフ `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`、ADR-0150〜0153・0157・0159〜0162）がユーザー指示で中断中であり、専用の Issue を持たないため、本 Issue がその再開経路を担うことにある（2026-09-14 のユーザー判断）。残る未確認は別OS と外向きツール（Artifact・SendMessage）の実効性で、この環境では測らない。
+
+2026-09-08にClaude Code 2.1.263・Windows 11の `--print` 実行で標準のサブエージェント機能を実測し、子の許可リストから書き込み可能な内蔵ツールを外す構成で保護が成立すること、固定検査1操作だけを渡せば実行を伴う検査も成立すること、権限モードは保護の代わりにならないこと、再委譲は既定で成立することを確認した（ADR-0143）。2026-09-09 に対話セッションでの実挙動を実測して保護を許可リスト方式に限定し（ADR-0144）、2026-09-14 に固定検査1操作だけの子の対話セッション実行を 2.1.270 でも確認した。別OS と外向きツールの実効性は未確認として残る。
 
 以下は先行して完了した限定構成の結論で、上記とは別の確認である。
 

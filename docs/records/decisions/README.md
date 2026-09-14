@@ -169,3 +169,6 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0161](0161-accept-clipboard-text-write-for-synthetic-pilot.md) | 合成題材の試作中はクリップボード文字列書込を例外として受容する | Accepted | 2026-09-10 |
 | [0162](0162-disable-sbx-ssh-agent-forwarding.md) | ローカルsbxのSSHエージェント転送を無効化する | Proposed | 2026-09-10 |
 | [0192](0192-run-sbx-capability-tests-on-one-synthetic-vm.md) | 残るsbx能力試験を新規VM1台で順に実施する | Proposed | 2026-09-14 |
+| [0193](0193-hold-a-session-to-prevent-sbx-auto-stop-during-a-run.md) | 隔離検証の実行中はセッションを保持してsbxの自動停止を避ける | Proposed | 2026-09-15 |
+| [0194](0194-stop-recorded-sandboxes-after-cli-abnormal-exit.md) | CLI異常終了後は記録済みIDだけを止める復旧操作で停止を確認する | Proposed | 2026-09-15 |
+| [0195](0195-treat-registered-mcp-servers-zero-as-the-no-mcp-condition.md) | 「MCP登録なし」は登録済みMCPサーバー0件で判定し、常設ゲートウェイは製品挙動として記録する | Proposed | 2026-09-15 |

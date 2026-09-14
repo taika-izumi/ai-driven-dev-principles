@@ -70,3 +70,30 @@ A〜Cの各操作の前後で（PID, StartTime, `starting sandboxd` の時刻）
 - [Docker公式の資格情報設定](https://docs.docker.com/ai/sandboxes/configuration/credentials/): 転送の既定有効、クライアントの `SSH_AUTH_SOCK` の中継、固定socket設定、変更後の再起動。Windows固有の方式は公式資料に記載が無く、本記録のゲート・ゲスト入口の特定はローカル証拠による。
 - [Docker公式のトラブルシュート](https://docs.docker.com/ai/sandboxes/troubleshooting/): 鍵一覧が空でもagentへ到達している場合がある。空一覧を拒否と扱わない根拠。
 - 公式CLIリファレンスの各ページは本文が取得できなかった（2026-09-14）。将来版で確認する場合は再取得する。
+
+## 2026-09-14 23:00以降: 試験A〜Dの実施結果
+
+ユーザーが「1で」で試験A〜Dを個別承認（ADR-0192）した後、利用者がリモート操作中のため通常PowerShellでの起動が必要かを確認し、利用者が `daemon start -d` を実行したと報告した（23:00:28に新世代が起動。利用者起動として扱う）。AIは `daemon status` でrunningを確認後、転送false/source=override、画像clipboard false、既存VM同一ID/stoppedを再照会し、承認済みの固定引数で新規VM `iv-sbx-capability-20260914-01`（ID 0baac92d-251c-4f34-9d8f-6f14a9c238c6）を作成した。作業領域は `.tmp/sbx-capability-20260914/`（番号付きファイルが各手順の原文）。設定変更・既存VMの操作・削除は行っていない。VMは停止したまま残し、削除していない。
+
+| 試験 | 結果 | 証拠 |
+|---|---|---|
+| A: SSH転送拒否 | **合格**。新VMのdaemon.logに `started SSH agent forwarder` は無い（旧VMには2026-09-09に同行あり）。ゲストでは `/run/ssh-agent.sock` 不在、`ssh-add -L` は `Error connecting to agent: No such file or directory`（agent・root両方）。ゲートウェイ（この VM は 172.17.0.2）の3129へSSHエージェント要求（REQUEST_IDENTITIES）を送っても応答0バイトで、policy logは当該接続をdeny-all規則で拒否と記録。対照の3128（プロキシ）はHTTP 403 `Blocked by` を返し、経路自体は生きている。クライアント側は `SSH_AUTH_SOCK` を実在しないパスに設定してcreate/execしたが転送は現れなかった | 20-daemonlog-new-runtime-network.txt、30/31-probe-*.txt、33-agent-protocol-probe.txt、34-policy-log.json |
+| B: CPU・メモリ実効値 | **合格**。外側: runtimeファイル `Spec.CPUs`=2・`Spec.Memory`="2g"、daemon.log shim行 `vcpu_count: 2`・`total_mb: 2048`。ゲスト: `nproc`=2、`MemTotal`=2036100 kB（約1988MiB。予約領域の差） | 22-runtime-file.json、21/23-daemonlog-*.txt、30-probe-agent.txt |
+| C: 有限負荷中の外側停止 | **合格**。試験案の `exec -d` は自動停止（後述）で負荷が失われうるため、セッションを保持する通常のexecを背景ジョブで実行する方式へ変更した。負荷exec開始23:04:01、ゲストログで2 worker各128MiB確保・CPU 98.7%使用を23:04:07に確認。23:04:12.8に `sbx stop`、5.4秒で終了0、5.7秒後に `ls --json` で同一IDがstopped。負荷execは終了137（強制終了）。daemon.logに23:04:18の `vCPU thread exiting`×2・`joined 2/2`・`stopped runtime container`。既存VM de1ba0ac は不変 | 40-load-confirmed.txt、41-stop.txt、42-vms-after-stop.json、43-load-exec-job.txt、44-daemonlog-stop.txt、45-testC-summary.json |
+| D: 起動世代 | **合格**。create前・後、試験C前・後でPIDファイル29352・プロセスStartTime 23:00:28.147・`starting sandboxd` 行が同一 | 01-generation-before.json、45-testC-summary.json |
+
+### 試験の途中で判明した挙動（実装計画への申し送り）
+
+- **VMは最後のセッション切断から30秒で自動停止する**（daemon.log `session disconnected, deferring auto-stop` delay=30s → `auto-stop grace period expired, stopping runtime` → `auto-stopped runtime after last session disconnected`）。本試験中に2回発生した。
+- **cp・execは停止VMを自動起動する**（`Sandbox ... started successfully`）。自動停止の完了と新セッションが重なった場合、daemonは `auto-stop complete, new session waiting` として停止完了後に起動し直した（23:04:04）。停止後にクライアント操作なしで再起動した記録は無い。
+- 影響: 4責務の実装では、cpとexecの間隔が30秒を超えるとVMが再起動され、メモリ上の状態と背景プロセスが失われる。SbxRuntimeはセッションを保持するか、各コマンドが再起動を伴いうる前提で設計する必要がある。停止確認では、自動停止と外側停止を daemon.log の行で区別する。この設計判断は全体実装計画で扱い、本記録では決めない。
+- ゲストの環境変数 `SSH_AUTH_SOCK` は転送falseでも `/run/ssh-agent.sock` に設定されていた。変数の有無は判定に使わず、ソケットの実在・エージェント応答・daemon.logで判定する。
+- 透過プロキシはゲートウェイの任意ポートへのTCP接続をいったん受け付けるため、接続成立だけでは到達可否を判定できない。プロトコル応答とpolicy logで判定する。
+- `ls`・`inspect`・`settings` の停止中daemon自動起動の有無は今回も未測定（常にrunning確認後に実行した）。
+
+### 判定の限界
+
+- 転送拒否は「設定falseの新世代で、当該VMにforwarderが作られない」ことの実証であり、設定trueの世代での挙動や将来版の保証ではない。
+- 資源値は割当の照合であり、ホスト側オーバーヘッドの上限や資源枯渇時の応答性を示さない。
+- 外側停止は有限負荷（256MiB・2 worker・20秒）での1回の成立で、より重い負荷や切断競合の成立を意味しない。daemon停止を伴う競合注入は未実施。
+- runtime profileのverified判定は、これらの証拠を activationEvidence へ対応付ける実装の中で行う。本記録は材料の提供にとどまる。

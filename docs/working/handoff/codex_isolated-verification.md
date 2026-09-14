@@ -1,7 +1,7 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-10 00:57 (Asia/Tokyo)
+- **Last Updated**: 2026-09-14 11:45 (Asia/Tokyo)
 - **Status**: paused
 - **Current Phase**: ユーザー指示で中断 / SSH設定操作完了、残る能力試験の調査前
 
@@ -91,6 +91,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 ## 次セッション開始時のアクション
 
 1. ユーザーの再開指示後、指定の既存worktreeでstart-work。本handoffと`docs/records/experiments/2026-09-10-v3-capability-followup.md`を読む。SSH設定操作と通常起動後照合は完了済み。
+   - 先に master のコミット `61ddef3`（2026-09-14）を読む。本branchに未取り込みの最新情報として、固定検査1操作だけの子を Claude Code 2.1.270 の対話セッションから起動した実測記録（`docs/records/experiments/2026-09-14-claude-native-subagent-interactive-fixed-inspection.json`）、`docs/reference/inspection-isolation-costs.md` 第10節の追記、Issue-0136 の結論（本案件の再開経路を担うため open 維持。専用 Issue なし）がある。規範（ADR-0143・0144）は変わっていない。
 2. 残る試験方法の未特定事項を調査し、実機操作を具体化してから提示する。再照会は通常ユーザー側でrunning確認後に行い、停止中に自動起動する照会をしない。
 3. ADR-0157/0158/0160/0161の承認と保全条件を継承。仕様・試作条件・レビューは再承認不要。設定変更・実機/モデル操作は対象を具体化して確認。旧v2の後続は実行しない。
 

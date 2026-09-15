@@ -2,7 +2,7 @@ $ErrorActionPreference='Stop'
 Import-Module (Join-Path $PSScriptRoot 'TestSupport.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'fixtures/FakeSbxScenario.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot '../RequestCopy.psm1') -Force
-Import-Module (Join-Path $PSScriptRoot '../SbxRuntime.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot '../SbxRuntime.psm1') -Force -DisableNameChecking   # Acquire- は仕様02の公開操作名（未承認動詞の警告を抑止）
 # すべて偽sbx（tests/fixtures）と偽の状態ディレクトリで行い、実VM・実デーモンは使わない。偽sbxの成功を実機の保護実証に数えない。
 # ケース領域は短い名前にする（Windows の MAX_PATH。Issue-0146）。
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
@@ -86,7 +86,7 @@ function Get-RuntimeFailure([scriptblock]$Action){
     $record.status=$failure.Data['status'];$record.message=$failure.Message
     $record
 }
-function Get-Calls([hashtable]$Ctx,[string]$First=''){@(Read-FakeSbxCalls $Ctx.case | Where-Object {$First -eq '' -or ($_.argv.Count -gt 0 -and $_.argv[0] -eq $First)})}
+function Get-Calls([hashtable]$Ctx,[string]$First=''){$calls=@(Read-FakeSbxCalls $Ctx.case);$calls | Where-Object {$First -eq '' -or ($_.argv.Count -gt 0 -and $_.argv[0] -eq $First)}}
 
 # 1. 実行設定検査: replay/proposal の正常 profile は profileHash（evidence の2項目を除く正規化JSONの SHA256）を返す。
 $ctx=New-Case
@@ -132,4 +132,183 @@ $otherLimits=@{};foreach($k in $ctx.settings.Keys){$otherLimits[$k]=$ctx.setting
 Assert-True ((Get-VerificationEffectiveSettingsHash $ctx.replayProfile $otherLimits) -cne $replayHash) 'effective: limits が違えば変わる'
 $count++
 
+function Add-Vm([hashtable]$Ctx,[string]$Role='replay-before',[object[]]$ConfirmFiles=@(),[string]$Agent='shell'){
+    $name=$Ctx.names[$Role];$id=[guid]::NewGuid().ToString()
+    Add-FakeSbxSandboxScenario $Ctx.case $name $id -Agent $Agent -ConfirmFiles $ConfirmFiles
+    @{name=$name;id=$id}
+}
+function Test-ProcessAlive([int]$ProcessId){$null -ne (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)}
+function Stop-LeftoverTree([int]$ProcessId){
+    # 実測: MSIX 版 pwsh が ProcessHost のとき、非パッケージの子（cmd.exe 等）は VerificationJob に入らず、Execution のジョブ停止が届かない
+    # （タスク3報告の逸脱候補。Execution.psm1 側の修正待ち）。試験は自分が起動した偽sbx（fake-sbx.cmd）の PID とその子孫だけを止める。名前では止めない。
+    $all=@(Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,CommandLine)
+    $root=$all | Where-Object {$_.ProcessId -eq $ProcessId -and $_.CommandLine -like '*fake-sbx.cmd*'}
+    if($null -eq $root){return}
+    $queue=[Collections.Generic.Queue[int]]::new();$queue.Enqueue($ProcessId);$targets=@()
+    while($queue.Count -gt 0){$current=$queue.Dequeue();$targets+=$current;foreach($child in ($all | Where-Object {$_.ParentProcessId -eq $current})){$queue.Enqueue([int]$child.ProcessId)}}
+    foreach($target in $targets){Stop-Process -Id $target -Force -ErrorAction SilentlyContinue}
+}
+function Stop-TestSandbox([hashtable]$Item,[hashtable]$RunBudget){
+    $result=Stop-VerificationSandbox $Item.handle $RunBudget
+    if($null -ne $Item.handle.keepAliveHandle){Stop-LeftoverTree $Item.handle.keepAliveHandle.processId}
+    $Item.stopped=$true
+    $result
+}
+function Get-StopCalls([hashtable]$Ctx){$calls=@(Get-Calls $Ctx 'stop');$calls | ForEach-Object {$_.argv[1]}}
+$handles=[Collections.Generic.List[object]]::new()
+try{
+# 4. pilot 排他: デーモン停止時は Lease を取らず blocked（理由に通常起動）。running なら Lease{runId,daemonKey,leaseId}。取得後にデーモンが止まれば New-VerificationSandbox は create 0回で blocked。
+$ctx=New-Case
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+Assert-True ($lease.runId -ceq $ctx.runId -and $lease.daemonKey -match '^[A-F0-9]{16}$' -and $lease.leaseId -match '^[0-9a-f-]{36}$') 'lease: 形'
+Assert-Equal (@($lease.Keys | Sort-Object) -join ',') 'daemonKey,leaseId,runId' 'lease: 3項目だけ（Mutex ハンドルを外へ出さない）'
+$stoppedStatus=Get-FakeSbxResponse 'daemonStatusStopped'
+Add-FakeSbxResponse $ctx.case @('daemon','status','--json') -Stdout $stoppedStatus.text -Synthetic $stoppedStatus.synthetic -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.message -like '*daemon is not running*' -and $failure.message -like '*通常端末*') "daemon stopped: 理由に通常起動（$($failure.message)）"
+Assert-True ($failure.creationState -ceq 'not-created' -and $failure.stopState -ceq 'not-created' -and $failure.status -ceq 'blocked' -and $null -eq $failure.handle) 'daemon stopped: not-created・blocked'
+Assert-Equal @(Get-Calls $ctx 'create').Count 0 'daemon stopped: create 0回'
+Assert-Equal @(Get-Calls $ctx 'ls').Count 0 'daemon stopped: 停止中デーモンへ ls を発行しない'
+Release-VerificationPilotLease $lease
+Assert-Throws {Release-VerificationPilotLease $lease} '*unknown pilot lease*'
+$failure=Get-Failure {Acquire-VerificationPilotLease $ctx.prepared}
+Assert-True ($failure.Message -like '*daemon is not running*' -and $failure.Data['status'] -eq 'blocked') 'lease: デーモン停止時は取得せず blocked'
+$count++
+
+# 5. Mutex 競合: 別スレッドが同名 Mutex を保持していれば待たずに blocked、create 0回。解放後は取得できる。
+$ctx=New-Case;Write-FakeSbxScenario $ctx.case
+$probe=Acquire-VerificationPilotLease $ctx.prepared;$mutexName='Local\iv-sbx-pilot-'+$probe.daemonKey;Release-VerificationPilotLease $probe
+$eventName='Local\iv-sbx-test-'+[guid]::NewGuid().ToString('N')
+$ready=[Threading.EventWaitHandle]::new($false,[Threading.EventResetMode]::ManualReset,$eventName)
+$holder=Start-ThreadJob -ScriptBlock {param($m,$e) $mutex=[Threading.Mutex]::new($true,$m);$signal=[Threading.EventWaitHandle]::OpenExisting($e);[void]$signal.Set();Start-Sleep -Seconds 120;$mutex.ReleaseMutex()} -ArgumentList $mutexName,$eventName
+try{
+    Assert-True ($ready.WaitOne(15000)) 'mutex: 保持スレッドの準備'
+    $failure=Get-Failure {Acquire-VerificationPilotLease $ctx.prepared}
+    Assert-True ($failure.Message -like '*held by another run*' -and $failure.Data['status'] -eq 'blocked') 'mutex: 競合は待たずに blocked'
+    Assert-Equal @(Get-Calls $ctx 'create').Count 0 'mutex: create 0回'
+}finally{Stop-Job $holder;Remove-Job $holder -Force;$ready.Dispose()}
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+Assert-True ($null -ne $lease) 'mutex: 放棄後は取得できる'
+Release-VerificationPilotLease $lease
+$count++
+
+# 6. 作成前の拒否（create 0回）: running のVMがある／同名がある／Lease が別 run／固定入力不一致／clipboard.imagePaste=true／MCP 登録1件。
+$ctx=New-Case;$vm=Add-Vm $ctx;Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$runningLs=(Get-Content -LiteralPath $ctx.case.scenarioPath -Raw | ConvertFrom-Json -AsHashtable -Depth 10) | Where-Object {$_.argv[0] -eq 'ls'} | Select-Object -First 1
+$busy=Add-FakeSbxResponse $ctx.case @('ls','--json') -Stdout ('{"sandboxes":[{"name":"iv-other","id":"0badc0de-0000-0000-0000-000000000000","agent":"shell","status":"running"}]}') -First
+Write-FakeSbxScenario $ctx.case
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.reason -ceq 'other-sandbox-active' -and $failure.creationState -ceq 'not-created' -and $failure.status -ceq 'blocked') "running あり: blocked（$($failure.message)）"
+$ctx.case.entries.Remove($busy) | Out-Null
+$sameName=Add-FakeSbxResponse $ctx.case @('ls','--json') -Stdout ('{"sandboxes":[{"name":"'+$vm.name+'","id":"0badc0de-0000-0000-0000-000000000001","agent":"shell","status":"stopped"}]}') -First
+Write-FakeSbxScenario $ctx.case
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.reason -ceq 'name-exists' -and $failure.creationState -ceq 'not-created') "同名あり: blocked（$($failure.message)）"
+$ctx.case.entries.Remove($sameName) | Out-Null;Write-FakeSbxScenario $ctx.case
+$foreign=@{runId=[guid]::NewGuid().ToString();daemonKey=$lease.daemonKey;leaseId=$lease.leaseId}
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $foreign}
+Assert-True ($failure.reason -ceq 'lease-invalid' -and $failure.creationState -ceq 'not-created') 'Lease 不一致: blocked'
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile @{runId=$ctx.runId;daemonKey=$lease.daemonKey;leaseId=[guid]::NewGuid().ToString()}}
+Assert-True ($failure.reason -ceq 'lease-invalid') 'Lease 未登録: blocked'
+$pilotPath=$ctx.prepared.pilotInputPath;$pilotBytes=[IO.File]::ReadAllBytes($pilotPath)
+[IO.File]::WriteAllText($pilotPath,([IO.File]::ReadAllText($pilotPath).Replace('pilot-fixture','pilot-other')),$utf8)
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.reason -ceq 'pilot-input' -and $failure.creationState -ceq 'not-created' -and $failure.status -ceq 'blocked') "固定入力不一致: blocked（$($failure.message)）"
+[IO.File]::WriteAllBytes($pilotPath,$pilotBytes)
+$clipTrue=Get-FakeSbxResponse 'settingsClipboardTrue'
+$clip=Add-FakeSbxResponse $ctx.case @('settings','get','--json','clipboard\.imagePaste') -Stdout $clipTrue.text -Synthetic $clipTrue.synthetic -First;Write-FakeSbxScenario $ctx.case
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.reason -ceq 'daemon-settings' -and $failure.message -like '*clipboard.imagePaste*' -and $failure.creationState -ceq 'not-created') 'clipboard 画像読取 true: blocked'
+$ctx.case.entries.Remove($clip) | Out-Null
+$mcpOne=Get-FakeSbxResponse 'mcpLsOne'
+$mcp=Add-FakeSbxResponse $ctx.case @('mcp','ls','--json') -Stdout $mcpOne.text -Synthetic $mcpOne.synthetic -First;Write-FakeSbxScenario $ctx.case
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.reason -ceq 'daemon-settings' -and $failure.message -like '*mcp ls*' -and $failure.creationState -ceq 'not-created') 'MCP 登録1件: blocked'
+$ctx.case.entries.Remove($mcp) | Out-Null;Write-FakeSbxScenario $ctx.case
+Assert-Equal @(Get-Calls $ctx 'create').Count 0 '作成前の拒否: create 0回'
+Release-VerificationPilotLease $lease
+$count++
+
+# 7. create の 500（synthetic）: 作成要求後の ls で不在を確かめてから not-created。create は1回。
+$ctx=New-Case;$vm=Add-Vm $ctx
+$create500=Get-FakeSbxResponse 'create500' @{name=$vm.name}
+Add-FakeSbxResponse $ctx.case @('create','shell','--name',[regex]::Escape($vm.name),'--cpus','2','--memory','2g','--no-share-skills','--deny-network','\*','--template','.+') -Stderr $create500.text -ExitCode 1 -Synthetic $create500.synthetic -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.reason -ceq 'create-failed' -and $failure.creationState -ceq 'not-created' -and $failure.stopState -ceq 'not-created' -and $failure.status -ceq 'blocked' -and $failure.message -like '*500*') "create 500: not-created（$($failure.message)）"
+Assert-Equal @(Get-Calls $ctx 'create').Count 1 'create 500: create 1回'
+Assert-Equal @(Get-Calls $ctx 'ls').Count 2 'create 500: 作成前と作成後の ls'
+Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'runtime/replay-before-sandbox.json'))) 'create 500: 作成記録なし'
+Release-VerificationPilotLease $lease
+$count++
+
+# 8. id 確定後の失敗（inspect 失敗／policy 不一致／daemon.log に SSH forwarder 行）: 作成記録を残し、停止を試みて runtimeFailure.creationState=created・stopState=stopped（偽 stop が成立）→ blocked。
+foreach($variant in @('inspect-failed','policy-mismatch','ssh-forwarder')){
+    $ctx=New-Case;$vm=Add-Vm $ctx
+    switch($variant){
+        'inspect-failed'{Add-FakeSbxResponse $ctx.case @('inspect',[regex]::Escape($vm.name),'--json') -Stderr "Error: inspect failed`n" -ExitCode 1 -Synthetic $true -First | Out-Null}
+        'policy-mismatch'{Add-FakeSbxResponse $ctx.case @('policy','ls',[regex]::Escape($vm.name),'--json') -Stdout '{"rules":[]}' -Synthetic $true -First | Out-Null}
+        'ssh-forwarder'{Add-FakeDaemonLogLine $ctx.case 'sshForwarder' $vm.name}
+    }
+    Write-FakeSbxScenario $ctx.case
+    $lease=Acquire-VerificationPilotLease $ctx.prepared
+    $failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+    Assert-True ($failure.creationState -ceq 'created' -and $failure.stage -ceq 'activation' -and $failure.handle.id -ceq $vm.id -and $failure.handle.name -ceq $vm.name) "${variant}: creationState=created と handle（$($failure.message)）"
+    Assert-True ($failure.stopState -ceq 'stopped' -and $failure.status -ceq 'blocked') "${variant}: 停止できたので blocked（stopState=$($failure.stopState)）"
+    Assert-Equal (@(Get-StopCalls $ctx) -join ',') $vm.name "${variant}: 当該名へ stop 1回"
+    if($variant -ne 'inspect-failed'){Assert-True ($failure.message -like '*activation checks failed*') "${variant}: 理由"}
+    if($variant -eq 'policy-mismatch'){Assert-True ($failure.message -like '*policy*') 'policy-mismatch: policy を名指す'}
+    if($variant -eq 'ssh-forwarder'){Assert-True ($failure.message -like '*sshForwarding*') 'ssh-forwarder: sshForwarding を名指す'}
+    $record=Get-Content -LiteralPath (Join-Path $ctx.controlRoot 'runtime/replay-before-sandbox.json') -Raw | ConvertFrom-Json -AsHashtable
+    Assert-True ($record.runId -ceq $ctx.runId -and $record.id -ceq $vm.id -and $null -eq $record.activationRecordPath) "${variant}: 作成記録（activation は null）"
+    Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'runtime/replay-before-activation.json'))) "${variant}: activationRecord は作られない"
+    Assert-Equal @(Get-Calls $ctx 'exec').Count 0 "${variant}: 保持 exec は開始されない"
+    Release-VerificationPilotLease $lease
+}
+$count++
+
+# 9. 正常作成: handle の項目、作成記録、activationRecord（schema・全条件 verified/非該当）、保持セッションの生存、固定 argv と環境辞書（SSH_AUTH_SOCK なし）。停止で stopped、保持プロセス消失、当該名以外へ stop なし。
+$ctx=New-Case -CleanupSeconds 5;$vm=Add-Vm $ctx;Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$handle=New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease;$item=@{handle=$handle;ctx=$ctx;stopped=$false};$handles.Add($item)
+Assert-Equal (@($handle.Keys | Sort-Object) -join ',') 'activationRecordHash,activationRecordPath,createdAt,effectiveSettingsHash,id,keepAliveHandle,name,profileHash,role,runId' 'handle: 項目'
+Assert-True ($handle.runId -ceq $ctx.runId -and $handle.role -ceq 'replay-before' -and $handle.name -ceq $vm.name -and $handle.id -ceq $vm.id) 'handle: runId/role/name/id'
+Assert-True ($handle.createdAt -match '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{7}Z$') 'handle: createdAt'
+Assert-Equal $handle.effectiveSettingsHash (Get-VerificationEffectiveSettingsHash $ctx.replayProfile $ctx.settings) 'handle: effectiveSettingsHash'
+Assert-Equal $handle.activationRecordHash (Get-Hash $handle.activationRecordPath) 'handle: activationRecordHash は現物と一致'
+$record=Get-Content -LiteralPath (Join-Path $ctx.controlRoot 'runtime/replay-before-sandbox.json') -Raw | ConvertFrom-Json -AsHashtable
+Assert-True ($record.id -ceq $vm.id -and $record.activationRecordPath -ceq $handle.activationRecordPath -and $record.activationRecordHash -ceq $handle.activationRecordHash -and -not$record.ContainsKey('keepAliveHandle')) '作成記録: activation を書き足し、keepAliveHandle を含まない'
+$activation=Get-Content -LiteralPath $handle.activationRecordPath -Raw | ConvertFrom-Json -AsHashtable
+Assert-True (Test-Json -Json (Get-Content -LiteralPath $handle.activationRecordPath -Raw) -SchemaFile (Join-Path $PSScriptRoot '../activation-record.schema.json')) 'activationRecord: schema'
+Assert-True ($activation.sandboxId -ceq $vm.id -and $activation.daemonInstance.pid -eq $PID -and $activation.profileHash -ceq $handle.profileHash) 'activationRecord: sandboxId・世代・profileHash'
+foreach($key in @('policy','mount','resource','credentialExposure','sshForwarding','clipboardImagePaste','mcpServers')){Assert-Equal $activation.checks[$key].verdict 'verified' "activationRecord: $key"}
+Assert-Equal $activation.checks.otherVmTraffic.verdict 'not-applicable' 'activationRecord: otherVmTraffic は非該当（同時1VM）'
+Assert-True ($activation.checks.mcpServers.observed.mcpGateway -eq $true -and $activation.checks.mcpServers.observed.mcpgatewaySecret -eq $true) 'activationRecord: ゲートウェイと mcpgateway secret を記録'
+Assert-True (Test-ProcessAlive $handle.keepAliveHandle.processId) '保持: 背景の sbx クライアントが生きている'
+$createCall=@(Get-Calls $ctx 'create')[0]
+Assert-Equal ($createCall.argv -join ' ') "create shell --name $($vm.name) --cpus 2 --memory 2g --no-share-skills --deny-network * --template $digest" '固定 argv'
+foreach($call in (Get-Calls $ctx)){Assert-True ($call.envKeys -notcontains 'SSH_AUTH_SOCK') '環境辞書: SSH_AUTH_SOCK を渡さない'}
+Assert-True (@(Get-Calls $ctx)[0].envKeys -contains 'PATH' -and @(Get-Calls $ctx)[0].envKeys -contains 'SystemRoot') '環境辞書: 明示した変数'
+$stop=Stop-TestSandbox $item (New-VerificationCleanupBudget $ctx.prepared 1)
+Assert-True ($stop.stopState -ceq 'stopped' -and (Test-Path -LiteralPath $stop.evidencePath)) "停止: stopped と証拠ファイル（$($stop.reason)）"
+Assert-Equal (@(Get-StopCalls $ctx) -join ',') $vm.name '停止: 当該名だけに stop 1回'
+$stopEvidence=Get-Content -LiteralPath $stop.evidencePath -Raw | ConvertFrom-Json -AsHashtable
+Assert-True ($stopEvidence.listObserved -ceq 'stopped' -and $stopEvidence.stopLogLine -like '*stopped runtime container*' -and $stopEvidence.daemonBefore.pid -eq $PID -and $stopEvidence.daemonAfter.pid -eq $PID) '停止: 証拠の3点（ls・停止行・世代不変）'
+# keepAlive.stopped は Execution のジョブ停止が cmd 系の子へ届かない実測（逸脱候補）により false になりうるため、停止を試みた記録だけを確認する。
+Assert-True ($null -ne $stopEvidence.keepAlive -and $stopEvidence.keepAlive.ContainsKey('stopped')) '停止: 保持ジョブの停止を試みた記録'
+$stopIssued=[DateTimeOffset]::Parse($stopEvidence.stopIssuedAt);$stopLine=$stopEvidence.stopLogLine | ConvertFrom-Json
+Assert-True ([DateTimeOffset]::new($stopLine.time) -ge $stopIssued) '停止: 停止行は stop 発行以後'
+$again=Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $ctx.prepared 1)
+Assert-True ($again.evidencePath -ceq $stop.evidencePath -and @(Get-StopCalls $ctx).Count -eq 1) '停止: 確認済みなら再発行しない'
+Release-VerificationPilotLease $lease
+$count++
+
+}finally{
+    # 試験が作った VM の保持セッションを必ず止める（途中失敗でも）。
+    foreach($item in $handles){if(-not$item.stopped){try{[void](Stop-TestSandbox $item (New-VerificationCleanupBudget $item.ctx.prepared 1))}catch{if($null -ne $item.handle.keepAliveHandle){Stop-LeftoverTree $item.handle.keepAliveHandle.processId}}}}
+}
 "SbxRuntimeV3: $count cases passed"

@@ -129,7 +129,8 @@ function Add-FakeDaemonLogLine([hashtable]$Case,[string]$Kind,[string]$Name,[str
     try{$bytes=$script:Utf8.GetBytes((New-FakeSbxLogLine $Kind $Name $Time));$stream.Write($bytes,0,$bytes.Length)}finally{$stream.Dispose()}
 }
 function Read-FakeSbxCalls([hashtable]$Case){
-    if(-not(Test-Path -LiteralPath $Case.callsPath)){return @()}
+    # 1行1件の hashtable を列挙して返す（呼出し側は @() で受ける）。
+    if(-not(Test-Path -LiteralPath $Case.callsPath)){return}
     @([IO.File]::ReadAllLines($Case.callsPath,$script:Utf8) | Where-Object {$_.Trim().Length -gt 0} | ForEach-Object {$_ | ConvertFrom-Json -AsHashtable})
 }
 Export-ModuleMember -Function Get-FakeSbxTemplateDigest,Get-FakeSbxResponse,New-FakeSbxLogLine,New-FakeSbxCase,Add-FakeSbxResponse,New-FakeRuntimeFileText,Add-FakeSbxSandboxScenario,Write-FakeSbxScenario,Set-FakeSbxState,Add-FakeDaemonLogLine,Read-FakeSbxCalls

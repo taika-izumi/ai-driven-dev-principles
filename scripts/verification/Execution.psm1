@@ -122,6 +122,7 @@ function Invoke-VerificationProcess {
 # ---- v3: 対象stdinへのバイト転送・合算出力上限・RunBudget（残時間）・背景起動。v1の Invoke-VerificationProcess は変更しない。 ----
 Import-Module (Join-Path $PSScriptRoot 'RequestCopy.psm1')   # Get-VerificationUtcNow（ISO 8601 UTC）を共用する
 $script:BackgroundProcesses=@{}   # jobToken -> 背景起動の保持情報。ジョブ（VerificationJob）を保持し、Stop で Dispose する。
+$script:BackgroundStartSeconds=30   # 背景起動の開始マーカー待ちの上限（固定。期限や CLI 入力・子からは変えない）
 function Get-VerificationBudgetTime([hashtable]$Budget,[string]$Key,[bool]$Required) {
     if(-not$Budget.ContainsKey($Key) -or $null -eq $Budget[$Key]){if($Required){throw "RunBudget.$Key required"};return $null}
     $value=$Budget[$Key]
@@ -242,10 +243,12 @@ function Invoke-VerificationProcessV3 {
         # 打ち切った実行の exitCode は採否に使わせない（切詰めて成功にしない）。
         if($result.timedOut -or $result.outputExceeded){$result.exitCode=$null}
     }catch{
+        # 起動側の失敗は refusedReason=host-failed で返し、理由を stderr ファイルへ残す。stderr ファイルを開く前の失敗は理由を残せないので再送出する。
         if($hostStarted -and -not$process.HasExited){$process.Kill($true);[void]$process.WaitForExit(5000)}
-        $result.started=[IO.File]::Exists($marker)
+        $result.started=$false;$result.exitCode=$null;$result.refusedReason='host-failed'
         $result.processTreeStopped=($job.Active() -eq 0)
-        if($errFile){$bytes=[Text.Encoding]::UTF8.GetBytes($_.Exception.Message);$errFile.Write($bytes,0,$bytes.Length);$result.stderrBytes+=$bytes.Length}
+        if($null -eq $errFile){throw}
+        $bytes=[Text.Encoding]::UTF8.GetBytes($_.Exception.Message);$errFile.Write($bytes,0,$bytes.Length);$result.stderrBytes+=$bytes.Length
     }finally{
         $job.Dispose()
         # 停止後にパイプへ残った分（高々パイプバッファ分）を上限内で汲み切る。読み切れなければ停止済みと扱わない。
@@ -279,8 +282,8 @@ function Start-VerificationBackgroundProcess {
     # JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE により対象の木が止まる。モジュールの除去時も保持中のジョブを Dispose する（下記 OnRemove）。
     param([Diagnostics.ProcessStartInfo]$StartInfo,[hashtable]$OutputPaths,[hashtable]$RunBudget)
     $marker=Test-VerificationProcessInput $StartInfo $OutputPaths
-    $remaining=Get-VerificationRemainingSeconds $RunBudget
-    if($remaining -le 0){$failure=[InvalidOperationException]::new('deadline-reached');$failure.Data['refusedReason']='deadline-reached';throw $failure}
+    # RunBudget は「期限到達後は起動しない」の判定にだけ使う。残時間を開始待ちの上限に流用しない（残時間が短いと起動済みの対象を期限由来の値で止めてしまう）。
+    if((Get-VerificationRemainingSeconds $RunBudget) -le 0){$failure=[InvalidOperationException]::new('deadline-reached');$failure.Data['refusedReason']='deadline-reached';throw $failure}
     $job=[VerificationJob]::new();$process=New-VerificationHostProcess $StartInfo $marker
     $entry=@{job=$job;process=$process;marker=$marker;outFile=$null;errFile=$null;outTask=$null;errTask=$null;stdinTask=$null}
     $hostStarted=$false
@@ -293,7 +296,7 @@ function Start-VerificationBackgroundProcess {
         $entry.errTask=$process.StandardError.BaseStream.CopyToAsync($entry.errFile)
         $control=Get-VerificationControlBytes $StartInfo ([byte[]]::new(0))
         $entry.stdinTask=$process.StandardInput.BaseStream.WriteAsync($control,0,$control.Length)
-        $startDeadline=[DateTime]::UtcNow.AddSeconds($remaining)
+        $startDeadline=[DateTime]::UtcNow.AddSeconds($script:BackgroundStartSeconds)
         while(-not[IO.File]::Exists($marker) -and -not$process.HasExited -and [DateTime]::UtcNow -lt $startDeadline){[void]$process.WaitForExit(25)}
         if(-not[IO.File]::Exists($marker)){throw 'background process not started'}
         $info=[IO.File]::ReadAllText($marker) | ConvertFrom-Json -ErrorAction Stop

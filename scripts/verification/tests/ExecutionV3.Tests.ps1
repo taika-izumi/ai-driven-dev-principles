@@ -99,6 +99,17 @@ Assert-True (-not$r.started) '起動失敗: started=false';Assert-True ($null -e
 Assert-True ($r.stderrBytes -gt 0 -and $r.processTreeStopped) '起動失敗: stderr にホストの理由、ジョブは空'
 $count++
 
+# 6a. 起動側の失敗: 出力ファイルを開いた後の失敗（作業ディレクトリ不在でホストを起動できない）は refusedReason=host-failed で理由を stderr に残す。
+#     stdout ファイルを作れない失敗（ディレクトリ不在）は理由を残せないので例外になる。
+$start=New-Start 'echo';$start.WorkingDirectory=Join-Path $root 'no-such-dir';$paths=New-Paths 'hostfail'
+$r=Invoke-VerificationProcessV3 -StartInfo $start -StdinBytes $null -OutputPaths $paths -RunBudget (New-Budget)
+Assert-True (-not$r.started -and $null -eq $r.exitCode) '起動側失敗: started=false・exitCode なし';Assert-Equal $r.refusedReason 'host-failed' '起動側失敗: 理由'
+Assert-True ($r.stderrBytes -gt 0 -and ([IO.FileInfo]::new($paths.stderrPath)).Length -eq $r.stderrBytes) '起動側失敗: 例外メッセージを stderr ファイルに残す'
+Assert-True ($r.processTreeStopped -and $r.finishedAt -match $isoUtc) '起動側失敗: ジョブは空・finishedAt'
+$badPaths=@{stdoutPath=(Join-Path $root 'no-such-dir/x.out');stderrPath=(Join-Path $root 'no-such-dir/x.err')}
+Assert-Throws {Invoke-VerificationProcessV3 -StartInfo (New-Start 'echo') -StdinBytes $null -OutputPaths $badPaths -RunBudget (New-Budget)} '*no-such-dir*'
+$count++
+
 # 6b. 対象が先に終了しても出力パイプを握る孫が残る場合（v1 fixture の orphan）: 残存子をジョブ単位で止め、終了0を保ちつつ全停止する。
 $start=[Diagnostics.ProcessStartInfo]::new($pwsh);$start.WorkingDirectory=$root;$start.UseShellExecute=$false;$start.CreateNoWindow=$true
 $pidPath=Join-Path $root 'orphan-pid.json'
@@ -129,13 +140,15 @@ Assert-Throws {Invoke-VerificationProcessV3 -StartInfo (New-Start 'echo') -Stdin
 $count++
 
 # 8. 背景起動: deadlineAt 経過後も対象が生きている（期限で打ち切られない）。Stop で止めて processTreeStopped=true。
-$paths=New-Paths 'bg-keep';$budget=New-Budget -CommandSeconds 60 -DeadlineIn 1
+#    deadlineAt は3秒先にし（pwsh 2プロセスの起動が1秒に収まることに依存しない）、起動後に期限の経過を待ってから生存を確認する。
+$paths=New-Paths 'bg-keep';$budget=New-Budget -CommandSeconds 60 -DeadlineIn 3
 $h=Start-VerificationBackgroundProcess -StartInfo (New-Start 'sleep' -Seconds 120) -OutputPaths $paths -RunBudget $budget
 Assert-True ($h.processId -is [int] -and $h.processId -gt 0) '背景: processId';Assert-True ($h.jobToken -is [string] -and $h.jobToken.Length -gt 0) '背景: jobToken'
 Assert-Equal $h.markerPath ($paths.stdoutPath+'.started.json') '背景: markerPath';Assert-True ($h.startedAt -match $isoUtc) '背景: startedAt'
 $info=[IO.File]::ReadAllText($h.markerPath) | ConvertFrom-Json;Assert-Equal $h.processId ([int]$info.pid) '背景: processId は対象（マーカー）の PID'
-Start-Sleep -Milliseconds 1800
-Assert-True ([DateTime]::UtcNow -gt [DateTimeOffset]::Parse($budget.deadlineAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal).UtcDateTime) '背景: deadlineAt を過ぎた'
+$deadlineUtc=[DateTimeOffset]::Parse($budget.deadlineAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal).UtcDateTime
+while([DateTime]::UtcNow -le $deadlineUtc.AddMilliseconds(500)){Start-Sleep -Milliseconds 100}
+Assert-True ([DateTime]::UtcNow -gt $deadlineUtc) '背景: deadlineAt を過ぎた'
 $alive=Get-Process -Id $h.processId -ErrorAction SilentlyContinue
 Assert-True ($null -ne $alive -and $alive.StartTime.ToUniversalTime().Ticks -eq $info.startTicks) '背景: deadlineAt 経過後も対象が生きている'
 $s=Stop-VerificationBackgroundProcess -Handle $h -GraceSeconds 5

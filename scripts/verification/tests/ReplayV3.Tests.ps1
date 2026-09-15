@@ -191,6 +191,11 @@ $failure=Get-Failure {Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports 
 Assert-True ($failure.Data['status'] -ceq 'blocked' -and $failure.Data['reason'] -ceq 'stdlib-outside' -and $failure.Message -like '*requests (tests/test_calc.py)*') "標準ライブラリ外（test）: blocked（$($failure.Message)）"
 $ctx=New-ReplayCtx;$checked=Test-Proposal $ctx (New-Proposal $ctx -Replacements ([ordered]@{'calc.py'="from numpy import array`n"+$fixedText}))
 Assert-Failure {Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports $p $r $c} @($ctx.prepared,$ctx.replayProfile,$checked)} 'blocked' 'stdlib-outside' '標準ライブラリ外（replacement）'
+# PEP 263 の utf-8 以外のエンコーディング宣言（先頭2行）は、UTF-8 として読んだ静的検査と Python の読み方がずれうるので blocked（拒否側に倒す）。utf-8 の宣言は通す。
+$ctx=New-ReplayCtx;$checked=Test-Proposal $ctx (New-Proposal $ctx -Tests ([ordered]@{'test_calc.py'="#!/usr/bin/env python3`n# -*- coding: latin-1 -*-`nimport unittest`nimport calc`n"}))
+Assert-Failure {Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports $p $r $c} @($ctx.prepared,$ctx.replayProfile,$checked)} 'blocked' 'source-encoding' 'utf-8 以外のエンコーディング宣言（2行目）'
+Assert-Equal (Invoke-Internal {param($t) Get-ReplaySourceEncoding $t} @("# vim: set fileencoding=UTF_8 :`nimport os`n")) 'utf-8' 'エンコーディング宣言: 名前をそろえる（UTF_8 → utf-8）'
+Assert-True ($null -eq (Invoke-Internal {param($t) Get-ReplaySourceEncoding $t} @("import os`nimport sys`n# coding: latin-1`n"))) 'エンコーディング宣言: 3行目以降は宣言として読まない'
 $tampered=$ctx.replayProfile.Clone();$tampered.stdlibModulesHash=('C'*64)
 Assert-Failure {Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports $p $r $c} @($ctx.prepared,$tampered,$checked)} 'blocked' 'stdlib-list' '一覧の hash 不一致'
 $count++

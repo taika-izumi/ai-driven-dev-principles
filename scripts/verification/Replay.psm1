@@ -110,6 +110,17 @@ function Get-ReplayImportedModules([string]$Text) {
     }
     ,$modules
 }
+function Get-ReplaySourceEncoding([string]$Text) {
+    # PEP 263 のエンコーディング宣言（先頭2行のコメント中の coding[:=]<名前>）を読み、小文字・'_' を '-' にそろえた名前を返す（宣言なしは $null）。
+    # 静的検査は UTF-8 として読んだ本文に対して行うので、別のエンコーディングを宣言したファイルは Python が別の文字列として読み、検査と実行がずれうる。
+    # 宣言の読み取りは Python の規則より広く取り（1行目がコードでも2行目を見る）、拒否側に倒す。
+    $lines=$Text.TrimStart([char]0xFEFF).Replace("`r`n","`n").Replace("`r","`n").Split("`n")
+    foreach($line in @($lines | Select-Object -First 2)){
+        $match=[regex]::Match($line,'^[ \t\f]*#.*?coding[:=][ \t]*([-\w.]+)')
+        if($match.Success){return $match.Groups[1].Value.ToLowerInvariant().Replace('_','-')}
+    }
+    $null
+}
 function Test-ReplayStdlibImports([hashtable]$PreparedRun,[hashtable]$Profile,[hashtable]$Checked) {
     # accepted の tests と replacements の import 対象を、replay profile の標準ライブラリ一覧（stdlibModulesPath。profileHash の対象）と題材内モジュールの集合に照合する。
     # 一覧は profile の stdlibModulesHash と照合した同じバイト列から読む。実行中に依存を取得しない。
@@ -135,6 +146,8 @@ function Test-ReplayStdlibImports([hashtable]$PreparedRun,[hashtable]$Profile,[h
         $bytes=[IO.File]::ReadAllBytes((Join-Path ([string]$PreparedRun.acceptedRoot) $item.path))
         if((Get-VerificationBytesHash $bytes) -ine $item.sha256){Invoke-VerificationFailure "accepted file changed during the stdlib check: $($item.path)" 'blocked' 'accepted-changed'}
         try{$text=$script:StrictUtf8.GetString($bytes)}catch{Invoke-VerificationFailure "accepted file is not valid UTF-8: $($item.path)" 'blocked' 'accepted-changed'}
+        $encoding=Get-ReplaySourceEncoding $text
+        if($null -ne $encoding -and $encoding -notin @('utf-8','utf8')){Invoke-VerificationFailure "accepted file declares a non-UTF-8 source encoding ($encoding): $($item.path)" 'blocked' 'source-encoding'}
         foreach($module in (Get-ReplayImportedModules $text)){if(-not$allowed.Contains($module)){[void]$outside.Add("$module ($($item.path))")}}
     }
     if($outside.Count -gt 0){Invoke-VerificationFailure ('imports outside the standard library and the source: '+(@($outside) -join ', ')) 'blocked' 'stdlib-outside'}

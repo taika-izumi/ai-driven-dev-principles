@@ -388,6 +388,11 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
     $recheckCount=$(if($PreparedRun.ContainsKey('recheckArtifacts') -and $null -ne $PreparedRun.recheckArtifacts){@($PreparedRun.recheckArtifacts).Count}else{0})
     if($recheckCount -gt 0){return Invoke-VerificationProposalRecheck $PreparedRun}
     $result=New-ProposalResult $PreparedRun 'generated'
+    # 全体期限の後に呼ばれたら VM を作らず時間超過の型付き結果を返す（Lease を取れなかった呼出し側からも照合へ渡せるよう、Lease の検査より先に判定する）。
+    if(Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt)){
+        $result.status='timed_out';$result.failure=@{stage='sandbox';reason='deadline-reached'}
+        return $result
+    }
     try{$handle=New-VerificationSandbox $PreparedRun 'proposal' $Profile $Lease}
     catch{return Complete-VerificationProposalCreationFailure $result $PreparedRun $_.Exception}
     $result.sandbox=$handle;$result.stopState='unverified'

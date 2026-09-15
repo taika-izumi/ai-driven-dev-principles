@@ -472,6 +472,15 @@ Assert-Equal @(Read-FakeSbxCalls $ctx.case | Where-Object {$_.argv[0] -eq 'creat
 Assert-NoLeftover $ctx '作成前の拒否'
 $count++
 
+# 15. 全体期限の後に呼ぶ（VM なし）: VM を作らず timed_out の型付き結果（sandbox=null・not-created・sandbox:deadline-reached）。Lease を取れなかった呼出し（null）でも lease-invalid にしない。sbx 呼び出し0回。
+$ctx=New-Ctx -DeadlineIn -1
+Write-FakeSbxScenario $ctx.case
+$result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $null
+Assert-True ($result.status -ceq 'timed_out' -and $null -eq $result.sandbox -and $result.stopState -ceq 'not-created' -and $result.failure.stage -ceq 'sandbox' -and $result.failure.reason -ceq 'deadline-reached' -and $result.origin -ceq 'generated') "期限後: timed_out・VM なし（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+Assert-True ($null -eq $result.manifestPath -and @($result.artifacts).Count -eq 0 -and [IO.Directory]::GetFileSystemEntries($ctx.prepared.acceptedRoot).Length -eq 0) '期限後: accepted・manifest を作らない'
+Assert-True (-not(Test-Path -LiteralPath $ctx.case.callsPath)) '期限後: sbx を1回も呼ばない'
+$count++
+
 }finally{
     if($allCases.Count -gt 0){try{Stop-CaseFakeProcesses $allCases.ToArray()}catch{}}
 }

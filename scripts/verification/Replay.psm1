@@ -325,6 +325,12 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
     try{
         $checked=Test-ReplayProposal $PreparedRun $ProposalResult
         $result.mode=$checked.mode
+        # 全体期限の後に呼ばれたら、入力を作らず VM も作らずに時間超過の型付き結果を返す（Lease を持たない recheck の呼出しでも lease-invalid にしない）。
+        if(Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt)){
+            $result.status='timed_out'
+            $result.failure=@{stage=$(if($checked.mode -ceq 'recheck'){$script:RoleNames.after}else{$script:RoleNames.before});reason='deadline-reached'}
+            return $result
+        }
         $stage='profile'
         # SbxRuntime の検査は理由の符号を持たない拒否があるので、段の理由を profile-rejected にそろえる（状態は SbxRuntime の値。既定 blocked）。
         try{[void](Test-VerificationRuntimeProfile $Profile 'replay-before' $PreparedRun.settings)}

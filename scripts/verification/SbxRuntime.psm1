@@ -218,6 +218,8 @@ function Get-VerificationRuntimeLogLines([string]$Path,[string]$Name) {
 function Get-VerificationDaemonStatus([hashtable]$Client,[hashtable]$RunBudget) {
     # 停止中でも呼んでよい唯一の照会（自動起動しないことを実測済み）。running 以外・取得不能は running=false で返す。
     $call=Invoke-VerificationSbx $Client @('daemon','status','--json') (New-VerificationSbxBudget $RunBudget $script:QuerySeconds $Client.maxOutputBytes) 'daemon-status'
+    # 期限到達で照会自体を起動しなかった場合は、デーモン停止ではなく時間超過（呼出し側は作成要求の前なので not-created のまま timed_out を返す）。
+    if(-not$call.result.started -and $call.result.refusedReason -eq 'deadline-reached'){Throw-VerificationRuntimeFailure 'deadline reached before sbx daemon status' 'timed_out' 'deadline-reached'}
     $status=$null
     if(Test-VerificationSbxCallOk $call){try{$status=$call.stdout | ConvertFrom-Json -AsHashtable -ErrorAction Stop}catch{$status=$null}}
     if($status -isnot [hashtable] -or -not$status.ContainsKey('status')){return @{running=$false;status=$null;reason='daemon status unavailable'}}
@@ -627,7 +629,8 @@ function Assert-VerificationSandboxUnchanged([hashtable]$Entry,[hashtable]$RunBu
         if((Get-VerificationMcpServerCount $client $RunBudget) -ne $expected.mcpServers){Throw-VerificationRuntimeFailure 'mcp servers changed' 'blocked' 'settings-changed'}
     }catch{
         $reason=$(if($_.Exception.Data.Contains('reason')){[string]$_.Exception.Data['reason']}else{''})
-        if($reason -in @('sandbox-restarted','settings-changed')){throw}
+        # 期限到達による照会の起動拒否は、維持確認の失敗（incomplete）に言い換えず時間超過のまま返す。
+        if($reason -in @('sandbox-restarted','settings-changed','deadline-reached')){throw}
         # 取得不能（照会失敗・期限）も維持確認の失敗として扱う。
         Throw-VerificationRuntimeFailure ('pre-command check failed: '+$_.Exception.Message) 'incomplete' 'sandbox-restarted'
     }

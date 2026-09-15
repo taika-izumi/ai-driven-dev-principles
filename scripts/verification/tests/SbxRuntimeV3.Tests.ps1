@@ -642,6 +642,22 @@ Assert-Equal @(Get-Calls $empty 'ls').Count 0 '復旧(記録0件): ls を発行�
 Assert-True ((Get-RecoveryFiles $empty).Count -eq 1) '復旧(記録0件): 結果ファイル'
 $count++
 
+# 16b. 全体期限の後: daemon status の照会は起動を拒否されるので、Acquire は「デーモン停止」ではなく timed_out（deadline-reached）。
+#      New-VerificationSandbox も作成要求の前に timed_out・not-created で返り、create 0回・sbx 呼び出し0回（期限前に取った Lease でも同じ）。
+$ctx=New-Case;$vm=Add-Vm $ctx;Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$expired=$ctx.prepared.Clone();$expired.deadlineAt=[DateTime]::UtcNow.AddSeconds(-1).ToString('o')
+$callsBefore=@(Get-Calls $ctx).Count
+$failure=Get-Failure {Acquire-VerificationPilotLease $expired}
+Assert-True ($failure.Data['status'] -ceq 'timed_out' -and $failure.Data['reason'] -ceq 'deadline-reached' -and $failure.Message -notlike '*daemon is not running*') "期限後の Acquire: timed_out・deadline-reached（$($failure.Data['status']) $($failure.Data['reason']): $($failure.Message)）"
+$failure=Get-RuntimeFailure {New-VerificationSandbox $expired 'replay-before' $ctx.replayProfile $lease}
+Assert-True ($failure.status -ceq 'timed_out' -and $failure.reason -ceq 'deadline-reached' -and $failure.creationState -ceq 'not-created' -and $failure.stopState -ceq 'not-created' -and $null -eq $failure.handle) "期限後の New-VerificationSandbox: timed_out・not-created（$($failure.status) $($failure.reason) $($failure.creationState)）"
+Assert-Equal @(Get-Calls $ctx).Count $callsBefore '期限後: sbx を1回も呼ばない（照会も起動しない）'
+Assert-Equal @(Get-Calls $ctx 'create').Count 0 '期限後: create 0回'
+Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'runtime/replay-before-sandbox.json'))) '期限後: 作成記録を書かない'
+Release-VerificationPilotLease $lease
+$count++
+
 # 17. runtimes/<name>.json の判定キー（WorkspaceDir・SSHAgentSocketPath・CPUs など）の欠落・型違いは「取得できない」扱い: 観測なしで verified にせず、
 #     作成済み ID の停止を試みて runtimeFailure.creationState=created・blocked。
 foreach($variant in @('runtime-lacks-workspace','runtime-lacks-ssh-socket','runtime-cpus-string')){Test-ActivationFailureVariant $variant}

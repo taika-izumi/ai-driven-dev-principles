@@ -483,6 +483,15 @@ Assert-StopsOnly $ctx @($vmBefore.name) '時間超過'
 Assert-NoLeftover $ctx '時間超過'
 $count++
 
+# 16. 全体期限の後に呼ぶ（VM なし）: 入力を作らず VM も作らず timed_out の型付き結果（replay-before:deadline-reached、sandboxes=[]・allStopped=null）。
+#     Lease を持たない呼出し（recheck の CLI が期限で Lease を取れなかった場合）でも lease-invalid にしない。sbx 呼び出し0回。
+$ctx=New-ReplayCtx -DeadlineIn -1;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
+$r=Invoke-VerificationReplay $ctx.prepared $proposal $ctx.replayProfile $null
+Assert-True ($r.status -ceq 'timed_out' -and $r.failure.stage -ceq 'replay-before' -and $r.failure.reason -ceq 'deadline-reached' -and $r.mode -ceq 'candidate-comparison' -and $r.sandboxes.Count -eq 0 -and $null -eq $r.allStopped -and $null -eq $r.before -and $null -eq $r.after) "期限後: timed_out・VM なし（$(ConvertTo-VerificationCanonicalJson $r)）"
+Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.runRoot 'replay-inputs/before')) -and -not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'replay/replay-before-input-manifest.json'))) '期限後: replay-inputs・input manifest を作らない'
+Assert-True (-not(Test-Path -LiteralPath $ctx.case.callsPath)) '期限後: sbx を1回も呼ばない'
+$count++
+
 }finally{
     if($allCases.Count -gt 0){try{Stop-CaseFakeProcesses $allCases.ToArray()}catch{}}
 }

@@ -121,6 +121,7 @@ function Invoke-VerificationProcess {
 }
 # ---- v3: 対象stdinへのバイト転送・合算出力上限・RunBudget（残時間）・背景起動。v1の Invoke-VerificationProcess は変更しない。 ----
 Import-Module (Join-Path $PSScriptRoot 'RequestCopy.psm1')   # Get-VerificationUtcNow（ISO 8601 UTC）を共用する
+$script:BackgroundProcesses=@{}   # jobToken -> 背景起動の保持情報。ジョブ（VerificationJob）を保持し、Stop で Dispose する。
 function Get-VerificationBudgetTime([hashtable]$Budget,[string]$Key,[bool]$Required) {
     if(-not$Budget.ContainsKey($Key) -or $null -eq $Budget[$Key]){if($Required){throw "RunBudget.$Key required"};return $null}
     $value=$Budget[$Key]
@@ -271,4 +272,72 @@ function Invoke-VerificationProcessV3 {
     }
     return $result
 }
-Export-ModuleMember -Function Invoke-VerificationProcess,Invoke-VerificationProcessV3
+function Start-VerificationBackgroundProcess {
+    # 開始マーカー確認後に待たずに戻る。RunBudget は起動可否にだけ使い、起動後の対象を deadlineAt/cleanupDeadlineAt で打ち切らない
+    # （セッション保持が全体期限で切れると sbx の自動停止猶予と stop が競合するため。ADR-0193）。出力の容量上限も適用しない。
+    # ジョブは module 内の辞書に保持し、Stop-VerificationBackgroundProcess が Dispose する。呼び出し側のプロセスが終了すればジョブハンドルが閉じ、
+    # JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE により対象の木が止まる。モジュールの除去時も保持中のジョブを Dispose する（下記 OnRemove）。
+    param([Diagnostics.ProcessStartInfo]$StartInfo,[hashtable]$OutputPaths,[hashtable]$RunBudget)
+    $marker=Test-VerificationProcessInput $StartInfo $OutputPaths
+    $remaining=Get-VerificationRemainingSeconds $RunBudget
+    if($remaining -le 0){$failure=[InvalidOperationException]::new('deadline-reached');$failure.Data['refusedReason']='deadline-reached';throw $failure}
+    $job=[VerificationJob]::new();$process=New-VerificationHostProcess $StartInfo $marker
+    $entry=@{job=$job;process=$process;marker=$marker;outFile=$null;errFile=$null;outTask=$null;errTask=$null;stdinTask=$null}
+    $hostStarted=$false
+    try{
+        $entry.outFile=[IO.File]::Open($OutputPaths.stdoutPath,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
+        $entry.errFile=[IO.File]::Open($OutputPaths.stderrPath,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
+        [void]$process.Start();$hostStarted=$true
+        $job.Assign($process.Handle)
+        $entry.outTask=$process.StandardOutput.BaseStream.CopyToAsync($entry.outFile)
+        $entry.errTask=$process.StandardError.BaseStream.CopyToAsync($entry.errFile)
+        $control=Get-VerificationControlBytes $StartInfo ([byte[]]::new(0))
+        $entry.stdinTask=$process.StandardInput.BaseStream.WriteAsync($control,0,$control.Length)
+        $startDeadline=[DateTime]::UtcNow.AddSeconds($remaining)
+        while(-not[IO.File]::Exists($marker) -and -not$process.HasExited -and [DateTime]::UtcNow -lt $startDeadline){[void]$process.WaitForExit(25)}
+        if(-not[IO.File]::Exists($marker)){throw 'background process not started'}
+        $info=[IO.File]::ReadAllText($marker) | ConvertFrom-Json -ErrorAction Stop
+        $token=[guid]::NewGuid().ToString('N')
+        $script:BackgroundProcesses[$token]=$entry
+        return @{processId=[int]$info.pid;jobToken=$token;markerPath=$marker;startedAt=Get-VerificationUtcNow}
+    }catch{
+        if($hostStarted -and -not$process.HasExited){$process.Kill($true);[void]$process.WaitForExit(5000)}
+        $job.Dispose();Close-VerificationBackgroundEntry $entry 1
+        throw
+    }
+}
+function Close-VerificationBackgroundEntry([hashtable]$Entry,[int]$WaitSeconds) {
+    # 出力の複写を待ってファイルとプロセスを解放する。ジョブの Dispose は呼び出し側が行う。戻り値は複写が終わったか。
+    $finished=$true
+    foreach($task in @($Entry.outTask,$Entry.errTask)){if($null -ne $task){try{if(-not$task.Wait($WaitSeconds*1000)){$finished=$false}}catch{$finished=$false}}}
+    if($null -ne $Entry.stdinTask){try{[void]$Entry.stdinTask.Wait(1000)}catch{}}
+    try{$Entry.process.StandardInput.Close()}catch{}
+    if($Entry.outFile){$Entry.outFile.Dispose()};if($Entry.errFile){$Entry.errFile.Dispose()};$Entry.process.Dispose()
+    $finished
+}
+function Stop-VerificationBackgroundProcess {
+    # ジョブ（対象の木）を止め、GraceSeconds 内に全プロセスの終了と出力の複写完了を確認する。exitCode は対象が自ら終了していた場合だけ持つ。
+    param([hashtable]$Handle,[int]$GraceSeconds)
+    if($GraceSeconds -le 0){throw 'positive GraceSeconds required'}
+    if($null -eq $Handle -or -not$Handle.ContainsKey('jobToken') -or -not$script:BackgroundProcesses.ContainsKey($Handle.jobToken)){throw 'unknown background process handle'}
+    $entry=$script:BackgroundProcesses[$Handle.jobToken];$script:BackgroundProcesses.Remove($Handle.jobToken)
+    $result=@{exitCode=$null;processTreeStopped=$false}
+    try{
+        $targetExit=Read-VerificationTargetExit $entry.marker
+        if($null -ne $targetExit){$result.exitCode=[int]$targetExit}
+        if($entry.job.Active() -gt 0){$entry.job.Stop()}
+        $deadline=[DateTime]::UtcNow.AddSeconds($GraceSeconds)
+        while($entry.job.Active() -gt 0 -and [DateTime]::UtcNow -lt $deadline){Start-Sleep -Milliseconds 25}
+        $result.processTreeStopped=($entry.job.Active() -eq 0)
+    }finally{
+        $entry.job.Dispose()
+        if(-not(Close-VerificationBackgroundEntry $entry $GraceSeconds)){$result.processTreeStopped=$false}
+    }
+    return $result
+}
+$ExecutionContext.SessionState.Module.OnRemove={
+    # モジュール除去時に保持中の背景ジョブを解放する（ハンドルが閉じれば対象の木は KILL_ON_JOB_CLOSE で止まる）。
+    foreach($entry in @($script:BackgroundProcesses.Values)){try{$entry.job.Dispose();[void](Close-VerificationBackgroundEntry $entry 1)}catch{}}
+    $script:BackgroundProcesses.Clear()
+}
+Export-ModuleMember -Function Invoke-VerificationProcess,Invoke-VerificationProcessV3,Start-VerificationBackgroundProcess,Stop-VerificationBackgroundProcess

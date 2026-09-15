@@ -44,16 +44,32 @@ function Get-ProposalLimit([hashtable]$PreparedRun,[string]$Name) {
     [long]$value
 }
 function Get-ProposalBytesHash([byte[]]$Bytes) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)) }
-function Read-ProposalBaselinePaths([hashtable]$PreparedRun) {
-    # replacement の存在確認に使う基準版の一覧。PreparedRun の期待hashと一致する記録だけを使う。
-    $path=[string]$PreparedRun.baselineManifestPath
-    if([string]::IsNullOrEmpty($path) -or -not[IO.File]::Exists($path) -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ine [string]$PreparedRun.baselineManifestHash){Throw-VerificationProposalFailure 'control/baseline-manifest.json is missing or does not match PreparedRun.baselineManifestHash' 'blocked' 'baseline-manifest'}
-    $json=[IO.File]::ReadAllText($path,$script:Utf8)
-    if(Test-VerificationJsonDuplicateKeys $json){Throw-VerificationProposalFailure 'baseline manifest has duplicate keys' 'blocked' 'baseline-manifest'}
+function Read-ProposalVerifiedManifest([hashtable]$PreparedRun,[string]$Path,[string]$ExpectedHash,[string]$ListKey,[string]$Reason) {
+    # 外側の control の記録（baseline manifest・recheck manifest）を1回だけ読み、そのバイト列で期待hash・重複キー・runId・必須キーを確かめてから解析結果を返す。
+    # 検査したデータと使うデータを同じ読込みにする（読み直さない）。一覧の各要素は path（空でない文字列・重複なし）・size・sha256 を持つこと。
+    if([string]::IsNullOrEmpty($Path) -or -not[IO.File]::Exists($Path)){Throw-VerificationProposalFailure "control manifest is missing: $Path" 'blocked' $Reason}
+    $bytes=[IO.File]::ReadAllBytes($Path)
+    if((Get-ProposalBytesHash $bytes) -ine $ExpectedHash){Throw-VerificationProposalFailure "control manifest does not match the expected hash from PreparedRun: $Path" 'blocked' $Reason}
+    try{$json=$script:StrictUtf8.GetString($bytes)}catch{Throw-VerificationProposalFailure "control manifest is not valid UTF-8: $Path" 'blocked' $Reason}
+    if(Test-VerificationJsonDuplicateKeys $json){Throw-VerificationProposalFailure "control manifest has duplicate keys: $Path" 'blocked' $Reason}
     $manifest=$json | ConvertFrom-Json -AsHashtable -Depth 10 -DateKind String
-    if($manifest -isnot [hashtable] -or $manifest.runId -cne [string]$PreparedRun.runId -or -not$manifest.ContainsKey('files')){Throw-VerificationProposalFailure 'baseline manifest does not belong to this run' 'blocked' 'baseline-manifest'}
+    if($manifest -isnot [hashtable] -or -not$manifest.ContainsKey('runId') -or $manifest.runId -cne [string]$PreparedRun.runId){Throw-VerificationProposalFailure "control manifest does not belong to this run: $Path" 'blocked' $Reason}
+    if(-not$manifest.ContainsKey($ListKey) -or $manifest[$ListKey] -isnot [Collections.IList]){Throw-VerificationProposalFailure "control manifest lacks the $ListKey list: $Path" 'blocked' $Reason}
+    $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach($item in @($manifest[$ListKey])){
+        $complete=($item -is [hashtable]) -and $item.ContainsKey('path') -and $item.ContainsKey('size') -and $item.ContainsKey('sha256')
+        if(-not$complete -or $item.path -isnot [string] -or [string]::IsNullOrEmpty($item.path) -or -not(($item.size -is [int]) -or ($item.size -is [long])) -or $item.sha256 -isnot [string]){Throw-VerificationProposalFailure "control manifest entries need path, size and sha256: $Path" 'blocked' $Reason}
+        if(-not$seen.Add($item.path)){Throw-VerificationProposalFailure "control manifest lists a path twice: $($item.path)" 'blocked' $Reason}
+    }
+    $manifest
+}
+function Read-ProposalBaselineManifest([hashtable]$PreparedRun) {
+    # 基準版の一覧（replacement の存在確認と、proposal-input 搬入の ExpectedManifest の両方に使う）。
+    Read-ProposalVerifiedManifest $PreparedRun ([string]$PreparedRun.baselineManifestPath) ([string]$PreparedRun.baselineManifestHash) 'files' 'baseline-manifest'
+}
+function Get-ProposalManifestPaths([hashtable]$Manifest,[string]$ListKey) {
     $paths=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-    foreach($file in @($manifest.files)){[void]$paths.Add([string]$file.path)}
+    foreach($item in @($Manifest[$ListKey])){[void]$paths.Add([string]$item.path)}
     ,$paths
 }
 
@@ -190,10 +206,12 @@ function Test-VerificationProposalEnvelope([byte[]]$Wire,[hashtable]$PreparedRun
         $parts=$file.path.Split('/');$name=$parts[-1]
         if($file.kind -ceq 'test'){
             if($parts[0].ToUpperInvariant() -ceq 'TESTS'){Throw-VerificationEnvelopeRejection 'kind' "test path must be relative to accepted/tests without a tests/ prefix: $($file.path)"}
+            # test は accepted/tests 直下の名前だけ（ブリーフ「tests/test_*.py・tests/__init__.py」。サブディレクトリは受けない）。
+            if($parts.Count -ne 1){Throw-VerificationEnvelopeRejection 'kind' "test must be a file name directly under accepted/tests (no subdirectories): $($file.path)"}
             if(-not($name -ceq '__init__.py' -or ($name.StartsWith('test_',[StringComparison]::Ordinal) -and $name.EndsWith('.py',[StringComparison]::Ordinal)))){Throw-VerificationEnvelopeRejection 'kind' "test file must be test_*.py or __init__.py: $($file.path)"}
         }else{
             if(-not$name.EndsWith('.py',[StringComparison]::Ordinal)){Throw-VerificationEnvelopeRejection 'kind' "replacement must be a .py file: $($file.path)"}
-            if($null -eq $baseline){$baseline=Read-ProposalBaselinePaths $PreparedRun}
+            if($null -eq $baseline){$baseline=Get-ProposalManifestPaths (Read-ProposalBaselineManifest $PreparedRun) 'files'}
             if(-not$baseline.Contains($file.path)){Throw-VerificationEnvelopeRejection 'kind' "replacement is not a file in the baseline: $($file.path)"}
         }
     }
@@ -315,12 +333,7 @@ function Invoke-VerificationProposalRecheck([hashtable]$PreparedRun) {
     $result=New-ProposalResult $PreparedRun 'reused-tests'
     try{
         $expected=@($PreparedRun.recheckArtifacts)
-        $manifestPath=[string]$PreparedRun.recheckManifestPath
-        if([string]::IsNullOrEmpty($manifestPath) -or -not[IO.File]::Exists($manifestPath) -or (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash -ine [string]$PreparedRun.recheckManifestHash){Throw-VerificationProposalFailure 'recheck manifest is missing or does not match PreparedRun.recheckManifestHash' 'blocked' 'recheck-manifest'}
-        $json=[IO.File]::ReadAllText($manifestPath,$script:Utf8)
-        if(Test-VerificationJsonDuplicateKeys $json){Throw-VerificationProposalFailure 'recheck manifest has duplicate keys' 'blocked' 'recheck-manifest'}
-        $manifest=$json | ConvertFrom-Json -AsHashtable -Depth 10 -DateKind String
-        if($manifest -isnot [hashtable] -or $manifest.runId -cne [string]$PreparedRun.runId -or -not$manifest.ContainsKey('tests')){Throw-VerificationProposalFailure 'recheck manifest does not belong to this run' 'blocked' 'recheck-manifest'}
+        $manifest=Read-ProposalVerifiedManifest $PreparedRun ([string]$PreparedRun.recheckManifestPath) ([string]$PreparedRun.recheckManifestHash) 'tests' 'recheck-manifest'
         $recorded=@{}
         foreach($test in @($manifest.tests)){$recorded[[string]$test.path]=$test}
         $expectedMap=@{}
@@ -435,10 +448,9 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
         try{
             $maxOutput=Get-ProposalLimit $PreparedRun 'maxOutputBytes'
             # 1. proposal-input だけを source へ搬入し、所有者調整後のハッシュを基準版の一覧と照合する。
-            $baselinePaths=Read-ProposalBaselinePaths $PreparedRun
-            $manifest=[IO.File]::ReadAllText([string]$PreparedRun.baselineManifestPath,$script:Utf8) | ConvertFrom-Json -AsHashtable -Depth 10 -DateKind String
-            $expected=@{files=@(foreach($file in @($manifest.files)){@{path=[string]$file.path;size=[long]$file.size;sha256=[string]$file.sha256}})}
-            if($expected.files.Count -ne $baselinePaths.Count){Throw-VerificationProposalFailure 'baseline manifest lists duplicate paths' 'blocked' 'baseline-manifest'}
+            # 期待hash・重複キー・runId・必須キー（path の重複なし）を確かめた1回の読込みの戻り値だけから ExpectedManifest を作る。
+            $baselineManifest=Read-ProposalBaselineManifest $PreparedRun
+            $expected=@{files=@(foreach($file in @($baselineManifest.files)){@{path=[string]$file.path;size=[long]$file.size;sha256=[string]$file.sha256}})}
             $setup=New-ProposalBudget $PreparedRun $script:ExportSeconds $maxOutput
             [void](Copy-VerificationSandboxInput $handle ([string]$PreparedRun.proposalInputRoot) $script:SourceDestination $expected $setup)
             [void](Confirm-VerificationSandboxInput $handle $script:SourceDestination $expected $setup)

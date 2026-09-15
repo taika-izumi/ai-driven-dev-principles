@@ -128,8 +128,6 @@ $withoutTruncated=New-Envelope $ctx;$withoutTruncated.Remove('truncated')
 Assert-True ((Test-VerificationProposalEnvelope (ConvertTo-Wire $withoutTruncated) $ctx.prepared).files.Count -eq 3) '正常: truncated は省略可'
 $reproOnly=New-Envelope $ctx;$reproOnly.files=@($reproOnly.files[0])
 Assert-True (@((Test-VerificationProposalEnvelope (ConvertTo-Wire $reproOnly) $ctx.prepared).files).Count -eq 1) '正常: replacement 0件は再現のみとして受ける'
-$nested=New-Envelope $ctx;$nested.files=@($nested.files)+@((New-FileEntry 'test' 'unit/test_more.py' $testText),(New-FileEntry 'test' 'unit/__init__.py' ''))
-Assert-True (@((Test-VerificationProposalEnvelope (ConvertTo-Wire $nested) $ctx.prepared).files).Count -eq 5) '正常: tests 配下のサブディレクトリ'
 $count++
 
 # 2. wire 容量・途中切断・1行でない・非 UTF-8: JSON として読む前に拒否。
@@ -186,8 +184,31 @@ Assert-EditRejected $ctx {param($e) $e.files=@($e.files)+@(New-FileEntry 'test' 
 Assert-EditRejected $ctx {param($e) $e.files=@($e.files)+@(New-FileEntry 'replacement' 'pkg/mod.py' $replacementText)} 'envelope-path' '同一パスの重複'
 $count++
 
-# 5. kind: test は tests/ 接頭辞なしの test_*.py / __init__.py、replacement は基準版にある .py。test 0件は拒否。
+# 5. kind: test は tests/ 直下の test_*.py / __init__.py（接頭辞なし・サブディレクトリなし）、replacement は基準版にある .py（サブディレクトリ可）。test 0件は拒否。
 Assert-EditRejected $ctx {param($e) $e.files[0].path='tests/test_add.py'} 'envelope-kind' 'test に tests/ 接頭辞'
+Assert-EditRejected $ctx {param($e) $e.files=@($e.files)+@((New-FileEntry 'test' 'unit/test_more.py' $testText),(New-FileEntry 'test' 'unit/__init__.py' ''))} 'envelope-kind' 'サブディレクトリ付きの test は拒否'
+Assert-EditRejected $ctx {param($e) $e.files[1].path='unit/__init__.py'} 'envelope-kind' 'サブディレクトリ付きの __init__.py は拒否'
+# 基準版の一覧は PreparedRun の期待hash・重複キー・runId・必須キーを確かめた1回の読込みだけを使う（改変・形式違反は blocked で、Envelope の拒否理由にしない）。
+$tampered=New-Ctx
+$manifestText=[IO.File]::ReadAllText($tampered.prepared.baselineManifestPath,$utf8)
+[IO.File]::WriteAllText($tampered.prepared.baselineManifestPath,$manifestText.Replace('pkg/mod.py','pkg/other.py'),$utf8)
+$failure=Get-EnvelopeFailure $tampered (ConvertTo-Wire (New-Envelope $tampered))
+Assert-True ($null -ne $failure -and $failure.Data['reason'] -ceq 'baseline-manifest' -and $failure.Data['status'] -ceq 'blocked' -and $failure.Message -like '*expected hash*') "baseline manifest の改変（hash 不一致）: blocked（$($failure.Message)）"
+foreach($variant in @(
+    @{label='重複キー';edit={param($t) $t.Replace('{"files":','{"files":[],"files":')};message='*duplicate keys*'},
+    @{label='path の重複';edit={param($t) $t.Replace('{"path":"README.md"','{"path":"pkg/mod.py"')};message='*lists a path twice*'},
+    @{label='別 runId';edit={param($t) [regex]::Replace($t,'"runId":"[^"]+"','"runId":"00000000-0000-0000-0000-000000000000"')};message='*does not belong to this run*'},
+    @{label='sha256 欠落';edit={param($t) [regex]::Replace($t,',"sha256":"[0-9A-F]{64}"','',[Text.RegularExpressions.RegexOptions]::None)};message='*need path, size and sha256*'}
+)){
+    $broken=New-Ctx
+    $text=[IO.File]::ReadAllText($broken.prepared.baselineManifestPath,$utf8)
+    $edited=& $variant.edit $text
+    Assert-True ($edited -cne $text) "baseline manifest（$($variant.label)）: 前提（内容が変わる）"
+    [IO.File]::WriteAllText($broken.prepared.baselineManifestPath,$edited,$utf8)
+    $broken.prepared.baselineManifestHash=Get-Hash $broken.prepared.baselineManifestPath   # 期待hashは一致させ、hash 以外の検査で拒否されることを確かめる
+    $failure=Get-EnvelopeFailure $broken (ConvertTo-Wire (New-Envelope $broken))
+    Assert-True ($null -ne $failure -and $failure.Data['reason'] -ceq 'baseline-manifest' -and $failure.Data['status'] -ceq 'blocked' -and $failure.Message -like $variant.message) "baseline manifest（$($variant.label)）: blocked（$($failure.Message)）"
+}
 Assert-EditRejected $ctx {param($e) $e.files[0].path='helper.py'} 'envelope-kind' 'test が test_*.py でない'
 Assert-EditRejected $ctx {param($e) $e.files[0].path='Test_add.py'} 'envelope-kind' 'test 名の大小文字違い（Linux の unittest は拾わない）'
 Assert-EditRejected $ctx {param($e) $e.files[2].path='pkg/missing.py'} 'envelope-kind' 'replacement が baseline に無い'
@@ -294,6 +315,15 @@ foreach($variant in @('changed','added','missing')){
     $result=Invoke-VerificationProposal $ctx.prepared $null $null
     Assert-True ($result.status -ceq 'blocked' -and $result.failure.reason -ceq 'recheck-tests-changed' -and $null -eq $result.manifestPath -and @($result.artifacts).Count -eq 0 -and -not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'proposal/manifest.json'))) "recheck($variant): 拒否し manifest を作らない（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
     Assert-Equal @(Read-FakeSbxCalls $ctx.case).Count 0 "recheck($variant): sbx 呼び出し0回"
+}
+# recheck manifest も同じ検査つきの1回の読込み: 期待hash の不一致、期待hash は一致するが重複キーを含む記録は blocked（recheck-manifest）。
+foreach($variant in @('hash','duplicate-key')){
+    $ctx=New-RecheckCtx
+    $text=[IO.File]::ReadAllText($ctx.prepared.recheckManifestPath,$utf8)
+    [IO.File]::WriteAllText($ctx.prepared.recheckManifestPath,$text.Replace('{"previousResultHash":','{"previousResultHash":"x","previousResultHash":'),$utf8)
+    if($variant -eq 'duplicate-key'){$ctx.prepared.recheckManifestHash=Get-Hash $ctx.prepared.recheckManifestPath}
+    $result=Invoke-VerificationProposal $ctx.prepared $null $null
+    Assert-True ($result.status -ceq 'blocked' -and $result.failure.reason -ceq 'recheck-manifest' -and $null -eq $result.manifestPath) "recheck manifest（$variant）: blocked（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
 }
 $count++
 

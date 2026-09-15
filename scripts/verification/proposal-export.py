@@ -5,7 +5,7 @@
 #
 # 出力（stdout に1行、ASCII のみ）:
 #   {"schemaVersion":3,"runId":...,"summary":...,"findings":[...],"files":[{"kind","path","contentBase64"}],"truncated":bool}
-# - files: tests/ 配下の test_*.py と __init__.py（kind=test、path は tests/ を除いた相対名）、replacements/ 配下の *.py（kind=replacement、path は replacements/ を除いた相対名）。
+# - files: tests/ 直下の test_*.py と __init__.py（kind=test、path はファイル名だけ。サブディレクトリは列挙しない）、replacements/ 配下の *.py（kind=replacement、path は replacements/ を除いた相対名）。
 # - summary・findings: proposal.json の同名キーをそのまま渡す（読めなければ null。外側の型検査で拒否される）。
 # - truncated: 上限（件数・1ファイル・合計）を超えたファイル、またはリンク・通常ファイル以外の候補を含めなかったときに true。
 #   外側はこれを拒否理由にする（切り詰めた提案を成功にしない）。
@@ -20,9 +20,12 @@ ROOT = "/home/agent/workspace/proposal"
 
 
 def read_regular(path, limit):
-    """リンクをたどらずに通常ファイルを limit バイトまで読む。通常ファイルでなければ ('not-regular', None)、上限超過なら ('too-large', None)。"""
+    """リンクをたどらずに通常ファイルを limit バイトまで読む。通常ファイルでなければ ('not-regular', None)、上限超過なら ('too-large', None)。
+    子が名前付きパイプ等を置いても待機しないよう、開く前に lstat で通常ファイルを確かめ、O_NONBLOCK・O_NOFOLLOW で開き、開いた後も fstat で確かめる。"""
     try:
-        fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+        if not stat.S_ISREG(os.lstat(path).st_mode):
+            return "not-regular", None
+        fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0))
     except OSError:
         return "not-regular", None
     try:
@@ -85,13 +88,18 @@ def collect(kind, directory, limits, state):
     if not stat.S_ISDIR(top_mode):
         state["truncated"] = True
         return
-    for current, dirnames, filenames in os.walk(top, followlinks=False):
+    # test は tests/ 直下の名前だけ（サブディレクトリは列挙しない）。replacement は replacements/ 配下を再帰する。
+    walker = os.walk(top, followlinks=False)
+    if kind == "test":
+        walker = [next(walker, (top, [], []))]
+    for current, dirnames, filenames in walker:
         dirnames.sort()
         for name in list(dirnames):
             # リンクされたディレクトリはたどらない。中に候補があっても再現できないので不完全として印を付ける。
             if os.path.islink(os.path.join(current, name)):
                 state["truncated"] = True
                 dirnames.remove(name)
+        # os.walk はディレクトリへのリンクを dirnames に、それ以外（名前付きパイプ・ソケット・ファイルへのリンク等）を filenames に入れる。
         for name in sorted(filenames):
             if not is_candidate(kind, name):
                 continue

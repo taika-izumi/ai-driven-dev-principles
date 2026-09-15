@@ -374,7 +374,15 @@ function New-VerificationActivationRecord([hashtable]$Entry,[hashtable]$Profile,
     $runtime=Read-VerificationJsonFile $runtimePath 'runtime file'
     if(-not$runtime.ContainsKey('Spec') -or $runtime.Spec -isnot [hashtable]){Throw-VerificationRuntimeFailure 'runtime file lacks Spec' 'blocked' 'activation-mismatch'}
     $spec=$runtime.Spec
-    if($runtime.ContainsKey('ID') -and [string]$runtime.ID -cne $id){Throw-VerificationRuntimeFailure 'runtime file ID differs from listed id' 'blocked' 'activation-mismatch'}
+    # 判定に使うキーの存在と型を先に要求する。欠落は $null→'' の変換で期待値と一致してしまい、sbx の版でフィールド名が変わると観測なしで verified になるため。
+    # 欠落・型違いは「取得できない」扱いで例外にし、呼出し側が作成済み ID の停止を試みる（runtimeFailure.creationState=created）。
+    if(-not$runtime.ContainsKey('ID') -or $runtime.ID -isnot [string]){Throw-VerificationRuntimeFailure 'runtime file lacks string ID' 'blocked' 'activation-mismatch'}
+    foreach($pair in @(@('WorkspaceDir','string'),@('SSHAgentSocketPath','string'),@('ShareSkills','bool'),@('CPUs','integer'),@('Memory','string'))){
+        $key=$pair[0];$value=$(if($spec.ContainsKey($key)){$spec[$key]}else{$null})
+        $typed=switch($pair[1]){'string'{$value -is [string]}'bool'{$value -is [bool]}'integer'{($value -is [int]) -or ($value -is [long])}}
+        if(-not$spec.ContainsKey($key) -or -not$typed){Throw-VerificationRuntimeFailure "runtime file Spec.$key is missing or not a $($pair[1])" 'blocked' 'activation-mismatch'}
+    }
+    if($runtime.ID -cne $id){Throw-VerificationRuntimeFailure 'runtime file ID differs from listed id' 'blocked' 'activation-mismatch'}
     $logLines=Get-VerificationRuntimeLogLines $Entry.logPath $name
     $expectedDigest=$Profile.templateDigest.Substring($Profile.templateDigest.IndexOf('@')+1)
     $denyAll=@($rules | Where-Object {$_.decision -ceq 'deny' -and $_.scope -ceq "sandbox:$name" -and (@($_.resources) -ccontains '*')}).Count -gt 0
@@ -524,19 +532,32 @@ function New-VerificationSandbox([hashtable]$PreparedRun,[string]$Role,[hashtabl
         $stage='create'
         $argv=@('create',$Profile.agent,'--name',$name,'--cpus','2','--memory','2g','--no-share-skills','--deny-network','*','--template',$Profile.templateDigest)
         $createdAt=Get-VerificationUtcNow
-        $create=Invoke-VerificationSbx $client $argv (New-VerificationSbxBudget $budget $script:SetupSeconds $client.maxOutputBytes) 'create'
-        if(-not$create.result.started -and $create.result.refusedReason -eq 'deadline-reached'){Throw-VerificationRuntimeFailure 'deadline reached before create' 'timed_out' 'deadline-reached'}
-        # 作成要求を送った後は、ls で存否を確かめるまで未作成へ推定しない。
+        # 作成要求を送る直前から unknown/unverified とする（仕様02「作成要求送信後に作成成否を確認できない場合はunknown・unverifiedとし、未作成へ推定しない」）。
+        # create の呼び出し中・戻り後の例外（出力ファイルの読取り失敗、Invoke-VerificationProcessV3 の例外など）も unknown のまま catch へ入る。
+        # not-created へ戻すのは「起動前の拒否（期限到達で何も起動していない）」と「クライアントが自ら終了した後に ls で不在を確かめた」場合だけ。
         $creationState='unknown';$stopState='unverified'
+        $create=Invoke-VerificationSbx $client $argv (New-VerificationSbxBudget $budget $script:SetupSeconds $client.maxOutputBytes) 'create'
+        $createResult=$create.result
+        if(-not$createResult.started -and $createResult.refusedReason -eq 'deadline-reached'){
+            # 期限到達で ProcessHost も起動していない（作成要求は送られていない）。
+            $creationState='not-created';$stopState='not-created'
+            Throw-VerificationRuntimeFailure 'deadline reached before create' 'timed_out' 'deadline-reached'
+        }
         $createOk=(Test-VerificationSbxCallOk $create) -and $create.stdout.Contains("Created sandbox $name")
+        # ls の不在を「未作成」の確認に使えるのは、クライアントが外側の打ち切りなしに自ら終了した場合か、対象を起動できなかった場合（launch-failed）だけ。
+        # 時間超過・出力超過・起動側の失敗（host-failed）で外側が止めたのはクライアントだけで、デーモン側の作成が止まった保証はなく、ls の後に完成しうる。
+        $clientSettled=(-not$createResult.timedOut -and -not$createResult.outputExceeded) -and (($createResult.started -and $null -ne $createResult.exitCode) -or (-not$createResult.started -and $createResult.refusedReason -eq 'launch-failed'))
+        $createDetail=$(if($createResult.timedOut){"timed out (limit $($script:SetupSeconds)s)"}elseif($createResult.outputExceeded){'output exceeded the limit'}elseif(-not$createResult.started){"not started ($($createResult.refusedReason))"}else{"exit $($createResult.exitCode): $($create.stderr.Trim())"})
+        $createReason=$(if($createResult.timedOut){'create-timed-out'}else{'create-failed'})
         $stage='confirm-id'
         $after=Get-VerificationSandboxList $client $budget
         $found=@($after | Where-Object {$_.name -ceq $name})
         if($found.Count -eq 0){
             if($createOk){Throw-VerificationRuntimeFailure "create reported success but $name is not listed" 'incomplete' 'create-unlisted'}
+            # 打ち切ったクライアントの作成要求は unknown・unverified のまま返す（呼出し側は incomplete）。記録が無いので復旧操作の対象にならず、後続 run は ls の検査で blocked になりうる。
+            if(-not$clientSettled){Throw-VerificationRuntimeFailure "sbx create did not settle ($createDetail); $name is not listed yet but may still be created by the daemon" 'incomplete' $createReason}
             $creationState='not-created';$stopState='not-created'
-            $detail=$(if($create.result.timedOut){"timed out (limit $($script:SetupSeconds)s)"}else{"exit $($create.result.exitCode): $($create.stderr.Trim())"})
-            Throw-VerificationRuntimeFailure "sbx create failed: $detail" 'blocked' $(if($create.result.timedOut){'create-timed-out'}else{'create-failed'})
+            Throw-VerificationRuntimeFailure "sbx create failed: $createDetail" 'blocked' $createReason
         }
         if($found.Count -gt 1){Throw-VerificationRuntimeFailure "duplicate sandbox names listed: $name" 'incomplete' 'create-unlisted'}
         $id=[string]$found[0].id
@@ -546,7 +567,8 @@ function New-VerificationSandbox([hashtable]$PreparedRun,[string]$Role,[hashtabl
         $script:Sandboxes[$name]=$entry
         $stage='record'
         [void](Write-VerificationSandboxRecord $PreparedRun.runRoot $handle)
-        if(-not$createOk){Throw-VerificationRuntimeFailure "sbx create reported failure but $name is listed (exit $($create.result.exitCode))" 'blocked' 'create-failed'}
+        # 時間超過などで失敗扱いの create でも、一覧に名前があれば id を確定して作成記録を書き、停止を試みる（catch 側）。
+        if(-not$createOk){Throw-VerificationRuntimeFailure "sbx create did not report success but $name is listed ($createDetail)" 'blocked' $createReason}
         if($found[0].status -cne 'running'){Throw-VerificationRuntimeFailure "created sandbox is not running: $($found[0].status)" 'blocked' 'activation-mismatch'}
         $stage='activation'
         $activation=New-VerificationActivationRecord $entry $Profile $daemon $clipboard $mcpServers $after $budget

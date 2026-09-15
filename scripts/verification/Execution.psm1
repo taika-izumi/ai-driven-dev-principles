@@ -22,6 +22,8 @@ public sealed class VerificationJob : IDisposable {
   [DllImport("kernel32.dll",SetLastError=true)] static extern bool AssignProcessToJobObject(IntPtr job,IntPtr process);
   [DllImport("kernel32.dll",SetLastError=true)] static extern bool TerminateJobObject(IntPtr job,uint code);
   [DllImport("kernel32.dll")] static extern bool CloseHandle(IntPtr handle);
+  [DllImport("kernel32.dll",SetLastError=true)] static extern bool DuplicateHandle(IntPtr sourceProcess,IntPtr source,IntPtr targetProcess,out IntPtr target,uint access,bool inherit,uint options);
+  [DllImport("kernel32.dll")] static extern IntPtr GetCurrentProcess();
   IntPtr job;
   public VerificationJob(){
     job=CreateJobObject(IntPtr.Zero,null);if(job==IntPtr.Zero)throw new Win32Exception();
@@ -31,6 +33,12 @@ public sealed class VerificationJob : IDisposable {
     catch{Dispose();throw;}finally{Marshal.FreeHGlobal(buffer);}
   }
   public void Assign(IntPtr process){if(!AssignProcessToJobObject(job,process))throw new Win32Exception();}
+  // ProcessHost が対象を明示的にこのジョブへ割り当てられるよう、ホストのプロセスへハンドルを複製して値を返す（Issue-0147）。
+  // 権限は割当（JOB_OBJECT_ASSIGN_PROCESS）と所属確認（JOB_OBJECT_QUERY）だけ、非継承（対象へ渡らない）。ホストは割当後に閉じる。
+  public long GrantAssign(IntPtr hostProcess){
+    IntPtr copy;if(!DuplicateHandle(GetCurrentProcess(),job,hostProcess,out copy,0x0001|0x0004,false,0))throw new Win32Exception();
+    return copy.ToInt64();
+  }
   public uint Active(){Accounting a;if(!QueryInformationJobObject(job,1,out a,(uint)Marshal.SizeOf<Accounting>(),IntPtr.Zero))throw new Win32Exception();return a.Active;}
   public void Stop(){if(!TerminateJobObject(job,124))throw new Win32Exception();}
   public void StopExcept(int keepPid){
@@ -82,7 +90,8 @@ function Invoke-VerificationProcess {
         $job.Assign($process.Handle)
         $outTask=$process.StandardOutput.BaseStream.CopyToAsync($outFile)
         $errTask=$process.StandardError.BaseStream.CopyToAsync($errFile)
-        $request=@{file=$StartInfo.FileName;cwd=$StartInfo.WorkingDirectory;args=@($StartInfo.ArgumentList)}
+        # jobHandle: ホストが対象を明示的にジョブへ割り当てるためのハンドル値（Issue-0147。非パッケージの対象はジョブを継承しない）。
+        $request=@{file=$StartInfo.FileName;cwd=$StartInfo.WorkingDirectory;args=@($StartInfo.ArgumentList);jobHandle=$job.GrantAssign($process.Handle)}
         $process.StandardInput.WriteLine(($request | ConvertTo-Json -Depth 8 -Compress));$process.StandardInput.Close()
         $timer=[Diagnostics.Stopwatch]::StartNew();$targetExit=$null
         while(-not$process.HasExited -and $timer.Elapsed.TotalSeconds -lt $TimeoutSeconds){
@@ -168,9 +177,10 @@ function New-VerificationHostProcess([Diagnostics.ProcessStartInfo]$StartInfo,[s
     $process=[Diagnostics.Process]::new();$process.StartInfo=$start
     $process
 }
-function Get-VerificationControlBytes([Diagnostics.ProcessStartInfo]$StartInfo,[byte[]]$StdinBytes) {
+function Get-VerificationControlBytes([Diagnostics.ProcessStartInfo]$StartInfo,[byte[]]$StdinBytes,[long]$JobHandle) {
     # 制御行（version=3）はASCIIに限定し（非ASCIIはエスケープ）、ホスト側の復号エンコーディングに依存しない。制御行の直後に対象stdinのバイト列を続ける。
-    $request=@{version=3;file=$StartInfo.FileName;cwd=$StartInfo.WorkingDirectory;args=@($StartInfo.ArgumentList);stdinBytesLength=$StdinBytes.Length}
+    # JobHandle はホストへ複製したジョブのハンドル値（VerificationJob.GrantAssign）。ホストは対象を起動直後にこのジョブへ明示的に割り当てる（Issue-0147）。
+    $request=@{version=3;file=$StartInfo.FileName;cwd=$StartInfo.WorkingDirectory;args=@($StartInfo.ArgumentList);stdinBytesLength=$StdinBytes.Length;jobHandle=$JobHandle}
     $line=[Text.Encoding]::ASCII.GetBytes(($request | ConvertTo-Json -Depth 8 -Compress -EscapeHandling EscapeNonAscii)+"`n")
     $bytes=[byte[]]::new($line.Length+$StdinBytes.Length)
     [Buffer]::BlockCopy($line,0,$bytes,0,$line.Length);[Buffer]::BlockCopy($StdinBytes,0,$bytes,$line.Length,$StdinBytes.Length)
@@ -200,7 +210,7 @@ function Invoke-VerificationProcessV3 {
                  @{stream=$process.StandardError.BaseStream;file=$errFile;key='stderrBytes';buffer=[byte[]]::new(65536);task=$null;eof=$false})
         foreach($pump in $pumps){$pump.task=$pump.stream.ReadAsync($pump.buffer,0,$pump.buffer.Length)}
         # stdinの送信も非同期にする（ホストが読まずに終了すると書込みは失敗するが、その失敗で起動側を止めない）。
-        $control=Get-VerificationControlBytes $StartInfo $StdinBytes
+        $control=Get-VerificationControlBytes $StartInfo $StdinBytes ($job.GrantAssign($process.Handle))
         $stdinTask=$process.StandardInput.BaseStream.WriteAsync($control,0,$control.Length)
         $exitTask=$process.WaitForExitAsync()
         $deadlineUtc=[DateTime]::UtcNow.AddSeconds($remaining);$total=0L;$targetExit=$null;$drainDeadline=$null
@@ -294,7 +304,7 @@ function Start-VerificationBackgroundProcess {
         $job.Assign($process.Handle)
         $entry.outTask=$process.StandardOutput.BaseStream.CopyToAsync($entry.outFile)
         $entry.errTask=$process.StandardError.BaseStream.CopyToAsync($entry.errFile)
-        $control=Get-VerificationControlBytes $StartInfo ([byte[]]::new(0))
+        $control=Get-VerificationControlBytes $StartInfo ([byte[]]::new(0)) ($job.GrantAssign($process.Handle))
         $entry.stdinTask=$process.StandardInput.BaseStream.WriteAsync($control,0,$control.Length)
         $startDeadline=[DateTime]::UtcNow.AddSeconds($script:BackgroundStartSeconds)
         while(-not[IO.File]::Exists($marker) -and -not$process.HasExited -and [DateTime]::UtcNow -lt $startDeadline){[void]$process.WaitForExit(25)}

@@ -168,4 +168,120 @@ Assert-Throws {Start-VerificationBackgroundProcess -StartInfo (New-Start 'sleep'
 Assert-True (-not(Test-Path -LiteralPath ($paths.stdoutPath+'.started.json'))) '背景(期限後): 起動しない'
 $count++
 
+# 10〜13. 非パッケージの実在 exe（System32 の ping.exe・cmd.exe）を対象にする（Issue-0147）。
+#     MSIX 版 pwsh の ProcessHost が起動した非パッケージの子は、明示割当しないとジョブに入らず、ジョブ停止が届かない。
+#     判定は PID と StartTime（CreationDate）で行い、名前では探さない。試験が起動したプロセスは、残っていれば判定の前に試験自身が止める。
+$sys32=Join-Path $env:SystemRoot 'System32';$pingPath=Join-Path $sys32 'ping.exe'
+function New-Native([string]$File,[string[]]$Argv){
+    $start=[Diagnostics.ProcessStartInfo]::new((Join-Path $sys32 $File))
+    $start.WorkingDirectory=$root;$start.UseShellExecute=$false;$start.CreateNoWindow=$true
+    foreach($a in $Argv){$start.ArgumentList.Add($a)}
+    $start
+}
+function Get-LiveProcess([int]$Id,[long]$Ticks){
+    # PID と開始時刻の両方が一致する生存プロセス（なければ null）。
+    $p=Get-Process -Id $Id -ErrorAction SilentlyContinue
+    if($null -eq $p){return $null}
+    try{$startTicks=$p.StartTime.ToUniversalTime().Ticks}catch{return $null}
+    if($startTicks -eq $Ticks){$p}else{$null}
+}
+function Get-ChildProcess([int]$ParentId,[long]$ParentTicks){
+    # 親 PID が一致し、親の開始以後に作られた生存プロセス（PID 再利用された別の親の子を除く）。戻り値は @{pid;startTicks}（発見時の開始時刻で固定する）。
+    $notBefore=[DateTime]::new($ParentTicks,[DateTimeKind]::Utc).AddMilliseconds(-1)
+    foreach($c in @(Get-CimInstance Win32_Process -Filter "ParentProcessId=$ParentId" | Where-Object {$_.CreationDate.ToUniversalTime() -ge $notBefore})){
+        $p=Get-Process -Id $c.ProcessId -ErrorAction SilentlyContinue
+        if($null -eq $p){continue}
+        try{@{pid=[int]$p.Id;startTicks=$p.StartTime.ToUniversalTime().Ticks}}catch{}
+    }
+}
+function Stop-Leftover([object[]]$Records){
+    # 試験が起動したプロセス（@{pid;startTicks}）だけを、開始時刻を再確認してから止める。止めた（=残っていた）件数を返す。
+    # cmd.exe の子の conhost.exe はコンソールの生成時に作られてジョブに入らないが、利用者が居なくなると自ら終わる。その終了を最大2秒待ってから数える
+    # （ジョブ停止が届かなかった対象は 60 秒の ping なので、2 秒の猶予で見逃さない）。
+    $stopped=0;$settle=[DateTime]::UtcNow.AddSeconds(2)
+    while([DateTime]::UtcNow -lt $settle -and @($Records | Where-Object {$null -ne $_ -and $null -ne (Get-LiveProcess $_.pid $_.startTicks)}).Count -gt 0){Start-Sleep -Milliseconds 100}
+    foreach($record in @($Records | Where-Object {$null -ne $_})){
+        $live=Get-LiveProcess $record.pid $record.startTicks
+        if($null -ne $live){try{$live.Kill();[void]$live.WaitForExit(5000)}catch{};$stopped++}
+    }
+    $stopped
+}
+function Get-MarkerTarget([string]$Marker){
+    $info=[IO.File]::ReadAllText($Marker) | ConvertFrom-Json
+    @{pid=[int]$info.pid;startTicks=[long]$info.startTicks}
+}
+
+# 10. 非パッケージの対象（ping.exe）の時間超過: ジョブ停止が対象に届き、対象 PID が消える。
+$paths=New-Paths 'n-ping';$watch=[Diagnostics.Stopwatch]::StartNew()
+$r=Invoke-VerificationProcessV3 -StartInfo (New-Native 'ping.exe' @('-n','60','127.0.0.1')) -StdinBytes $null -OutputPaths $paths -RunBudget (New-Budget -CommandSeconds 1)
+$watch.Stop()
+$target=Get-MarkerTarget ($paths.stdoutPath+'.started.json')
+$left=Stop-Leftover @($target)
+Assert-Equal $left 0 '非パッケージ時間超過: 対象（ping.exe）がジョブ停止で消える'
+Assert-True ($r.started -and $r.timedOut -and $null -eq $r.exitCode) '非パッケージ時間超過: started・timedOut・exitCode なし'
+Assert-True $r.processTreeStopped '非パッケージ時間超過: processTreeStopped'
+Assert-True ($watch.Elapsed.TotalSeconds -lt 15) "非パッケージ時間超過: 上限1秒で止まる（実測 $([int]$watch.Elapsed.TotalSeconds) 秒）"
+$count++
+
+# 11. 非パッケージの対象が非パッケージの孫を持つ（cmd.exe /c ping.exe）時間超過: 対象と孫の両方が消える。
+#     孫は対象の終了後も親 PID を保つので、対象の開始以後に作られた子が1件も生存していないことで判定する。
+$paths=New-Paths 'n-cmd'
+$r=Invoke-VerificationProcessV3 -StartInfo (New-Native 'cmd.exe' @('/d','/c',(Join-Path $sys32 'ping.exe'),'-n','60','127.0.0.1')) -StdinBytes $null -OutputPaths $paths -RunBudget (New-Budget -CommandSeconds 2)
+$target=Get-MarkerTarget ($paths.stdoutPath+'.started.json')
+$left=Stop-Leftover (@(Get-ChildProcess $target.pid $target.startTicks)+@($target))
+Assert-Equal $left 0 '非パッケージ孫: 対象（cmd.exe）と孫（ping.exe）がジョブ停止で消える'
+Assert-True ($r.started -and $r.timedOut -and $r.processTreeStopped) '非パッケージ孫: started・timedOut・processTreeStopped'
+$count++
+
+# 12. 非パッケージの背景起動（cmd.exe /c ping.exe）→ Stop: 対象 PID と孫 PID が消え processTreeStopped=true。
+$paths=New-Paths 'n-bg'
+$h=Start-VerificationBackgroundProcess -StartInfo (New-Native 'cmd.exe' @('/d','/c',(Join-Path $sys32 'ping.exe'),'-n','60','127.0.0.1')) -OutputPaths $paths -RunBudget (New-Budget)
+$target=Get-MarkerTarget $h.markerPath;$targetAlive=($null -ne (Get-LiveProcess $target.pid $target.startTicks))
+# 孫（ping.exe）の出現を待つ。cmd.exe の子には conhost.exe も含まれうるため、件数でなく ping.exe の実行ファイルパスが一致する子の有無で待つ（探索は親 PID で行う）。
+$grand=@();$wait=[DateTime]::UtcNow.AddSeconds(10)
+while([DateTime]::UtcNow -lt $wait){
+    $grand=@(Get-ChildProcess $target.pid $target.startTicks)
+    if(@($grand | Where-Object {(Get-Process -Id $_.pid -ErrorAction SilentlyContinue).Path -eq $pingPath}).Count -gt 0){break}
+    Start-Sleep -Milliseconds 100
+}
+$grandStarted=(@($grand | Where-Object {(Get-Process -Id $_.pid -ErrorAction SilentlyContinue).Path -eq $pingPath}).Count -gt 0)
+$s=Stop-VerificationBackgroundProcess -Handle $h -GraceSeconds 5
+$left=Stop-Leftover (@($grand)+@($target))
+Assert-True ($targetAlive -and $grandStarted) '非パッケージ背景: 対象と孫が起動していた'
+Assert-Equal $left 0 '非パッケージ背景: Stop で対象（cmd.exe）と孫（ping.exe）が消える'
+Assert-True $s.processTreeStopped '非パッケージ背景: processTreeStopped';Assert-True ($null -eq $s.exitCode) '非パッケージ背景: 打ち切った対象の exitCode なし'
+$count++
+
+# 13. ホストのジョブ割当が失敗したら黙って続けない: 対象を止め、開始マーカーを書かず、理由を stderr に残して失敗終了する。
+#     ジョブハンドルの無い要求は対象を起動しない。起動側は必ずハンドルを渡すので、ProcessHost を直接起動して確かめる。
+function Invoke-HostDirect([string]$Name,[hashtable]$Request){
+    $marker=Join-Path $root "$Name.started.json"
+    $start=[Diagnostics.ProcessStartInfo]::new($pwsh);$start.WorkingDirectory=$root;$start.UseShellExecute=$false;$start.CreateNoWindow=$true
+    $start.RedirectStandardInput=$true;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
+    foreach($a in @('-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot '../ProcessHost.ps1'),'-StartedPath',$marker)){$start.ArgumentList.Add($a)}
+    $hostProcess=[Diagnostics.Process]::Start($start)
+    $hostTicks=$hostProcess.StartTime.ToUniversalTime().Ticks
+    $outTask=$hostProcess.StandardOutput.ReadToEndAsync();$errTask=$hostProcess.StandardError.ReadToEndAsync()
+    $line=[Text.Encoding]::ASCII.GetBytes(($Request | ConvertTo-Json -Compress -EscapeHandling EscapeNonAscii)+"`n")
+    $hostProcess.StandardInput.BaseStream.Write($line,0,$line.Length);$hostProcess.StandardInput.Close()
+    $exited=$hostProcess.WaitForExit(20000)
+    # 残存の数え上げと停止をホストの停止より先に行う（ホストを木ごと止めると残存が数えられなくなる）。
+    $left=Stop-Leftover @(Get-ChildProcess $hostProcess.Id $hostTicks)
+    if(-not$exited){try{$hostProcess.Kill($true);[void]$hostProcess.WaitForExit(5000)}catch{}}
+    $result=@{exited=$exited;exitCode=$(if($exited){$hostProcess.ExitCode}else{$null});marker=[IO.File]::Exists($marker);left=$left
+              stderr=$(if($errTask.Wait(5000)){$errTask.Result}else{''})}
+    $hostProcess.Dispose()
+    $result
+}
+#     正の値だがホスト内で有効なジョブハンドルではない値を渡し、対象の起動後の割当失敗の経路を通す。
+$r=Invoke-HostDirect 'h-bad' @{version=3;file=$pingPath;cwd=$root;args=@('-n','60','127.0.0.1');stdinBytesLength=0;jobHandle=2147483644}
+Assert-Equal $r.left 0 '割当失敗: 対象を止めてから終了する（ホストの開始以後の子が残らない）'
+Assert-True ($r.exited -and $r.exitCode -ne 0) "割当失敗: ホストは失敗終了する（exit=$($r.exitCode)）"
+Assert-True (-not$r.marker) '割当失敗: 開始マーカーを書かない（起動側は started=false とする）'
+Assert-True ($r.stderr -like '*job assignment failed*') "割当失敗: 理由を stderr に残す（$($r.stderr.Trim())）"
+$r=Invoke-HostDirect 'h-none' @{version=3;file=$pingPath;cwd=$root;args=@('-n','60','127.0.0.1');stdinBytesLength=0}
+Assert-True ($r.exited -and $r.exitCode -ne 0 -and -not$r.marker -and $r.left -eq 0) 'ジョブハンドルなし: 対象を起動せず失敗終了する'
+Assert-True ($r.stderr -like '*job handle required*') "ジョブハンドルなし: 理由を stderr に残す（$($r.stderr.Trim())）"
+$count++
+
 "ExecutionV3: $count cases passed"

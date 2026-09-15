@@ -36,7 +36,9 @@ function New-ProposalProfile([hashtable]$Ctx){
     $profile.activationEvidencePath='ev-proposal.json';$profile.activationEvidenceHash=Get-Hash (Join-Path $Ctx.prof 'ev-proposal.json')
     $profile
 }
-function New-Ctx([hashtable]$Limits=@{},[int]$CleanupSeconds=5,[int]$DeadlineIn=900){
+# 停止猶予の既定は30秒（計画の初期値）。5秒では停止後の世代照会が偽sbxの所要（1呼び出し約1.2秒）で cleanupDeadlineAt を越え、ready のケースが停止未確認になった（実測。ReplayV3 と同じ）。
+# 停止未確認を意図して作るケース12は -CleanupSeconds 5 を明示して従来の値を保つ。
+function New-Ctx([hashtable]$Limits=@{},[int]$CleanupSeconds=30,[int]$DeadlineIn=900){
     # PreparedRunV3 と同じ形の文脈。baseline と proposal-input は同じファイル群（RequestCopy のファイル単位コピーと同じ）。
     $root=Join-Path $base ('p4'+[guid]::NewGuid().ToString('N').Substring(0,6))
     $case=New-FakeSbxCase $root

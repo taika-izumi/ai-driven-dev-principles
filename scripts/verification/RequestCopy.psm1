@@ -484,6 +484,116 @@ function Get-VerificationValue($Object,[string]$Name) {
     if($null -eq $property){return $null}
     $property.Value
 }
+function Invoke-VerificationFailure([string]$Message,[string]$Status,[string]$Reason) {
+    # Data['status']・Data['reason'] 付きの InvalidOperationException を投げる（Proposal・Replay・Result の失敗送出を1か所にする。承認動詞にして import 時の警告を出さない）。
+    $failure=[InvalidOperationException]::new($Message);$failure.Data['status']=$Status;$failure.Data['reason']=$Reason
+    throw $failure
+}
+function Get-VerificationLimit([hashtable]$PreparedRun,[string]$Name) {
+    # settings.limits の正の整数。欠落・型違い・0以下は blocked（limits）。
+    $value=Get-VerificationValue (Get-VerificationValue $PreparedRun.settings 'limits') $Name
+    if(-not(($value -is [int]) -or ($value -is [long])) -or $value -le 0){Invoke-VerificationFailure "settings.limits.$Name must be a positive integer" 'blocked' 'limits'}
+    [long]$value
+}
+function Select-VerificationProblem($Current,[string]$Status,[string]$Stage,[string]$Reason) {
+    # 最初の問題を残す。ただし時間超過は他の問題より優先する（仕様02・04）。
+    $new=@{status=$Status;stage=$Stage;reason=$Reason}
+    if($null -eq $Current){return $new}
+    if($Status -ceq 'timed_out' -and $Current.status -cne 'timed_out'){return $new}
+    $Current
+}
+function ConvertTo-VerificationFileMap($Items,[string]$Status,[string]$Reason,[bool]$WithKind=$false) {
+    # {path,size,sha256}（WithKind なら kind∈test|replacement も）の一覧を検査し、path → 項目の序数順辞書で返す。sha256 は大文字にそろえる。
+    $map=[Collections.Generic.SortedDictionary[string,object]]::new([StringComparer]::Ordinal)
+    if($Items -isnot [Collections.IList]){Invoke-VerificationFailure 'file list must be an array' $Status $Reason}
+    foreach($item in @($Items)){
+        $valid=($item -is [Collections.IDictionary]) -and $item.Contains('path') -and $item.Contains('size') -and $item.Contains('sha256') -and ($item.path -is [string]) -and -not[string]::IsNullOrEmpty($item.path) -and (($item.size -is [int]) -or ($item.size -is [long])) -and ($item.sha256 -is [string]) -and $item.sha256 -match '^[A-Fa-f0-9]{64}$'
+        if($valid -and $WithKind){$valid=$item.Contains('kind') -and $item.kind -in @('test','replacement')}
+        if(-not$valid){Invoke-VerificationFailure 'file list entries need path, size and sha256' $Status $Reason}
+        if($map.ContainsKey($item.path)){Invoke-VerificationFailure "file list names a path twice: $($item.path)" $Status $Reason}
+        $entry=@{path=[string]$item.path;size=[long]$item.size;sha256=([string]$item.sha256).ToUpperInvariant()}
+        if($WithKind){$entry.kind=[string]$item.kind}
+        $map.Add($entry.path,$entry)
+    }
+    ,$map
+}
+function Get-VerificationTreeFiles([string]$Root,[string]$Status,[string]$Reason) {
+    # ディレクトリ内の全通常ファイル（.git を含む）を path → {path,size,sha256} の序数順辞書で返す。リンク・再解析ポイントはたどらずに失敗にする。
+    $rootFull=[IO.Path]::TrimEndingDirectorySeparator([IO.Path]::GetFullPath($Root))
+    if(-not[IO.Directory]::Exists($rootFull)){Invoke-VerificationFailure "directory is missing: $rootFull" $Status $Reason}
+    if(([IO.DirectoryInfo]::new($rootFull)).Attributes -band [IO.FileAttributes]::ReparsePoint){Invoke-VerificationFailure "link or reparse point: $rootFull" $Status $Reason}
+    $map=[Collections.Generic.SortedDictionary[string,object]]::new([StringComparer]::Ordinal)
+    foreach($info in [IO.DirectoryInfo]::new($rootFull).EnumerateFileSystemInfos('*',[IO.SearchOption]::AllDirectories)){
+        if($info.Attributes -band [IO.FileAttributes]::ReparsePoint){Invoke-VerificationFailure "link or reparse point: $($info.FullName)" $Status $Reason}
+        if($info -is [IO.FileInfo]){
+            $relative=[IO.Path]::GetRelativePath($rootFull,$info.FullName).Replace('\','/')
+            $map.Add($relative,@{path=$relative;size=[long]$info.Length;sha256=(Get-FileHash -LiteralPath $info.FullName -Algorithm SHA256).Hash})
+        }
+    }
+    ,$map
+}
+function Get-VerificationMapDifference($Expected,$Actual) {
+    # 欠落・予定外・内容相違（size か sha256）を1行で返す。一致なら空文字列。
+    $missing=@($Expected.Keys | Where-Object {-not$Actual.ContainsKey($_)})
+    $unexpected=@($Actual.Keys | Where-Object {-not$Expected.ContainsKey($_)})
+    $changed=@($Expected.Keys | Where-Object {$Actual.ContainsKey($_) -and ($Actual[$_].size -ne $Expected[$_].size -or $Actual[$_].sha256 -ine $Expected[$_].sha256)})
+    $parts=@()
+    if($missing.Count -gt 0){$parts+='missing: '+($missing -join ', ')}
+    if($unexpected.Count -gt 0){$parts+='unexpected: '+($unexpected -join ', ')}
+    if($changed.Count -gt 0){$parts+='changed: '+($changed -join ', ')}
+    $parts -join '; '
+}
+function Test-VerificationProposalManifest($Manifest,$ProposalResult,[string]$Status) {
+    # 期待hashで読んだ control/proposal/manifest.json と ProposalResultV3 の対応（schemaVersion・origin・testsManifestHash・artifacts）。戻り値は検査済みの artifacts（path → 項目）。
+    if((Get-VerificationValue $Manifest 'schemaVersion') -ne 3 -or (Get-VerificationValue $Manifest 'origin') -cne (Get-VerificationValue $ProposalResult 'origin') -or [string](Get-VerificationValue $Manifest 'testsManifestHash') -cne [string](Get-VerificationValue $ProposalResult 'testsManifestHash')){Invoke-VerificationFailure 'proposal manifest does not match the proposal result' $Status 'proposal-manifest'}
+    # 一覧は代入で取り出す（関数の戻り値にすると1件の配列が展開され、配列でなくなる）。
+    $items=$null;if($Manifest -is [Collections.IDictionary] -and $Manifest.Contains('artifacts')){$items=$Manifest['artifacts']}
+    $listed=ConvertTo-VerificationFileMap $items $Status 'proposal-manifest' $true
+    $claimed=ConvertTo-VerificationFileMap ([object[]]@(Get-VerificationValue $ProposalResult 'artifacts')) $Status 'proposal-manifest' $true
+    if((ConvertTo-VerificationCanonicalJson ([object[]]@($listed.Values))) -cne (ConvertTo-VerificationCanonicalJson ([object[]]@($claimed.Values)))){Invoke-VerificationFailure 'proposal result artifacts differ from the proposal manifest' $Status 'proposal-manifest'}
+    ,$listed
+}
+function Split-VerificationProposalArtifacts($Listed,$WorkFiles,[bool]$Recheck,[string]$ExpectedTestsHash,[string]$Status) {
+    # 検査済み artifacts の区分: test は accepted/tests 直下の名前だけ、replacement は基準版の作業ファイル（WorkFiles。.git を除く path の辞書）にある .py。
+    # test 1件以上、recheck は replacement 0件、test の testsManifestHash が期待値と一致。WorkFiles が $null（基準版を読めなかった照合）なら replacement の存在確認だけを省く。
+    $tests=[Collections.Generic.List[object]]::new();$replacements=[Collections.Generic.List[object]]::new()
+    foreach($artifact in $Listed.Values){
+        if($artifact.kind -ceq 'test'){
+            if($artifact.path -notmatch '^tests/([^/]+)$'){Invoke-VerificationFailure "test must be directly under accepted/tests: $($artifact.path)" $Status 'proposal-artifacts'}
+            $tests.Add(@{path=$artifact.path;name=$Matches[1];size=$artifact.size;sha256=$artifact.sha256})
+        }else{
+            if($artifact.path -notmatch '^replacements/(.+\.py)$' -or ($null -ne $WorkFiles -and -not$WorkFiles.ContainsKey($Matches[1]))){Invoke-VerificationFailure "replacement must replace a .py work file of the baseline: $($artifact.path)" $Status 'proposal-artifacts'}
+            $replacements.Add(@{path=$artifact.path;target=$Matches[1];size=$artifact.size;sha256=$artifact.sha256})
+        }
+    }
+    if($tests.Count -eq 0){Invoke-VerificationFailure 'at least one test is required' $Status 'proposal-artifacts'}
+    if($Recheck -and $replacements.Count -gt 0){Invoke-VerificationFailure 'recheck does not take replacements' $Status 'proposal-artifacts'}
+    $testsHash=Get-VerificationTestsManifestHash $tests.ToArray()
+    if($testsHash -cne $ExpectedTestsHash){Invoke-VerificationFailure 'testsManifestHash does not match the listed tests' $Status 'proposal-manifest'}
+    @{tests=[object[]]$tests.ToArray();replacements=[object[]]$replacements.ToArray();testsManifestHash=$testsHash}
+}
+function Test-VerificationReplacementDiff($BeforeWork,$AfterWork,[object[]]$Replacements,[string]$Status) {
+    # candidate-comparison の差分照合（仕様03・04）: before/after の作業ファイルの差分（存在・size・sha256）のパス集合が replacement 一覧に含まれ、
+    # 各 replacement の after 側が accepted の size・sha256 と一致すること（内容が基準版と同じ replacement は差分に現れなくてよい）。
+    $targets=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach($replacement in @($Replacements)){[void]$targets.Add($replacement.target)}
+    $changed=[Collections.Generic.SortedSet[string]]::new([StringComparer]::Ordinal)
+    foreach($path in @($BeforeWork.Keys)+@($AfterWork.Keys)){
+        if(-not$BeforeWork.ContainsKey($path) -or -not$AfterWork.ContainsKey($path) -or $BeforeWork[$path].sha256 -ine $AfterWork[$path].sha256 -or $BeforeWork[$path].size -ne $AfterWork[$path].size){[void]$changed.Add($path)}
+    }
+    $outside=@($changed | Where-Object {-not$targets.Contains($_)})
+    if($outside.Count -gt 0){Invoke-VerificationFailure ('after differs from before outside the replacement list: '+($outside -join ', ')) $Status 'replay-diff-outside-replacements'}
+    foreach($replacement in @($Replacements)){
+        $actual=$(if($AfterWork.ContainsKey($replacement.target)){$AfterWork[$replacement.target]}else{$null})
+        if($null -eq $actual -or $actual.sha256 -ine $replacement.sha256 -or $actual.size -ne $replacement.size){Invoke-VerificationFailure "replacement is not applied in replay-inputs/after: $($replacement.target)" $Status 'replacement-not-applied'}
+    }
+}
+function Get-VerificationDaemonInstanceJson($Instance) {
+    # activationRecord・停止記録の daemonInstance が pid（正の整数）・startedAt（空でない文字列）を持てば、その全項目の正規化JSON（同一世代の比較キー）を返す。持たなければ $null。
+    $valid=($Instance -is [Collections.IDictionary]) -and $Instance.Contains('pid') -and (($Instance['pid'] -is [int]) -or ($Instance['pid'] -is [long])) -and $Instance['pid'] -ge 1 -and $Instance.Contains('startedAt') -and ($Instance['startedAt'] -is [string]) -and -not[string]::IsNullOrWhiteSpace($Instance['startedAt'])
+    if(-not$valid){return $null}
+    ConvertTo-VerificationCanonicalJson $Instance
+}
 function Get-VerificationBytesHash([byte[]]$Bytes) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)) }
 function Get-VerificationExceptionValue([Exception]$Failure,[string]$Key,[string]$Default) {
     # 例外の Data[Key] が空でない文字列ならその値、無ければ既定値。
@@ -544,4 +654,4 @@ function New-VerificationRun([hashtable]$Request,[hashtable]$Settings,[string]$S
     if($null -ne $Request -and $Request.ContainsKey('schemaVersion') -and (Test-VerificationInteger $Request.schemaVersion) -and $Request.schemaVersion -eq 3){return New-ProposalReplayRun $Request $Settings $StartedAt}
     return New-LegacyVerificationRun $Request $Settings
 }
-Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys,Get-VerificationValue,Get-VerificationBytesHash,Get-VerificationExceptionValue,Test-VerificationDeadlineReached,Read-VerificationVerifiedJson,Get-VerificationTestsManifestHash,ConvertFrom-VerificationRuntimeFailure
+Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys,Get-VerificationValue,Invoke-VerificationFailure,Get-VerificationLimit,Select-VerificationProblem,ConvertTo-VerificationFileMap,Get-VerificationTreeFiles,Get-VerificationMapDifference,Test-VerificationProposalManifest,Split-VerificationProposalArtifacts,Test-VerificationReplacementDiff,Get-VerificationDaemonInstanceJson,Get-VerificationBytesHash,Get-VerificationExceptionValue,Test-VerificationDeadlineReached,Read-VerificationVerifiedJson,Get-VerificationTestsManifestHash,ConvertFrom-VerificationRuntimeFailure

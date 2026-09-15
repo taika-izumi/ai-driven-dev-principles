@@ -22,26 +22,9 @@ $script:ProtectedComponents=@('.git','.codex','.claude','.agents','.mcp.json','.
 $script:ReservedNames=@('CON','PRN','AUX','NUL','CONIN$','CONOUT$')+@(foreach($n in 1..9){"COM$n";"LPT$n"})+@(foreach($c in @([char]0xB9,[char]0xB2,[char]0xB3)){"COM$c";"LPT$c"})
 
 # ---- 共通補助 ----
-function Throw-VerificationProposalFailure([string]$Message,[string]$Status,[string]$Reason) {
-    $failure=[InvalidOperationException]::new($Message);$failure.Data['status']=$Status;$failure.Data['reason']=$Reason
-    throw $failure
-}
 function Throw-VerificationEnvelopeRejection([string]$Step,[string]$Message) {
     # 最初の違反で全体を拒否する。Envelope の違反は子の提案の不備なので failed。
-    Throw-VerificationProposalFailure "proposal envelope rejected ($Step): $Message" 'failed' "envelope-$Step"
-}
-function Get-ProposalValue($Object,[string]$Name) {
-    # Settings・limits は hashtable と PSCustomObject のどちらでも来うる。
-    if($null -eq $Object){return $null}
-    if($Object -is [Collections.IDictionary]){if($Object.Contains($Name)){return $Object[$Name]};return $null}
-    $property=$Object.PSObject.Properties[$Name]
-    if($null -eq $property){return $null}
-    $property.Value
-}
-function Get-ProposalLimit([hashtable]$PreparedRun,[string]$Name) {
-    $value=Get-ProposalValue (Get-ProposalValue $PreparedRun.settings 'limits') $Name
-    if(-not(($value -is [int]) -or ($value -is [long])) -or $value -le 0){Throw-VerificationProposalFailure "settings.limits.$Name must be a positive integer" 'blocked' 'limits'}
-    [long]$value
+    Invoke-VerificationFailure "proposal envelope rejected ($Step): $Message" 'failed' "envelope-$Step"
 }
 function Read-ProposalBaselineManifest([hashtable]$PreparedRun) {
     # 基準版の一覧（replacement の存在確認と、proposal-input 搬入の ExpectedManifest の両方に使う）。
@@ -96,8 +79,8 @@ function Test-VerificationProposalEnvelope([byte[]]$Wire,[hashtable]$PreparedRun
     # 戻り値は検査済み一覧 {runId, summary, findings[{description,sourcePaths}], files[{kind,path,size,sha256,bytes}]}。子のJSONをそのまま返さない。
     if($null -eq $PreparedRun -or $PreparedRun.schemaVersion -ne 3){throw 'PreparedRunV3 required'}
     $runId=[string]$PreparedRun.runId
-    $maxWire=Get-ProposalLimit $PreparedRun 'maxWireBytes';$maxFiles=Get-ProposalLimit $PreparedRun 'maxProposalFiles'
-    $maxFileBytes=Get-ProposalLimit $PreparedRun 'maxFileBytes';$maxProposalBytes=Get-ProposalLimit $PreparedRun 'maxProposalBytes'
+    $maxWire=Get-VerificationLimit $PreparedRun 'maxWireBytes';$maxFiles=Get-VerificationLimit $PreparedRun 'maxProposalFiles'
+    $maxFileBytes=Get-VerificationLimit $PreparedRun 'maxFileBytes';$maxProposalBytes=Get-VerificationLimit $PreparedRun 'maxProposalBytes'
     # 1. wire 容量（base64 復号・JSON 解析の前）
     if($null -eq $Wire -or $Wire.Length -eq 0){Throw-VerificationEnvelopeRejection 'wire' 'wire is empty'}
     if($Wire.Length -gt $maxWire){Throw-VerificationEnvelopeRejection 'wire' "wire is $($Wire.Length) bytes (limit $maxWire)"}
@@ -224,7 +207,7 @@ function Test-VerificationProposalEnvelope([byte[]]$Wire,[hashtable]$PreparedRun
 }
 
 # ---- accepted の生成と manifest ----
-function Throw-VerificationAcceptedUnsafe([string]$Message) { Throw-VerificationProposalFailure "accepted rejected: $Message" 'blocked' 'accepted-unsafe' }
+function Throw-VerificationAcceptedUnsafe([string]$Message) { Invoke-VerificationFailure "accepted rejected: $Message" 'blocked' 'accepted-unsafe' }
 function New-ProposalAcceptedDirectory([string]$Path) {
     # 1段ずつ作る。既存ならリンク・再解析ポイント・ファイルでないことを確かめる（リンクの先はたどらない）。
     $attributes=$null
@@ -254,7 +237,7 @@ function Write-VerificationAcceptedFiles([hashtable]$PreparedRun,[hashtable]$Env
         $info=[IO.FileInfo]::new($target)
         if($info.Attributes -band [IO.FileAttributes]::ReparsePoint){Throw-VerificationAcceptedUnsafe "created file is a reparse point: $target"}
         $hash=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
-        if($info.Length -ne $file.bytes.Length -or $hash -cne (Get-VerificationBytesHash $file.bytes)){Throw-VerificationProposalFailure "accepted file does not match the received bytes: $target" 'incomplete' 'accepted-mismatch'}
+        if($info.Length -ne $file.bytes.Length -or $hash -cne (Get-VerificationBytesHash $file.bytes)){Invoke-VerificationFailure "accepted file does not match the received bytes: $target" 'incomplete' 'accepted-mismatch'}
         $artifacts.Add(@{kind=$file.kind;path="$directory/$($file.path)";size=[long]$info.Length;sha256=$hash})
     }
     Get-ProposalSortedArtifacts $artifacts.ToArray()   # 呼出し側は @() で受ける
@@ -284,20 +267,13 @@ function New-ProposalResult([hashtable]$PreparedRun,[string]$Origin) {
     # 外側が生成する結果。子の JSON をそのまま返さない。manifest は未確定なら null、sandbox は未作成なら null。
     @{schemaVersion=3;runId=[string]$PreparedRun.runId;status=$null;origin=$Origin;sandbox=$null;summary=$null;findings=$null;artifacts=[object[]]@();manifestPath=$null;manifestHash=$null;testsManifestHash=$null;stopState='not-created';failure=$null}
 }
-function Add-ProposalProblem($Current,[string]$Status,[string]$Stage,[string]$Reason) {
-    # 最初の問題を残す。ただし時間超過は他の失敗より優先する（仕様02「時間超過ならtimed_outを優先」）。
-    $new=@{status=$Status;stage=$Stage;reason=$Reason}
-    if($null -eq $Current){return $new}
-    if($Status -ceq 'timed_out' -and $Current.status -cne 'timed_out'){return $new}
-    $Current
-}
 
 # ---- recheck（VM・モデルを起動しない） ----
 function Get-ProposalAcceptedFileMap([string]$AcceptedRoot) {
     $root=[IO.Path]::TrimEndingDirectorySeparator((Resolve-VerificationPath $AcceptedRoot))
     $map=@{}
     foreach($info in [IO.DirectoryInfo]::new($root).EnumerateFileSystemInfos('*',[IO.SearchOption]::AllDirectories)){
-        if($info.Attributes -band [IO.FileAttributes]::ReparsePoint){Throw-VerificationProposalFailure "reparse point inside accepted: $($info.FullName)" 'blocked' 'recheck-tests-changed'}
+        if($info.Attributes -band [IO.FileAttributes]::ReparsePoint){Invoke-VerificationFailure "reparse point inside accepted: $($info.FullName)" 'blocked' 'recheck-tests-changed'}
         if($info -is [IO.FileInfo]){$map[[IO.Path]::GetRelativePath($root,$info.FullName).Replace('\','/')]=@{size=[long]$info.Length;sha256=(Get-FileHash -LiteralPath $info.FullName -Algorithm SHA256).Hash}}
     }
     $map
@@ -313,16 +289,16 @@ function Invoke-VerificationProposalRecheck([hashtable]$PreparedRun) {
         $expectedMap=@{}
         foreach($artifact in $expected){
             $path=[string]$artifact.path
-            if($artifact.kind -cne 'test' -or -not$path.StartsWith('tests/',[StringComparison]::Ordinal) -or $expectedMap.ContainsKey($path)){Throw-VerificationProposalFailure "recheck artifact must be a unique test under tests/: $path" 'blocked' 'recheck-manifest'}
+            if($artifact.kind -cne 'test' -or -not$path.StartsWith('tests/',[StringComparison]::Ordinal) -or $expectedMap.ContainsKey($path)){Invoke-VerificationFailure "recheck artifact must be a unique test under tests/: $path" 'blocked' 'recheck-manifest'}
             $expectedMap[$path]=$artifact
-            if(-not$recorded.ContainsKey($path) -or [long]$recorded[$path].size -ne [long]$artifact.size -or [string]$recorded[$path].sha256 -ine [string]$artifact.sha256){Throw-VerificationProposalFailure "recheck manifest does not list the prepared test: $path" 'blocked' 'recheck-manifest'}
+            if(-not$recorded.ContainsKey($path) -or [long]$recorded[$path].size -ne [long]$artifact.size -or [string]$recorded[$path].sha256 -ine [string]$artifact.sha256){Invoke-VerificationFailure "recheck manifest does not list the prepared test: $path" 'blocked' 'recheck-manifest'}
         }
-        if($recorded.Count -ne $expectedMap.Count){Throw-VerificationProposalFailure 'recheck manifest lists tests that were not prepared' 'blocked' 'recheck-manifest'}
+        if($recorded.Count -ne $expectedMap.Count){Invoke-VerificationFailure 'recheck manifest lists tests that were not prepared' 'blocked' 'recheck-manifest'}
         $actual=Get-ProposalAcceptedFileMap ([string]$PreparedRun.acceptedRoot)
         $missing=@($expectedMap.Keys | Where-Object {-not$actual.ContainsKey($_)} | Sort-Object)
         $extra=@($actual.Keys | Where-Object {-not$expectedMap.ContainsKey($_)} | Sort-Object)
         $changed=@($expectedMap.Keys | Where-Object {$actual.ContainsKey($_) -and ($actual[$_].size -ne [long]$expectedMap[$_].size -or $actual[$_].sha256 -ine [string]$expectedMap[$_].sha256)} | Sort-Object)
-        if($missing.Count+$extra.Count+$changed.Count -gt 0){Throw-VerificationProposalFailure ("recheck tests differ from the previous selection (missing: $($missing -join ', '); added: $($extra -join ', '); changed: $($changed -join ', '))") 'blocked' 'recheck-tests-changed'}
+        if($missing.Count+$extra.Count+$changed.Count -gt 0){Invoke-VerificationFailure ("recheck tests differ from the previous selection (missing: $($missing -join ', '); added: $($extra -join ', '); changed: $($changed -join ', '))") 'blocked' 'recheck-tests-changed'}
         $saved=Save-VerificationProposalManifest $PreparedRun 'reused-tests' $expected
         $result.artifacts=$saved.artifacts;$result.manifestPath=$saved.manifestPath;$result.manifestHash=$saved.manifestHash;$result.testsManifestHash=$saved.testsManifestHash
         $result.status='ready'
@@ -338,11 +314,11 @@ function Invoke-VerificationProposalRecheck([hashtable]$PreparedRun) {
 function New-VerificationProposalRequest([hashtable]$PreparedRun) {
     # 目的・合格条件・作業先・書式・禁止事項・残り時間の短い依頼。残り時間は助言で、強制は外側の上限で行う。本文資料は子がコピーから探索する。
     $request=$PreparedRun.request
-    $criteria=@(Get-ProposalValue $request 'acceptanceCriteria')
-    $remaining=[Math]::Max(0,[Math]::Floor([Math]::Min([double](Get-ProposalLimit $PreparedRun 'proposalSeconds'),([DateTimeOffset]::Parse([string]$PreparedRun.deadlineAt,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime-[DateTime]::UtcNow).TotalSeconds)))
+    $criteria=@(Get-VerificationValue $request 'acceptanceCriteria')
+    $remaining=[Math]::Max(0,[Math]::Floor([Math]::Min([double](Get-VerificationLimit $PreparedRun 'proposalSeconds'),([DateTimeOffset]::Parse([string]$PreparedRun.deadlineAt,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime-[DateTime]::UtcNow).TotalSeconds)))
     $lines=[Collections.Generic.List[string]]::new()
     $lines.Add('あなたは隔離された検証用VMの中で、不具合の再現テストと修正候補を提案する担当です。')
-    $lines.Add('目的: '+[string](Get-ProposalValue $request 'objective'))
+    $lines.Add('目的: '+[string](Get-VerificationValue $request 'objective'))
     $lines.Add('合格条件:');foreach($criterion in $criteria){$lines.Add('- '+[string]$criterion)}
     $lines.Add("資料: $($script:SourceDestination)（原本の独立コピー。読んで調べてよい。ここへの変更は提案として扱わない）")
     $lines.Add("作業先: $($script:ProposalDirectory)（提案はここにだけ置く）")
@@ -350,7 +326,7 @@ function New-VerificationProposalRequest([hashtable]$PreparedRun) {
     $lines.Add('- proposal.json: {"summary": "要約", "findings": [{"description": "所見", "sourcePaths": ["資料内の相対パス"]}]}')
     $lines.Add('- tests/: 不具合を再現する unittest。ファイル名は test_*.py（必要なら __init__.py）。少なくとも1件。')
     $lines.Add('- replacements/: 修正候補（任意）。資料に既にある .py ファイルと同じ相対パスに、置き換え後の全文を置く。')
-    $lines.Add("- 上限: ファイル $(Get-ProposalLimit $PreparedRun 'maxProposalFiles') 件、1ファイル $(Get-ProposalLimit $PreparedRun 'maxFileBytes') バイト、合計 $(Get-ProposalLimit $PreparedRun 'maxProposalBytes') バイト。超えた提案は全体が不採用になる。")
+    $lines.Add("- 上限: ファイル $(Get-VerificationLimit $PreparedRun 'maxProposalFiles') 件、1ファイル $(Get-VerificationLimit $PreparedRun 'maxFileBytes') バイト、合計 $(Get-VerificationLimit $PreparedRun 'maxProposalBytes') バイト。超えた提案は全体が不採用になる。")
     $lines.Add('禁止事項: ファイルの削除・改名の提案、.py 以外の置き換え、実行コマンドの提案、.git・.codex・.claude・.agents・.mcp.json 配下への書き込み、認証情報や外部接続の探索。')
     $lines.Add("残り時間の目安: 約 $remaining 秒（目安であり、上限は外側で強制する）")
     [string]::Join("`n",$lines)+"`n"
@@ -366,7 +342,7 @@ function Initialize-ProposalExporter([hashtable]$PreparedRun) {
     $target=Join-Path $root $script:ExporterName
     [IO.File]::Copy($source,$target,$false)
     $hash=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
-    if($hash -cne (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash){Throw-VerificationProposalFailure 'exporter copy does not match the fixed exporter' 'incomplete' 'exporter-copy'}
+    if($hash -cne (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash){Invoke-VerificationFailure 'exporter copy does not match the fixed exporter' 'incomplete' 'exporter-copy'}
     @{root=$root;manifest=@{files=@(@{path=$script:ExporterName;size=[long]([IO.FileInfo]::new($target)).Length;sha256=$hash})}}
 }
 function Get-ProposalCommandProblem([hashtable]$Record,[string]$Stage,[bool]$RequireSignature) {
@@ -392,7 +368,7 @@ function Complete-VerificationProposalCreationFailure([hashtable]$Result,[hashta
         $Result.status='incomplete';$Result.stopState='unverified';$Result.failure=@{stage='sandbox';reason='creation-unresolved'}
         return $Result
     }
-    $reason=[string](Get-ProposalValue $record 'reason')
+    $reason=[string](Get-VerificationValue $record 'reason')
     $Result.failure=@{stage='sandbox';reason=$(if([string]::IsNullOrEmpty($reason)){'runtime-failure'}else{$reason})}
     switch($record.creationState){
         'not-created'{$Result.stopState='not-created';$Result.status=$(if($status){$status}else{'blocked'})}
@@ -418,7 +394,7 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
     $problem=$null;$wire=$null;$stage='input';$stopAttempted=$false
     try{
         try{
-            $maxOutput=Get-ProposalLimit $PreparedRun 'maxOutputBytes'
+            $maxOutput=Get-VerificationLimit $PreparedRun 'maxOutputBytes'
             # 1. proposal-input だけを source へ搬入し、所有者調整後のハッシュを基準版の一覧と照合する。
             # 期待hash・重複キー・runId・必須キー（path の重複なし）を確かめた1回の読込みの戻り値だけから ExpectedManifest を作る。
             $baselineManifest=Read-ProposalBaselineManifest $PreparedRun
@@ -429,23 +405,23 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
             # 2. 依頼を stdin で startupArgv の Codex へ渡す。出力（実行イベント・最終応答）は未信頼データとして quarantine/ に置く。
             $stage='agent'
             $requestBytes=$script:Utf8.GetBytes((New-VerificationProposalRequest $PreparedRun))
-            $agent=Invoke-VerificationSandboxCommand $handle ([string[]]@($Profile.startupArgv)) $requestBytes $script:SourceDestination @{} (New-ProposalBudget $PreparedRun (Get-ProposalLimit $PreparedRun 'proposalSeconds') $maxOutput) $null
+            $agent=Invoke-VerificationSandboxCommand $handle ([string[]]@($Profile.startupArgv)) $requestBytes $script:SourceDestination @{} (New-ProposalBudget $PreparedRun (Get-VerificationLimit $PreparedRun 'proposalSeconds') $maxOutput) $null
             Write-VerificationNewFile (Join-Path ([string]$PreparedRun.runRoot) 'quarantine/proposal-agent-command.json') (ConvertTo-VerificationCanonicalJson $agent)
             $agentProblem=Get-ProposalCommandProblem $agent 'agent' $false
-            if($null -ne $agentProblem){$problem=Add-ProposalProblem $problem $agentProblem.status $agentProblem.stage $agentProblem.reason}
+            if($null -ne $agentProblem){$problem=Select-VerificationProblem $problem $agentProblem.status $agentProblem.stage $agentProblem.reason}
             # 3. 子の終了または時間超過の後に受信へ進む（出力超過で VM を止めた場合と、起動しなかった場合は受信できない）。失敗・時間超過では正常提案を確定しない。
             if($agent.started -and -not$agent.outputExceeded){
                 $stage='export'
                 $exporter=Initialize-ProposalExporter $PreparedRun
                 [void](Copy-VerificationSandboxInput $handle $exporter.root $script:ExporterDestination $exporter.manifest $setup)
-                $argv=[string[]]@('python3',"$($script:ExporterDestination)/$($script:ExporterName)",'--run-id',[string]$PreparedRun.runId,'--max-files',[string](Get-ProposalLimit $PreparedRun 'maxProposalFiles'),'--max-file-bytes',[string](Get-ProposalLimit $PreparedRun 'maxFileBytes'),'--max-proposal-bytes',[string](Get-ProposalLimit $PreparedRun 'maxProposalBytes'))
-                $export=Invoke-VerificationSandboxCommand $handle $argv $null $script:ExporterDestination @{} (New-ProposalBudget $PreparedRun $script:ExportSeconds (Get-ProposalLimit $PreparedRun 'maxWireBytes')) @{pattern='\A\{.*\}\n?\z';stream='stdout'}
+                $argv=[string[]]@('python3',"$($script:ExporterDestination)/$($script:ExporterName)",'--run-id',[string]$PreparedRun.runId,'--max-files',[string](Get-VerificationLimit $PreparedRun 'maxProposalFiles'),'--max-file-bytes',[string](Get-VerificationLimit $PreparedRun 'maxFileBytes'),'--max-proposal-bytes',[string](Get-VerificationLimit $PreparedRun 'maxProposalBytes'))
+                $export=Invoke-VerificationSandboxCommand $handle $argv $null $script:ExporterDestination @{} (New-ProposalBudget $PreparedRun $script:ExportSeconds (Get-VerificationLimit $PreparedRun 'maxWireBytes')) @{pattern='\A\{.*\}\n?\z';stream='stdout'}
                 $exportProblem=Get-ProposalCommandProblem $export 'export' $true
-                if($null -ne $exportProblem){$problem=Add-ProposalProblem $problem $exportProblem.status $exportProblem.stage $exportProblem.reason}
+                if($null -ne $exportProblem){$problem=Select-VerificationProblem $problem $exportProblem.status $exportProblem.stage $exportProblem.reason}
                 elseif($null -eq $problem){$wire=[IO.File]::ReadAllBytes($export.stdoutPath)}
             }
         }catch{
-            $problem=Add-ProposalProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'failed') $stage (Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")
+            $problem=Select-VerificationProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'failed') $stage (Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")
         }
         # 4. 停止（受信の後、検査の前）。一覧の同一 id・stopped で確認する。停止後に exec しない。
         $stopAttempted=$true

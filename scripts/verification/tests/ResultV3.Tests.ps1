@@ -3,6 +3,7 @@ Import-Module (Join-Path $PSScriptRoot 'TestSupport.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'fixtures/FakeSbxScenario.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'fixtures/V3TestContext.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot '../RequestCopy.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot '../SbxRuntime.psm1') -Force -DisableNameChecking   # runtime profile の期待値（profileHash・実効設定ラベル）を試験側でも同じ検査で得る
 Import-Module (Join-Path $PSScriptRoot '../Result.psm1') -Force
 # 照合（仕様03）の試験。準備・提案・再実行の記録は、各ブロックの報告と実装どおりの保存先と形でファイルとして組み立てる（sbx・VM・モデルは起動しない）。
 # 原本だけは実 Git の作業ツリーにし、照合が原本を再列挙できるようにする。ケース領域は短い名前にする（Windows の MAX_PATH。Issue-0146）。
@@ -45,15 +46,23 @@ function New-ResultCtx([string]$SourceRoot){
     $pilotRecord=@{schemaVersion=3;inputId='pilot-fixture';scope='synthetic-pilot';sourceRoot=$SourceRoot;sourceManifestHash=$ctx.prepared.sourceManifestHash;approvalReference=@{path='docs/records/reviews/fixture.md';version='0000000'}}
     [IO.File]::WriteAllText($ctx.prepared.pilotInputPath,(ConvertTo-VerificationCanonicalJson $pilotRecord),$utf8)
     $ctx.prepared.pilotInputHash=Get-V3TestHash $ctx.prepared.pilotInputPath
+    # runtime profile（証拠つき）を settings の profile パスへ書き、照合が読む値と同じ検査で期待値を得る。
+    $ctx.expect=@{}
+    foreach($pair in @(@('proposal','proposal','proposalProfilePath'),@('replay','replay-before','replayProfilePath'))){
+        $profile=$(if($pair[0] -ceq 'replay'){$ctx.replayProfile}else{New-V3TestProfile $ctx 'proposal'})
+        [IO.File]::WriteAllText($ctx.settings[$pair[2]],(ConvertTo-VerificationCanonicalJson $profile),$utf8)
+        $ctx.expect[$pair[0]]=@{profileHash=(Test-VerificationRuntimeProfile $profile $pair[1] $ctx.settings);effectiveSettingsHash=(Get-VerificationEffectiveSettingsHash $profile $ctx.settings);templateDigest=$profile.templateDigest}
+    }
     $ctx
 }
 function New-Sandbox([hashtable]$Ctx,[string]$Role,[hashtable]$Options){
     # SbxRuntime と同じ保存先と形: 作成記録 control/runtime/<role>-sandbox.json、activationRecord <role>-activation.json、停止記録 <role>-stop-<時刻>.json。
     if($null -eq $Options){$Options=@{}}
     $runtime=Join-Path $Ctx.controlRoot 'runtime'
-    $id=[guid]::NewGuid().ToString();$name=$Ctx.names[$Role]
-    $profileHash=$(if($Options.ContainsKey('profileHash')){$Options.profileHash}else{'A'*64})
-    $effective=$(if($Options.ContainsKey('effectiveSettingsHash')){$Options.effectiveSettingsHash}else{'B'*64})
+    $id=$(if($Options.ContainsKey('id')){$Options.id}else{[guid]::NewGuid().ToString()});$name=$Ctx.names[$Role]
+    $expected=$Ctx.expect[$(if($Role -ceq 'proposal'){'proposal'}else{'replay'})]
+    $profileHash=$(if($Options.ContainsKey('profileHash')){$Options.profileHash}else{$expected.profileHash})
+    $effective=$(if($Options.ContainsKey('effectiveSettingsHash')){$Options.effectiveSettingsHash}else{$expected.effectiveSettingsHash})
     $instance=$(if($Options.ContainsKey('daemon')){$Options.daemon}else{$daemon})
     $checks=@{};foreach($key in @('policy','mount','resource','credentialExposure','sshForwarding','clipboardImagePaste','mcpServers','otherVmTraffic')){$checks[$key]=@{verdict='verified';expected=@{};observed=@{};source='fixture'}}
     $activationPath=Join-Path $runtime "$Role-activation.json"
@@ -112,7 +121,7 @@ function New-ReplayReference([hashtable]$Ctx,[string]$Key,[hashtable]$Handle,[ha
     Write-V3TestText $stdout '';Write-V3TestText $stderr $(if($ExitCode -eq 0){"Ran 1 test in 0.001s`n`nOK`n"}else{"Ran 1 test in 0.001s`n`nFAILED (failures=1)`n"})
     $started=Now
     $record=@{
-        schemaVersion=3;commandId=$commandId;runId=$Ctx.runId;role=$role;sandboxId=$Handle.id;profileHash=$Handle.profileHash;effectiveSettingsHash=$Handle.effectiveSettingsHash;templateDigest=(Get-FakeSbxTemplateDigest)
+        schemaVersion=3;commandId=$commandId;runId=$Ctx.runId;role=$role;sandboxId=$Handle.id;profileHash=$Handle.profileHash;effectiveSettingsHash=$Handle.effectiveSettingsHash;templateDigest=$Ctx.expect.replay.templateDigest
         sourceManifestHash=$Ctx.prepared.sourceManifestHash;inputManifestHash=$InputManifest.hash;testsManifestHash=$Proposal.testsManifestHash;argv=$replayArgv;workingDirectory='/home/agent/workspace/source'
         startedAt=$started;finishedAt=(Now);exitCode=$ExitCode;stdoutPath=$stdout;stdoutHash=(Get-V3TestHash $stdout);stderrPath=$stderr;stderrHash=(Get-V3TestHash $stderr)
         timedOut=$false;outputExceeded=$false;stopVerified=$true;transportVerified=$true;activationRecordPath=$Handle.activationRecordPath;activationRecordHash=$Handle.activationRecordHash;limits=$Ctx.settings.limits
@@ -206,10 +215,15 @@ Assert-Outcome $r 'completed' 'current-fail' 1 'recheck の current-fail'
 $count++
 
 # 5. 架空の commandId・記録と別の sandboxId・別の起動世代（daemonInstance）→ incomplete・undetermined・終了2。
-$run=New-Run;$run.replay.before.commandId='replay-before-0123456789ab'
+# 架空の commandId: 記録のパス・hash は架空の commandId に合わせ（本物の記録を別名で複製）、中身の commandId との不一致そのもので落ちること。
+$run=New-Run;$fake='replay-before-0123456789ab'
+$fakePath=Join-Path $run.ctx.controlRoot "replay/replay-before/$fake.json"
+[IO.File]::Copy($run.replay.before.recordPath,$fakePath)
+$run.replay.before.commandId=$fake;$run.replay.before.recordPath=$fakePath;$run.replay.before.recordHash=Get-V3TestHash $fakePath
 $r=Invoke-Result $run '架空 commandId'
 Assert-Outcome $r 'incomplete' 'undetermined' 2 '架空 commandId'
-Assert-Unverified $r 'result/replay-before-record:record-*' '架空 commandId'
+Assert-Unverified $r 'result/replay-before-record:record-mismatch: replay record commandId does not match*' '架空 commandId'
+Assert-True (@($r.unverified | Where-Object {$_ -like '*record-missing*' -or $_ -like '*evidence path*'}).Count -eq 0) '架空 commandId: パスの位置ではなく commandId の不一致で落ちる'
 $run=New-Run;Update-Record $run.replay.after {param($v) $v.sandboxId=[guid]::NewGuid().ToString()}
 $r=Invoke-Result $run '別 sandboxId'
 Assert-Outcome $r 'incomplete' 'undetermined' 2 '記録が別 sandboxId'
@@ -222,6 +236,42 @@ $run=New-Run 'reproduction-only' 1 -Options @{proposal=@{daemon=@{pid=6161;start
 $r=Invoke-Result $run '提案VMと別世代'
 Assert-Outcome $r 'incomplete' 'undetermined' 2 '1台だけの mode でも提案VMの世代と照合'
 Assert-Unverified $r '*daemon-changed*' '1台だけの mode でも提案VMの世代と照合'
+$count++
+
+# 5b. 役割と VM id の対応（I1）: 参照が別役割の VM を指す、before と after が同じ id、再実行 VM が提案 VM と同じ id → incomplete。
+$run=New-Run
+Update-Record $run.replay.before {param($v) $v.sandboxId=$run.replay.after.sandbox.id;$v.activationRecordPath=$run.replay.after.sandbox.activationRecordPath;$v.activationRecordHash=$run.replay.after.sandbox.activationRecordHash}
+$run.replay.before.sandbox=$run.replay.after.sandbox
+$r=Invoke-Result $run '役割を入れ替えた参照'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 '役割を入れ替えた参照'
+Assert-Unverified $r 'result/replay-before-record:record-sandbox: replay before reference points to a sandbox of another role*' '役割を入れ替えた参照'
+$same=[guid]::NewGuid().ToString()
+$r=Invoke-Result (New-Run -Options @{before=@{id=$same};after=@{id=$same}}) '同一 id の before/after'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 '同一 id の before/after'
+Assert-Unverified $r 'result/replay-sandbox:sandbox-reused*' '同一 id の before/after'
+$same=[guid]::NewGuid().ToString()
+$r=Invoke-Result (New-Run 'reproduction-only' 1 -Options @{proposal=@{id=$same};before=@{id=$same}}) '提案VMと同一 id'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 '再実行 VM が提案 VM と同じ id'
+Assert-Unverified $r 'result/replay-sandbox:sandbox-reused*' '再実行 VM が提案 VM と同じ id'
+$count++
+
+# 5c. 実行設定の能力証拠（I2）: settings の profile が検査を通らない、VM の profileHash が profile と違う、記録の templateDigest が profile と違う → incomplete。
+$run=New-Run
+$profile=[IO.File]::ReadAllText($run.ctx.settings.replayProfilePath,$utf8) | ConvertFrom-Json -AsHashtable
+$profile.stdlibModulesHash=('0'*64)
+[IO.File]::WriteAllText($run.ctx.settings.replayProfilePath,(ConvertTo-VerificationCanonicalJson $profile),$utf8)
+$r=Invoke-Result $run 'profile 不合格'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 'replay profile が検査を通らない'
+Assert-Unverified $r 'result/replay-profile:profile-rejected: runtime profile rejected*' 'replay profile が検査を通らない'
+$r=Invoke-Result (New-Run -Options @{after=@{profileHash=('D'*64)}}) 'profileHash 不一致'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 'VM の profileHash が profile と違う'
+Assert-Unverified $r 'result/replay-sandbox:profile-mismatch*' 'VM の profileHash が profile と違う'
+$r=Invoke-Result (New-Run 'reproduction-only' 1 -Options @{proposal=@{profileHash=('E'*64)}}) '提案 profileHash 不一致'
+Assert-Unverified $r 'result/proposal-sandbox:profile-mismatch*' '提案 VM の profileHash が proposal profile と違う'
+$run=New-Run;Update-Record $run.replay.after {param($v) $v.templateDigest='docker.io/docker/sandbox-templates@sha256:'+('1'*64)}
+$r=Invoke-Result $run 'templateDigest 不一致'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 '記録の templateDigest が profile と違う'
+Assert-Unverified $r 'result/replay-after-record:profile-mismatch*' '記録の templateDigest が profile と違う'
 $count++
 
 # 6. before/after の effectiveSettingsHash 不一致（candidate-comparison だけ照合）→ incomplete。
@@ -337,6 +387,8 @@ Assert-Throws {New-VerificationFailureResult @{runRoot=$run.ctx.runRoot} @{statu
 Assert-Equal ([IO.File]::ReadAllText($existing,$utf8)) 'original' '既存結果を保全'
 $run=New-Run
 Assert-Throws {Complete-VerificationRun $run.ctx.prepared $run.proposal} '*schemaVersion 3*'
+$v1Run=@{runId=$run.ctx.runId;runRoot=$run.ctx.runRoot;controlRoot=$run.ctx.controlRoot;sourceRoot=$sharedSource}
+Assert-Throws {Complete-VerificationRun $v1Run $run.proposal $run.replay} '*PreparedRunV3 with schemaVersion 3*'
 $run.replay.schemaVersion=2
 Assert-Throws {Complete-VerificationRun $run.ctx.prepared $run.proposal $run.replay} '*schemaVersion 3*'
 Assert-True (-not(Test-Path -LiteralPath (Join-Path $run.ctx.controlRoot 'result.json'))) '版の混在: 結果を作らない'

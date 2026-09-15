@@ -1,15 +1,17 @@
 # Handoff: Issue-0136 残り実測と隔離系の整理
 
 - **Branch**: master
-- **Last Updated**: 2026-09-14 11:50 (Asia/Tokyo)
+- **Last Updated**: 2026-09-15 14:22 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: 調査・実測/Issue-0136 の残り実測と記録のコミット完了、次の利用者の依頼待ち
+- **Current Phase**: 調査・実測/Issue-0136 の残り実測と記録のコミット完了。隔離検証（codex/isolated-verification）は実装計画確定済み・実装未着手で、専用 worktree の新セッションで再開する
 
 ## 作業の目的・背景
 
 利用者が隔離系（Issue-0136 と codex/isolated-verification）を選び、Issue-0136 の残り未確認事項のうち「固定検査1操作だけの子の対話セッション実行」を Claude Code 2.1.270 で実測した。結果は既存規範（ADR-0143・0144）どおりで、ガイドライン本文の変更はない。状態変更系ツール3件は測定せず記録で閉じ、規範本文は版更新規約に従い変更しない。Issue-0136 は、専用 Issue を持たない中断中の共通起動処理（codex/isolated-verification）の再開経路を担うため open を維持する（いずれも 2026-09-14 の利用者判断）。
 
-前サイクル（ADR-0190・0191 の統合、0.1.29 の公開・Codex 導入）は完了済み。目的参照の実運用評価は本セッションの開始が1件目にあたる（正本の読取りと版照合が成立）。
+前サイクル（ADR-0190・0191 の統合、0.1.29 の公開・Codex 導入）は完了済み。目的参照の実運用評価は 2026-09-14 の開始が1件目、2026-09-15 の開始が2件目にあたる（いずれも正本の読取りと版照合が成立）。
+
+2026-09-15 の master セッションは開始処理のみで、master 側の成果物変更はない。直近の作業セッション（2026-09-15）は `.worktrees/isolated-verification` 側で行われ、v3 実装計画の確定（285f315）と引き継ぎ確定（2d0db67）まで済み、実装は未着手。master の handoff だけを読んで「進行中なし」と要約し、利用者の指摘で判明した（worklog `MakeAiInstructions-2026-09-15-03`）。
 
 ## 関連ドキュメント
 
@@ -45,8 +47,9 @@
 
 ## 未着手のタスク
 
-- [ ] 目的参照の実運用評価（残り2件。1件目は 2026-09-14 の開始で成立）。
-- [ ] codex/isolated-verification の再開判断。正本は .worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md。利用者の再開指示が必要。専用 Issue は無く、Issue-0136 が再開経路。
+- [ ] 目的参照の実運用評価（残り1件。1件目は 2026-09-14、2件目は 2026-09-15 の開始で成立）。
+- [ ] codex/isolated-verification の実装着手。正本は .worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md（2d0db67）、計画は同 worktree の docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md（plan 確定点通過・285f315）。利用者は 2026-09-15 に「専用 worktree で新セッションを起動して start-work する」経路を選択済み。専用 Issue は無く、Issue-0136 が再開経路。
+- [ ] worktree 使用を踏まえた作業フローの定義（利用者の 2026-09-15 の示唆。「メモリに残すのではなく作業フローを定義したほうがよい」）。master で start-work すると他 worktree の新しい handoff を読まず最新状態を誤る問題が起点。課題起票・設計は未着手・未承認。worklog `MakeAiInstructions-2026-09-15-03` を参照。
 
 - [ ] Issue-0145の対策設計・着手は未承認。起票だけを実施した。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
 - [ ] Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
@@ -82,11 +85,12 @@
 
 - 2026-09-14 Issue-0136 残り実測と記録更新の完了: ADR=なし（既存規範ADR-0143・0144の確認に留まり、試験手順・版更新・課題の追跡経路は既存規約に従う運用判断） / worklog=`MakeAiInstructions-2026-09-14-01`
 - 2026-09-14 セッション終了の引き継ぎ確定: ADR=なし（同日の運用判断のみ、方針変更なし） / worklog=棄却（同日01に記録済みの差分以外なし）
+- 2026-09-15 開始処理のみでセッション区切り（隔離検証は worktree の新セッションへ）: ADR=なし（再開経路の選択は既存 handoff の案内どおりで方針変更なし。作業フロー定義は示唆のみで未決定） / worklog=`MakeAiInstructions-2026-09-15-03`
 
 ## 次セッション開始時のアクション
 
-1. docs/overview/project-purpose.md、masterのhandoffを読む。隔離検証を再開する場合は `.worktrees/isolated-verification` で start-work し、同branchの handoff（e2e28c0）の案内どおり master 61ddef3 の記録を先に読む。
-2. 次の利用者の依頼を確認する。候補は codex/isolated-verification の再開（利用者の明示指示が必要）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。
+1. docs/overview/project-purpose.md、masterのhandoffを読む。あわせて `git worktree list` と `git branch --sort=-committerdate` で master より新しいコミットを持つ branch を確認し、あればその worktree の handoff を読んでから要約する（2026-09-15 時点の最新は codex/isolated-verification の 2d0db67）。隔離検証を再開する場合は `.worktrees/isolated-verification` で新セッションを起動して start-work し、同 branch の handoff（2d0db67）の案内に従う。
+2. 次の利用者の依頼を確認する。候補は codex/isolated-verification の実装着手（専用 worktree の新セッションで行う）、worktree 使用を踏まえた作業フローの定義（課題起票から）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。
 3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・隔離検証を自動再開しない。既存の証跡・stashを保全する。
 
 ## 重要な意思決定の履歴

@@ -22,7 +22,7 @@ function Get-FakeSbxResponse([string]$Name,[hashtable]$Values=@{}){
     if(-not$script:ResponseIndex.ContainsKey($Name)){throw "unknown fake response: $Name"}
     $item=$script:ResponseIndex[$Name]
     $text=[IO.File]::ReadAllText((Join-Path $PSScriptRoot ('fake-sbx-responses/'+$item.file)),$script:Utf8)
-    @{text=(Expand-FakeTemplate $text $Values);synthetic=[bool]$item.synthetic}
+    @{text=(Expand-FakeTemplate $text $Values);synthetic=[bool]$item.synthetic;source=[string]$item.source;exitCode=$(if($item.ContainsKey('exitCode')){[int]$item.exitCode}else{0})}
 }
 function New-FakeSbxLogLine([string]$Kind,[string]$Name,[string]$Time='{{now}}'){
     if(-not$script:LogLines.ContainsKey($Kind)){throw "unknown daemon.log line kind: $Kind"}
@@ -48,15 +48,16 @@ function New-FakeSbxCase([string]$Root){
     }
     # デーモン単位の既定応答（running・clipboard 画像読取 false・MCP 登録なし）。試験は -First で上書きする。
     $status=Get-FakeSbxResponse 'daemonStatusRunning' @{logs=$logPath.Replace('\','\\')}
-    Add-FakeSbxResponse $case @('daemon','status','--json') -Stdout $status.text -Synthetic $status.synthetic | Out-Null
+    Add-FakeSbxResponse $case @('daemon','status','--json') -Stdout $status.text -Synthetic $status.synthetic -Source $status.source | Out-Null
     $clipboard=Get-FakeSbxResponse 'settingsClipboardFalse'
-    Add-FakeSbxResponse $case @('settings','get','--json','clipboard\.imagePaste') -Stdout $clipboard.text -Synthetic $clipboard.synthetic | Out-Null
+    Add-FakeSbxResponse $case @('settings','get','--json','clipboard\.imagePaste') -Stdout $clipboard.text -Synthetic $clipboard.synthetic -Source $clipboard.source | Out-Null
     $mcp=Get-FakeSbxResponse 'mcpLsEmpty'
-    Add-FakeSbxResponse $case @('mcp','ls','--json') -Stdout $mcp.text -Synthetic $mcp.synthetic | Out-Null
+    Add-FakeSbxResponse $case @('mcp','ls','--json') -Stdout $mcp.text -Synthetic $mcp.synthetic -Source $mcp.source | Out-Null
     $case
 }
-function Add-FakeSbxResponse([hashtable]$Case,[string[]]$ArgvPatterns,[string]$Stdout='',[string]$Stderr='',[int]$ExitCode=0,[hashtable]$Requires=$null,[hashtable]$Sets=$null,[double]$DelaySeconds=0,[bool]$Synthetic=$false,[object[]]$AppendFile=@(),[object[]]$WriteFile=@(),[switch]$First){
-    $entry=@{argv=@($ArgvPatterns);stdout=$Stdout;stderr=$Stderr;exitCode=$ExitCode;delaySeconds=$DelaySeconds;synthetic=$Synthetic;requires=$Requires;sets=$Sets;appendFile=@($AppendFile);writeFile=@($WriteFile)}
+function Add-FakeSbxResponse([hashtable]$Case,[string[]]$ArgvPatterns,[string]$Stdout='',[string]$Stderr='',[int]$ExitCode=0,[hashtable]$Requires=$null,[hashtable]$Sets=$null,[double]$DelaySeconds=0,[bool]$Synthetic=$false,[object[]]$AppendFile=@(),[object[]]$WriteFile=@(),[string]$Source='',[switch]$First){
+    # synthetic は実測原文に無い創作応答の印。実測由来は Source に .tmp/sbx-capability-20260914/ のファイル番号を書く（scenario.json に残る。偽sbxは読まない）。
+    $entry=@{argv=@($ArgvPatterns);stdout=$Stdout;stderr=$Stderr;exitCode=$ExitCode;delaySeconds=$DelaySeconds;synthetic=$Synthetic;source=$Source;requires=$Requires;sets=$Sets;appendFile=@($AppendFile);writeFile=@($WriteFile)}
     if($First){$Case.entries.Insert(0,$entry)}else{$Case.entries.Add($entry)}
     $entry
 }
@@ -65,32 +66,35 @@ function New-FakeRuntimeFileText([string]$Name,[string]$Id,[string]$Agent='shell
     foreach($key in $Overrides.Keys){$values[$key]=$Overrides[$key]}
     Expand-FakeTemplate $script:RuntimeTemplate $values
 }
-function Add-FakeSbxSandboxScenario([hashtable]$Case,[string]$Name,[string]$Id,[string]$Agent='shell',[string]$Digest=$script:TemplateDigest,[object[]]$ConfirmFiles=@(),[switch]$AlreadyPresent,[string]$InitialStatus='running'){
+function Add-FakeSbxSandboxScenario([hashtable]$Case,[string]$Name,[string]$Id,[string]$Agent='shell',[string]$Digest=$script:TemplateDigest,[object[]]$ConfirmFiles=@(),[switch]$AlreadyPresent,[string]$InitialStatus='running',[double]$CreateDelaySeconds=0){
     # 1台分の既定応答: create（状態遷移・runtime ファイル・daemon.log 行）→ inspect / policy → 保持 exec → cp / chown → Confirm → stop。
     # -AlreadyPresent は run が作ったのではなく最初から一覧にあるVM（復旧操作の対象など）。
+    # -CreateDelaySeconds は create の状態遷移を済ませてから応答を遅らせる（デーモン側では作成済みだがクライアントが時間超過する経路。遅延は synthetic）。
     $Case.sandboxes.Add(@{name=$Name;id=$Id;agent=$Agent;runCreated=(-not$AlreadyPresent);initialStatus=$InitialStatus})
     $runtimePath=Join-Path $Case.runtimesDir ($Name+'.json')
     if($AlreadyPresent){[IO.File]::WriteAllText($runtimePath,(New-FakeRuntimeFileText $Name $Id $Agent $Digest),$script:Utf8)}
     $create=Get-FakeSbxResponse 'createSuccess' @{name=$Name;agent=$Agent;digest=$Digest}
-    Add-FakeSbxResponse $Case @('create',[regex]::Escape($Agent),'--name',[regex]::Escape($Name),'--cpus','2','--memory','2g','--no-share-skills','--deny-network','\*','--template',[regex]::Escape($Digest)) -Stdout $create.text -Synthetic $create.synthetic `
+    Add-FakeSbxResponse $Case @('create',[regex]::Escape($Agent),'--name',[regex]::Escape($Name),'--cpus','2','--memory','2g','--no-share-skills','--deny-network','\*','--template',[regex]::Escape($Digest)) -Stdout $create.text -Synthetic ($create.synthetic -or $CreateDelaySeconds -gt 0) -Source ($create.source+' / 22-runtime-file.json / 20-daemonlog-new-runtime-network.txt') `
+        -DelaySeconds $CreateDelaySeconds `
         -Sets @{"vm:$Name"='running';"present:$Name"='1'} `
         -WriteFile @(@{path=$runtimePath;text=(New-FakeRuntimeFileText $Name $Id $Agent $Digest)}) `
         -AppendFile @(@{path=$Case.logPath;text=(New-FakeSbxLogLine 'createdRuntime' $Name)}) | Out-Null
     $inspect=Get-FakeSbxResponse 'inspect' @{name=$Name;agent=$Agent;digest=$Digest;imageDigest=$Digest.Substring($Digest.IndexOf('@')+1)}
-    Add-FakeSbxResponse $Case @('inspect',[regex]::Escape($Name),'--json') -Stdout $inspect.text -Synthetic $inspect.synthetic | Out-Null
+    Add-FakeSbxResponse $Case @('inspect',[regex]::Escape($Name),'--json') -Stdout $inspect.text -Synthetic $inspect.synthetic -Source $inspect.source | Out-Null
     $policy=Get-FakeSbxResponse 'policyLs' @{name=$Name}
-    Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout $policy.text -Synthetic $policy.synthetic | Out-Null
+    Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout $policy.text -Synthetic $policy.synthetic -Source $policy.source | Out-Null
     $log=Get-FakeSbxResponse 'policyLog' @{name=$Name}
-    Add-FakeSbxResponse $Case @('policy','log',[regex]::Escape($Name),'--json') -Stdout $log.text -Synthetic $log.synthetic | Out-Null
-    # セッション保持の exec は終わらない（停止側のジョブ停止で消える）。
-    Add-FakeSbxResponse $Case @('exec',[regex]::Escape($Name),'sh','-c','sleep \d+') -DelaySeconds 3600 | Out-Null
-    Add-FakeSbxResponse $Case @('cp','.+',([regex]::Escape($Name)+':.+')) | Out-Null
-    Add-FakeSbxResponse $Case @('exec','-u','root',[regex]::Escape($Name),'chown','-R','agent:agent','.+') | Out-Null
+    Add-FakeSbxResponse $Case @('policy','log',[regex]::Escape($Name),'--json') -Stdout $log.text -Synthetic $log.synthetic -Source $log.source | Out-Null
+    # 以下4種は実測原文が無い創作応答（保持 exec の無出力、cp・chown の無出力、Confirm の sha256sum 行）。タスク8a の実機対照で確かめる。
+    # セッション保持の exec は終わらない（停止側の保持ジョブ停止で止める）。
+    Add-FakeSbxResponse $Case @('exec',[regex]::Escape($Name),'sh','-c','sleep \d+') -DelaySeconds 3600 -Synthetic $true -Source 'keep-alive exec の出力は未記録' | Out-Null
+    Add-FakeSbxResponse $Case @('cp','.+',([regex]::Escape($Name)+':.+')) -Synthetic $true -Source 'cp の出力は未記録' | Out-Null
+    Add-FakeSbxResponse $Case @('exec','-u','root',[regex]::Escape($Name),'chown','-R','agent:agent','.+') -Synthetic $true -Source 'chown の出力は未記録' | Out-Null
     $lines=[Text.StringBuilder]::new()
     foreach($file in $ConfirmFiles){[void]$lines.Append(([string]$file.sha256).ToLowerInvariant()+'  ./'+[string]$file.path+"`n")}
-    Add-FakeSbxResponse $Case @('exec','-w','.+',[regex]::Escape($Name),'sh','-c','cd \S+ && find \. -type f -print0 \| sort -z \| xargs -0 sha256sum') -Stdout $lines.ToString() | Out-Null
+    Add-FakeSbxResponse $Case @('exec','-w','.+',[regex]::Escape($Name),'sh','-c','cd \S+ && find \. -type f -print0 \| sort -z \| xargs -0 sha256sum') -Stdout $lines.ToString() -Synthetic $true -Source 'sha256sum の行形式は GNU coreutils の既定形式に合わせた創作' | Out-Null
     $stop=Get-FakeSbxResponse 'stop' @{name=$Name}
-    Add-FakeSbxResponse $Case @('stop',[regex]::Escape($Name)) -Stdout $stop.text -Synthetic $stop.synthetic -Sets @{"vm:$Name"='stopped'} -AppendFile @(@{path=$Case.logPath;text=(New-FakeSbxLogLine 'stoppedContainer' $Name)}) | Out-Null
+    Add-FakeSbxResponse $Case @('stop',[regex]::Escape($Name)) -Stdout $stop.text -Synthetic $stop.synthetic -Source ($stop.source+' / 44-daemonlog-stop.txt') -Sets @{"vm:$Name"='stopped'} -AppendFile @(@{path=$Case.logPath;text=(New-FakeSbxLogLine 'stoppedContainer' $Name)}) | Out-Null
 }
 function New-FakeSbxLsJson([object[]]$Sandboxes){
     # 11-vms-after-create.json の形式（name・id・agent・status）。status は state.json の値へ実行時に置き換わる。
@@ -109,7 +113,7 @@ function Get-FakeSbxLsEntries([hashtable]$Case){
             $requires['present:'+$created[$i].name]=$(if($present){'1'}else{''})
             if($present){$listed+=$created[$i]}
         }
-        $entries+=@{argv=@('ls','--json');stdout=(New-FakeSbxLsJson (@($listed)+$always));stderr='';exitCode=0;delaySeconds=0;synthetic=$false;requires=$requires;sets=$null;appendFile=@();writeFile=@()}
+        $entries+=@{argv=@('ls','--json');stdout=(New-FakeSbxLsJson (@($listed)+$always));stderr='';exitCode=0;delaySeconds=0;synthetic=$false;source='11-vms-after-create.json / 42-vms-after-stop.json の形式（名前・id は試験の値）';requires=$requires;sets=$null;appendFile=@();writeFile=@()}
     }
     $entries
 }
@@ -130,7 +134,16 @@ function Add-FakeDaemonLogLine([hashtable]$Case,[string]$Kind,[string]$Name,[str
 }
 function Read-FakeSbxCalls([hashtable]$Case){
     # 1行1件の hashtable を列挙して返す（呼出し側は @() で受ける）。
+    # 偽sbx（背景の保持 exec を含む）の追記と重なりうるので、共有 ReadWrite で開き、共有違反は短時間だけ開き直す。書込み途中の最終行（改行なし）は読まない。
     if(-not(Test-Path -LiteralPath $Case.callsPath)){return}
-    @([IO.File]::ReadAllLines($Case.callsPath,$script:Utf8) | Where-Object {$_.Trim().Length -gt 0} | ForEach-Object {$_ | ConvertFrom-Json -AsHashtable})
+    $deadline=[DateTime]::UtcNow.AddSeconds(10);$text=$null
+    while($null -eq $text){
+        try{
+            $stream=[IO.File]::Open($Case.callsPath,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite)
+            try{$text=[IO.StreamReader]::new($stream,$script:Utf8).ReadToEnd()}finally{$stream.Dispose()}
+        }catch [IO.IOException]{if([DateTime]::UtcNow -ge $deadline){throw};Start-Sleep -Milliseconds 20}
+    }
+    $complete=$text.Substring(0,$text.LastIndexOf("`n")+1)
+    @($complete.Split("`n") | Where-Object {$_.Trim().Length -gt 0} | ForEach-Object {$_ | ConvertFrom-Json -AsHashtable})
 }
 Export-ModuleMember -Function Get-FakeSbxTemplateDigest,Get-FakeSbxResponse,New-FakeSbxLogLine,New-FakeSbxCase,Add-FakeSbxResponse,New-FakeRuntimeFileText,Add-FakeSbxSandboxScenario,Write-FakeSbxScenario,Set-FakeSbxState,Add-FakeDaemonLogLine,Read-FakeSbxCalls

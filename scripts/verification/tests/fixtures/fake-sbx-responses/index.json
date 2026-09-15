@@ -12,7 +12,12 @@
   "settingsClipboardFalse": {"file": "settings-clipboard-false.json", "synthetic": false, "source": "51-settings-get-clipboard.json"},
   "settingsClipboardTrue": {"file": "settings-clipboard-true.json", "synthetic": true, "source": "value=true の応答は未観測（形式は 51 に合わせた）"},
   "stop": {"file": "stop.txt", "synthetic": false, "source": "41-stop.txt"},
-  "exec127": {"file": "exec-127.txt", "synthetic": true, "source": "コマンド不在の応答は未観測（8a の transport 対照で差し替える）"},
+  "exec7": {"file": "exec-7.txt", "synthetic": true, "exitCode": 7, "source": "終了7の応答は未観測（stderr の文言は創作。8a の transport 対照で差し替える）"},
+  "exec127": {"file": "exec-127.txt", "synthetic": true, "exitCode": 127, "source": "コマンド不在の応答は未観測（8a の transport 対照で差し替える）"},
+  "exec137": {"file": "exec-137.txt", "synthetic": false, "exitCode": 137, "source": "43-load-exec-job.txt（負荷中の外側 stop で exec が終了137・出力なし）"},
+  "execClientKilled": {"file": "exec-client-killed.txt", "synthetic": true, "exitCode": -1, "source": "sbx クライアントを外側から強制終了した応答は未観測（TerminateProcess の終了コード -1・出力なしを想定。8a の clientKilled 対照で差し替える）"},
+  "proposalExportJson": {"file": "proposal-export.json", "synthetic": true, "exitCode": 0, "source": "proposal-export.py の出力は未実装・未観測（stdout に JSON 1行。形式はタスク4で確定）"},
+  "lsUnobservedStatus": {"file": "ls-unobserved-status.json", "synthetic": true, "exitCode": 0, "source": "11-vms-after-create.json の形式に、未観測の status 値（{{status}}）を入れた創作"},
   "unittestOk": {"file": "unittest-ok.txt", "synthetic": true, "source": "unittest の要約ストリームと形式は 8a で実測して差し替える（TextTestRunner の既定は stderr）"},
   "unittestFail": {"file": "unittest-fail.txt", "synthetic": true, "source": "同上"}
 }

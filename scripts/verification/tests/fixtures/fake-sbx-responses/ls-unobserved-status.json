@@ -1,0 +1,10 @@
+{
+  "sandboxes": [
+    {
+      "name": "{{name}}",
+      "id": "{{id}}",
+      "agent": "shell",
+      "status": "{{status}}"
+    }
+  ]
+}

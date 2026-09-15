@@ -8,7 +8,8 @@ function Get-VerificationArtifact([hashtable]$Run,[string]$Relative) {
     if(-not(Test-VerificationContainment $Run.runRoot $path) -or -not[IO.File]::Exists($path)){throw 'artifact missing or outside run'}
     @{path=$Relative;size=(Get-Item -LiteralPath $path).Length;sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash}
 }
-function Complete-VerificationRun([hashtable]$PreparedRun,[hashtable]$ExecutionResult) {
+# v1（schemaVersion=1）の照合本体。公開契約と挙動を変えないため本文は抽出前のまま置く。
+function Complete-LegacyVerificationRun([hashtable]$PreparedRun,[hashtable]$ExecutionResult) {
     $control=Resolve-VerificationPath $PreparedRun.controlRoot
     if(-not(Test-VerificationContainment $PreparedRun.runRoot $control)){throw 'control outside run'}
     $destination=Join-Path $control 'result.json'
@@ -66,5 +67,18 @@ function Complete-VerificationRun([hashtable]$PreparedRun,[hashtable]$ExecutionR
     $stream=[IO.File]::Open($destination,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
     try{$bytes=[Text.UTF8Encoding]::new($false).GetBytes($json);$stream.Write($bytes,0,$bytes.Length)}finally{$stream.Dispose()}
     return $result
+}
+function Complete-VerificationRun {
+    # 2引数（PreparedRun, ExecutionResult）は既存 v1、3引数（PreparedRunV3, ProposalResultV3, ReplayResultV3）は v3 の照合。
+    # 版の混在（v3 の準備結果を2引数で渡す、v1 の準備結果を3引数で渡す）と未実装 v2 は、結果を作らずに拒否する。
+    param([hashtable]$PreparedRun,[hashtable]$ExecutionResult,[hashtable]$ReplayResult)
+    if(-not$PSBoundParameters.ContainsKey('ReplayResult')){
+        if($null -ne $PreparedRun -and $PreparedRun.ContainsKey('schemaVersion')){throw 'v1 collation takes a v1 prepared run; schemaVersion 3 requires ProposalResultV3 and ReplayResultV3'}
+        return Complete-LegacyVerificationRun $PreparedRun $ExecutionResult
+    }
+    return Complete-ProposalReplayRun $PreparedRun $ExecutionResult $ReplayResult
+}
+function Complete-ProposalReplayRun([hashtable]$PreparedRun,[hashtable]$ProposalResult,[hashtable]$ReplayResult) {
+    throw 'v3 collation is not implemented yet'
 }
 Export-ModuleMember -Function Complete-VerificationRun

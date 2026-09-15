@@ -476,6 +476,14 @@ function New-ProposalReplayRun([hashtable]$Request,[hashtable]$Settings,[string]
     }
 }
 # ---- v3 のブロック間で共有する補助（計画の調整 (a)。Proposal・Replay が同じ約束を別々に実装しないため） ----
+function Get-VerificationValue($Object,[string]$Name) {
+    # hashtable（IDictionary）と PSCustomObject のどちらからも名前でキーを読む。無い・$null の対象は $null。Proposal・Replay の局所版と同じ振る舞い（照合 Result が3つ目の複製を作らないため公開する）。
+    if($null -eq $Object){return $null}
+    if($Object -is [Collections.IDictionary]){if($Object.Contains($Name)){return $Object[$Name]};return $null}
+    $property=$Object.PSObject.Properties[$Name]
+    if($null -eq $property){return $null}
+    $property.Value
+}
 function Get-VerificationBytesHash([byte[]]$Bytes) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)) }
 function Get-VerificationExceptionValue([Exception]$Failure,[string]$Key,[string]$Default) {
     # 例外の Data[Key] が空でない文字列ならその値、無ければ既定値。
@@ -536,4 +544,4 @@ function New-VerificationRun([hashtable]$Request,[hashtable]$Settings,[string]$S
     if($null -ne $Request -and $Request.ContainsKey('schemaVersion') -and (Test-VerificationInteger $Request.schemaVersion) -and $Request.schemaVersion -eq 3){return New-ProposalReplayRun $Request $Settings $StartedAt}
     return New-LegacyVerificationRun $Request $Settings
 }
-Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys,Get-VerificationBytesHash,Get-VerificationExceptionValue,Test-VerificationDeadlineReached,Read-VerificationVerifiedJson,Get-VerificationTestsManifestHash,ConvertFrom-VerificationRuntimeFailure
+Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys,Get-VerificationValue,Get-VerificationBytesHash,Get-VerificationExceptionValue,Test-VerificationDeadlineReached,Read-VerificationVerifiedJson,Get-VerificationTestsManifestHash,ConvertFrom-VerificationRuntimeFailure

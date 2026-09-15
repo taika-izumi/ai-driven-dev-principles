@@ -814,7 +814,9 @@ function Save-VerificationRecoveryResult([string]$RuntimeDir,[hashtable]$Result)
 }
 function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$RecoveryInput) {
     # control/runtime/<role>-sandbox.json の runId・name・id を正本に、running の対象だけへ停止手順を適用する。記録に無い VM には触れない。VerificationResultV3 を名乗らない。
-    # 読めない作成記録は unverified として列挙して残りを続け、対象ごとの例外も当該対象の unverified にする。Lease 取得後の例外でも recovery-result を CreateNew で保存する。
+    # 読めない作成記録は unverified として列挙して残りを続け、対象ごとの例外も当該対象の unverified にする。
+    # Lease 取得後に世代・一覧を照会できなかった場合も、停止を発行せず全対象 unverified（stateBefore=query-failed）の recovery-result を CreateNew で保存し、その結果を返す
+    # （CLI は stdout に結果を返して終了値2。理由の説明文は stderr へ出す）。
     if($null -eq $RecoveryInput){Throw-VerificationRuntimeFailure 'RecoveryInput required'}
     Test-VerificationRuntimeSchema $RecoveryInput 'recovery-input.schema.json' 'recovery input'
     if($RecoveryInput.schemaVersion -ne 3){Throw-VerificationRuntimeFailure 'recovery input schemaVersion must be integer 3'}
@@ -865,16 +867,20 @@ function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$Recover
         $probeBudget=New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $readable.Count
         $instance=$null;$list=$null
         try{$instance=Get-VerificationDaemonInstance $client $probeBudget;$list=Get-VerificationSandboxList $client $probeBudget}
-        catch{$queryFailure=$_}   # 世代・一覧を取れなければ停止を発行せず、全対象 unverified で保存してから例外を返す
+        catch{
+            # 世代・一覧を取れなければ停止を発行せず、全対象を unverified・stateBefore=query-failed で保存して返す（結果の形は変えない。説明文は stderr）。
+            $queryFailure=$_
+            Write-VerificationStageError 'recovery' 'probe' 'query-failed' $_.Exception
+        }
         $targets=@(foreach($item in $records){
-            $stateBefore='unknown'
+            $stateBefore=$(if($null -ne $queryFailure){'query-failed'}else{'unknown'})
             if($null -ne $item.record -and $null -eq $queryFailure){
                 $same=@($list | Where-Object {$_.id -ceq $item.record.id -and $_.name -ceq $item.record.name})
                 $stateBefore=$(if($same.Count -eq 1){$same[0].status}else{'not-listed'})
             }
             @{item=$item;stateBefore=$stateBefore}
         })
-        $toStop=@($targets | Where-Object {$null -ne $_.item.record -and $_.stateBefore -cnotin @('stopped','not-listed','unknown')})
+        $toStop=@($targets | Where-Object {$null -ne $_.item.record -and $_.stateBefore -cnotin @('stopped','not-listed','unknown','query-failed')})
         # 現在時刻を起点に新しい予算（startedAt=now、deadlineAt=now、cleanupDeadlineAt=now + cleanupSeconds×対象台数、phase=cleanup）。
         $budget=New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $toStop.Count
         foreach($target in $targets){
@@ -882,7 +888,7 @@ function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$Recover
             $item.stateBefore=$target.stateBefore
             $record=$target.item.record
             if($null -ne $record -and $target.stateBefore -ceq 'stopped'){$item.stopState='stopped'}
-            elseif($null -ne $record -and $target.stateBefore -cnotin @('not-listed','unknown')){
+            elseif($null -ne $record -and $target.stateBefore -cnotin @('not-listed','unknown','query-failed')){
                 $entry=@{handle=@{runId=$record.runId;role=$record.role;name=$record.name;id=$record.id};client=$client;stateRoot=$instance.stateRoot;logPath=$instance.logPath;daemonInstance=$instance.instance;runRoot=$root;runtimeDir=$runtimeDir;cleanupSeconds=$cleanupSeconds;deadlineAt=$checkedAt;createdAtUtc=$null;expected=$null;keepAlive=$null;stopResult=$null}
                 try{$stop=Stop-VerificationSandboxEntry $entry $budget;$item.stopState=$stop.stopState;$item.evidencePath=$stop.evidencePath}
                 catch{
@@ -893,10 +899,10 @@ function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$Recover
             $result.targets+=$item
         }
     }finally{
+        # Lease は必ず解放し、結果は必ず保存する（保存に失敗した場合だけ例外が伝播する。保存できない結果は主張しない）。
         try{Release-VerificationPilotLease $lease}
         finally{$saved=Save-VerificationRecoveryResult $runtimeDir $result}
     }
-    if($null -ne $queryFailure){throw $queryFailure}
     $saved
 }
 Export-ModuleMember -Function Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Copy-VerificationSandboxInput,Confirm-VerificationSandboxInput,Invoke-VerificationSandboxCommand,Stop-VerificationSandbox,Stop-VerificationRecordedSandboxes,Write-VerificationSandboxRecord,New-VerificationCleanupBudget

@@ -776,6 +776,23 @@ Assert-True ((Get-RecoveryFiles $ctx).Count -eq 1 -and (Test-Json -Json (Get-Con
 Assert-True (-not(& $module {$script:PilotLeases.Count -gt 0})) '壊れた記録: Lease を解放した'
 $count++
 
+# 17f. 復旧操作で Lease 取得後に一覧を照会できない: 例外にせず、停止を発行せずに全対象 unverified（stateBefore=query-failed）の結果を返し、recovery-result を保存して Lease を解放する。
+$ctx=New-Case
+$target=@{name='iv-'+$ctx.runId.Substring(0,8)+'-before';id=[guid]::NewGuid().ToString()}
+Add-FakeSbxSandboxScenario $ctx.case $target.name $target.id -AlreadyPresent -InitialStatus running
+[void](Write-VerificationSandboxRecord $ctx.runRoot @{runId=$ctx.runId;role='replay-before';name=$target.name;id=$target.id;createdAt=(Get-VerificationUtcNow);profileHash=$null;effectiveSettingsHash=$null;activationRecordPath=$null;activationRecordHash=$null})
+Add-FakeSbxResponse $ctx.case @('ls','--json') -Stderr "Error: ls failed`n" -ExitCode 1 -Synthetic $true -Source '一覧の照会失敗の応答は未観測の創作' -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+$result=Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 30)
+Assert-True ($result.daemonRunning -and $result.targetCount -eq 1 -and @($result.targets).Count -eq 1 -and $null -ne $result.lease) "照会失敗: 例外にせず結果を返す（$(ConvertTo-VerificationCanonicalJson $result)）"
+Assert-True ($result.targets[0].stopState -ceq 'unverified' -and $result.targets[0].stateBefore -ceq 'query-failed' -and $null -eq $result.targets[0].evidencePath) '照会失敗: 全対象 unverified・stateBefore=query-failed'
+Assert-Equal @(Get-StopCalls $ctx).Count 0 '照会失敗: stop を発行しない'
+$files=Get-RecoveryFiles $ctx
+Assert-True ($files.Count -eq 1 -and (Test-Json -Json (Get-Content -LiteralPath $files[0].FullName -Raw) -SchemaFile $schemaPath)) '照会失敗: recovery-result を保存し schema に適合'
+Assert-Equal (Get-Content -LiteralPath $files[0].FullName -Raw) (ConvertTo-VerificationCanonicalJson $result) '照会失敗: 保存した内容と戻り値が同じ'
+Assert-True (-not(& $module {$script:PilotLeases.Count -gt 0})) '照会失敗: Lease を解放した'
+$count++
+
 # 18. 全ケース（復旧操作の経路を含む）の calls.jsonl に SSH_AUTH_SOCK が無い。試験プロセスにはダミー値を置いている。
 Assert-Equal ([Environment]::GetEnvironmentVariable('SSH_AUTH_SOCK')) $sshAuthSockDummy '環境辞書: 試験プロセスには SSH_AUTH_SOCK がある'
 $callTotal=0;$recoveryStops=0

@@ -43,9 +43,10 @@ function New-CliCase([string]$Label,[hashtable]$Limits=@{},[int]$ExtraFiles=0){
     $root=Join-Path $base ('c7'+[guid]::NewGuid().ToString('N').Substring(0,6))
     $case=New-FakeSbxCase $root
     $leaf=[IO.Path]::GetFileName($root)
-    # ケースごとの socket（Lease の Mutex 名をケース間で分ける）。初回の daemon status は scenario.json を書き足す時間を取るため2秒遅らせる（書き足し後の応答は遅延なし）。
+    # ケースごとの socket（Lease の Mutex 名をケース間で分ける）。初回の daemon status は scenario.json を書き足す時間を取るため5秒遅らせる（書き足し後の応答は遅延なし）。
+    # 2秒では、全ケースを一斉に起動した負荷で「stderr の runRoot を読む → scenario を書く」が間に合わず、VM 作成の応答が未定義のまま create される実測があった。
     $statusText=(Get-FakeSbxResponse 'daemonStatusRunning' @{logs=$case.logPath.Replace('\','\\')}).text.Replace('docker_fake_sandboxd',"docker_fake_$leaf")
-    $statusEntry=Add-FakeSbxResponse $case @('daemon','status','--json') -Stdout $statusText -DelaySeconds 2 -Synthetic $true -Source '00-daemon-status.json の socket 名をケースごとに変えた創作（遅延も創作）' -First
+    $statusEntry=Add-FakeSbxResponse $case @('daemon','status','--json') -Stdout $statusText -DelaySeconds 5 -Synthetic $true -Source '00-daemon-status.json の socket 名をケースごとに変えた創作（遅延も創作）' -First
     $src=Join-Path $root 'src';[void][IO.Directory]::CreateDirectory($src)
     $template=Join-Path $root 'gt';[void][IO.Directory]::CreateDirectory($template)
     & git -C $src init --quiet "--template=$template";if($LASTEXITCODE -ne 0){throw 'git init failed'}
@@ -279,6 +280,12 @@ $conflictRecorded=New-RecordedRunRoot $recoverConflict 'rr' @('proposal')
 Write-FakeSbxScenario $recoverConflict.case
 Hold-CaseLease $recoverConflict
 $recoverConflictRun=Start-Cli $recoverConflict 'rconf' @('-StopRecorded','-RunRoot',$conflictRecorded.runRoot,'-SettingsPath',(Write-RecoveryInput $recoverConflict 'recovery.json' $null))
+# 12b. 復旧操作で Lease 取得後に一覧を照会できない: 結果を stdout に1件返し、全対象 unverified で終了値2、理由を stderr に出す。
+$recoverFail=New-CliCase 'rqfail'
+$failRecorded=New-RecordedRunRoot $recoverFail 'rr' @('proposal')
+Add-FakeSbxResponse $recoverFail.case @('ls','--json') -Stderr "Error: ls failed`n" -ExitCode 1 -Synthetic $true -Source '一覧の照会失敗の応答は未観測の創作' -First | Out-Null
+Write-FakeSbxScenario $recoverFail.case
+$recoverFailRun=Start-Cli $recoverFail 'rqfail' @('-StopRecorded','-RunRoot',$failRecorded.runRoot,'-SettingsPath',(Write-RecoveryInput $recoverFail 'recovery.json' $null))
 # 13. 復旧操作の入力は recovery-input の schema で検査する: limits 欠落・schemaVersion 欠落・schemaVersion が文字列。どれも sbx を呼ばずに終了2。
 $schemaCase=New-CliCase 'rschema'
 $schemaRecorded=New-RecordedRunRoot $schemaCase 'rr' @('proposal')
@@ -494,6 +501,15 @@ $count++
 Assert-True ($recoverConflictRun.exitCode -eq 2 -and $recoverConflictRun.stdout.Trim().Length -eq 0 -and $recoverConflictRun.stderr -like '*lease*') "復旧（Lease競合）: 終了2・stdout なし（stderr: $($recoverConflictRun.stderr)）"
 $calls=Get-Calls $recoverConflict
 Assert-True (@($calls | Where-Object {$_.argv[0] -ne 'daemon'}).Count -eq 0) "復旧（Lease競合）: 何もしない（daemon status 以外を発行しない。$(@($calls | ForEach-Object {$_.argv[0]}) -join ',')）"
+$count++
+$rr=$recoverFailRun.stdout.Trim()
+Assert-True ($recoverFailRun.exitCode -eq 2 -and (Test-Json -Json $rr -SchemaFile $recoverySchema -ErrorAction SilentlyContinue)) "復旧（照会失敗）: stdout に recovery-result 1件・終了値2（stderr: $($recoverFailRun.stderr)）"
+$rrValue=$rr | ConvertFrom-Json -AsHashtable -DateKind String
+Assert-True ($rrValue.daemonRunning -eq $true -and $rrValue.targetCount -eq 1 -and @($rrValue.targets | Where-Object {$_.stopState -ceq 'unverified' -and $_.stateBefore -ceq 'query-failed'}).Count -eq 1) "復旧（照会失敗）: 全対象 unverified・stateBefore=query-failed（$rr）"
+$lines=Get-StderrLines $recoverFailRun
+Assert-True (@($lines | Where-Object {$_ -like 'recovery: error at probe (query-failed): *ls*'}).Count -eq 1) "復旧（照会失敗）: 照会失敗の説明文を stderr に残す（$($lines -join ' | ')）"
+Assert-True (@($lines | Where-Object {$_ -like 'recovery: 停止を確認できないVMがある*'}).Count -eq 1) '復旧（照会失敗）: 停止を確認できない旨を stderr に出す'
+Assert-Equal @(Get-Calls $recoverFail | Where-Object {$_.argv[0] -eq 'stop'}).Count 0 '復旧（照会失敗）: stop を発行しない'
 $count++
 foreach($launch in $schemaRuns){
     Assert-True ($launch.exitCode -eq 2 -and $launch.stdout.Trim().Length -eq 0 -and $launch.stderr -like '*recovery-input.schema.json*') "復旧（$($launch.label)）: recovery-input の schema で拒否し終了2（stderr: $($launch.stderr)）"

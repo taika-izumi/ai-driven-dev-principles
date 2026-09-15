@@ -42,7 +42,7 @@ pwsh -NoProfile -File scripts/verification/Invoke-IsolatedVerification.ps1 -Stop
 - `-SettingsPath` は通常の設定（SettingsV3）でも、`schemaVersion`・`sbxPath`・`pwshPath`・`runsRoot`・`limits` だけの縮約入力でもかまいません。CLI はこの5項目を取り出して `recovery-input.schema.json` で検査します（`schemaVersion` の欠落も拒否）。
 - VMを作りません。`<runRoot>/control/runtime/<役割>-sandbox.json` に記録された名前と ID のVMだけを停止・確認し、記録に無いVMには触れません。別の run が Lease を持っていれば何もせず終了値 2 を返します。
 - 読めない作成記録は、名前・ID を推定せず `(unreadable record: <ファイル名>)` として停止未確認（unverified）で列挙し、残りの記録の処理を続けます。
-- stdout: `recovery-result.schema.json` の JSON 1件（同じ内容を `control/runtime/recovery-<時刻>.json` に保存）。入力・排他の拒否では stdout に何も書きません。Lease の取得後にデーモンの世代や一覧を照会できなかった場合は、停止を発行せず全対象を unverified とした結果を `recovery-<時刻>.json` に保存してから、stdout に何も書かずに終了値 2 で理由を stderr に出します。
+- stdout: `recovery-result.schema.json` の JSON 1件（同じ内容を `control/runtime/recovery-<時刻>.json` に保存）。入力・排他の拒否では stdout に何も書きません。Lease の取得後にデーモンの世代や一覧を照会できなかった場合は、停止を発行せず、全対象を `stateBefore=query-failed`・停止未確認（unverified）とした結果を返します（`recovery-<時刻>.json` にも保存。stdout に結果を出し、終了値は 2、照会失敗の説明文は stderr）。
 - 終了値: 全対象の停止を確認できれば 0（記録0件も 0。`targetCount=0` を stdout と stderr に出します）、それ以外は 2。
 
 ### 既知の制約

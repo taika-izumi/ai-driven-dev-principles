@@ -9,8 +9,8 @@
 
 | 項目 | 結果 |
 |---|---|
-| 独立試験ランナー（最終修正後） | 11群合格、終了値0、1577秒（`Independent verification: 11 suites passed (no agent launched)`） |
-| 群ごとの件数（最終修正後） | RequestCopy 26 / History 23 / Execution 7 / Result 15 / RequestCopyV3 61 / ExecutionV3 18 / SbxRuntimeV3 23 / ProposalV3 16 / ReplayV3 17 / ResultV3 18 / CliV3 16 |
+| 独立試験ランナー（最終修正と残件修正の後、`9f4ce11`） | 11群合格、終了値0、1705秒（`Independent verification: 11 suites passed (no agent launched)`） |
+| 群ごとの件数（同上） | RequestCopy 26 / History 23 / Execution 7 / Result 15 / RequestCopyV3 61 / ExecutionV3 18 / SbxRuntimeV3 24 / ProposalV3 16 / ReplayV3 17 / ResultV3 18 / CliV3 17 |
 | 実装時の逸脱記録 | 計画の各タスク末尾に `逸脱記録:` 行として記録（型の内訳は計画ファイルを正本とする） |
 | 起票した課題 | Issue-0146（run 配下のパックファイルのパス長で履歴復元が失敗）、Issue-0147（MSIX 版 pwsh の ProcessHost で非パッケージの子がジョブに入らない。修正済み、残る窓はタスク8a で観測） |
 | 起票した決定記録 | ADR-0198（全体期限の後に pilot 排他を取得できない場合も、CLI は VM を作らない型付き結果を照合へ渡す。Proposed） |
@@ -45,6 +45,6 @@
 
 ## 未対応で残したもの
 
-- **復旧操作が結果を保存したあとに例外を投げ直す**（`scripts/verification/SbxRuntime.psm1` の `Stop-VerificationRecordedSandboxes` 末尾）: Lease 取得後の照会が失敗すると、全対象 unverified の recovery-result を保存したうえで例外を再送出するため、CLI の `-StopRecorded` は標準出力に何も出さず終了値2になる。CLI の約束「標準出力に recovery-result を返す」と食い違う。直し方は保存した結果を返すこと（数行）。最終修正の後に判明し、2回目の修正ラウンドは行わない手順のため残した。タスク8a で復旧操作を実機で使う前に直すことを勧める
+- （解決済み）復旧操作が結果を保存したあとに例外を投げ直す件は、利用者の指示（2026-09-16「1で」）で `9f4ce11` にて修正した。Lease 取得後の照会失敗では保存した recovery-result を返し、全対象を `stateBefore='query-failed'`・`stopState='unverified'`・`evidencePath=null` にする。理由は標準エラーへ1行出す。結果の schema は変えていない（`stateBefore` は値を制限しない）。CLI は返った結果を標準出力に1件出し終了値2。試験は SbxRuntimeV3 ケース17f と CliV3 ケース12b。差分再確認は要件5件とも満たすと判定
 - **繰り延べた Minor**: 最終レビューの指摘一覧 `.superpowers/sdd/2026-09-14-isolated-verification-v3-implementation/final-fix-findings.md` の「繰り延べ」節（停止確認の ls の各回で running を再確認しない、chown 直前の維持確認なし、profile 拒否が照合を通らない、同じ約束の写し、試験の組み立て補助の約120行の重複など）
 - **タスク8a で確認する事項**: 実機 sbx.exe が起動からジョブ割当までの一瞬に子を生むか（Issue-0147）、SSH 転送ログ行の形式、デーモンの版の表記、テンプレートの python3 での import 起点と unittest 要約の出力先、`sbx cp` の配置、ジョブ割当失敗時の実機の挙動

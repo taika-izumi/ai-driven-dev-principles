@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-15 14:11 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 新規開発/v3全体の実装計画を確定（plan確定点通過・285f315）、実装着手前でセッション区切り
+- **Last Updated**: 2026-09-15 15:35 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 新規開発/v3実装計画の実行（subagent-driven-development）。タスク1完了・レビュー承認、タスク2へ
 
 ## 作業の目的・背景
 
@@ -45,14 +45,15 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 実装計画の確定を終え、実装着手の判断待ち。
-  - 状態: 計画は `docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md` で確定（plan 確定点、通常型、フル4回＋差分5回、提示後確定〈実質的な収束に至らず〉）。改訂前退避は `~/.ai-dev-review-snapshots/MakeAiInstructions/2026-09-15-v3-plan-before-r3/`〜`-r9/`。第6回以降の指摘はすべて反映の追随漏れで、反映時は受け側の契約（引数型・偽sbx・試験文・承認区切り・対応表・ADR本文）まで追随させ grep で確認する（worklog 2026-09-15-02）。
-  - 残り: 利用者が実装着手（タスク1〜7。実行スキルは `subagent-driven-development` 既定、実行直前に `plan-deviation-defaults.md` を適用）を指示したら着手する。タスク8・9は個別承認の提示を経る。
-  - 判断の分担: ADR-0158の補助設計委任は有効。実機・設定・モデル操作の承認はADR-0162・0192の範囲に限り、計画のタスク8・9は個別承認を別に得る。
+- [ ] **現在の作業**: 実装計画のタスク1〜7を `subagent-driven-development` で実行中（2026-09-15 に利用者が「このセッションでそのまま作業」を指示。主担当は master 側の作業ディレクトリから絶対パスと `git -C` で本worktreeを扱う。利用者がスマホから Remote Control 中で承認プロンプトに応答できないため）。
+  - 状態: タスク1完了（コミット 8e345a5・06fef83・9aea7bf、RequestCopyV3 61ケース成功、既存4群不変、レビュー承認・Minor 8件は台帳へ繰り延べ）。逸脱記録3行を計画のタスク1末尾に記録。台帳は `.superpowers/sdd/2026-09-14-isolated-verification-v3-implementation/progress.md`（未追跡。判断の一覧・繰り延べ Minor・各タスクの BASE/HEAD を持つ。セッション再開時はこの台帳と git log を正とする）。
+  - 残り: タスク2〜7を順に委譲（実装担当 fable、レビュー担当 opus の Read-only 許可リスト担当）。各タスクの委譲には Issue-0146 の回避（試験の run 名 8 文字以下）と、試験実行時の PATH 調整（Codex の junction をサンドボックスが拒否するため代替 codex.cmd を前置）を含める。タスク7完了後に全体レビュー、続けてタスク8の承認区切りを提示する。
+  - 判断の分担: ADR-0158の補助設計委任は有効。実機・設定・モデル操作の承認はADR-0162・0192の範囲に限り、計画のタスク8・9は個別承認を別に得る。逸脱の型判定と計画への逸脱記録は主担当が行う（plan-deviation-defaults 0.1.29）。
 
 ## 未着手のタスク
 
-- [ ] v3全体の実装計画の実行（タスク1〜7、個別承認後にタスク8・9）。計画確定後に着手する。
+- [ ] v3全体の実装計画のタスク2〜7（個別承認後にタスク8・9）。
+- [ ] Issue-0146（run 配下のパックファイルパスが 260 文字に達すると git bundle unbundle が失敗）の対策採否。本サイクルは試験側の回避のみ。
 - [ ] 残る未実証: daemon停止を伴う切断・自動起動競合の注入、実行中の保護変更検知、通信・共有・その他ホスト経路（試験Aのdeny-all拒否は転送ポートの対照に限る）、認証・最小モデル試験。いずれも別承認。
 - [ ] 実装完了時のサイクル全体整合検査と最終レビュー。ADR-0162・0192のAccepted昇格を含む。masterへのマージ・振り返りはまだ対象段階ではない。
 
@@ -88,6 +89,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 - 2026-09-15 実装計画の草案とレビュー2回の反映・再起動からの復旧: ADR=0193〜0195（相談1〜3、Proposed） / worklog=`MakeAiInstructions-2026-09-15-01`
 - 2026-09-15 v3実装計画の plan 確定点: ADR=0193改訂・0196・0197（Proposed。昇格は実装完了時のサイクル全体整合検査で） / worklog=`MakeAiInstructions-2026-09-15-02` / review=フル実施（claude-opus-5・4 回）＋差分再確認（claude-opus-5・5 回・提示後確定（実質的な収束に至らず））
 - 2026-09-15 セッション区切りの引き継ぎ確定（実装着手前）: ADR=なし（利用者の区切り指示、方針変更なし） / worklog=棄却（同日02に記録済みの差分以外なし）
+- 2026-09-15 タスク1完了（v3の依頼・設定・固定入力の検査と基準版準備、レビュー承認）: ADR=なし（逸脱は実体に合わせる調整のみ、既存欠陥は Issue-0146 へ起票し設計変更なし） / worklog=`MakeAiInstructions-2026-09-15-04`
 
 ## 次セッション開始時のアクション
 

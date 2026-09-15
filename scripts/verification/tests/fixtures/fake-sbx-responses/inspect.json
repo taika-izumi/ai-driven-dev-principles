@@ -1,0 +1,24 @@
+{
+  "name": "{{name}}",
+  "agent": "{{agent}}",
+  "kits": [],
+  "state": "{{state:vm:{{name}}|running}}",
+  "uptime": "28s",
+  "image": "{{digest}}",
+  "image_digest": "{{imageDigest}}",
+  "network": "{{name}}",
+  "network_policy": {
+    "scope": "sandbox"
+  },
+  "proxy": "172.17.0.2:3128",
+  "secrets": [
+    {
+      "name": "mcpgateway",
+      "source": "uploaded"
+    }
+  ],
+  "mcp_gateway": true,
+  "sessions": 0,
+  "daemon_version": "v0.42.1",
+  "daemon_uptime": "1m"
+}

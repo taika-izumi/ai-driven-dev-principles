@@ -1,0 +1,6 @@
+test_example (test_example.ExampleTest.test_example) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

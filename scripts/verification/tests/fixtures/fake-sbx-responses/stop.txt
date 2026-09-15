@@ -1,0 +1,1 @@
+Sandbox '{{name}}' stopped; state preserved. Restart with: sbx run --name {{name}}

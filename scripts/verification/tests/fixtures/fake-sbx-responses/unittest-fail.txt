@@ -1,0 +1,14 @@
+test_example (test_example.ExampleTest.test_example) ... FAIL
+
+======================================================================
+FAIL: test_example (test_example.ExampleTest.test_example)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/agent/workspace/source/.verification-tests/test_example.py", line 5, in test_example
+    self.assertEqual(add(1, 1), 2)
+AssertionError: 3 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

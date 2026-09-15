@@ -1,0 +1,18 @@
+{
+  "_comment": "偽sbxの応答テンプレート。synthetic=false は .tmp/sbx-capability-20260914/ の実測出力から利用者識別子・機種名をダミー値へ置き換えたもの。synthetic=true は実測が無い創作応答で、タスク8a の実機対照で差し替える（デーモン停止時の応答だけは恒久的に synthetic）。{{...}} は複製時に FakeSbxScenario.psm1 が置き換える。",
+  "daemonStatusRunning": {"file": "daemon-status-running.json", "synthetic": false, "source": "00-daemon-status.json"},
+  "daemonStatusStopped": {"file": "daemon-status-stopped.json", "synthetic": true, "source": "停止中の応答形式は未記録（daemon status が停止中でも自動起動しないことだけ実測済み）"},
+  "createSuccess": {"file": "create-success.txt", "synthetic": false, "source": "10-create.stdout.txt"},
+  "create500": {"file": "create-500.txt", "synthetic": true, "source": "作成失敗の実測なし"},
+  "inspect": {"file": "inspect.json", "synthetic": false, "source": "32-inspect.json"},
+  "policyLs": {"file": "policy-ls.json", "synthetic": false, "source": "35-policy-ls-vm.json"},
+  "policyLog": {"file": "policy-log.json", "synthetic": false, "source": "34-policy-log.json（先頭2件）"},
+  "mcpLsEmpty": {"file": "mcp-ls-empty.json", "synthetic": false, "source": "50-mcp-ls.json（signed_in_as をダミー値へ）"},
+  "mcpLsOne": {"file": "mcp-ls-one.json", "synthetic": true, "source": "登録1件ありの要素形式は未観測。判定は servers の件数だけで行う"},
+  "settingsClipboardFalse": {"file": "settings-clipboard-false.json", "synthetic": false, "source": "51-settings-get-clipboard.json"},
+  "settingsClipboardTrue": {"file": "settings-clipboard-true.json", "synthetic": true, "source": "value=true の応答は未観測（形式は 51 に合わせた）"},
+  "stop": {"file": "stop.txt", "synthetic": false, "source": "41-stop.txt"},
+  "exec127": {"file": "exec-127.txt", "synthetic": true, "source": "コマンド不在の応答は未観測（8a の transport 対照で差し替える）"},
+  "unittestOk": {"file": "unittest-ok.txt", "synthetic": true, "source": "unittest の要約ストリームと形式は 8a で実測して差し替える（TextTestRunner の既定は stderr）"},
+  "unittestFail": {"file": "unittest-fail.txt", "synthetic": true, "source": "同上"}
+}

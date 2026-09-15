@@ -35,11 +35,6 @@ function Get-ReplayLimit([hashtable]$PreparedRun,[string]$Name) {
     if(-not(($value -is [int]) -or ($value -is [long])) -or $value -le 0){Throw-VerificationReplayFailure "settings.limits.$Name must be a positive integer" 'blocked' 'limits'}
     [long]$value
 }
-function Get-ReplayBytesHash([byte[]]$Bytes) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)) }
-function Get-ReplayExceptionValue([Exception]$Failure,[string]$Key,[string]$Default) {
-    if($null -ne $Failure -and $Failure.Data.Contains($Key) -and -not[string]::IsNullOrEmpty([string]$Failure.Data[$Key])){return [string]$Failure.Data[$Key]}
-    $Default
-}
 function Test-ReplayRecheck([hashtable]$PreparedRun) {
     $artifacts=Get-ReplayValue $PreparedRun 'recheckArtifacts'
     ($null -ne $artifacts) -and @($artifacts).Count -gt 0
@@ -53,20 +48,6 @@ function Assert-ReplayPreparedRun([hashtable]$PreparedRun) {
 }
 
 # ---- 外側の記録と実体の読取り ----
-function Read-ReplayVerifiedJson([hashtable]$PreparedRun,[string]$Path,[string]$ExpectedHash,[string]$Reason) {
-    # control の記録（proposal manifest・baseline manifest）を1回だけ読み、そのバイト列で期待hash・UTF-8・重複キー・runId を確かめてから解析結果を返す。
-    # Proposal.psm1 の Read-ProposalVerifiedManifest と同じ手順（同関数は公開されていないため、ここに局所の同等物を置く）。
-    if([string]::IsNullOrEmpty($Path) -or [string]::IsNullOrEmpty($ExpectedHash) -or -not[IO.File]::Exists($Path)){Throw-VerificationReplayFailure "control record is missing: $Path" 'blocked' $Reason}
-    $bytes=[IO.File]::ReadAllBytes($Path)
-    if((Get-ReplayBytesHash $bytes) -ine $ExpectedHash){Throw-VerificationReplayFailure "control record does not match its expected hash: $Path" 'blocked' $Reason}
-    try{$json=$script:StrictUtf8.GetString($bytes)}catch{Throw-VerificationReplayFailure "control record is not valid UTF-8: $Path" 'blocked' $Reason}
-    $duplicate=$true
-    try{$duplicate=Test-VerificationJsonDuplicateKeys $json}catch{Throw-VerificationReplayFailure "control record is not JSON: $Path" 'blocked' $Reason}
-    if($duplicate){Throw-VerificationReplayFailure "control record has duplicate keys: $Path" 'blocked' $Reason}
-    $value=$json | ConvertFrom-Json -AsHashtable -Depth 20 -DateKind String
-    if($value -isnot [hashtable] -or -not$value.ContainsKey('runId') -or $value.runId -cne [string]$PreparedRun.runId){Throw-VerificationReplayFailure "control record does not belong to this run: $Path" 'blocked' $Reason}
-    $value
-}
 function New-ReplayPathMap() { ,[Collections.Generic.SortedDictionary[string,object]]::new([StringComparer]::Ordinal) }
 function Get-ReplayFileList($Items,[string]$Reason,[bool]$WithKind=$false) {
     # {path,size,sha256}（WithKind なら kind も）の一覧を検査し、path → 項目の序数順辞書で返す。sha256 は大文字にそろえる。
@@ -110,13 +91,6 @@ function Get-ReplayMapDifference($Expected,$Actual) {
     $parts -join '; '
 }
 function Test-ReplayGitPath([string]$Path) { @($Path.Split('/') | Where-Object {$_ -ieq '.git'}).Count -gt 0 }
-function Get-ReplayTestsManifestHash([object[]]$Tests) {
-    # 02 の定義: test の accepted 相対パス（tests/<名前>）・size・sha256 をパスの序数順に並べた配列の正規化JSONの SHA256。
-    $list=[Collections.Generic.List[object]]::new()
-    foreach($test in @($Tests)){$list.Add(@{path=[string]$test.path;size=[long]$test.size;sha256=([string]$test.sha256).ToUpperInvariant()})}
-    $list.Sort([Comparison[object]]{param($left,$right) [string]::CompareOrdinal([string]$left.path,[string]$right.path)})
-    Get-VerificationCanonicalHash -Object ([object[]]$list.ToArray())
-}
 
 # ---- 入力と基準版の検査（VM なし。不成立は blocked） ----
 function Test-ReplayProposal([hashtable]$PreparedRun,[hashtable]$ProposalResult) {
@@ -134,13 +108,13 @@ function Test-ReplayProposal([hashtable]$PreparedRun,[hashtable]$ProposalResult)
     # manifest は当該 run の control/proposal/manifest.json だけを受け、期待hashで読んだ内容と ProposalResult の artifacts・testsManifestHash を照合する。
     $manifestPath=Join-Path ([string]$PreparedRun.controlRoot) 'proposal/manifest.json'
     if([string]::IsNullOrEmpty([string]$ProposalResult.manifestPath) -or -not[IO.Path]::GetFullPath([string]$ProposalResult.manifestPath).Equals([IO.Path]::GetFullPath($manifestPath),[StringComparison]::OrdinalIgnoreCase)){Throw-VerificationReplayFailure 'proposal manifest must be control/proposal/manifest.json of this run' 'blocked' 'proposal-manifest'}
-    $manifest=Read-ReplayVerifiedJson $PreparedRun $manifestPath ([string]$ProposalResult.manifestHash) 'proposal-manifest'
+    $manifest=Read-VerificationVerifiedJson $manifestPath ([string]$ProposalResult.manifestHash) ([string]$PreparedRun.runId) 'artifacts' 'blocked' 'proposal-manifest'
     if($manifest.schemaVersion -ne 3 -or $manifest.origin -cne $ProposalResult.origin -or [string]$manifest.testsManifestHash -cne [string]$ProposalResult.testsManifestHash){Throw-VerificationReplayFailure 'proposal manifest does not match the proposal result' 'blocked' 'proposal-manifest'}
     $listed=Get-ReplayFileList $manifest.artifacts 'proposal-manifest' $true
     $claimed=Get-ReplayFileList ([object[]]@($ProposalResult.artifacts)) 'proposal-manifest' $true
     if((ConvertTo-VerificationCanonicalJson ([object[]]@($listed.Values))) -cne (ConvertTo-VerificationCanonicalJson ([object[]]@($claimed.Values)))){Throw-VerificationReplayFailure 'proposal result artifacts differ from the proposal manifest' 'blocked' 'proposal-manifest'}
     # 基準版: 期待hashで読んだ全ファイル manifest（.git を含む）と baseline の現物。
-    $baselineManifest=Read-ReplayVerifiedJson $PreparedRun ([string]$PreparedRun.baselineManifestPath) ([string]$PreparedRun.baselineManifestHash) 'baseline-manifest'
+    $baselineManifest=Read-VerificationVerifiedJson ([string]$PreparedRun.baselineManifestPath) ([string]$PreparedRun.baselineManifestHash) ([string]$PreparedRun.runId) 'files' 'blocked' 'baseline-manifest'
     $baselineFiles=Get-ReplayFileList $baselineManifest.files 'baseline-manifest'
     $workFiles=New-ReplayPathMap
     foreach($file in $baselineFiles.Values){
@@ -161,7 +135,7 @@ function Test-ReplayProposal([hashtable]$PreparedRun,[hashtable]$ProposalResult)
     }
     if($tests.Count -eq 0){Throw-VerificationReplayFailure 'at least one test is required' 'blocked' 'proposal-artifacts'}
     if($recheck -and $replacements.Count -gt 0){Throw-VerificationReplayFailure 'recheck does not take replacements' 'blocked' 'proposal-artifacts'}
-    $testsHash=Get-ReplayTestsManifestHash $tests.ToArray()
+    $testsHash=Get-VerificationTestsManifestHash $tests.ToArray()
     if($testsHash -cne [string]$ProposalResult.testsManifestHash){Throw-VerificationReplayFailure 'testsManifestHash does not match the listed tests' 'blocked' 'proposal-manifest'}
     # 現物の再照合（一覧にないファイル・ハッシュの変化・リンクは拒否）。
     $acceptedDifference=Get-ReplayMapDifference $listed (Get-ReplayTreeFiles ([string]$PreparedRun.acceptedRoot) 'blocked' 'accepted-changed')
@@ -206,7 +180,7 @@ function Test-ReplayStdlibImports([hashtable]$PreparedRun,[hashtable]$Profile,[h
         $listPath=Resolve-VerificationPath $listPath
         $bytes=[IO.File]::ReadAllBytes($listPath)
     }catch{Throw-VerificationReplayFailure ('stdlib module list is unreadable: '+$_.Exception.Message) 'blocked' 'stdlib-list'}
-    if((Get-ReplayBytesHash $bytes) -ine [string]$Profile.stdlibModulesHash){Throw-VerificationReplayFailure 'stdlib module list does not match stdlibModulesHash' 'blocked' 'stdlib-list'}
+    if((Get-VerificationBytesHash $bytes) -ine [string]$Profile.stdlibModulesHash){Throw-VerificationReplayFailure 'stdlib module list does not match stdlibModulesHash' 'blocked' 'stdlib-list'}
     $allowed=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     try{$listText=$script:StrictUtf8.GetString($bytes)}catch{Throw-VerificationReplayFailure 'stdlib module list is not valid UTF-8' 'blocked' 'stdlib-list'}
     foreach($line in $listText.Split("`n")){$name=$line.Trim();if($name.Length -gt 0){[void]$allowed.Add($name)}}
@@ -219,7 +193,7 @@ function Test-ReplayStdlibImports([hashtable]$PreparedRun,[hashtable]$Profile,[h
     $outside=[Collections.Generic.SortedSet[string]]::new([StringComparer]::Ordinal)
     foreach($item in @($Checked.tests)+@($Checked.replacements)){
         $bytes=[IO.File]::ReadAllBytes((Join-Path ([string]$PreparedRun.acceptedRoot) $item.path))
-        if((Get-ReplayBytesHash $bytes) -ine $item.sha256){Throw-VerificationReplayFailure "accepted file changed during the stdlib check: $($item.path)" 'blocked' 'accepted-changed'}
+        if((Get-VerificationBytesHash $bytes) -ine $item.sha256){Throw-VerificationReplayFailure "accepted file changed during the stdlib check: $($item.path)" 'blocked' 'accepted-changed'}
         try{$text=$script:StrictUtf8.GetString($bytes)}catch{Throw-VerificationReplayFailure "accepted file is not valid UTF-8: $($item.path)" 'blocked' 'accepted-changed'}
         foreach($module in (Get-ReplayImportedModules $text)){if(-not$allowed.Contains($module)){[void]$outside.Add("$module ($($item.path))")}}
     }
@@ -252,7 +226,7 @@ function Read-ReplayInput([string]$Root,[string]$Role,[string]$ExpectedTestsHash
         if($file.path.StartsWith($prefix,[StringComparison]::Ordinal)){$tests.Add(@{path='tests/'+$file.path.Substring($prefix.Length);size=$file.size;sha256=$file.sha256})}
         else{$work.Add($file.path,$file)}
     }
-    $testsHash=Get-ReplayTestsManifestHash $tests.ToArray()
+    $testsHash=Get-VerificationTestsManifestHash $tests.ToArray()
     if($testsHash -cne $ExpectedTestsHash){Throw-VerificationReplayFailure "tests in replay-inputs/$Role differ from the accepted tests" 'incomplete' 'replay-tests-differ'}
     @{role=$Role;root=$Root;files=$files;work=$work;testsManifestHash=$testsHash}
 }
@@ -302,9 +276,6 @@ function Save-ReplayInputManifest([hashtable]$PreparedRun,[string]$Mode,[hashtab
 
 # ---- 新規VMでの再実行と外側記録 ----
 $script:LimitKeys=@('totalSeconds','proposalSeconds','replaySeconds','cleanupSeconds','cpus','memoryMiB','maxProposalFiles','maxFileBytes','maxProposalBytes','maxWireBytes','maxOutputBytes')
-function Test-ReplayDeadlineReached([hashtable]$PreparedRun) {
-    try{[DateTime]::UtcNow -ge [DateTimeOffset]::Parse([string]$PreparedRun.deadlineAt,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime}catch{$false}
-}
 function Add-ReplayProblem($Current,[string]$Status,[string]$Stage,[string]$Reason) {
     # 最初の問題を残す。ただし時間超過は他の問題より優先する。
     $new=@{status=$Status;stage=$Stage;reason=$Reason}
@@ -352,13 +323,11 @@ function Save-ReplayRecord([hashtable]$PreparedRun,[hashtable]$Profile,[hashtabl
 function Resolve-ReplayCreationFailure([hashtable]$PreparedRun,[hashtable]$State,[string]$Stage,[Exception]$Failure) {
     # New-VerificationSandbox の runtimeFailure を creationState・stopState・status で分岐する（reason の符号では分岐しない）。
     # created は部分 handle を sandboxes に残して停止状態を引き継ぐ。unknown と runtimeFailure の欠落・不正は creation-unresolved（未作成・not_run へ丸めない）。
-    $status=Get-ReplayExceptionValue $Failure 'status' ''
-    $timedOut=($status -ceq 'timed_out') -or (Test-ReplayDeadlineReached $PreparedRun)
-    $record=$null
-    if($null -ne $Failure -and $Failure.Data.Contains('runtimeFailure')){try{$record=[string]$Failure.Data['runtimeFailure'] | ConvertFrom-Json -AsHashtable -Depth 10 -DateKind String}catch{$record=$null}}
-    $valid=($record -is [hashtable]) -and $record.ContainsKey('creationState') -and $record.creationState -in @('not-created','created','unknown') -and $record.ContainsKey('stopState') -and $record.stopState -in @('not-created','stopped','unverified')
-    if($valid -and $record.creationState -ceq 'created' -and (Get-ReplayValue $record 'handle') -isnot [hashtable]){$valid=$false}
-    if(-not$valid -or $record.creationState -ceq 'unknown'){
+    $status=Get-VerificationExceptionValue $Failure 'status' ''
+    $timedOut=($status -ceq 'timed_out') -or (Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt))
+    # 解析と値域の検査は RequestCopy の共通補助（Proposal と同じ判定）。不正・欠落は $null。
+    $record=ConvertFrom-VerificationRuntimeFailure $Failure
+    if($null -eq $record -or $record.creationState -ceq 'unknown'){
         $State.unresolved=$true
         return @{status=$(if($timedOut){'timed_out'}else{'incomplete'});stage=$Stage;reason='creation-unresolved'}
     }
@@ -374,7 +343,7 @@ function Test-ReplayActivationRecord([hashtable]$PreparedRun,[hashtable]$Handle)
     # 現在の handle と対応することを確かめる（仕様04。能力試験の古い証拠だけで現在の実行を承認しない）。実効値の各 check は SbxRuntime が作成時に判定済み。
     $path=[string]$Handle.activationRecordPath
     if([string]::IsNullOrEmpty($path) -or -not(Test-VerificationContainment (Join-Path ([string]$PreparedRun.controlRoot) 'runtime') $path)){Throw-VerificationReplayFailure "activation record must be inside control/runtime of this run: $path" 'blocked' 'activation-record'}
-    $record=Read-ReplayVerifiedJson $PreparedRun $path ([string]$Handle.activationRecordHash) 'activation-record'
+    $record=Read-VerificationVerifiedJson $path ([string]$Handle.activationRecordHash) ([string]$PreparedRun.runId) '' 'blocked' 'activation-record'
     foreach($pair in @(@('sandboxId','id'),@('sandboxName','name'),@('role','role'),@('profileHash','profileHash'),@('effectiveSettingsHash','effectiveSettingsHash'))){
         if([string]$record[$pair[0]] -cne [string]$Handle[$pair[1]]){Throw-VerificationReplayFailure "activation record $($pair[0]) does not match the sandbox handle" 'blocked' 'activation-record'}
     }
@@ -399,7 +368,7 @@ function Invoke-ReplayRole([hashtable]$PreparedRun,[hashtable]$Profile,[hashtabl
                 $command=Invoke-VerificationSandboxCommand $handle $script:ReplayArgv $null $script:SourceDestination $script:ReplayEnvironment $budget $script:OutputSignature
                 $problem=Get-ReplayCommandProblem $command $stage
             }catch{
-                $problem=@{status=(Get-ReplayExceptionValue $_.Exception 'status' 'incomplete');stage=$stage;reason=(Get-ReplayExceptionValue $_.Exception 'reason' 'replay-error')}
+                $problem=@{status=(Get-VerificationExceptionValue $_.Exception 'status' 'incomplete');stage=$stage;reason=(Get-VerificationExceptionValue $_.Exception 'reason' 'replay-error')}
             }
         }
         $stopAttempted=$true
@@ -414,7 +383,7 @@ function Invoke-ReplayRole([hashtable]$PreparedRun,[hashtable]$Profile,[hashtabl
         try{
             $saved=Save-ReplayRecord $PreparedRun $Profile $handle $command $InputManifest ($stopState -ceq 'stopped')
             $reference=@{role=$stage;commandId=[string]$command.commandId;recordPath=$saved.path;recordHash=$saved.hash;sandbox=$handle;inputManifestPath=$InputManifest.path;inputManifestHash=$InputManifest.hash}
-        }catch{$problem=Add-ReplayProblem $problem (Get-ReplayExceptionValue $_.Exception 'status' 'incomplete') $stage (Get-ReplayExceptionValue $_.Exception 'reason' 'replay-record')}
+        }catch{$problem=Add-ReplayProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'incomplete') $stage (Get-VerificationExceptionValue $_.Exception 'reason' 'replay-record')}
     }
     if($stopState -cne 'stopped'){$problem=Add-ReplayProblem $problem 'incomplete' $stage 'stop-unverified'}
     @{problem=$problem;reference=$reference}
@@ -439,8 +408,8 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
         $verified=Test-ReplayInputs $checked $checked.mode $beforeRoot $afterRoot
         foreach($role in @($verified.inputs.Keys)){$manifests[$role]=Save-ReplayInputManifest $PreparedRun $checked.mode $verified.inputs[$role]}
     }catch{
-        $result.status=Get-ReplayExceptionValue $_.Exception 'status' $(if($stage -ceq 'replay-input'){'incomplete'}else{'blocked'})
-        $result.failure=@{stage=$stage;reason=(Get-ReplayExceptionValue $_.Exception 'reason' "$stage-error")}
+        $result.status=Get-VerificationExceptionValue $_.Exception 'status' $(if($stage -ceq 'replay-input'){'incomplete'}else{'blocked'})
+        $result.failure=@{stage=$stage;reason=(Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")}
         return $result
     }
     $state=@{sandboxes=[Collections.Generic.List[object]]::new();stopStates=[Collections.Generic.List[string]]::new();knownIds=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal);unresolved=$false}

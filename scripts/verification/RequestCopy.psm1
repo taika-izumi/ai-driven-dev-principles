@@ -475,9 +475,65 @@ function New-ProposalReplayRun([hashtable]$Request,[hashtable]$Settings,[string]
         throw
     }
 }
+# ---- v3 のブロック間で共有する補助（計画の調整 (a)。Proposal・Replay が同じ約束を別々に実装しないため） ----
+function Get-VerificationBytesHash([byte[]]$Bytes) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)) }
+function Get-VerificationExceptionValue([Exception]$Failure,[string]$Key,[string]$Default) {
+    # 例外の Data[Key] が空でない文字列ならその値、無ければ既定値。
+    if($null -ne $Failure -and $Failure.Data.Contains($Key) -and -not[string]::IsNullOrEmpty([string]$Failure.Data[$Key])){return [string]$Failure.Data[$Key]}
+    $Default
+}
+function Test-VerificationDeadlineReached([string]$DeadlineAt) {
+    # 期限（ISO 8601）に達したか。解釈できない期限は「達していない」と見なさず、到達側に倒す（時間超過を失敗より優先する判定を取りこぼさない）。
+    $parsed=[DateTimeOffset]::MinValue
+    if([string]::IsNullOrWhiteSpace($DeadlineAt) -or -not[DateTimeOffset]::TryParse($DeadlineAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal,[ref]$parsed)){return $true}
+    [DateTime]::UtcNow -ge $parsed.UtcDateTime
+}
+function Read-VerificationVerifiedJson([string]$Path,[string]$ExpectedHash,[string]$RunId,[string]$ListKey,[string]$Status,[string]$Reason) {
+    # 外側の control の記録を1回だけ読み、そのバイト列で 期待hash → 厳格 UTF-8 → 重複キー → 解析（オブジェクト）→ runId を確かめてから解析結果を返す。検査したデータと使うデータを同じ読込みにする。
+    # ListKey を指定したときは、その配列の各要素が path（空でない文字列・重複なし）・size（整数）・sha256（16進64桁）を持つことも確かめる。違反は Data status/reason 付きの例外。
+    $fail={param($message) $ex=[InvalidOperationException]::new("$message`: $Path");$ex.Data['status']=$Status;$ex.Data['reason']=$Reason;throw $ex}
+    if([string]::IsNullOrEmpty($Path) -or [string]::IsNullOrEmpty($ExpectedHash) -or -not[IO.File]::Exists($Path)){& $fail 'control record is missing'}
+    $bytes=[IO.File]::ReadAllBytes($Path)
+    if((Get-VerificationBytesHash $bytes) -ine $ExpectedHash){& $fail 'control record does not match its expected hash'}
+    try{$json=[Text.UTF8Encoding]::new($false,$true).GetString($bytes)}catch{& $fail 'control record is not valid UTF-8'}
+    $duplicate=$true
+    try{$duplicate=Test-VerificationJsonDuplicateKeys $json}catch{& $fail 'control record is not JSON'}
+    if($duplicate){& $fail 'control record has duplicate keys'}
+    $value=$json | ConvertFrom-Json -AsHashtable -Depth 20 -DateKind String
+    if($value -isnot [hashtable] -or -not$value.ContainsKey('runId') -or $value.runId -cne $RunId){& $fail 'control record does not belong to this run'}
+    if(-not[string]::IsNullOrEmpty($ListKey)){
+        if(-not$value.ContainsKey($ListKey) -or $value[$ListKey] -isnot [Collections.IList]){& $fail "control record lacks the $ListKey list"}
+        $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+        foreach($item in @($value[$ListKey])){
+            $complete=($item -is [hashtable]) -and $item.ContainsKey('path') -and $item.ContainsKey('size') -and $item.ContainsKey('sha256') -and ($item.path -is [string]) -and -not[string]::IsNullOrEmpty($item.path) -and (Test-VerificationInteger $item.size) -and ($item.sha256 -is [string]) -and $item.sha256 -match '^[A-Fa-f0-9]{64}$'
+            if(-not$complete){& $fail 'control record entries need path, size and sha256'}
+            if(-not$seen.Add($item.path)){& $fail "control record lists a path twice ($($item.path))"}
+        }
+    }
+    $value
+}
+function Get-VerificationTestsManifestHash([object[]]$Tests) {
+    # 仕様02の testsManifestHash: test の {path(accepted 相対の tests/<名前>), size, sha256(大文字)} をパスの序数順に並べた配列の正規化JSONの SHA256。
+    # 提案（Proposal）が作り、再実行（Replay）と照合（Result）が照合する値なので、計算はこの1か所だけにする。
+    $list=[Collections.Generic.List[object]]::new()
+    foreach($test in @($Tests)){if($null -ne $test){$list.Add(@{path=[string]$test.path;size=[long]$test.size;sha256=([string]$test.sha256).ToUpperInvariant()})}}
+    $list.Sort([Comparison[object]]{param($left,$right) [string]::CompareOrdinal([string]$left.path,[string]$right.path)})
+    Get-VerificationCanonicalHash -Object ([object[]]$list.ToArray())
+}
+function ConvertFrom-VerificationRuntimeFailure([Exception]$Failure) {
+    # SbxRuntime の New-VerificationSandbox が例外の Data['runtimeFailure'] に載せる正規化JSONを解析し、値域を確かめて返す。
+    # 欠落・解析不能・creationState/stopState の値域外・created なのに handle が無い場合は $null（呼出し側は作成成否不明として扱う）。
+    if($null -eq $Failure -or -not$Failure.Data.Contains('runtimeFailure')){return $null}
+    try{$record=[string]$Failure.Data['runtimeFailure'] | ConvertFrom-Json -AsHashtable -Depth 10 -DateKind String}catch{return $null}
+    if($record -isnot [hashtable]){return $null}
+    if(-not$record.ContainsKey('creationState') -or $record.creationState -notin @('not-created','created','unknown')){return $null}
+    if(-not$record.ContainsKey('stopState') -or $record.stopState -notin @('not-created','stopped','unverified')){return $null}
+    if($record.creationState -ceq 'created' -and (-not$record.ContainsKey('handle') -or $record.handle -isnot [hashtable])){return $null}
+    $record
+}
 function New-VerificationRun([hashtable]$Request,[hashtable]$Settings,[string]$StartedAt='') {
     # 整数3のときだけv3。それ以外（1・数字の文字列表現・未実装v2）は既存v1の検査に渡し、v1は1以外を拒否する。
     if($null -ne $Request -and $Request.ContainsKey('schemaVersion') -and (Test-VerificationInteger $Request.schemaVersion) -and $Request.schemaVersion -eq 3){return New-ProposalReplayRun $Request $Settings $StartedAt}
     return New-LegacyVerificationRun $Request $Settings
 }
-Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys
+Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys,Get-VerificationBytesHash,Get-VerificationExceptionValue,Test-VerificationDeadlineReached,Read-VerificationVerifiedJson,Get-VerificationTestsManifestHash,ConvertFrom-VerificationRuntimeFailure

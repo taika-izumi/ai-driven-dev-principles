@@ -43,29 +43,10 @@ function Get-ProposalLimit([hashtable]$PreparedRun,[string]$Name) {
     if(-not(($value -is [int]) -or ($value -is [long])) -or $value -le 0){Throw-VerificationProposalFailure "settings.limits.$Name must be a positive integer" 'blocked' 'limits'}
     [long]$value
 }
-function Get-ProposalBytesHash([byte[]]$Bytes) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)) }
-function Read-ProposalVerifiedManifest([hashtable]$PreparedRun,[string]$Path,[string]$ExpectedHash,[string]$ListKey,[string]$Reason) {
-    # 外側の control の記録（baseline manifest・recheck manifest）を1回だけ読み、そのバイト列で期待hash・重複キー・runId・必須キーを確かめてから解析結果を返す。
-    # 検査したデータと使うデータを同じ読込みにする（読み直さない）。一覧の各要素は path（空でない文字列・重複なし）・size・sha256 を持つこと。
-    if([string]::IsNullOrEmpty($Path) -or -not[IO.File]::Exists($Path)){Throw-VerificationProposalFailure "control manifest is missing: $Path" 'blocked' $Reason}
-    $bytes=[IO.File]::ReadAllBytes($Path)
-    if((Get-ProposalBytesHash $bytes) -ine $ExpectedHash){Throw-VerificationProposalFailure "control manifest does not match the expected hash from PreparedRun: $Path" 'blocked' $Reason}
-    try{$json=$script:StrictUtf8.GetString($bytes)}catch{Throw-VerificationProposalFailure "control manifest is not valid UTF-8: $Path" 'blocked' $Reason}
-    if(Test-VerificationJsonDuplicateKeys $json){Throw-VerificationProposalFailure "control manifest has duplicate keys: $Path" 'blocked' $Reason}
-    $manifest=$json | ConvertFrom-Json -AsHashtable -Depth 10 -DateKind String
-    if($manifest -isnot [hashtable] -or -not$manifest.ContainsKey('runId') -or $manifest.runId -cne [string]$PreparedRun.runId){Throw-VerificationProposalFailure "control manifest does not belong to this run: $Path" 'blocked' $Reason}
-    if(-not$manifest.ContainsKey($ListKey) -or $manifest[$ListKey] -isnot [Collections.IList]){Throw-VerificationProposalFailure "control manifest lacks the $ListKey list: $Path" 'blocked' $Reason}
-    $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-    foreach($item in @($manifest[$ListKey])){
-        $complete=($item -is [hashtable]) -and $item.ContainsKey('path') -and $item.ContainsKey('size') -and $item.ContainsKey('sha256')
-        if(-not$complete -or $item.path -isnot [string] -or [string]::IsNullOrEmpty($item.path) -or -not(($item.size -is [int]) -or ($item.size -is [long])) -or $item.sha256 -isnot [string]){Throw-VerificationProposalFailure "control manifest entries need path, size and sha256: $Path" 'blocked' $Reason}
-        if(-not$seen.Add($item.path)){Throw-VerificationProposalFailure "control manifest lists a path twice: $($item.path)" 'blocked' $Reason}
-    }
-    $manifest
-}
 function Read-ProposalBaselineManifest([hashtable]$PreparedRun) {
     # 基準版の一覧（replacement の存在確認と、proposal-input 搬入の ExpectedManifest の両方に使う）。
-    Read-ProposalVerifiedManifest $PreparedRun ([string]$PreparedRun.baselineManifestPath) ([string]$PreparedRun.baselineManifestHash) 'files' 'baseline-manifest'
+    # 検査済み JSON の1回読み（期待hash・厳格UTF-8・重複キー・runId・一覧要素）は RequestCopy の共通補助を使う（Replay と同じ手順）。
+    Read-VerificationVerifiedJson ([string]$PreparedRun.baselineManifestPath) ([string]$PreparedRun.baselineManifestHash) ([string]$PreparedRun.runId) 'files' 'blocked' 'baseline-manifest'
 }
 function Get-ProposalManifestPaths([hashtable]$Manifest,[string]$ListKey) {
     $paths=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
@@ -238,7 +219,7 @@ function Test-VerificationProposalEnvelope([byte[]]$Wire,[hashtable]$PreparedRun
     }
     @{
         runId=$runId;summary=$summary.value;findings=[object[]]$findings.ToArray()
-        files=@(foreach($file in $files){@{kind=$file.kind;path=$file.path;size=[long]$file.bytes.Length;sha256=(Get-ProposalBytesHash $file.bytes);bytes=$file.bytes}})
+        files=@(foreach($file in $files){@{kind=$file.kind;path=$file.path;size=[long]$file.bytes.Length;sha256=(Get-VerificationBytesHash $file.bytes);bytes=$file.bytes}})
     }
 }
 
@@ -273,7 +254,7 @@ function Write-VerificationAcceptedFiles([hashtable]$PreparedRun,[hashtable]$Env
         $info=[IO.FileInfo]::new($target)
         if($info.Attributes -band [IO.FileAttributes]::ReparsePoint){Throw-VerificationAcceptedUnsafe "created file is a reparse point: $target"}
         $hash=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
-        if($info.Length -ne $file.bytes.Length -or $hash -cne (Get-ProposalBytesHash $file.bytes)){Throw-VerificationProposalFailure "accepted file does not match the received bytes: $target" 'incomplete' 'accepted-mismatch'}
+        if($info.Length -ne $file.bytes.Length -or $hash -cne (Get-VerificationBytesHash $file.bytes)){Throw-VerificationProposalFailure "accepted file does not match the received bytes: $target" 'incomplete' 'accepted-mismatch'}
         $artifacts.Add(@{kind=$file.kind;path="$directory/$($file.path)";size=[long]$info.Length;sha256=$hash})
     }
     Get-ProposalSortedArtifacts $artifacts.ToArray()   # 呼出し側は @() で受ける
@@ -287,8 +268,8 @@ function Get-ProposalSortedArtifacts([object[]]$Artifacts) {
 }
 function Get-ProposalTestsManifestHash([object[]]$Artifacts) {
     # test の accepted 相対パス・サイズ・SHA256 をパス順に並べた配列の正規化JSONの SHA256。ホストの絶対パスや保存日時を含めない。
-    $tests=[object[]]@(foreach($artifact in @(Get-ProposalSortedArtifacts $Artifacts)){if($artifact.kind -ceq 'test'){@{path=$artifact.path;size=$artifact.size;sha256=$artifact.sha256}}})
-    Get-VerificationCanonicalHash -Object $tests
+    # 計算は RequestCopy の Get-VerificationTestsManifestHash（Replay・Result と共有する約束）。ここでは test だけを選ぶ。
+    Get-VerificationTestsManifestHash ([object[]]@(foreach($artifact in @($Artifacts)){if($artifact.kind -ceq 'test'){$artifact}}))
 }
 function Save-VerificationProposalManifest([hashtable]$PreparedRun,[string]$Origin,[object[]]$Artifacts) {
     $sorted=@(Get-ProposalSortedArtifacts $Artifacts)
@@ -302,13 +283,6 @@ function Save-VerificationProposalManifest([hashtable]$PreparedRun,[string]$Orig
 function New-ProposalResult([hashtable]$PreparedRun,[string]$Origin) {
     # 外側が生成する結果。子の JSON をそのまま返さない。manifest は未確定なら null、sandbox は未作成なら null。
     @{schemaVersion=3;runId=[string]$PreparedRun.runId;status=$null;origin=$Origin;sandbox=$null;summary=$null;findings=$null;artifacts=[object[]]@();manifestPath=$null;manifestHash=$null;testsManifestHash=$null;stopState='not-created';failure=$null}
-}
-function Get-ProposalExceptionValue([Exception]$Failure,[string]$Key,[string]$Default) {
-    if($null -ne $Failure -and $Failure.Data.Contains($Key) -and -not[string]::IsNullOrEmpty([string]$Failure.Data[$Key])){return [string]$Failure.Data[$Key]}
-    $Default
-}
-function Test-ProposalDeadlineReached([hashtable]$PreparedRun) {
-    try{[DateTime]::UtcNow -ge [DateTimeOffset]::Parse([string]$PreparedRun.deadlineAt,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime}catch{$false}
 }
 function Add-ProposalProblem($Current,[string]$Status,[string]$Stage,[string]$Reason) {
     # 最初の問題を残す。ただし時間超過は他の失敗より優先する（仕様02「時間超過ならtimed_outを優先」）。
@@ -333,7 +307,7 @@ function Invoke-VerificationProposalRecheck([hashtable]$PreparedRun) {
     $result=New-ProposalResult $PreparedRun 'reused-tests'
     try{
         $expected=@($PreparedRun.recheckArtifacts)
-        $manifest=Read-ProposalVerifiedManifest $PreparedRun ([string]$PreparedRun.recheckManifestPath) ([string]$PreparedRun.recheckManifestHash) 'tests' 'recheck-manifest'
+        $manifest=Read-VerificationVerifiedJson ([string]$PreparedRun.recheckManifestPath) ([string]$PreparedRun.recheckManifestHash) ([string]$PreparedRun.runId) 'tests' 'blocked' 'recheck-manifest'
         $recorded=@{}
         foreach($test in @($manifest.tests)){$recorded[[string]$test.path]=$test}
         $expectedMap=@{}
@@ -353,8 +327,8 @@ function Invoke-VerificationProposalRecheck([hashtable]$PreparedRun) {
         $result.artifacts=$saved.artifacts;$result.manifestPath=$saved.manifestPath;$result.manifestHash=$saved.manifestHash;$result.testsManifestHash=$saved.testsManifestHash
         $result.status='ready'
     }catch{
-        $result.status=Get-ProposalExceptionValue $_.Exception 'status' 'blocked'
-        $result.failure=@{stage='recheck';reason=(Get-ProposalExceptionValue $_.Exception 'reason' 'recheck-failed')}
+        $result.status=Get-VerificationExceptionValue $_.Exception 'status' 'blocked'
+        $result.failure=@{stage='recheck';reason=(Get-VerificationExceptionValue $_.Exception 'reason' 'recheck-failed')}
         $result.artifacts=[object[]]@();$result.manifestPath=$null;$result.manifestHash=$null;$result.testsManifestHash=$null
     }
     $result
@@ -410,13 +384,11 @@ function Get-ProposalCommandProblem([hashtable]$Record,[string]$Stage,[bool]$Req
 function Complete-VerificationProposalCreationFailure([hashtable]$Result,[hashtable]$PreparedRun,[Exception]$Failure) {
     # New-VerificationSandbox の runtimeFailure を捕捉する。created なら確定済み handle を sandbox に残し、停止済みでも起動失敗を成功にしない。
     # unknown・停止未確認は incomplete（時間超過なら timed_out）。runtimeFailure の欠落・不正は作成済みの可能性があるので creation-unresolved の incomplete。
-    $status=Get-ProposalExceptionValue $Failure 'status' ''
-    $timedOut=($status -ceq 'timed_out') -or (Test-ProposalDeadlineReached $PreparedRun)
-    $record=$null
-    if($null -ne $Failure -and $Failure.Data.Contains('runtimeFailure')){try{$record=[string]$Failure.Data['runtimeFailure'] | ConvertFrom-Json -AsHashtable -Depth 10 -DateKind String}catch{$record=$null}}
-    $valid=($record -is [hashtable]) -and $record.ContainsKey('creationState') -and $record.creationState -in @('not-created','created','unknown') -and $record.ContainsKey('stopState') -and $record.stopState -in @('not-created','stopped','unverified')
-    if($valid -and $record.creationState -ceq 'created' -and (Get-ProposalValue $record 'handle') -isnot [hashtable]){$valid=$false}
-    if(-not$valid){
+    $status=Get-VerificationExceptionValue $Failure 'status' ''
+    $timedOut=($status -ceq 'timed_out') -or (Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt))
+    # 解析と値域の検査は RequestCopy の共通補助（Replay と同じ判定）。不正・欠落は $null。
+    $record=ConvertFrom-VerificationRuntimeFailure $Failure
+    if($null -eq $record){
         $Result.status='incomplete';$Result.stopState='unverified';$Result.failure=@{stage='sandbox';reason='creation-unresolved'}
         return $Result
     }
@@ -473,7 +445,7 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
                 elseif($null -eq $problem){$wire=[IO.File]::ReadAllBytes($export.stdoutPath)}
             }
         }catch{
-            $problem=Add-ProposalProblem $problem (Get-ProposalExceptionValue $_.Exception 'status' 'failed') $stage (Get-ProposalExceptionValue $_.Exception 'reason' "$stage-error")
+            $problem=Add-ProposalProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'failed') $stage (Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")
         }
         # 4. 停止（受信の後、検査の前）。一覧の同一 id・stopped で確認する。停止後に exec しない。
         $stopAttempted=$true
@@ -499,8 +471,8 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
         $artifacts=@(Write-VerificationAcceptedFiles $PreparedRun $checked)
         $saved=Save-VerificationProposalManifest $PreparedRun 'generated' $artifacts
     }catch{
-        $result.status=Get-ProposalExceptionValue $_.Exception 'status' 'failed'
-        $result.failure=@{stage=$stage;reason=(Get-ProposalExceptionValue $_.Exception 'reason' "$stage-error")}
+        $result.status=Get-VerificationExceptionValue $_.Exception 'status' 'failed'
+        $result.failure=@{stage=$stage;reason=(Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")}
         return $result
     }
     $result.summary=$checked.summary

@@ -172,3 +172,5 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0193](0193-hold-a-session-to-prevent-sbx-auto-stop-during-a-run.md) | 隔離検証の実行中はセッションを保持してsbxの自動停止を避ける | Proposed | 2026-09-15 |
 | [0194](0194-stop-recorded-sandboxes-after-cli-abnormal-exit.md) | CLI異常終了後は記録済みIDだけを止める復旧操作で停止を確認する | Proposed | 2026-09-15 |
 | [0195](0195-treat-registered-mcp-servers-zero-as-the-no-mcp-condition.md) | 「MCP登録なし」は登録済みMCPサーバー0件で判定し、常設ゲートウェイは製品挙動として記録する | Proposed | 2026-09-15 |
+| [0196](0196-accept-daemon-disconnect-unverified-for-synthetic-pilot.md) | 試作の間はデーモン切断の検知を未確認の制限として認め、検証済みの条件から外す | Proposed | 2026-09-15 |
+| [0197](0197-reuse-load-stop-record-for-proposal-profile-evidence.md) | 提案用実行設定の証拠は提案用VMで取り直し、負荷中の外側停止だけ再実行用の既存記録を使う | Proposed | 2026-09-15 |

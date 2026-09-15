@@ -20,7 +20,7 @@ Copyは外側で検査済みの通常ファイルだけを固定Destinationへ�
 
 runtime-profile.schema.jsonはschemaVersion=3、role（proposal/replay）、sbxVersion、templateDigest、agent、startupArgv、executableInVm、policyExpectation、mountExpectation、activationEvidencePath、activationEvidenceHashを必須とする。proposalのagentはcodex、replayはshell。タグの自動追随・実行時のイメージ更新はしない。digestと実体の対応を確認し、不明ならblocked。
 
-scope=synthetic-pilotとacceptedLimitations=["clipboard-text-write-possible","pid-count-unbounded"]も必須とする。現在の仕様ではこれ以外のscopeや例外を受理しない。実行前に固定した合成題材の対象・送信範囲を照合し、例外への一般的な同意で実プロジェクトを解放しない。これらもprofileHashの対象とし、通常用途のprofileとして流用しない。
+scope=synthetic-pilotとacceptedLimitations=["clipboard-text-write-possible","pid-count-unbounded","daemon-disconnect-unverified"]も必須とする（3件目はADR-0196）。現在の仕様ではこれ以外のscopeや例外を受理しない。実行前に固定した合成題材の対象・送信範囲を照合し、例外への一般的な同意で実プロジェクトを解放しない。これらもprofileHashの対象とし、通常用途のprofileとして流用しない。
 
 VM作成前にPreparedRunV3のpilotInputId/Path/Hash、固定入力記録のsourceRoot/sourceManifestHashと当該入力を照合する。scopeの文字列だけでは受理しない。CPU2・memoryMiB2048以外を再検査して拒否し、作成後の実効値もこの固定値へ照合する。
 
@@ -46,7 +46,7 @@ activationEvidenceはcheckedAt、binaries、profileHash、checksを持つ。chec
 - 外側で設定したCPU/メモリ割当と当該VMの実効値、同時稼働1VM、時間・出力上限、有限の負荷中の外側停止。厳密なpids上限は確認対象にせずpid-count-unboundedを明示する。資源枯渇時のVM内応答性やホスト全体の無影響を保証しない。負荷試験は具体的な上限・中止条件と操作承認を先に固定する。
 - proposalは承認されたモデル接続先だけの許可、raw認証値を子へ渡さない認証方式。認証・モデルの実試験は個別承認後。
 - replayは外向き通信・hostへの通信・他VM通信を拒否し、モデル認証を一切供給しない。
-- time/output上限、外側CLI異常、デーモン切断、対象VMの停止と他VMの非停止、停止中の自動再起動防止。
+- time/output上限、外側CLI異常、デーモン切断、対象VMの停止と他VMの非停止、停止中の自動再起動防止。デーモン切断はsynthetic-pilotではdaemon-disconnect-unverifiedとして未確認のまま認め、各実コマンド直前の世代確認と自動停止痕跡の検知を補償にする（ADR-0196）。
 
 初回はAIなし保護検証の後、別承認の認証・最小モデル試験でproposal設定を完成させる。実モデル検証が必要な項目を未実施のままverifiedにしない。設定hash、実体、証拠が不一致なら作業解放前にblocked。ホスト資格情報を読む検査はしない。否定試験は固定の代用品を使用する。
 

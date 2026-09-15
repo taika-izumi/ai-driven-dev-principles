@@ -186,9 +186,25 @@ function Get-VerificationControlBytes([Diagnostics.ProcessStartInfo]$StartInfo,[
     [Buffer]::BlockCopy($line,0,$bytes,0,$line.Length);[Buffer]::BlockCopy($StdinBytes,0,$bytes,$line.Length,$StdinBytes.Length)
     ,$bytes
 }
-function Read-VerificationTargetExit([string]$Marker) {
-    if(-not[IO.File]::Exists($Marker+'.exit.json')){return $null}
-    try{return ([IO.File]::ReadAllText($Marker+'.exit.json') | ConvertFrom-Json -ErrorAction Stop).exitCode}catch{return $null}
+function Read-VerificationTargetExit([string]$Marker,[double]$RetrySeconds=0) {
+    # ホストの WriteAllText と競合した読取り（共有違反・空・不完全 JSON）は失敗として null を返す。
+    # RetrySeconds を与えると、ファイルが在るのに読めない間だけその秒数まで読み直す（一度きりの読取りで取りこぼさない）。
+    $path=$Marker+'.exit.json';$until=[DateTime]::UtcNow.AddSeconds($RetrySeconds)
+    while($true){
+        if(-not[IO.File]::Exists($path)){return $null}
+        try{return ([IO.File]::ReadAllText($path) | ConvertFrom-Json -ErrorAction Stop).exitCode}catch{}
+        if([DateTime]::UtcNow -ge $until){return $null}
+        Start-Sleep -Milliseconds 25
+    }
+}
+function Read-VerificationStartMarker([string]$Marker) {
+    # 開始マーカー（@{pid;startTicks}）を読む。未作成・書込み中（共有違反・空・不完全 JSON）は null を返し、呼出し側が開始待ち上限まで読み直す。
+    if(-not[IO.File]::Exists($Marker)){return $null}
+    try{
+        $info=[IO.File]::ReadAllText($Marker) | ConvertFrom-Json -ErrorAction Stop
+        if($null -eq $info -or $null -eq $info.PSObject.Properties['pid'] -or $null -eq $info.PSObject.Properties['startTicks']){return $null}
+        return @{pid=[int]$info.pid;startTicks=[long]$info.startTicks}
+    }catch{return $null}
 }
 function Invoke-VerificationProcessV3 {
     param([Diagnostics.ProcessStartInfo]$StartInfo,[byte[]]$StdinBytes,[hashtable]$OutputPaths,[hashtable]$RunBudget)
@@ -307,9 +323,15 @@ function Start-VerificationBackgroundProcess {
         $control=Get-VerificationControlBytes $StartInfo ([byte[]]::new(0)) ($job.GrantAssign($process.Handle))
         $entry.stdinTask=$process.StandardInput.BaseStream.WriteAsync($control,0,$control.Length)
         $startDeadline=[DateTime]::UtcNow.AddSeconds($script:BackgroundStartSeconds)
-        while(-not[IO.File]::Exists($marker) -and -not$process.HasExited -and [DateTime]::UtcNow -lt $startDeadline){[void]$process.WaitForExit(25)}
-        if(-not[IO.File]::Exists($marker)){throw 'background process not started'}
-        $info=[IO.File]::ReadAllText($marker) | ConvertFrom-Json -ErrorAction Stop
+        # 開始マーカーはホストの書込みと競合して読めないことがあるため、読めるまで開始待ちの上限内で読み直す。
+        # ホストが終了していてマーカーが無ければ待たない（対象を起動できなかった・ジョブ割当に失敗した）。
+        $info=$null
+        while([DateTime]::UtcNow -lt $startDeadline){
+            $info=Read-VerificationStartMarker $marker
+            if($null -ne $info){break}
+            if($process.HasExited){if(-not[IO.File]::Exists($marker)){break};Start-Sleep -Milliseconds 25}else{[void]$process.WaitForExit(25)}
+        }
+        if($null -eq $info){throw 'background process not started'}
         $token=[guid]::NewGuid().ToString('N')
         $script:BackgroundProcesses[$token]=$entry
         return @{processId=[int]$info.pid;jobToken=$token;markerPath=$marker;startedAt=Get-VerificationUtcNow}
@@ -336,7 +358,8 @@ function Stop-VerificationBackgroundProcess {
     $entry=$script:BackgroundProcesses[$Handle.jobToken];$script:BackgroundProcesses.Remove($Handle.jobToken)
     $result=@{exitCode=$null;processTreeStopped=$false}
     try{
-        $targetExit=Read-VerificationTargetExit $entry.marker
+        # 停止前に在る終了記録だけを採る（停止後に書かれた記録は打ち切りの結果でありうる）。書込み中で読めなければ短時間だけ読み直す。
+        $targetExit=Read-VerificationTargetExit $entry.marker 2
         if($null -ne $targetExit){$result.exitCode=[int]$targetExit}
         if($entry.job.Active() -gt 0){$entry.job.Stop()}
         $deadline=[DateTime]::UtcNow.AddSeconds($GraceSeconds)

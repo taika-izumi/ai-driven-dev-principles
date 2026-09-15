@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "commandId", "runId", "role", "sandboxId", "profileHash", "effectiveSettingsHash", "templateDigest", "sourceManifestHash", "inputManifestHash", "testsManifestHash", "argv", "workingDirectory", "startedAt", "finishedAt", "exitCode", "stdoutPath", "stdoutHash", "stderrPath", "stderrHash", "timedOut", "outputExceeded", "stopVerified", "transportVerified", "activationRecordPath", "activationRecordHash", "limits"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 3},
+    "commandId": {"type": "string", "pattern": "^replay-(before|after)-[0-9a-f]{12}$"},
+    "runId": {"type": "string", "minLength": 1},
+    "role": {"type": "string", "enum": ["replay-before", "replay-after"]},
+    "sandboxId": {"type": "string", "minLength": 1},
+    "profileHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "effectiveSettingsHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "templateDigest": {"type": "string", "pattern": "^[a-z0-9./_-]+@sha256:[0-9a-f]{64}$"},
+    "sourceManifestHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "inputManifestHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "testsManifestHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "argv": {"type": "array", "const": ["python3", "-m", "unittest", "discover", "-s", ".verification-tests", "-p", "test_*.py", "-v"]},
+    "workingDirectory": {"type": "string", "const": "/home/agent/workspace/source"},
+    "startedAt": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?Z$"},
+    "finishedAt": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?Z$"},
+    "exitCode": {"type": ["integer", "null"]},
+    "stdoutPath": {"type": "string", "minLength": 1},
+    "stdoutHash": {"type": ["string", "null"], "pattern": "^[A-Fa-f0-9]{64}$"},
+    "stderrPath": {"type": "string", "minLength": 1},
+    "stderrHash": {"type": ["string", "null"], "pattern": "^[A-Fa-f0-9]{64}$"},
+    "timedOut": {"type": "boolean"},
+    "outputExceeded": {"type": "boolean"},
+    "stopVerified": {"type": "boolean"},
+    "transportVerified": {"type": "boolean"},
+    "activationRecordPath": {"type": "string", "minLength": 1},
+    "activationRecordHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["totalSeconds", "proposalSeconds", "replaySeconds", "cleanupSeconds", "cpus", "memoryMiB", "maxProposalFiles", "maxFileBytes", "maxProposalBytes", "maxWireBytes", "maxOutputBytes"],
+      "properties": {
+        "totalSeconds": {"type": "integer", "minimum": 1},
+        "proposalSeconds": {"type": "integer", "minimum": 1},
+        "replaySeconds": {"type": "integer", "minimum": 1},
+        "cleanupSeconds": {"type": "integer", "minimum": 1},
+        "cpus": {"type": "integer", "const": 2},
+        "memoryMiB": {"type": "integer", "const": 2048},
+        "maxProposalFiles": {"type": "integer", "minimum": 1},
+        "maxFileBytes": {"type": "integer", "minimum": 1},
+        "maxProposalBytes": {"type": "integer", "minimum": 1},
+        "maxWireBytes": {"type": "integer", "minimum": 1},
+        "maxOutputBytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

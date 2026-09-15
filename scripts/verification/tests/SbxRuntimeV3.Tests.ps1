@@ -79,6 +79,11 @@ function New-Budget([hashtable]$Ctx,[string]$Phase='work',[int]$CommandSeconds=1
     @{deadlineAt=$Ctx.prepared.deadlineAt;cleanupDeadlineAt=$(if($null -eq $CleanupIn){$null}else{[DateTime]::UtcNow.AddSeconds([double]$CleanupIn).ToString('o')});limits=@{maxOutputBytes=$Ctx.settings.limits.maxOutputBytes;commandSeconds=$CommandSeconds};phase=$Phase}
 }
 function Get-Failure([scriptblock]$Action){try{& $Action | Out-Null}catch{return $_.Exception};throw 'ASSERT: expected an exception'}
+function Get-Utc($Value){
+    # ConvertFrom-Json は ISO 日時を DateTime にするため、文字列と DateTime の両方を UTC の DateTime にそろえる。
+    if($Value -is [DateTime]){return $Value.ToUniversalTime()}
+    [DateTimeOffset]::Parse([string]$Value,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime
+}
 function Get-RuntimeFailure([scriptblock]$Action){
     $failure=Get-Failure $Action
     Assert-True ($failure.Data.Contains('runtimeFailure')) "runtimeFailure expected: $($failure.Message)"
@@ -300,11 +305,160 @@ $stopEvidence=Get-Content -LiteralPath $stop.evidencePath -Raw | ConvertFrom-Jso
 Assert-True ($stopEvidence.listObserved -ceq 'stopped' -and $stopEvidence.stopLogLine -like '*stopped runtime container*' -and $stopEvidence.daemonBefore.pid -eq $PID -and $stopEvidence.daemonAfter.pid -eq $PID) '停止: 証拠の3点（ls・停止行・世代不変）'
 # keepAlive.stopped は Execution のジョブ停止が cmd 系の子へ届かない実測（逸脱候補）により false になりうるため、停止を試みた記録だけを確認する。
 Assert-True ($null -ne $stopEvidence.keepAlive -and $stopEvidence.keepAlive.ContainsKey('stopped')) '停止: 保持ジョブの停止を試みた記録'
-$stopIssued=[DateTimeOffset]::Parse($stopEvidence.stopIssuedAt);$stopLine=$stopEvidence.stopLogLine | ConvertFrom-Json
-Assert-True ([DateTimeOffset]::new($stopLine.time) -ge $stopIssued) '停止: 停止行は stop 発行以後'
+$stopLine=$stopEvidence.stopLogLine | ConvertFrom-Json
+Assert-True ((Get-Utc $stopLine.time) -ge (Get-Utc $stopEvidence.stopIssuedAt)) '停止: 停止行は stop 発行以後'
 $again=Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $ctx.prepared 1)
 Assert-True ($again.evidencePath -ceq $stop.evidencePath -and @(Get-StopCalls $ctx).Count -eq 1) '停止: 確認済みなら再発行しない'
 Release-VerificationPilotLease $lease
+$count++
+
+# 10. 搬入・照合・実コマンド: cp→chown の固定 argv、搬入元と manifest の不一致で cp を発行しない、Confirm の一致・欠落・予定外、出力署名と transportVerified、署名なしは null で quarantine/ へ。
+function New-Input([hashtable]$Ctx){
+    $in=Join-Path $Ctx.root 'in'
+    Write-Text (Join-Path $in 'a.py') "print('a')`n";Write-Text (Join-Path $in 'sub/b.py') "print('b')`n"
+    $files=@(foreach($rel in @('a.py','sub/b.py')){$path=Join-Path $in $rel;@{path=$rel;size=([IO.FileInfo]::new($path)).Length;sha256=(Get-Hash $path)}})
+    @{root=$in;manifest=@{schemaVersion=3;runId=$Ctx.runId;files=$files}}
+}
+$ctx=New-Case -CleanupSeconds 5;$trusted=New-Input $ctx;$vm=Add-Vm $ctx -ConfirmFiles $trusted.manifest.files
+$unitOk=Get-FakeSbxResponse 'unittestOk';$unitFail=Get-FakeSbxResponse 'unittestFail'
+$unitArgv=@('exec','-w','/home/agent/workspace/source','-e','PYTHONDONTWRITEBYTECODE=1','-e','PYTHONHASHSEED=0',[regex]::Escape($vm.name),'python3','-m','unittest','discover','-s','\.verification-tests','-p','test_\*\.py','-v')
+Add-FakeSbxResponse $ctx.case $unitArgv -Stderr $unitFail.text -ExitCode 1 -Synthetic $unitFail.synthetic | Out-Null
+Add-FakeSbxResponse $ctx.case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($vm.name),'python3','--version') -Stdout "Python 3.12.3`n" | Out-Null
+Add-FakeSbxResponse $ctx.case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($vm.name),'sh','-c','echo only-stdout') -Stdout $unitOk.text -Synthetic $true | Out-Null
+Add-FakeSbxResponse $ctx.case @('exec','-w','/home/agent/workspace/proposal',[regex]::Escape($vm.name),'codex','exec','--json') -Stdout "{`"untrusted`":true}`n" -Synthetic $true | Out-Null
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$handle=New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease;$item=@{handle=$handle;ctx=$ctx;stopped=$false};$handles.Add($item)
+$work=New-Budget $ctx
+$dest='/home/agent/workspace/source'
+Write-Text (Join-Path $trusted.root 'extra.txt') 'x'
+$failure=Get-Failure {Copy-VerificationSandboxInput $handle $trusted.root $dest $trusted.manifest $work}
+Assert-True ($failure.Data['reason'] -eq 'input-changed' -and $failure.Message -like '*unexpected: extra.txt*') "Copy: 搬入元が manifest と違えば blocked（$($failure.Message)）"
+Assert-Equal @(Get-Calls $ctx 'cp').Count 0 'Copy: 不一致では cp を発行しない'
+[IO.File]::Delete((Join-Path $trusted.root 'extra.txt'))
+Assert-Throws {Copy-VerificationSandboxInput $handle $trusted.root 'relative/path' $trusted.manifest $work} '*absolute POSIX path*'
+$copied=Copy-VerificationSandboxInput $handle $trusted.root $dest $trusted.manifest $work
+Assert-True ($copied.copied -and $copied.fileCount -eq 2) 'Copy: 戻り'
+$cpCall=@(Get-Calls $ctx 'cp')[0];Assert-Equal ($cpCall.argv -join ' ') "cp $($trusted.root) $($vm.name):$dest" 'Copy: cp の固定 argv'
+$chownCall=@(Get-Calls $ctx 'exec' | Where-Object {$_.argv[1] -eq '-u'})[0];Assert-Equal ($chownCall.argv -join ' ') "exec -u root $($vm.name) chown -R agent:agent $dest" 'Copy: chown の固定 argv'
+Assert-True ([DateTime]$chownCall.time -ge [DateTime]$cpCall.time) 'Copy: cp の後に chown'
+$confirmed=Confirm-VerificationSandboxInput $handle $dest $trusted.manifest $work
+Assert-True ($confirmed.confirmed -and $confirmed.fileCount -eq 2 -and $confirmed.commandRecord.transportVerified -eq $true -and $confirmed.commandRecord.exitCode -eq 0) 'Confirm: 一致'
+$confirmCall=@(Get-Calls $ctx 'exec' | Where-Object {$_.argv -contains 'sh' -and ($_.argv -join ' ') -like '*sha256sum*'})[0]
+Assert-Equal ($confirmCall.argv -join ' ') "exec -w $dest $($vm.name) sh -c cd $dest && find . -type f -print0 | sort -z | xargs -0 sha256sum" 'Confirm: 固定コマンド'
+$less=@{schemaVersion=3;runId=$ctx.runId;files=@($trusted.manifest.files[0])}
+$failure=Get-Failure {Confirm-VerificationSandboxInput $handle $dest $less $work}
+Assert-True ($failure.Data['reason'] -eq 'input-mismatch' -and $failure.Message -like '*unexpected: sub/b.py*') "Confirm: 予定外ファイル（$($failure.Message)）"
+$more=@{schemaVersion=3;runId=$ctx.runId;files=@($trusted.manifest.files)+@(@{path='c.py';size=1;sha256=('E'*64)})}
+$failure=Get-Failure {Confirm-VerificationSandboxInput $handle $dest $more $work}
+Assert-True ($failure.Data['reason'] -eq 'input-mismatch' -and $failure.Message -like '*missing: c.py*') "Confirm: 欠落（$($failure.Message)）"
+$changed=@{schemaVersion=3;runId=$ctx.runId;files=@(@{path='a.py';size=10;sha256=('F'*64)},$trusted.manifest.files[1])}
+$failure=Get-Failure {Confirm-VerificationSandboxInput $handle $dest $changed $work}
+Assert-True ($failure.Data['reason'] -eq 'input-mismatch' -and $failure.Message -like '*mismatched: a.py*') 'Confirm: 内容相違'
+$signature=@{pattern='Ran \d+ tests? in';stream='stderr'}
+$unitBudget=New-Budget $ctx -CommandSeconds 120
+$record=Invoke-VerificationSandboxCommand $handle @('python3','-m','unittest','discover','-s','.verification-tests','-p','test_*.py','-v') $null $dest @{PYTHONHASHSEED='0';PYTHONDONTWRITEBYTECODE='1'} $unitBudget $signature
+Assert-True ($record.exitCode -eq 1 -and $record.transportVerified -eq $true -and -not$record.timedOut -and -not$record.outputExceeded) 'Invoke: unittest 失敗（終了1）でも stderr の署名で transportVerified=true'
+Assert-Equal ($record.argv -join ' ') "exec -w $dest -e PYTHONDONTWRITEBYTECODE=1 -e PYTHONHASHSEED=0 $($vm.name) python3 -m unittest discover -s .verification-tests -p test_*.py -v" 'Invoke: -w/-e/名前/argv の固定形（環境はキー順）'
+Assert-True ($record.commandId -like 'replay-before-*' -and $record.stdoutPath -like '*control\runtime\replay-before\commands\*' -and (Test-Path -LiteralPath $record.stderrPath)) 'Invoke: commandId と出力の置き場'
+Assert-Equal $record.stderrHash (Get-Hash $record.stderrPath) 'Invoke: stderrHash は現物と一致'
+Assert-True ($record.startedAt -match 'Z$' -and $record.finishedAt -match 'Z$' -and $record.sandboxId -ceq $vm.id -and $record.runId -ceq $ctx.runId) 'Invoke: 時刻・id'
+$record=Invoke-VerificationSandboxCommand $handle @('sh','-c','echo only-stdout') $null $dest @{} $unitBudget $signature
+Assert-True ($record.exitCode -eq 0 -and $record.transportVerified -eq $false) 'Invoke: 署名が stdout にだけあれば false（stderr 指定）'
+$record=Invoke-VerificationSandboxCommand $handle @('python3','--version') $null $dest @{} $unitBudget $signature
+Assert-True ($record.exitCode -eq 0 -and $record.transportVerified -eq $false) 'Invoke: 署名が無ければ false'
+$record=Invoke-VerificationSandboxCommand $handle @('python3','--version') $null $dest @{} $unitBudget @{pattern='^Python 3\.\d+';stream='stdout'}
+Assert-True ($record.transportVerified -eq $true) 'Invoke: 取得系は期待形式の署名で true'
+$record=Invoke-VerificationSandboxCommand $handle @('codex','exec','--json') ([Text.Encoding]::UTF8.GetBytes('request')) '/home/agent/workspace/proposal' @{} (New-Budget $ctx -CommandSeconds 600) $null
+Assert-True ($null -eq $record.transportVerified -and $record.exitCode -eq 0 -and $record.stdoutPath -like '*quarantine\commands\*') 'Invoke: 署名なし（Codex 本体）は transportVerified=null で quarantine/ へ'
+Assert-Throws {Invoke-VerificationSandboxCommand $handle @('true') $null $dest @{'BAD KEY'='1'} $unitBudget $null} '*environment variable name*'
+Assert-Throws {Invoke-VerificationSandboxCommand $handle @('true') $null $dest @{} $unitBudget @{pattern='x';stream='both'}} '*OutputSignature*'
+Assert-Throws {Invoke-VerificationSandboxCommand @{name='iv-none';id='x';runId=$ctx.runId} @('true') $null $dest @{} $unitBudget $null} '*unknown sandbox handle*'
+$count++
+
+# 11. 実コマンド前の維持確認: inspect/policy/settings/mcp の値変化・世代変化・自動停止痕跡で実行拒否（exec を発行しない）。
+$execBefore=@(Get-Calls $ctx 'exec').Count
+function Assert-Refused([string]$Label,[string]$Reason,[string]$Status){
+    $failure=Get-Failure {Invoke-VerificationSandboxCommand $handle @('python3','--version') $null $dest @{} $unitBudget $null}
+    Assert-True ($failure.Data['reason'] -eq $Reason -and $failure.Data['status'] -eq $Status) "${Label}: 理由 $Reason / 状態 $Status（$($failure.Message) / $($failure.Data['reason'])）"
+    Assert-Equal @(Get-Calls $ctx 'exec').Count $script:execBefore "${Label}: exec を発行しない"
+}
+$inspectStopped=Get-FakeSbxResponse 'inspect' @{name=$vm.name;agent='shell';digest=$digest;imageDigest=$digest.Substring($digest.IndexOf('@')+1)}
+$override=Add-FakeSbxResponse $ctx.case @('inspect',[regex]::Escape($vm.name),'--json') -Stdout ($inspectStopped.text.Replace('"state": "{{state:vm:'+$vm.name+'|running}}"','"state": "stopped"')) -First;Write-FakeSbxScenario $ctx.case
+Assert-Refused 'inspect state 変化' 'sandbox-restarted' 'incomplete'
+$ctx.case.entries.Remove($override) | Out-Null
+$override=Add-FakeSbxResponse $ctx.case @('inspect',[regex]::Escape($vm.name),'--json') -Stdout ($inspectStopped.text.Replace('"secrets": [','"secrets": [{"name":"OPENAI_API_KEY","source":"host"},')) -Synthetic $true -First;Write-FakeSbxScenario $ctx.case
+Assert-Refused 'inspect secrets 変化' 'settings-changed' 'blocked'
+$ctx.case.entries.Remove($override) | Out-Null
+$override=Add-FakeSbxResponse $ctx.case @('policy','ls',[regex]::Escape($vm.name),'--json') -Stdout '{"rules":[]}' -Synthetic $true -First;Write-FakeSbxScenario $ctx.case
+Assert-Refused 'policy 変化' 'settings-changed' 'blocked'
+$ctx.case.entries.Remove($override) | Out-Null
+$override=Add-FakeSbxResponse $ctx.case @('settings','get','--json','clipboard\.imagePaste') -Stdout (Get-FakeSbxResponse 'settingsClipboardTrue').text -Synthetic $true -First;Write-FakeSbxScenario $ctx.case
+Assert-Refused 'clipboard 変化' 'settings-changed' 'blocked'
+$ctx.case.entries.Remove($override) | Out-Null
+$override=Add-FakeSbxResponse $ctx.case @('mcp','ls','--json') -Stdout (Get-FakeSbxResponse 'mcpLsOne').text -Synthetic $true -First;Write-FakeSbxScenario $ctx.case
+Assert-Refused 'MCP 登録変化' 'settings-changed' 'blocked'
+$ctx.case.entries.Remove($override) | Out-Null;Write-FakeSbxScenario $ctx.case
+$otherPid=(Get-Process -Id $PID).Parent.Id
+Write-Text $ctx.case.pidPath ([string]$otherPid)
+Assert-Refused '世代変化（PID）' 'sandbox-restarted' 'incomplete'
+Write-Text $ctx.case.pidPath ([string]$PID)
+$override=Add-FakeSbxResponse $ctx.case @('daemon','status','--json') -Stdout (Get-FakeSbxResponse 'daemonStatusStopped').text -Synthetic $true -First;Write-FakeSbxScenario $ctx.case
+Assert-Refused 'デーモン停止（取得不能）' 'sandbox-restarted' 'incomplete'
+$ctx.case.entries.Remove($override) | Out-Null;Write-FakeSbxScenario $ctx.case
+[void](Invoke-VerificationSandboxCommand $handle @('python3','--version') $null $dest @{} $unitBudget $null);$execBefore=@(Get-Calls $ctx 'exec').Count
+Add-FakeDaemonLogLine $ctx.case 'autoStopped' $vm.name
+Assert-Refused '自動停止の痕跡' 'sandbox-restarted' 'incomplete'
+$stop=Stop-TestSandbox $item (New-VerificationCleanupBudget $ctx.prepared 1)
+Assert-True ($stop.stopState -ceq 'stopped') '維持確認後の停止'
+$stopIndex=[Array]::FindIndex(@(Get-Calls $ctx),[Predicate[object]]{param($c) $c.argv[0] -eq 'stop'})
+$after=@(@(Get-Calls $ctx) | Select-Object -Skip ($stopIndex+1) | Where-Object {$_.argv[0] -in @('exec','cp')})
+Assert-Equal $after.Count 0 '停止後: 当該名への exec/cp が0件'
+Assert-Refused '停止後' 'sandbox-stopped' 'blocked'
+Release-VerificationPilotLease $lease
+$count++
+
+# 12. 出力超過での停止: outputExceeded=true・exitCode null・当該 VM を停止（stop 1回、予算は現在時刻起点の1台分）。以後の exec は発行しない。
+$ctx=New-Case -CleanupSeconds 5;$vm=Add-Vm $ctx
+Add-FakeSbxResponse $ctx.case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($vm.name),'sh','-c','yes') -Stdout ('y'*(3*1024*1024)) | Out-Null
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$handle=New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease;$item=@{handle=$handle;ctx=$ctx;stopped=$false};$handles.Add($item)
+$flood=New-Budget $ctx -CommandSeconds 60;$flood.limits.maxOutputBytes=1MB
+$before=[DateTime]::UtcNow
+$record=Invoke-VerificationSandboxCommand $handle @('sh','-c','yes') $null '/home/agent/workspace/source' @{} $flood @{pattern='x';stream='stdout'}
+Assert-True ($record.outputExceeded -and $null -eq $record.exitCode -and $record.transportVerified -eq $false -and $record.stopState -ceq 'stopped') "出力超過: 打ち切りと停止（stopState=$($record.stopState)）"
+Assert-Equal (@(Get-StopCalls $ctx) -join ',') $vm.name '出力超過: 当該名へ stop 1回'
+$stopEvidence=Get-Content -LiteralPath (Get-ChildItem -LiteralPath (Join-Path $ctx.controlRoot 'runtime') -Filter 'replay-before-stop-*.json')[0].FullName -Raw | ConvertFrom-Json -AsHashtable
+$cleanupAt=Get-Utc $stopEvidence.budget.cleanupDeadlineAt
+Assert-True ($cleanupAt -ge $before.AddSeconds(5) -and $cleanupAt -le [DateTime]::UtcNow.AddSeconds(5)) '出力超過: 停止予算は現在時刻起点の1台分（全体期限を含まない）'
+$failure=Get-Failure {Invoke-VerificationSandboxCommand $handle @('python3','--version') $null '/home/agent/workspace/source' @{} $flood $null}
+Assert-True ($failure.Data['reason'] -eq 'sandbox-stopped') '出力超過: 停止後は exec を発行しない'
+[void](Stop-TestSandbox $item (New-VerificationCleanupBudget $ctx.prepared 1))
+Assert-Equal @(Get-StopCalls $ctx).Count 1 '出力超過: 確認済みの停止を再発行しない'
+Release-VerificationPilotLease $lease
+$count++
+
+# 13. 停止未確認: ls が stopped にならなければ unverified。自動停止行だけでは stopped と判定しない。保持ジョブの停止はどちらでも行う。
+foreach($variant in @('ls-still-running','auto-stop-line-only')){
+    $ctx=New-Case -CleanupSeconds 8;$vm=Add-Vm $ctx   # 偽sbxの照会は約1秒/回なので、ls を数回待てる予算にする
+    $stopText=(Get-FakeSbxResponse 'stop' @{name=$vm.name}).text
+    if($variant -eq 'ls-still-running'){Add-FakeSbxResponse $ctx.case @('stop',[regex]::Escape($vm.name)) -Stdout $stopText -First | Out-Null}
+    else{Add-FakeSbxResponse $ctx.case @('stop',[regex]::Escape($vm.name)) -Stdout $stopText -Sets @{"vm:$($vm.name)"='stopped'} -AppendFile @(@{path=$ctx.case.logPath;text=(New-FakeSbxLogLine 'autoStopped' $vm.name)}) -First | Out-Null}
+    Write-FakeSbxScenario $ctx.case
+    $lease=Acquire-VerificationPilotLease $ctx.prepared
+    $handle=New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease;$item=@{handle=$handle;ctx=$ctx;stopped=$false};$handles.Add($item)
+    $watch=[Diagnostics.Stopwatch]::StartNew()
+    $stop=Stop-TestSandbox $item (New-VerificationCleanupBudget $ctx.prepared 1)
+    $watch.Stop()
+    Assert-True ($stop.stopState -ceq 'unverified') "${variant}: unverified（$($stop.reason)）"
+    if($variant -eq 'ls-still-running'){Assert-True ($stop.reason -like "*ls status 'running'*" -and $watch.Elapsed.TotalSeconds -ge 6) "${variant}: cleanupSeconds 内で ls を待ってから諦める（$([int]$watch.Elapsed.TotalSeconds)秒: $($stop.reason)）"}
+    else{Assert-True ($stop.reason -like '*no stopped-runtime-container line*') "${variant}: 自動停止行は外側停止の証拠にしない（$($stop.reason)）"}
+    $evidence=Get-Content -LiteralPath $stop.evidencePath -Raw | ConvertFrom-Json -AsHashtable
+    Assert-True ($null -ne $evidence.keepAlive -and $null -eq $evidence.stopLogLine) "${variant}: 保持ジョブの停止を試み、停止行なし"
+    Assert-Equal (@(Get-StopCalls $ctx) -join ',') $vm.name "${variant}: stop は当該名へ1回"
+    Release-VerificationPilotLease $lease
+}
 $count++
 
 }finally{

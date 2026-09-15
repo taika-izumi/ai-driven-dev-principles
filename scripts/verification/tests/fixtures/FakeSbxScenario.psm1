@@ -84,7 +84,7 @@ function Add-FakeSbxSandboxScenario([hashtable]$Case,[string]$Name,[string]$Id,[
     Add-FakeSbxResponse $Case @('policy','log',[regex]::Escape($Name),'--json') -Stdout $log.text -Synthetic $log.synthetic | Out-Null
     # セッション保持の exec は終わらない（停止側のジョブ停止で消える）。
     Add-FakeSbxResponse $Case @('exec',[regex]::Escape($Name),'sh','-c','sleep \d+') -DelaySeconds 3600 | Out-Null
-    Add-FakeSbxResponse $Case @('cp','.+',[regex]::Escape($Name)+':.+') | Out-Null
+    Add-FakeSbxResponse $Case @('cp','.+',([regex]::Escape($Name)+':.+')) | Out-Null
     Add-FakeSbxResponse $Case @('exec','-u','root',[regex]::Escape($Name),'chown','-R','agent:agent','.+') | Out-Null
     $lines=[Text.StringBuilder]::new()
     foreach($file in $ConfirmFiles){[void]$lines.Append(([string]$file.sha256).ToLowerInvariant()+'  ./'+[string]$file.path+"`n")}

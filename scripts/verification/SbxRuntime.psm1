@@ -430,12 +430,13 @@ function Stop-VerificationSandboxEntry([hashtable]$Entry,[hashtable]$RunBudget) 
     if($null -ne $Entry.stopResult -and $Entry.stopResult.stopState -ceq 'stopped'){return $Entry.stopResult}   # 停止確認済みの VM へは何も発行しない
     $client=$Entry.client;$name=$Entry.handle.name;$id=$Entry.handle.id
     $evidence=@{schemaVersion=3;runId=$Entry.handle.runId;role=$Entry.handle.role;name=$name;id=$id;budget=@{cleanupDeadlineAt=$RunBudget.cleanupDeadlineAt;cleanupSeconds=$Entry.cleanupSeconds};stopIssuedAt=$null;stopCall=$null;daemonBefore=$null;daemonAfter=$null;listObserved=$null;stopLogLine=$null;keepAlive=$null;stopState='unverified';reason=$null}
+    $problems=[Collections.Generic.List[string]]::new()   # 未確認の理由をすべて集める（上書きしない）
     try{
         $before=$null
-        try{$before=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonBefore=$before.instance}catch{$evidence.reason='daemon generation unavailable before stop: '+$_.Exception.Message}
+        try{$before=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonBefore=$before.instance}catch{$problems.Add('daemon generation unavailable before stop: '+$_.Exception.Message)}
         if($null -ne $before){
             $generationSame=Test-VerificationDaemonInstanceEqual $before.instance $Entry.daemonInstance
-            if(-not$generationSame){$evidence.reason='daemon generation changed before stop'}
+            if(-not$generationSame){$problems.Add('daemon generation changed before stop')}
             $evidence.stopIssuedAt=Get-VerificationUtcNow
             $issued=[DateTimeOffset]::Parse($evidence.stopIssuedAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal).UtcDateTime
             $stop=Invoke-VerificationSbx $client @('stop',$name) (New-VerificationSbxBudget $RunBudget $script:QuerySeconds $client.maxOutputBytes) 'stop'
@@ -445,7 +446,7 @@ function Stop-VerificationSandboxEntry([hashtable]$Entry,[hashtable]$RunBudget) 
             if($cleanupDeadline -lt $waitUntil){$waitUntil=$cleanupDeadline}
             $observed=$null
             while($true){
-                try{$list=Get-VerificationSandboxList $client $RunBudget}catch{$evidence.reason='ls unavailable after stop: '+$_.Exception.Message;break}
+                try{$list=Get-VerificationSandboxList $client $RunBudget}catch{$problems.Add('ls unavailable after stop: '+$_.Exception.Message);break}
                 $same=@($list | Where-Object {$_.id -ceq $id -and $_.name -ceq $name})
                 $observed=$(if($same.Count -eq 1){$same[0].status}else{'not-listed'})
                 if($observed -ceq 'stopped' -or [DateTime]::UtcNow -ge $waitUntil){break}
@@ -455,14 +456,16 @@ function Stop-VerificationSandboxEntry([hashtable]$Entry,[hashtable]$RunBudget) 
             $runtimeLines=Get-VerificationRuntimeLogLines $Entry.logPath $name
             $stopLines=@($runtimeLines | Where-Object {$_.msg -ceq 'stopped runtime container' -and $null -ne $_.time -and $_.time -ge $issued})
             if($stopLines.Count -gt 0){$evidence.stopLogLine=$stopLines[-1].raw}
-            try{$after=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonAfter=$after.instance}catch{$evidence.reason='daemon generation unavailable after stop: '+$_.Exception.Message}
+            try{$after=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonAfter=$after.instance}catch{$problems.Add('daemon generation unavailable after stop: '+$_.Exception.Message)}
             $generationStable=$generationSame -and ($null -ne $evidence.daemonAfter) -and (Test-VerificationDaemonInstanceEqual $before.instance $evidence.daemonAfter)
             if($observed -ceq 'stopped' -and $null -ne $evidence.stopLogLine -and $generationStable){$evidence.stopState='stopped'}
-            elseif($null -eq $evidence.reason){
-                $missing=@();if($observed -cne 'stopped'){$missing+="ls status '$observed'"};if($null -eq $evidence.stopLogLine){$missing+='no stopped-runtime-container line after stop'};if(-not$generationStable){$missing+='daemon generation not stable'}
-                $evidence.reason='stop unverified: '+($missing -join '; ')
+            else{
+                if($observed -cne 'stopped'){$problems.Add("ls status '$observed'")}
+                if($null -eq $evidence.stopLogLine){$problems.Add('no stopped-runtime-container line after stop')}
+                if(-not$generationStable){$problems.Add('daemon generation not stable')}
             }
         }
+        if($evidence.stopState -cne 'stopped'){$evidence.reason='stop unverified: '+($problems -join '; ')}
     }finally{
         # 保持セッションのジョブ停止は stop 確認の成否に関わらず行う。
         $evidence.keepAlive=Stop-VerificationSandboxKeepAlive $Entry
@@ -567,4 +570,240 @@ function Stop-VerificationSandbox([hashtable]$Handle,[hashtable]$RunBudget) {
     # 呼出し側が停止フェーズの予算（cleanupDeadlineAt = now + cleanupSeconds × 停止対象台数、phase=cleanup）を渡す。stop 自体の上限は照会と同じ QuerySeconds。
     Stop-VerificationSandboxEntry (Get-VerificationSandboxEntry $Handle) $RunBudget
 }
-Export-ModuleMember -Function Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Stop-VerificationSandbox,Write-VerificationSandboxRecord,New-VerificationCleanupBudget
+# ---- 実コマンド直前の維持確認（仕様02「各実コマンド直前にも、同じVM id・デーモン起動世代・実効設定が維持されているか確認する」） ----
+function Test-VerificationVmPath([string]$Value) {
+    # VM 内の固定絶対パス。sh -c へ埋め込むため、単純な区切りと文字だけを受ける。
+    if($Value -notmatch '^(/[A-Za-z0-9._-]+)+$'){Throw-VerificationRuntimeFailure "VM path must be an absolute POSIX path with plain segments: $Value"}
+}
+function Assert-VerificationSandboxUnchanged([hashtable]$Entry,[hashtable]$RunBudget) {
+    # 変化・取得不能・自動停止の痕跡があれば実行せず失敗（理由 sandbox-restarted → incomplete、settings-changed → blocked）。
+    if($null -ne $Entry.stopResult){Throw-VerificationRuntimeFailure 'sandbox already stopped; no commands after stop' 'blocked' 'sandbox-stopped'}
+    if($null -eq $Entry.expected){Throw-VerificationRuntimeFailure 'partial handle (activation incomplete) cannot run commands' 'blocked' 'sandbox-partial'}
+    $client=$Entry.client;$name=$Entry.handle.name;$id=$Entry.handle.id;$expected=$Entry.expected
+    try{
+        $daemon=Get-VerificationDaemonInstance $client $RunBudget
+        if(-not(Test-VerificationDaemonInstanceEqual $daemon.instance $Entry.daemonInstance)){Throw-VerificationRuntimeFailure 'daemon generation changed since creation' 'incomplete' 'sandbox-restarted'}
+        $list=Get-VerificationSandboxList $client $RunBudget
+        $same=@($list | Where-Object {$_.id -ceq $id})
+        if($same.Count -ne 1 -or $same[0].name -cne $name -or $same[0].status -cne 'running'){Throw-VerificationRuntimeFailure "sandbox $name is not listed as the same running VM" 'incomplete' 'sandbox-restarted'}
+        $lines=Get-VerificationRuntimeLogLines $Entry.logPath $name
+        $autoStopped=@($lines | Where-Object {$_.msg -ceq 'auto-stopped runtime after last session disconnected' -and $null -ne $_.time -and $_.time -ge $Entry.createdAtUtc})
+        if($autoStopped.Count -gt 0){Throw-VerificationRuntimeFailure 'auto-stop recorded in daemon.log after creation' 'incomplete' 'sandbox-restarted'}
+        $inspect=Get-VerificationInspectSummary (Invoke-VerificationSbxJson $client @('inspect',$name,'--json') $RunBudget 'inspect')
+        if($inspect.state -cne $expected.state -or $inspect.imageDigest -cne $expected.imageDigest){Throw-VerificationRuntimeFailure 'inspect state or image digest changed' 'incomplete' 'sandbox-restarted'}
+        if((ConvertTo-VerificationCanonicalJson $inspect.secrets) -cne $expected.secrets -or $inspect.mcpGateway -ne $expected.mcpGateway){Throw-VerificationRuntimeFailure 'inspect secrets or mcp_gateway changed' 'blocked' 'settings-changed'}
+        $rules=Get-VerificationNetworkRules (Invoke-VerificationSbxJson $client @('policy','ls',$name,'--json') $RunBudget 'policy-ls')
+        if((ConvertTo-VerificationCanonicalJson $rules) -cne $expected.rules){Throw-VerificationRuntimeFailure 'network policy rules changed' 'blocked' 'settings-changed'}
+        if((Get-VerificationClipboardImagePaste $client $RunBudget) -ne $expected.clipboardImagePaste){Throw-VerificationRuntimeFailure 'clipboard.imagePaste changed' 'blocked' 'settings-changed'}
+        if((Get-VerificationMcpServerCount $client $RunBudget) -ne $expected.mcpServers){Throw-VerificationRuntimeFailure 'mcp servers changed' 'blocked' 'settings-changed'}
+    }catch{
+        $reason=$(if($_.Exception.Data.Contains('reason')){[string]$_.Exception.Data['reason']}else{''})
+        if($reason -in @('sandbox-restarted','settings-changed')){throw}
+        # 取得不能（照会失敗・期限）も維持確認の失敗として扱う。
+        Throw-VerificationRuntimeFailure ('pre-command check failed: '+$_.Exception.Message) 'incomplete' 'sandbox-restarted'
+    }
+}
+
+# ---- 実コマンド ----
+function Invoke-VerificationSandboxCommand([hashtable]$Handle,[string[]]$Argv,[byte[]]$StdinBytes,[string]$WorkingDirectory,[hashtable]$Environment,[hashtable]$RunBudget,[hashtable]$OutputSignature) {
+    # argv は exec -w <wd> [-e K=V...] <name> <argv...> に固定し、stdin は Invoke-VerificationProcessV3 で転送する。
+    # transportVerified: 維持確認が成立し、sbx クライアントが開始マーカーを残し、外側の打ち切りなしに終了し、出力署名が指定ストリームにあるとき true。署名なし（Codex 本体）は null。
+    $entry=Get-VerificationSandboxEntry $Handle
+    if($null -eq $Argv -or $Argv.Count -eq 0){Throw-VerificationRuntimeFailure 'argv required'}
+    foreach($arg in $Argv){if($null -eq $arg -or $arg.Length -eq 0){Throw-VerificationRuntimeFailure 'argv elements must be non-empty strings'}}
+    Test-VerificationVmPath $WorkingDirectory
+    if($null -eq $Environment){$Environment=@{}}
+    $envArgs=@()
+    foreach($key in @($Environment.Keys | Sort-Object)){
+        if($key -notmatch '^[A-Za-z_][A-Za-z0-9_]*$'){Throw-VerificationRuntimeFailure "invalid environment variable name: $key"}
+        $value=$Environment[$key]
+        if($value -isnot [string] -or $value.IndexOfAny([char[]]@([char]0,"`n","`r")) -ge 0){Throw-VerificationRuntimeFailure "invalid environment variable value: $key"}
+        $envArgs+=@('-e',"$key=$value")
+    }
+    if($null -ne $OutputSignature){
+        if(-not$OutputSignature.ContainsKey('pattern') -or $OutputSignature.pattern -isnot [string] -or [string]::IsNullOrEmpty($OutputSignature.pattern) -or -not$OutputSignature.ContainsKey('stream') -or $OutputSignature.stream -notin @('stdout','stderr')){Throw-VerificationRuntimeFailure 'OutputSignature must be {pattern, stream=stdout|stderr}'}
+    }
+    if($null -eq $RunBudget -or -not$RunBudget.ContainsKey('limits') -or $RunBudget.limits -isnot [hashtable]){Throw-VerificationRuntimeFailure 'RunBudget.limits hashtable required'}
+    Assert-VerificationSandboxUnchanged $entry $RunBudget
+    $full=@('exec','-w',$WorkingDirectory)+$envArgs+@($entry.handle.name)+@($Argv)
+    $commandId=$entry.handle.role+'-'+[guid]::NewGuid().ToString('N').Substring(0,12)
+    # 署名を要求しない出力（提案本体の Codex 実行）は未信頼データとして quarantine/ に置く。
+    $outDir=$(if($null -eq $OutputSignature){Join-Path $entry.runRoot 'quarantine/commands'}else{Join-Path $entry.runtimeDir ($entry.handle.role+'/commands')})
+    [void][IO.Directory]::CreateDirectory($outDir)
+    $paths=@{stdoutPath=(Join-Path $outDir "$commandId.stdout");stderrPath=(Join-Path $outDir "$commandId.stderr")}
+    $budget=@{deadlineAt=$RunBudget.deadlineAt;cleanupDeadlineAt=$(if($RunBudget.ContainsKey('cleanupDeadlineAt')){$RunBudget.cleanupDeadlineAt}else{$null});limits=@{maxOutputBytes=[long]$RunBudget.limits.maxOutputBytes;commandSeconds=[int]$RunBudget.limits.commandSeconds};phase=$RunBudget.phase}
+    $startedAt=Get-VerificationUtcNow
+    $result=Invoke-VerificationProcessV3 -StartInfo (New-VerificationSbxStartInfo $entry.client $full) -StdinBytes $StdinBytes -OutputPaths $paths -RunBudget $budget
+    $transportVerified=$null
+    if($null -ne $OutputSignature){
+        $clean=$result.started -and $null -eq $result.refusedReason -and -not$result.timedOut -and -not$result.outputExceeded -and $result.processTreeStopped -and $null -ne $result.exitCode
+        $found=$false
+        if($clean){
+            $streamPath=$paths[$OutputSignature.stream+'Path']
+            if(Test-Path -LiteralPath $streamPath){$found=[regex]::IsMatch([IO.File]::ReadAllText($streamPath,[Text.UTF8Encoding]::new($false)),$OutputSignature.pattern,[Text.RegularExpressions.RegexOptions]::Multiline)}
+        }
+        $transportVerified=[bool]($clean -and $found)
+    }
+    $record=@{
+        commandId=$commandId;runId=$entry.handle.runId;role=$entry.handle.role;sandboxId=$entry.handle.id;argv=$full;workingDirectory=$WorkingDirectory
+        startedAt=$startedAt;finishedAt=$result.finishedAt;started=$result.started;refusedReason=$result.refusedReason;exitCode=$result.exitCode
+        stdoutPath=$paths.stdoutPath;stdoutHash=$result.stdoutHash;stdoutBytes=$result.stdoutBytes;stderrPath=$paths.stderrPath;stderrHash=$result.stderrHash;stderrBytes=$result.stderrBytes
+        timedOut=$result.timedOut;outputExceeded=$result.outputExceeded;processTreeStopped=$result.processTreeStopped;transportVerified=$transportVerified;stopState=$null
+    }
+    if($result.outputExceeded){
+        # 出力超過は当該 VM を停止する（仕様02）。停止予算は現在時刻起点の1台分。
+        $stop=Stop-VerificationSandboxEntry $entry (New-VerificationCleanupBudgetCore $entry.deadlineAt $entry.cleanupSeconds $entry.client.maxOutputBytes 1)
+        $record.stopState=$stop.stopState
+    }
+    $record
+}
+
+# ---- 搬入と照合 ----
+function Get-VerificationExpectedFiles([hashtable]$ExpectedManifest) {
+    if($null -eq $ExpectedManifest -or -not$ExpectedManifest.ContainsKey('files')){Throw-VerificationRuntimeFailure 'ExpectedManifest.files required'}
+    $map=@{}
+    foreach($file in @($ExpectedManifest.files)){
+        if($file -isnot [hashtable] -or -not$file.ContainsKey('path') -or -not$file.ContainsKey('sha256')){Throw-VerificationRuntimeFailure 'manifest entries need path and sha256'}
+        $path=[string]$file.path
+        if([string]::IsNullOrWhiteSpace($path) -or $path.StartsWith('/') -or $path.Contains('\') -or $map.ContainsKey($path)){Throw-VerificationRuntimeFailure "invalid or duplicate manifest path: $path"}
+        $map[$path]=@{sha256=([string]$file.sha256).ToUpperInvariant();size=$(if($file.ContainsKey('size')){$file.size}else{$null})}
+    }
+    $map
+}
+function Get-VerificationDirectoryFiles([string]$Root) {
+    # 搬入元の通常ファイル一覧（相対 POSIX パス → sha256・size）。再解析ポイントは拒否する。
+    $rootFull=[IO.Path]::TrimEndingDirectorySeparator([IO.Path]::GetFullPath($Root))
+    foreach($dir in [IO.Directory]::EnumerateDirectories($rootFull,'*',[IO.SearchOption]::AllDirectories)){if(([IO.DirectoryInfo]::new($dir)).Attributes -band [IO.FileAttributes]::ReparsePoint){Throw-VerificationRuntimeFailure "reparse point in trusted input: $dir"}}
+    $map=@{}
+    foreach($file in [IO.Directory]::EnumerateFiles($rootFull,'*',[IO.SearchOption]::AllDirectories)){
+        $info=[IO.FileInfo]::new($file)
+        if($info.Attributes -band [IO.FileAttributes]::ReparsePoint){Throw-VerificationRuntimeFailure "reparse point in trusted input: $file"}
+        $map[$file.Substring($rootFull.Length+1).Replace('\','/')]=@{sha256=(Get-VerificationFileHash $file);size=$info.Length}
+    }
+    $map
+}
+function Get-VerificationFileMapDifference([hashtable]$Expected,[hashtable]$Actual) {
+    $missing=@($Expected.Keys | Where-Object {-not$Actual.ContainsKey($_)} | Sort-Object)
+    $unexpected=@($Actual.Keys | Where-Object {-not$Expected.ContainsKey($_)} | Sort-Object)
+    $mismatched=@($Expected.Keys | Where-Object {$Actual.ContainsKey($_) -and ($Actual[$_].sha256 -ine $Expected[$_].sha256 -or ($null -ne $Expected[$_].size -and $Actual[$_].ContainsKey('size') -and $Actual[$_].size -ne $Expected[$_].size))} | Sort-Object)
+    $parts=@()
+    if($missing.Count -gt 0){$parts+='missing: '+($missing -join ', ')}
+    if($unexpected.Count -gt 0){$parts+='unexpected: '+($unexpected -join ', ')}
+    if($mismatched.Count -gt 0){$parts+='mismatched: '+($mismatched -join ', ')}
+    $parts -join '; '
+}
+function Test-VerificationSetupCall([hashtable]$Call,[string]$Tag) {
+    # cp・chown は CommandRecord を持たず、終了0以外を失敗として扱う。
+    $r=$Call.result
+    if(-not$r.started){Throw-VerificationRuntimeFailure "sbx $Tag not started: $($r.refusedReason)" $(if($r.refusedReason -eq 'deadline-reached'){'timed_out'}else{'failed'}) 'setup-failed'}
+    if($r.timedOut){Throw-VerificationRuntimeFailure "sbx $Tag timed out (limit $($script:SetupSeconds)s)" 'incomplete' 'setup-timed-out'}
+    if($r.outputExceeded){Throw-VerificationRuntimeFailure "sbx $Tag output exceeded the limit" 'incomplete' 'setup-output-exceeded'}
+    if($r.exitCode -ne 0){Throw-VerificationRuntimeFailure "sbx $Tag failed (exit $($r.exitCode)): $($Call.stderr.Trim())" 'failed' 'setup-failed'}
+}
+function Copy-VerificationSandboxInput([hashtable]$Handle,[string]$TrustedInputRoot,[string]$Destination,[hashtable]$ExpectedManifest,[hashtable]$RunBudget) {
+    # 外側で検査済みの通常ファイルだけを固定 Destination へ搬入する。cp を1回、続けて所有者調整（作成・搬入の上限式）。回収には使わない。
+    $entry=Get-VerificationSandboxEntry $Handle
+    $source=Resolve-VerificationPath $TrustedInputRoot
+    if(-not[IO.Directory]::Exists($source)){Throw-VerificationRuntimeFailure 'trusted input root missing'}
+    Test-VerificationVmPath $Destination
+    $expected=Get-VerificationExpectedFiles $ExpectedManifest
+    $actual=Get-VerificationDirectoryFiles $source
+    $difference=Get-VerificationFileMapDifference $expected $actual
+    if($difference){Throw-VerificationRuntimeFailure "trusted input differs from the expected manifest ($difference)" 'blocked' 'input-changed'}
+    Assert-VerificationSandboxUnchanged $entry $RunBudget
+    $budget=New-VerificationSbxBudget $RunBudget $script:SetupSeconds $entry.client.maxOutputBytes
+    $copy=Invoke-VerificationSbx $entry.client @('cp',$source,($entry.handle.name+':'+$Destination)) $budget 'cp'
+    Test-VerificationSetupCall $copy 'cp'
+    $chown=Invoke-VerificationSbx $entry.client @('exec','-u','root',$entry.handle.name,'chown','-R','agent:agent',$Destination) $budget 'chown'
+    Test-VerificationSetupCall $chown 'chown'
+    @{copied=$true;fileCount=$actual.Count;destination=$Destination;copyStdoutPath=$copy.stdoutPath;chownStdoutPath=$chown.stdoutPath}
+}
+function Confirm-VerificationSandboxInput([hashtable]$Handle,[string]$Destination,[hashtable]$ExpectedManifest,[hashtable]$RunBudget) {
+    # 固定コマンドで搬入後のハッシュを照会し、外側の ExpectedManifest と照合する。相違・欠落・予定外ファイルは blocked。
+    [void](Get-VerificationSandboxEntry $Handle)
+    Test-VerificationVmPath $Destination
+    $expected=Get-VerificationExpectedFiles $ExpectedManifest
+    $argv=@('sh','-c',"cd $Destination && find . -type f -print0 | sort -z | xargs -0 sha256sum")
+    $budget=New-VerificationSbxBudget $RunBudget $script:SetupSeconds ([long]$RunBudget.limits.maxOutputBytes)
+    $record=Invoke-VerificationSandboxCommand $Handle $argv $null $Destination @{} $budget @{pattern='^[0-9a-f]{64}  \S';stream='stdout'}
+    if($record.transportVerified -ne $true -or $record.exitCode -ne 0){Throw-VerificationRuntimeFailure "input confirmation command did not complete (exit $($record.exitCode), transportVerified=$($record.transportVerified))" 'incomplete' 'confirm-failed'}
+    $actual=@{}
+    foreach($line in [IO.File]::ReadAllLines($record.stdoutPath,[Text.UTF8Encoding]::new($false))){
+        if($line.Length -eq 0){continue}
+        $match=[regex]::Match($line,'^([0-9a-f]{64})  (?:\./)?(.+)$')
+        if(-not$match.Success){Throw-VerificationRuntimeFailure "unexpected sha256sum line: $line" 'blocked' 'confirm-format'}
+        $path=$match.Groups[2].Value
+        if($actual.ContainsKey($path)){Throw-VerificationRuntimeFailure "duplicate path in sha256sum output: $path" 'blocked' 'confirm-format'}
+        $actual[$path]=@{sha256=$match.Groups[1].Value.ToUpperInvariant()}
+    }
+    $difference=Get-VerificationFileMapDifference $expected $actual
+    if($difference){Throw-VerificationRuntimeFailure "sandbox input differs from the expected manifest ($difference)" 'blocked' 'input-mismatch'}
+    @{confirmed=$true;fileCount=$actual.Count;commandRecord=$record}
+}
+
+# ---- 記録済み ID の復旧停止（ADR-0194） ----
+function Save-VerificationRecoveryResult([string]$RuntimeDir,[hashtable]$Result) {
+    Test-VerificationRuntimeSchema $Result 'recovery-result.schema.json' 'recovery result'
+    Write-VerificationNewFile (Join-Path $RuntimeDir ('recovery-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfff')+'.json')) (ConvertTo-VerificationCanonicalJson $Result)
+    $Result
+}
+function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$RecoveryInput) {
+    # control/runtime/<role>-sandbox.json の runId・name・id を正本に、running の対象だけへ停止手順を適用する。記録に無い VM には触れない。VerificationResultV3 を名乗らない。
+    if($null -eq $RecoveryInput){Throw-VerificationRuntimeFailure 'RecoveryInput required'}
+    Test-VerificationRuntimeSchema $RecoveryInput 'recovery-input.schema.json' 'recovery input'
+    if($RecoveryInput.schemaVersion -ne 3){Throw-VerificationRuntimeFailure 'recovery input schemaVersion must be integer 3'}
+    foreach($key in @($RecoveryInput.limits.Keys)){$value=$RecoveryInput.limits[$key];if(-not(($value -is [int]) -or ($value -is [long])) -or $value -le 0){Throw-VerificationRuntimeFailure "limits.$key must be a positive integer"}}
+    $root=Resolve-VerificationPath $RunRoot
+    if(-not[IO.Directory]::Exists($root)){Throw-VerificationRuntimeFailure 'run root missing'}
+    $runtimeDir=Join-Path $root 'control/runtime'
+    $records=@()
+    if([IO.Directory]::Exists($runtimeDir)){
+        foreach($file in @(Get-ChildItem -LiteralPath $runtimeDir -File -Filter '*-sandbox.json' | Sort-Object Name)){
+            if($file.Name -notmatch '^(proposal|replay-before|replay-after|probe)-sandbox\.json$'){continue}
+            $record=Read-VerificationJsonFile $file.FullName 'sandbox record'
+            foreach($key in @('runId','role','name','id')){if(-not$record.ContainsKey($key) -or $record[$key] -isnot [string] -or [string]::IsNullOrWhiteSpace($record[$key])){Throw-VerificationRuntimeFailure "sandbox record lacks $key`: $($file.Name)"}}
+            $records+=$record
+        }
+    }
+    $checkedAt=Get-VerificationUtcNow
+    $runId=$(if($records.Count -gt 0){[string]$records[0].runId}else{$null})
+    foreach($record in $records){if($record.runId -cne $runId){Throw-VerificationRuntimeFailure 'sandbox records span multiple runs' 'blocked' 'records-inconsistent'}}
+    $cleanupSeconds=[int]$RecoveryInput.limits.cleanupSeconds
+    $client=New-VerificationSbxClient $RecoveryInput.sbxPath (Join-Path $runtimeDir 'recovery') ([long]$RecoveryInput.limits.maxOutputBytes)
+    $result=@{schemaVersion=3;runId=$runId;checkedAt=$checkedAt;daemonRunning=$false;targetCount=$records.Count;targets=@();lease=$null}
+    $daemon=Get-VerificationDaemonStatus $client (New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $records.Count)
+    if(-not$daemon.running){
+        # 停止中デーモンへ ls を発行しない。記録済みの id/name を列挙だけして全対象 unverified（利用者の通常起動が必要）。
+        $result.targets=@(foreach($record in $records){@{name=$record.name;id=$record.id;stateBefore='unknown';stopState='unverified';evidencePath=$null}})
+        return Save-VerificationRecoveryResult $runtimeDir $result
+    }
+    $result.daemonRunning=$true
+    if($records.Count -eq 0){return Save-VerificationRecoveryResult $runtimeDir $result}
+    $lease=Acquire-VerificationPilotLeaseCore $runId (Get-VerificationDaemonKey ([string]$daemon.status.socket))   # 競合時は「稼働中の run がある」として何もせず blocked
+    try{
+        $result.lease=@{leaseId=$lease.leaseId;daemonKey=$lease.daemonKey}
+        $probeBudget=New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $records.Count
+        $instance=Get-VerificationDaemonInstance $client $probeBudget
+        $list=Get-VerificationSandboxList $client $probeBudget
+        $targets=@(foreach($record in $records){
+            $same=@($list | Where-Object {$_.id -ceq $record.id -and $_.name -ceq $record.name})
+            @{record=$record;stateBefore=$(if($same.Count -eq 1){$same[0].status}else{'not-listed'})}
+        })
+        $toStop=@($targets | Where-Object {$_.stateBefore -cne 'stopped' -and $_.stateBefore -cne 'not-listed'})
+        # 現在時刻を起点に新しい予算（startedAt=now、deadlineAt=now、cleanupDeadlineAt=now + cleanupSeconds×対象台数、phase=cleanup）。
+        $budget=New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $toStop.Count
+        foreach($target in $targets){
+            $record=$target.record
+            $item=@{name=$record.name;id=$record.id;stateBefore=$target.stateBefore;stopState='unverified';evidencePath=$null}
+            if($target.stateBefore -ceq 'stopped'){$item.stopState='stopped'}
+            elseif($target.stateBefore -cne 'not-listed'){
+                $entry=@{handle=@{runId=$record.runId;role=$record.role;name=$record.name;id=$record.id};client=$client;stateRoot=$instance.stateRoot;logPath=$instance.logPath;daemonInstance=$instance.instance;runRoot=$root;runtimeDir=$runtimeDir;cleanupSeconds=$cleanupSeconds;deadlineAt=$checkedAt;createdAtUtc=$null;expected=$null;keepAlive=$null;stopResult=$null}
+                $stop=Stop-VerificationSandboxEntry $entry $budget
+                $item.stopState=$stop.stopState;$item.evidencePath=$stop.evidencePath
+            }
+            $result.targets+=$item
+        }
+    }finally{Release-VerificationPilotLease $lease}
+    Save-VerificationRecoveryResult $runtimeDir $result
+}
+Export-ModuleMember -Function Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Copy-VerificationSandboxInput,Confirm-VerificationSandboxInput,Invoke-VerificationSandboxCommand,Stop-VerificationSandbox,Stop-VerificationRecordedSandboxes,Write-VerificationSandboxRecord,New-VerificationCleanupBudget

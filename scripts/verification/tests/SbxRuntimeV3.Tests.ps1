@@ -148,23 +148,7 @@ function Add-Vm([hashtable]$Ctx,[string]$Role='replay-before',[object[]]$Confirm
     @{name=$name;id=$id}
 }
 function Test-ProcessAlive([int]$ProcessId){$null -ne (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)}
-function Get-CaseFakeProcesses([object[]]$Ctxs){
-    # 指定ケースの偽sbx一式（ケースごとに一意なディレクトリ）をコマンドラインに持つプロセス。名前では選ばない。
-    $dirs=@($Ctxs | ForEach-Object {$_.case.sbxDir})
-    @(Get-CimInstance Win32_Process | Where-Object {$line=$_.CommandLine;$null -ne $line -and @($dirs | Where-Object {$line.IndexOf($_,[StringComparison]::OrdinalIgnoreCase) -ge 0}).Count -gt 0} | ForEach-Object {@{processId=[int]$_.ProcessId;createdAt=$_.CreationDate}})
-}
-function Stop-CaseFakeProcesses([object[]]$Ctxs){
-    # 実測（修正ラウンド1、Issue-0147 修正後）: ジョブへ明示割当された cmd.exe（fake-sbx.cmd）は止まるが、cmd.exe が起動する MSIX 版 pwsh（FakeSbx.ps1 の本体）は
-    # ジョブを継承せず、時間超過・保持停止のジョブ停止が届かない（遅延中の偽sbxが残る）。試験が起動した当該ケースのプロセスだけを PID と起動時刻を照合して止める。
-    foreach($item in @(Get-CaseFakeProcesses $Ctxs)){
-        $process=Get-Process -Id $item.processId -ErrorAction SilentlyContinue
-        if($null -eq $process){continue}
-        $same=$false;try{$same=[Math]::Abs(($process.StartTime-$item.createdAt).TotalSeconds) -lt 1}catch{}
-        if($same){Stop-Process -Id $item.processId -Force -ErrorAction SilentlyContinue}
-    }
-    $until=[DateTime]::UtcNow.AddSeconds(5)
-    while(@(Get-CaseFakeProcesses $Ctxs).Count -gt 0 -and [DateTime]::UtcNow -lt $until){Start-Sleep -Milliseconds 200}
-}
+# 偽sbxの後片付け（Get-CaseFakeProcesses・Stop-CaseFakeProcesses）は fixtures/FakeSbxScenario.psm1 に置く（Proposal/Replay/CLI の v3 試験と共用）。
 function Stop-TestSandbox([hashtable]$Item,[hashtable]$RunBudget){
     $result=Stop-VerificationSandbox $Item.handle $RunBudget
     $Item.stopped=$true

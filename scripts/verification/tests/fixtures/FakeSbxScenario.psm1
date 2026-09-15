@@ -146,4 +146,27 @@ function Read-FakeSbxCalls([hashtable]$Case){
     $complete=$text.Substring(0,$text.LastIndexOf("`n")+1)
     @($complete.Split("`n") | Where-Object {$_.Trim().Length -gt 0} | ForEach-Object {$_ | ConvertFrom-Json -AsHashtable})
 }
-Export-ModuleMember -Function Get-FakeSbxTemplateDigest,Get-FakeSbxResponse,New-FakeSbxLogLine,New-FakeSbxCase,Add-FakeSbxResponse,New-FakeRuntimeFileText,Add-FakeSbxSandboxScenario,Write-FakeSbxScenario,Set-FakeSbxState,Add-FakeDaemonLogLine,Read-FakeSbxCalls
+function Get-FakeSbxCaseDirectory($Item){
+    # 偽sbxのケース（New-FakeSbxCase の戻り）か、それを case キーに持つ試験側の文脈のどちらでも受ける。
+    if($Item.ContainsKey('sbxDir')){return [string]$Item.sbxDir}
+    [string]$Item.case.sbxDir
+}
+function Get-CaseFakeProcesses([object[]]$Ctxs){
+    # 指定ケースの偽sbx一式（ケースごとに一意なディレクトリ）をコマンドラインに持つプロセス。名前では選ばない。
+    $dirs=@($Ctxs | ForEach-Object {Get-FakeSbxCaseDirectory $_})
+    @(Get-CimInstance Win32_Process | Where-Object {$line=$_.CommandLine;$null -ne $line -and @($dirs | Where-Object {$line.IndexOf($_,[StringComparison]::OrdinalIgnoreCase) -ge 0}).Count -gt 0} | ForEach-Object {@{processId=[int]$_.ProcessId;createdAt=$_.CreationDate}})
+}
+function Stop-CaseFakeProcesses([object[]]$Ctxs){
+    # 実測（タスク3 修正ラウンド1、Issue-0147 修正後）: ジョブへ明示割当された cmd.exe（fake-sbx.cmd）は止まるが、cmd.exe が起動する MSIX 版 pwsh（FakeSbx.ps1 の本体）は
+    # ジョブを継承せず、時間超過・保持停止のジョブ停止が届かない（遅延中の偽sbxが残る）。試験が起動した当該ケースのプロセスだけを PID と起動時刻を照合して止める。
+    # SbxRuntimeV3 と Proposal/Replay/CLI の v3 試験で共用するため、試験スクリプトからこのモジュールへ移した（挙動は同じ）。
+    foreach($item in @(Get-CaseFakeProcesses $Ctxs)){
+        $process=Get-Process -Id $item.processId -ErrorAction SilentlyContinue
+        if($null -eq $process){continue}
+        $same=$false;try{$same=[Math]::Abs(($process.StartTime-$item.createdAt).TotalSeconds) -lt 1}catch{}
+        if($same){Stop-Process -Id $item.processId -Force -ErrorAction SilentlyContinue}
+    }
+    $until=[DateTime]::UtcNow.AddSeconds(5)
+    while(@(Get-CaseFakeProcesses $Ctxs).Count -gt 0 -and [DateTime]::UtcNow -lt $until){Start-Sleep -Milliseconds 200}
+}
+Export-ModuleMember -Function Get-FakeSbxTemplateDigest,Get-FakeSbxResponse,New-FakeSbxLogLine,New-FakeSbxCase,Add-FakeSbxResponse,New-FakeRuntimeFileText,Add-FakeSbxSandboxScenario,Write-FakeSbxScenario,Set-FakeSbxState,Add-FakeDaemonLogLine,Read-FakeSbxCalls,Get-CaseFakeProcesses,Stop-CaseFakeProcesses

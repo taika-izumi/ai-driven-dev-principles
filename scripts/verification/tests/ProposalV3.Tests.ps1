@@ -258,7 +258,190 @@ Assert-True ($failure.Data['reason'] -ceq 'accepted-unsafe') "リンク相当: a
 Assert-Equal ([IO.Directory]::GetFileSystemEntries($outside).Length) 0 'リンク相当: accepted/tests のリンク先に書かない'
 $count++
 
+# 9. recheck: VM・モデルを起動せず（sbx 呼び出し0回、profile・Lease なし）、前回の固定テストから ready。origin=reused-tests・sandbox=null・stopState=not-created、
+#    artifacts は前回 hash のまま、control/proposal/manifest.json を新規作成。追加・欠落・改変は拒否。
+function New-RecheckCtx(){
+    $ctx=New-Ctx
+    $path=Join-Path $ctx.prepared.acceptedRoot 'tests/test_add.py';Write-Text $path $testText
+    $artifact=@{kind='test';path='tests/test_add.py';size=([IO.FileInfo]::new($path)).Length;sha256=(Get-Hash $path);previousRunId=[guid]::NewGuid().ToString()}
+    $manifestPath=Join-Path $ctx.controlRoot 'recheck-manifest.json'
+    Write-VerificationNewFile $manifestPath (ConvertTo-VerificationCanonicalJson @{schemaVersion=3;runId=$ctx.runId;previousRunId=$artifact.previousRunId;previousResultPath='C:\fixture\result.json';previousResultHash=('A'*64);tests=@($artifact)})
+    $ctx.prepared.recheckArtifacts=@($artifact);$ctx.prepared.recheckManifestPath=$manifestPath;$ctx.prepared.recheckManifestHash=Get-Hash $manifestPath
+    $ctx.artifact=$artifact
+    $ctx
+}
+$ctx=New-RecheckCtx
+$result=Invoke-VerificationProposal $ctx.prepared $null $null
+Assert-Equal (@($result.Keys | Sort-Object) -join ',') 'artifacts,failure,findings,manifestHash,manifestPath,origin,runId,sandbox,schemaVersion,status,stopState,summary,testsManifestHash' 'ProposalResultV3: 項目'
+Assert-True ($result.status -ceq 'ready' -and $result.origin -ceq 'reused-tests' -and $null -eq $result.sandbox -and $result.stopState -ceq 'not-created' -and $null -eq $result.failure) "recheck: ready・reused-tests・sandbox=null・not-created（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+Assert-True ($null -eq $result.summary -and $null -eq $result.findings) 'recheck: 生成した提案を装わない（summary・findings なし）'
+Assert-Equal @(Read-FakeSbxCalls $ctx.case).Count 0 'recheck: sbx 呼び出し0回（VM・モデルを起動しない）'
+Assert-True (@($result.artifacts).Count -eq 1 -and $result.artifacts[0].path -ceq 'tests/test_add.py' -and $result.artifacts[0].sha256 -ceq $ctx.artifact.sha256 -and $result.artifacts[0].size -eq $ctx.artifact.size -and $result.artifacts[0].kind -ceq 'test') 'recheck: artifacts は前回 hash のまま'
+Assert-True ($result.manifestPath -ceq (Join-Path $ctx.controlRoot 'proposal/manifest.json') -and $result.manifestHash -ceq (Get-Hash $result.manifestPath)) 'recheck: control/proposal/manifest.json を作り manifestHash を返す'
+$expectedTestsHash=Get-VerificationCanonicalHash -Object ([object[]]@(@{path='tests/test_add.py';size=$ctx.artifact.size;sha256=$ctx.artifact.sha256}))
+Assert-Equal $result.testsManifestHash $expectedTestsHash 'recheck: testsManifestHash（相対パス・サイズ・SHA256 のパス順の正規化）'
+$manifest=Get-Content -LiteralPath $result.manifestPath -Raw | ConvertFrom-Json -AsHashtable
+Assert-True ($manifest.origin -ceq 'reused-tests' -and $manifest.runId -ceq $ctx.runId -and $manifest.testsManifestHash -ceq $expectedTestsHash -and @($manifest.artifacts).Count -eq 1) 'recheck: manifest の内容'
+$again=Invoke-VerificationProposal $ctx.prepared $null $null
+Assert-True ($again.status -ceq 'blocked' -and $null -eq $again.manifestPath) 'recheck: manifest が既にあれば上書きしない（CreateNew）'
+foreach($variant in @('changed','added','missing')){
+    $ctx=New-RecheckCtx
+    switch($variant){
+        'changed'{Write-Text (Join-Path $ctx.prepared.acceptedRoot 'tests/test_add.py') ($testText+"# edited`n")}
+        'added'{Write-Text (Join-Path $ctx.prepared.acceptedRoot 'tests/test_extra.py') $testText}
+        'missing'{[IO.File]::Move((Join-Path $ctx.prepared.acceptedRoot 'tests/test_add.py'),(Join-Path $ctx.root 'moved-test_add.py'))}
+    }
+    $result=Invoke-VerificationProposal $ctx.prepared $null $null
+    Assert-True ($result.status -ceq 'blocked' -and $result.failure.reason -ceq 'recheck-tests-changed' -and $null -eq $result.manifestPath -and @($result.artifacts).Count -eq 0 -and -not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'proposal/manifest.json'))) "recheck($variant): 拒否し manifest を作らない（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+    Assert-Equal @(Read-FakeSbxCalls $ctx.case).Count 0 "recheck($variant): sbx 呼び出し0回"
+}
+$count++
+
+# 10. runtimeFailure の捕捉（VM なし。モジュール内の完了処理へ例外を直接渡す）: created は確定済み handle を sandbox に残し、停止済みでも起動失敗を成功にしない。
+#     unknown・停止未確認は incomplete（期限到達なら timed_out）、runtimeFailure の欠落・不正は creation-unresolved の incomplete。
+function New-RuntimeException([string]$Status,$Record){
+    $failure=[InvalidOperationException]::new('sandbox creation failed (fixture)');$failure.Data['status']=$Status
+    if($null -ne $Record){$failure.Data['runtimeFailure']=$(if($Record -is [string]){$Record}else{ConvertTo-VerificationCanonicalJson $Record})}
+    $failure
+}
+function Complete-Creation([hashtable]$Ctx,[Exception]$Failure){& $proposalModule {param($p,$f) Complete-VerificationProposalCreationFailure (New-ProposalResult $p 'generated') $p $f} $Ctx.prepared $Failure}
+$ctx=New-Ctx
+$handleRecord=@{schemaVersion=3;runId=$ctx.runId;role='proposal';name=$ctx.name;id='11111111-2222-3333-4444-555555555555';createdAt='2026-09-15T00:00:00.0000000Z';profileHash=('A'*64);effectiveSettingsHash=('B'*64);activationRecordPath=$null;activationRecordHash=$null}
+$failureBase=@{schemaVersion=3;runId=$ctx.runId;role='proposal';stage='activation';reason='activation-mismatch';message='x';handle=$handleRecord}
+$r=Complete-Creation $ctx (New-RuntimeException 'blocked' ($failureBase+@{creationState='created';stopState='stopped'}))
+Assert-True ($r.status -ceq 'blocked' -and $r.sandbox.id -ceq $handleRecord.id -and $r.sandbox.createdAt -ceq '2026-09-15T00:00:00.0000000Z' -and $r.stopState -ceq 'stopped' -and $r.failure.stage -ceq 'sandbox' -and $r.failure.reason -ceq 'activation-mismatch') "created・stopped: blocked で handle を残す（$($r.status)）"
+$r=Complete-Creation $ctx (New-RuntimeException 'incomplete' ($failureBase+@{creationState='created';stopState='unverified'}))
+Assert-True ($r.status -ceq 'incomplete' -and $r.sandbox.id -ceq $handleRecord.id -and $r.stopState -ceq 'unverified') 'created・unverified: incomplete'
+$r=Complete-Creation $ctx (New-RuntimeException 'incomplete' (@{schemaVersion=3;runId=$ctx.runId;role='proposal';stage='create';reason='create-timed-out';message='x';handle=$null;creationState='unknown';stopState='unverified'}))
+Assert-True ($r.status -ceq 'incomplete' -and $null -eq $r.sandbox -and $r.stopState -ceq 'unverified') 'unknown: incomplete（未作成へ推定しない）'
+$r=Complete-Creation $ctx (New-RuntimeException 'blocked' (@{schemaVersion=3;runId=$ctx.runId;role='proposal';stage='daemon-settings';reason='daemon-settings';message='x';handle=$null;creationState='not-created';stopState='not-created'}))
+Assert-True ($r.status -ceq 'blocked' -and $null -eq $r.sandbox -and $r.stopState -ceq 'not-created' -and $r.failure.reason -ceq 'daemon-settings') 'not-created: blocked'
+foreach($broken in @($null,'{not json','{"creationState":"created","stopState":"stopped"}','{"creationState":"maybe","stopState":"stopped"}')){
+    $r=Complete-Creation $ctx (New-RuntimeException 'blocked' $broken)
+    Assert-True ($r.status -ceq 'incomplete' -and $r.failure.reason -ceq 'creation-unresolved' -and $r.stopState -ceq 'unverified' -and $null -eq $r.sandbox) "runtimeFailure 欠落・不正（$broken）: creation-unresolved の incomplete"
+}
+$late=New-Ctx -DeadlineIn -1
+$r=Complete-Creation $late (New-RuntimeException 'incomplete' (@{schemaVersion=3;runId=$late.runId;role='proposal';stage='create';reason='create-timed-out';message='x';handle=$null;creationState='unknown';stopState='unverified'}))
+Assert-True ($r.status -ceq 'timed_out' -and $r.stopState -ceq 'unverified') 'unknown で期限到達: timed_out を優先'
+$count++
+
+# ---- ここから偽sbx の VM を使う経路 ----
+$agentEvents='{"type":"thread.started"}'+"`n"+'{"type":"item.completed","item":{"type":"agent_message","text":"proposal written"}}'+"`n"
+function Add-ProposalVm([hashtable]$Ctx,[string]$WireText,[double]$AgentDelaySeconds=0){
+    $id=[guid]::NewGuid().ToString()
+    Add-FakeSbxSandboxScenario $Ctx.case $Ctx.name $id -Agent 'codex' -ConfirmFiles $Ctx.baselineFiles
+    $name=[regex]::Escape($Ctx.name)
+    # Codex 本体の exec（出力は Codex の実行イベント風の創作）と固定エクスポーターの exec（wire は試験が組んだ Envelope）。どちらも実測が無い創作応答。
+    Add-FakeSbxResponse $Ctx.case @('exec','-w','/home/agent/workspace/source',$name,'codex','exec','--json') -Stdout $agentEvents -DelaySeconds $AgentDelaySeconds -Synthetic $true -Source 'Codex の実行イベントは未観測（タスク9で実測する）' | Out-Null
+    $limits=$Ctx.prepared.settings.limits
+    Add-FakeSbxResponse $Ctx.case @('exec','-w','/home/agent/proposal-exporter',$name,'python3','/home/agent/proposal-exporter/proposal-export\.py','--run-id',[regex]::Escape($Ctx.runId),'--max-files',[string]$limits.maxProposalFiles,'--max-file-bytes',[string]$limits.maxFileBytes,'--max-proposal-bytes',[string]$limits.maxProposalBytes) -Stdout $WireText -Synthetic $true -Source 'proposal-export.py の出力形式（タスク4で確定）に合わせて試験が組んだ Envelope。実機の出力は未観測' | Out-Null
+    @{name=$Ctx.name;id=$id}
+}
+function Get-CallIndex([object[]]$Calls,[scriptblock]$Predicate){for($i=0;$i -lt $Calls.Count;$i++){if(& $Predicate $Calls[$i]){return $i}};-1}
+function Assert-NoLeftover([hashtable]$Ctx,[string]$Label){
+    Stop-CaseFakeProcesses @($Ctx)
+    Assert-Equal @(Get-CaseFakeProcesses @($Ctx)).Count 0 "${Label}: 当該ケースの偽sbxプロセスが残っていない"
+}
+
+# 11. 正常な提案: 搬入・照合 → Codex（stdin で依頼、出力は quarantine/）→ 固定エクスポーター → 停止確認 → Envelope 検査 → accepted・manifest → ready。
+$ctx=New-Ctx
+$vm=Add-ProposalVm $ctx ((ConvertTo-WireText (New-Envelope $ctx))+"`n")
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+try{$result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $lease}finally{Release-VerificationPilotLease $lease}
+Assert-True ($result.status -ceq 'ready' -and $result.origin -ceq 'generated' -and $result.stopState -ceq 'stopped' -and $null -eq $result.failure) "ready: 状態（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+Assert-True ($result.sandbox.name -ceq $vm.name -and $result.sandbox.id -ceq $vm.id -and $result.sandbox.role -ceq 'proposal') 'ready: sandbox は確定済み handle'
+Assert-Equal (@($result.artifacts | ForEach-Object {"$($_.kind):$($_.path)"}) -join ',') 'replacement:replacements/pkg/mod.py,test:tests/__init__.py,test:tests/test_add.py' 'ready: artifacts'
+foreach($artifact in $result.artifacts){Assert-Equal $artifact.sha256 (Get-Hash (Join-Path $ctx.prepared.acceptedRoot $artifact.path)) "ready: $($artifact.path) の sha256 は accepted の実体"}
+Assert-Equal ([IO.File]::ReadAllText((Join-Path $ctx.prepared.acceptedRoot 'replacements/pkg/mod.py'),$utf8)) $replacementText 'ready: replacement の内容'
+Assert-True ($result.manifestPath -ceq (Join-Path $ctx.controlRoot 'proposal/manifest.json') -and $result.manifestHash -ceq (Get-Hash $result.manifestPath)) 'ready: manifestPath・manifestHash'
+$testsOnly=[object[]]@(foreach($path in @('tests/__init__.py','tests/test_add.py')){$full=Join-Path $ctx.prepared.acceptedRoot $path;@{path=$path;size=([IO.FileInfo]::new($full)).Length;sha256=(Get-Hash $full)}})
+Assert-Equal $result.testsManifestHash (Get-VerificationCanonicalHash -Object $testsOnly) 'ready: testsManifestHash を独立計算と照合'
+$manifest=Get-Content -LiteralPath $result.manifestPath -Raw | ConvertFrom-Json -AsHashtable
+Assert-True ($manifest.origin -ceq 'generated' -and $manifest.testsManifestHash -ceq $result.testsManifestHash -and @($manifest.artifacts).Count -eq 3) 'ready: manifest の内容'
+Assert-True ($result.summary -ceq 'add が引き算になっている' -and $result.findings[0].description -ceq 'pkg/mod.py の add が a - b を返す' -and (@($result.findings[0].Keys | Sort-Object) -join ',') -ceq 'description,sourcePaths') 'ready: summary・findings（外側で組み直した参考情報）'
+# quarantine: Codex の出力（実行イベント・最終応答）と CommandRecord は未信頼データとして quarantine/ に置き、transportVerified=null。
+$agentRecord=Get-Content -LiteralPath (Join-Path $ctx.runRoot 'quarantine/proposal-agent-command.json') -Raw | ConvertFrom-Json -AsHashtable
+Assert-True ($null -eq $agentRecord.transportVerified -and $agentRecord.exitCode -eq 0 -and $agentRecord.stdoutPath -like '*\run\quarantine\commands\*') "quarantine: CommandRecord（transportVerified=null、出力は quarantine/commands）"
+Assert-Equal ([IO.File]::ReadAllText($agentRecord.stdoutPath,$utf8)) $agentEvents 'quarantine: 実行イベントと最終応答をそのまま保存'
+Assert-Equal ($agentRecord.argv -join ' ') "exec -w /home/agent/workspace/source $($vm.name) codex exec --json" 'Codex: startupArgv を固定 argv で起動'
+$calls=@(Read-FakeSbxCalls $ctx.case)
+$cpSource=Get-CallIndex $calls {param($c) $c.argv[0] -eq 'cp' -and $c.argv[2] -ceq "$($vm.name):/home/agent/workspace/source"}
+$confirm=Get-CallIndex $calls {param($c) ($c.argv -join ' ') -like '*sha256sum*'}
+$agentCall=Get-CallIndex $calls {param($c) ($c.argv -join ' ') -ceq "exec -w /home/agent/workspace/source $($vm.name) codex exec --json"}
+$cpExporter=Get-CallIndex $calls {param($c) $c.argv[0] -eq 'cp' -and $c.argv[2] -ceq "$($vm.name):/home/agent/proposal-exporter"}
+$limits=$ctx.prepared.settings.limits
+$exportArgv="exec -w /home/agent/proposal-exporter $($vm.name) python3 /home/agent/proposal-exporter/proposal-export.py --run-id $($ctx.runId) --max-files $($limits.maxProposalFiles) --max-file-bytes $($limits.maxFileBytes) --max-proposal-bytes $($limits.maxProposalBytes)"
+$exportCall=Get-CallIndex $calls {param($c) ($c.argv -join ' ') -ceq $exportArgv}
+$stopCall=Get-CallIndex $calls {param($c) $c.argv[0] -eq 'stop'}
+Assert-True ($cpSource -ge 0 -and $cpSource -lt $confirm -and $confirm -lt $agentCall -and $agentCall -lt $cpExporter -and $cpExporter -lt $exportCall -and $exportCall -lt $stopCall) "順序: 搬入 → 照合 → Codex → エクスポーター搬入 → 回収 → 停止（$cpSource,$confirm,$agentCall,$cpExporter,$exportCall,$stopCall）"
+Assert-True ($calls[$cpSource].argv[1] -ceq $ctx.prepared.proposalInputRoot -and $calls[$cpExporter].argv[1] -ceq (Join-Path $ctx.controlRoot 'proposal/exporter')) '搬入元: proposal-input と外側に複製した固定エクスポーターだけ（baseline・control 本体を渡さない）'
+Assert-Equal (Get-Hash (Join-Path $ctx.controlRoot 'proposal/exporter/proposal-export.py')) (Get-Hash (Join-Path $PSScriptRoot '../proposal-export.py')) '搬入元: 固定エクスポーターの複製は原本と一致'
+Assert-Equal @($calls | Select-Object -Skip ($stopCall+1) | Where-Object {$_.argv[0] -in @('exec','cp')}).Count 0 '停止後に exec・cp を発行しない'
+Assert-Equal @($calls | Where-Object {$_.argv[0] -eq 'stop'}).Count 1 '停止: 当該VMへ stop 1回'
+Assert-Equal @($calls | Where-Object {($_.argv -join ' ') -like '*sha256sum*'}).Count 1 '照合: source の Confirm 1回'
+foreach($call in $calls){Assert-True ($call.envKeys -notcontains 'SSH_AUTH_SOCK') '環境辞書: SSH_AUTH_SOCK を渡さない'}
+$requestText=& $proposalModule {param($p) New-VerificationProposalRequest $p} $ctx.prepared
+Assert-True ($requestText.Contains($ctx.prepared.request.objective) -and $requestText.Contains('add(1, 2) が 3 を返す') -and $requestText.Contains('/home/agent/workspace/proposal') -and $requestText.Contains('test_*.py') -and $requestText.Contains('禁止事項') -and $requestText -match '残り時間の目安: 約 (\d+) 秒' -and [int]$Matches[1] -le 600 -and [int]$Matches[1] -ge 500) "依頼: 目的・合格条件・作業先・書式・禁止事項・残り時間（proposalSeconds 以下）"
+Assert-NoLeftover $ctx 'ready'
+$count++
+
+# 12. 停止未確認: 受信・検査に進める提案でも incomplete（stopState=unverified）。accepted・manifest を確定しない。
+$ctx=New-Ctx -CleanupSeconds 5
+$vm=Add-ProposalVm $ctx ((ConvertTo-WireText (New-Envelope $ctx))+"`n")
+$stopText=(Get-FakeSbxResponse 'stop' @{name=$vm.name}).text
+Add-FakeSbxResponse $ctx.case @('stop',[regex]::Escape($vm.name)) -Stdout $stopText -Synthetic $true -Source '一覧が stopped にならない状態遷移は未観測の創作' -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+try{$result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $lease}finally{Release-VerificationPilotLease $lease}
+Assert-True ($result.status -ceq 'incomplete' -and $result.stopState -ceq 'unverified' -and $result.failure.stage -ceq 'stop' -and $result.failure.reason -ceq 'stop-unverified') "停止未確認: incomplete（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+Assert-True ($null -eq $result.manifestPath -and $null -eq $result.manifestHash -and $null -eq $result.testsManifestHash -and @($result.artifacts).Count -eq 0 -and [IO.Directory]::GetFileSystemEntries($ctx.prepared.acceptedRoot).Length -eq 0) '停止未確認: accepted・manifest を確定しない'
+Assert-True ($result.sandbox.id -ceq $vm.id) '停止未確認: sandbox に handle を残す'
+$calls=@(Read-FakeSbxCalls $ctx.case)
+Assert-True (@($calls | Where-Object {$_.argv -contains 'python3'}).Count -eq 1) '停止未確認: 受信（エクスポーター）までは済んでいる'
+Assert-NoLeftover $ctx '停止未確認'
+$count++
+
+# 13. 時間超過: Codex が proposalSeconds を超えれば timed_out。受信には進むが正常提案を確定せず、停止する。
+$ctx=New-Ctx -Limits @{proposalSeconds=3}
+$vm=Add-ProposalVm $ctx ((ConvertTo-WireText (New-Envelope $ctx))+"`n") -AgentDelaySeconds 8
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$watch=[Diagnostics.Stopwatch]::StartNew()
+try{$result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $lease}finally{Release-VerificationPilotLease $lease}
+$watch.Stop()
+Assert-True ($result.status -ceq 'timed_out' -and $result.failure.stage -ceq 'agent' -and $result.failure.reason -ceq 'agent-timed-out' -and $result.stopState -ceq 'stopped') "時間超過: timed_out・停止済み（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure) $($result.stopState)）"
+Assert-True ($null -eq $result.manifestPath -and @($result.artifacts).Count -eq 0 -and [IO.Directory]::GetFileSystemEntries($ctx.prepared.acceptedRoot).Length -eq 0) '時間超過: accepted・manifest を確定しない'
+$agentRecord=Get-Content -LiteralPath (Join-Path $ctx.runRoot 'quarantine/proposal-agent-command.json') -Raw | ConvertFrom-Json -AsHashtable
+Assert-True ($agentRecord.timedOut -eq $true -and $null -eq $agentRecord.transportVerified) '時間超過: quarantine の CommandRecord に timedOut'
+$calls=@(Read-FakeSbxCalls $ctx.case)
+Assert-True (@($calls | Where-Object {$_.argv -contains 'python3'}).Count -eq 1 -and @($calls | Where-Object {$_.argv[0] -eq 'stop'}).Count -eq 1) '時間超過: 受信へ進み、停止する'
+Assert-NoLeftover $ctx '時間超過'
+$count++
+
+# 14. VM 作成の失敗（偽sbx）: 作成後の inspect 失敗は created・停止済みで blocked、handle を sandbox に残し Codex を起動しない。作成前の拒否（MCP 登録あり）は sandbox=null・not-created。
+$ctx=New-Ctx
+$vm=Add-ProposalVm $ctx '{}'
+Add-FakeSbxResponse $ctx.case @('inspect',[regex]::Escape($vm.name),'--json') -Stderr "Error: inspect failed`n" -ExitCode 1 -Synthetic $true -Source 'inspect 失敗の応答は未観測の創作' -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+try{$result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $lease}finally{Release-VerificationPilotLease $lease}
+Assert-True ($result.status -ceq 'blocked' -and $result.sandbox.id -ceq $vm.id -and $result.stopState -ceq 'stopped' -and $result.failure.stage -ceq 'sandbox' -and $null -eq $result.manifestPath) "作成後の失敗: blocked・handle を残す（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+Assert-Equal @(Read-FakeSbxCalls $ctx.case | Where-Object {$_.argv[0] -eq 'exec' -and $_.argv -contains 'codex'}).Count 0 '作成後の失敗: Codex を起動しない（exec 0回）'
+Assert-NoLeftover $ctx '作成後の失敗'
+$ctx=New-Ctx
+$vm=Add-ProposalVm $ctx '{}'
+Add-FakeSbxResponse $ctx.case @('mcp','ls','--json') -Stdout (Get-FakeSbxResponse 'mcpLsOne').text -Synthetic $true -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+try{$result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $lease}finally{Release-VerificationPilotLease $lease}
+Assert-True ($result.status -ceq 'blocked' -and $null -eq $result.sandbox -and $result.stopState -ceq 'not-created' -and $result.failure.reason -ceq 'daemon-settings') "作成前の拒否: sandbox=null・not-created（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+Assert-Equal @(Read-FakeSbxCalls $ctx.case | Where-Object {$_.argv[0] -eq 'create'}).Count 0 '作成前の拒否: create 0回'
+Assert-NoLeftover $ctx '作成前の拒否'
+$count++
+
 }finally{
     if($allCases.Count -gt 0){try{Stop-CaseFakeProcesses $allCases.ToArray()}catch{}}
 }
+Assert-Equal @(Get-CaseFakeProcesses $allCases.ToArray()).Count 0 '全ケース: 試験が起動した偽sbxプロセスが残っていない'
 "ProposalV3: $count cases passed"

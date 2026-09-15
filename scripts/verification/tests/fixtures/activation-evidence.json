@@ -1,0 +1,26 @@
+{
+  "_comment": "試験専用の activationEvidence 雛形。実 run には使わない。{{profileHash}}・{{evidencePath}}・{{evidenceHash}} は試験がケースごとに埋めてから書き出す（profileHash は試験が組む profile から計算し、証拠パスはケース領域の固定ファイルを指す）。両役割の条件名をすべて載せているので proposal / replay のどちらの検査にも使える。",
+  "schemaVersion": 3,
+  "checkedAt": "2026-09-15T00:00:00.0000000Z",
+  "binaries": {"sbx": "v0.42.1", "python3": "Python 3.12.3 (fixture)"},
+  "profileHash": "{{profileHash}}",
+  "checks": {
+    "daemonHealthAndTemplate": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "noWorkspaceNoSkillsNoMcp": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "hostPathIsolation": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "resourceAndOutsideStop": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "credentialMethod": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "modelEndpointAllowOnly": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "replayNetworkDeny": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "limitsAndTransport": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "abnormalExitRecovery": {"verdict": "verified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"},
+    "daemonDisconnect": {"verdict": "unverified", "evidencePath": "{{evidencePath}}", "evidenceHash": "{{evidenceHash}}"}
+  },
+  "transportContrast": {
+    "exit0": {"exitCode": 0, "stderrKind": "empty"},
+    "exit7": {"exitCode": 7, "stderrKind": "command-message"},
+    "exit127": {"exitCode": 127, "stderrKind": "shell-not-found"},
+    "timeout": {"exitCode": null, "stderrKind": "none-client-killed-by-outside"},
+    "clientKilled": {"exitCode": null, "stderrKind": "none-client-killed-by-outside"}
+  }
+}

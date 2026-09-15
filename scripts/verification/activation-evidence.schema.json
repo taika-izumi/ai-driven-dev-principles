@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "checkedAt", "binaries", "profileHash", "checks", "transportContrast"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 3},
+    "checkedAt": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?Z$"},
+    "binaries": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
+    "profileHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["daemonHealthAndTemplate", "noWorkspaceNoSkillsNoMcp", "hostPathIsolation", "resourceAndOutsideStop", "limitsAndTransport", "abnormalExitRecovery", "daemonDisconnect"],
+      "properties": {
+        "daemonHealthAndTemplate": {"$ref": "#/$defs/check"},
+        "noWorkspaceNoSkillsNoMcp": {"$ref": "#/$defs/check"},
+        "hostPathIsolation": {"$ref": "#/$defs/check"},
+        "resourceAndOutsideStop": {"$ref": "#/$defs/check"},
+        "credentialMethod": {"$ref": "#/$defs/check"},
+        "modelEndpointAllowOnly": {"$ref": "#/$defs/check"},
+        "replayNetworkDeny": {"$ref": "#/$defs/check"},
+        "limitsAndTransport": {"$ref": "#/$defs/check"},
+        "abnormalExitRecovery": {"$ref": "#/$defs/check"},
+        "daemonDisconnect": {"$ref": "#/$defs/check"}
+      }
+    },
+    "transportContrast": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exit0", "exit7", "exit127", "timeout", "clientKilled"],
+      "properties": {
+        "exit0": {"$ref": "#/$defs/contrast"},
+        "exit7": {"$ref": "#/$defs/contrast"},
+        "exit127": {"$ref": "#/$defs/contrast"},
+        "timeout": {"$ref": "#/$defs/contrast"},
+        "clientKilled": {"$ref": "#/$defs/contrast"}
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["verdict", "evidencePath", "evidenceHash"],
+      "properties": {
+        "verdict": {"type": "string", "enum": ["verified", "unverified", "failed"]},
+        "evidencePath": {"type": "string", "minLength": 1},
+        "evidenceHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}
+      }
+    },
+    "contrast": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exitCode", "stderrKind"],
+      "properties": {
+        "exitCode": {"type": ["integer", "null"]},
+        "stderrKind": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

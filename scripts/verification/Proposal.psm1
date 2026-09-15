@@ -305,6 +305,7 @@ function Invoke-VerificationProposalRecheck([hashtable]$PreparedRun) {
     }catch{
         $result.status=Get-VerificationExceptionValue $_.Exception 'status' 'blocked'
         $result.failure=@{stage='recheck';reason=(Get-VerificationExceptionValue $_.Exception 'reason' 'recheck-failed')}
+        Write-VerificationStageError 'proposal' 'recheck' $result.failure.reason $_.Exception
         $result.artifacts=[object[]]@();$result.manifestPath=$null;$result.manifestHash=$null;$result.testsManifestHash=$null
     }
     $result
@@ -315,7 +316,10 @@ function New-VerificationProposalRequest([hashtable]$PreparedRun) {
     # 目的・合格条件・作業先・書式・禁止事項・残り時間の短い依頼。残り時間は助言で、強制は外側の上限で行う。本文資料は子がコピーから探索する。
     $request=$PreparedRun.request
     $criteria=@(Get-VerificationValue $request 'acceptanceCriteria')
-    $remaining=[Math]::Max(0,[Math]::Floor([Math]::Min([double](Get-VerificationLimit $PreparedRun 'proposalSeconds'),([DateTimeOffset]::Parse([string]$PreparedRun.deadlineAt,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime-[DateTime]::UtcNow).TotalSeconds)))
+    $remaining=[Math]::Min([double](Get-VerificationLimit $PreparedRun 'proposalSeconds'),([DateTimeOffset]::Parse([string]$PreparedRun.deadlineAt,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime-[DateTime]::UtcNow).TotalSeconds)
+    $monotonic=Get-VerificationRunRemainingSeconds ([string]$PreparedRun.runId)   # run 単位の単調時計があれば、その残りとの小さい方
+    if($null -ne $monotonic){$remaining=[Math]::Min($remaining,[double]$monotonic)}
+    $remaining=[Math]::Max(0,[Math]::Floor($remaining))
     $lines=[Collections.Generic.List[string]]::new()
     $lines.Add('あなたは隔離された検証用VMの中で、不具合の再現テストと修正候補を提案する担当です。')
     $lines.Add('目的: '+[string](Get-VerificationValue $request 'objective'))
@@ -332,7 +336,8 @@ function New-VerificationProposalRequest([hashtable]$PreparedRun) {
     [string]::Join("`n",$lines)+"`n"
 }
 function New-ProposalBudget([hashtable]$PreparedRun,[long]$CommandSeconds,[long]$MaxOutputBytes) {
-    @{deadlineAt=[string]$PreparedRun.deadlineAt;cleanupDeadlineAt=$null;limits=@{maxOutputBytes=[long]$MaxOutputBytes;commandSeconds=[int]$CommandSeconds};phase='work'}
+    # runId は run 単位の単調時計の鍵（Execution が壁時計と単調時計の残りの小さい方で打ち切る）。
+    @{deadlineAt=[string]$PreparedRun.deadlineAt;cleanupDeadlineAt=$null;limits=@{maxOutputBytes=[long]$MaxOutputBytes;commandSeconds=[int]$CommandSeconds};phase='work';runId=[string]$PreparedRun.runId}
 }
 function Initialize-ProposalExporter([hashtable]$PreparedRun) {
     # 固定エクスポーターを外側の control へ複製し、搬入元（検査済みの通常ファイル1件）とその期待一覧を作る。
@@ -361,11 +366,14 @@ function Complete-VerificationProposalCreationFailure([hashtable]$Result,[hashta
     # New-VerificationSandbox の runtimeFailure を捕捉する。created なら確定済み handle を sandbox に残し、停止済みでも起動失敗を成功にしない。
     # unknown・停止未確認は incomplete（時間超過なら timed_out）。runtimeFailure の欠落・不正は作成済みの可能性があるので creation-unresolved の incomplete。
     $status=Get-VerificationExceptionValue $Failure 'status' ''
-    $timedOut=($status -ceq 'timed_out') -or (Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt))
+    $timedOut=($status -ceq 'timed_out') -or (Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt) ([string]$PreparedRun.runId))
     # 解析と値域の検査は RequestCopy の共通補助（Replay と同じ判定）。不正・欠落は $null。
     $record=ConvertFrom-VerificationRuntimeFailure $Failure
+    $recordReason=$(if($null -ne $record -and -not[string]::IsNullOrEmpty([string](Get-VerificationValue $record 'reason'))){[string](Get-VerificationValue $record 'reason')}else{'creation-unresolved'})
+    Write-VerificationStageError 'proposal' 'sandbox' $recordReason $Failure
     if($null -eq $record){
-        $Result.status='incomplete';$Result.stopState='unverified';$Result.failure=@{stage='sandbox';reason='creation-unresolved'}
+        # 作成済みの可能性があるので未作成へ戻さない。期限到達なら時間超過を優先する（Replay の Resolve-ReplayCreationFailure と同じ）。
+        $Result.status=$(if($timedOut){'timed_out'}else{'incomplete'});$Result.stopState='unverified';$Result.failure=@{stage='sandbox';reason='creation-unresolved'}
         return $Result
     }
     $reason=[string](Get-VerificationValue $record 'reason')
@@ -389,7 +397,7 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
     if($recheckCount -gt 0){return Invoke-VerificationProposalRecheck $PreparedRun}
     $result=New-ProposalResult $PreparedRun 'generated'
     # 全体期限の後に呼ばれたら VM を作らず時間超過の型付き結果を返す（Lease を取れなかった呼出し側からも照合へ渡せるよう、Lease の検査より先に判定する）。
-    if(Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt)){
+    if(Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt) ([string]$PreparedRun.runId)){
         $result.status='timed_out';$result.failure=@{stage='sandbox';reason='deadline-reached'}
         return $result
     }
@@ -426,14 +434,17 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
                 elseif($null -eq $problem){$wire=[IO.File]::ReadAllBytes($export.stdoutPath)}
             }
         }catch{
-            $problem=Select-VerificationProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'failed') $stage (Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")
+            $reason=Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error"
+            Write-VerificationStageError 'proposal' $stage $reason $_.Exception
+            $problem=Select-VerificationProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'failed') $stage $reason
         }
         # 4. 停止（受信の後、検査の前）。一覧の同一 id・stopped で確認する。停止後に exec しない。
         $stopAttempted=$true
-        try{$stop=Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1);$result.stopState=[string]$stop.stopState}catch{$result.stopState='unverified'}
+        try{$stop=Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1);$result.stopState=[string]$stop.stopState}
+        catch{$result.stopState='unverified';Write-VerificationStageError 'proposal' 'stop' 'stop-unverified' $_.Exception}
     }finally{
         # 途中で呼出しが打ち切られた場合も停止を試みる（結果は返せないが、VM を残さない）。
-        if(-not$stopAttempted){try{[void](Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1))}catch{}}
+        if(-not$stopAttempted){try{[void](Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1))}catch{Write-VerificationStageError 'proposal' 'stop' 'stop-unverified' $_.Exception}}
     }
     if($result.stopState -cne 'stopped'){
         $result.status=$(if($null -ne $problem -and $problem.status -ceq 'timed_out'){'timed_out'}else{'incomplete'})
@@ -454,6 +465,7 @@ function Invoke-VerificationProposal([hashtable]$PreparedRun,[hashtable]$Profile
     }catch{
         $result.status=Get-VerificationExceptionValue $_.Exception 'status' 'failed'
         $result.failure=@{stage=$stage;reason=(Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")}
+        Write-VerificationStageError 'proposal' $stage $result.failure.reason $_.Exception
         return $result
     }
     $result.summary=$checked.summary

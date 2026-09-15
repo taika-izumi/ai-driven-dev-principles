@@ -151,7 +151,14 @@ function Get-VerificationRemainingSeconds([hashtable]$RunBudget) {
         'cleanup'{Get-VerificationBudgetTime $RunBudget 'cleanupDeadlineAt' $true}
         default{throw 'RunBudget.phase must be work or cleanup'}
     }
-    [Math]::Min([double]$limits.commandSeconds,($deadline-[DateTime]::UtcNow).TotalSeconds)
+    $remaining=[Math]::Min([double]$limits.commandSeconds,($deadline-[DateTime]::UtcNow).TotalSeconds)
+    # work 相は全体期限なので、RunBudget.runId に run 単位の単調時計（RequestCopy が準備開始時に始める）があれば、その残りとの小さい方にする（仕様01「単調増加時計で残時間を監督」）。
+    # 単調時計が無い呼出し（試験で PreparedRunV3 を直接組む場合など）は壁時計だけで従来どおり。cleanup 相の予算は停止時の現在時刻起点なので単調時計を使わない。
+    if($RunBudget.phase -ceq 'work' -and $RunBudget.ContainsKey('runId') -and -not[string]::IsNullOrEmpty([string]$RunBudget.runId)){
+        $monotonic=Get-VerificationRunRemainingSeconds ([string]$RunBudget.runId)
+        if($null -ne $monotonic){$remaining=[Math]::Min($remaining,[double]$monotonic)}
+    }
+    $remaining
 }
 function Test-VerificationProcessInput([Diagnostics.ProcessStartInfo]$StartInfo,[hashtable]$OutputPaths) {
     if($null -eq $StartInfo -or $StartInfo.UseShellExecute -or $StartInfo.Arguments){throw 'explicit argv, no shell required'}
@@ -234,7 +241,8 @@ function Invoke-VerificationProcessV3 {
         $control=Get-VerificationControlBytes $StartInfo $StdinBytes ($job.GrantAssign($process.Handle))
         $stdinTask=$process.StandardInput.BaseStream.WriteAsync($control,0,$control.Length)
         $exitTask=$process.WaitForExitAsync()
-        $deadlineUtc=[DateTime]::UtcNow.AddSeconds($remaining);$total=0L;$targetExit=$null;$drainDeadline=$null
+        # 当該コマンドの残時間は起動時に確定し、その後は単調時計で打ち切る（システム時刻の変更で延びない）。
+        $commandWatch=[Diagnostics.Stopwatch]::StartNew();$total=0L;$targetExit=$null;$drainDeadline=$null
         while($true){
             $pumped=$false
             foreach($pump in $pumps){
@@ -256,7 +264,7 @@ function Invoke-VerificationProcessV3 {
             if($null -ne $drainDeadline){
                 if([DateTime]::UtcNow -ge $drainDeadline){$result.timedOut=$true;break}
                 if($job.Active() -gt 1){$job.StopExcept($process.Id)}
-            }elseif([DateTime]::UtcNow -ge $deadlineUtc){$result.timedOut=$true;break}
+            }elseif($commandWatch.Elapsed.TotalSeconds -ge $remaining){$result.timedOut=$true;break}
             # 未完了の読み出しとホストの終了だけを待つ（完了済みを含めると即返って空回りする）。
             $waits=[Threading.Tasks.Task[]]@(@($pumps | Where-Object {-not$_.eof} | ForEach-Object {$_.task})+@($exitTask | Where-Object {-not$_.IsCompleted}))
             if($waits.Length -gt 0){[void][Threading.Tasks.Task]::WaitAny($waits,25)}else{Start-Sleep -Milliseconds 25}

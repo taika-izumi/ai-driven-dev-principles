@@ -201,6 +201,7 @@ Assert-Failure {Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports $p $r 
 $count++
 
 # 7. New-VerificationReplayNotRun: status=not_run・sandboxes=[]・before/after/allStopped=null・上流の failure。作成成否不明は not_run へ丸めず incomplete。
+#    再実行の VM は1台も作らないので、作成成否不明の上流でも allStopped は null（仕様04「作成0台ならnull」。上流の作成不明は照合が提案結果から incomplete にする）。
 $ctx=New-ReplayCtx
 $notRun=New-VerificationReplayNotRun $ctx.prepared @{stage='agent';reason='agent-failed'}
 Assert-Equal (@($notRun.Keys | Sort-Object) -join ',') 'after,allStopped,before,failure,mode,runId,sandboxes,schemaVersion,status' 'not_run: キー'
@@ -209,9 +210,9 @@ Assert-True ($null -eq $notRun.before -and $null -eq $notRun.after -and $null -e
 Assert-True ($notRun.failure.stage -ceq 'agent' -and $notRun.failure.reason -ceq 'agent-failed' -and (@($notRun.failure.Keys | Sort-Object) -join ',') -ceq 'reason,stage') 'not_run: 上流の失敗段階'
 Assert-Equal (ConvertTo-VerificationCanonicalJson $notRun) ('{"after":null,"allStopped":null,"before":null,"failure":{"reason":"agent-failed","stage":"agent"},"mode":null,"runId":"'+$ctx.runId+'","sandboxes":[],"schemaVersion":3,"status":"not_run"}') 'not_run: 正規化JSONの書式'
 $unresolved=New-VerificationReplayNotRun $ctx.prepared @{stage='sandbox';reason='creation-unresolved'}
-Assert-True ($unresolved.status -ceq 'incomplete' -and $unresolved.failure.reason -ceq 'creation-unresolved' -and $unresolved.sandboxes.Count -eq 0 -and $unresolved.allStopped -eq $false) '作成成否不明: not_run へ丸めず incomplete・allStopped=false（Invoke と同じ）'
+Assert-True ($unresolved.status -ceq 'incomplete' -and $unresolved.failure.reason -ceq 'creation-unresolved' -and $unresolved.sandboxes.Count -eq 0 -and $null -eq $unresolved.allStopped) '作成成否不明: not_run へ丸めず incomplete・再実行は VM を作っていないので allStopped=null'
 $unknown=New-VerificationReplayNotRun $ctx.prepared @{stage='sandbox';reason='create-timed-out';creationState='unknown'}
-Assert-True ($unknown.status -ceq 'incomplete' -and $unknown.failure.reason -ceq 'creation-unresolved' -and $unknown.allStopped -eq $false) 'creationState=unknown も incomplete（理由は creation-unresolved・allStopped=false）'
+Assert-True ($unknown.status -ceq 'incomplete' -and $unknown.failure.reason -ceq 'creation-unresolved' -and $null -eq $unknown.allStopped) 'creationState=unknown も incomplete（理由は creation-unresolved・allStopped=null）'
 [void](New-Proposal $ctx -Origin 'reused-tests')
 Assert-Equal (New-VerificationReplayNotRun $ctx.prepared @{stage='recheck';reason='recheck-tests-changed'}).mode 'recheck' 'not_run: recheck の run は mode=recheck'
 Assert-Throws {New-VerificationReplayNotRun $ctx.prepared @{stage='agent'}} '*stage and reason*'
@@ -489,12 +490,31 @@ Assert-NoLeftover $ctx '時間超過'
 $count++
 
 # 16. 全体期限の後に呼ぶ（VM なし）: 入力を作らず VM も作らず timed_out の型付き結果（replay-before:deadline-reached、sandboxes=[]・allStopped=null）。
+#     期限の判定は入力検査より先に行うので、提案結果を検査していない mode は recheck の run 以外 null。
 #     Lease を持たない呼出し（recheck の CLI が期限で Lease を取れなかった場合）でも lease-invalid にしない。sbx 呼び出し0回。
 $ctx=New-ReplayCtx -DeadlineIn -1;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
 $r=Invoke-VerificationReplay $ctx.prepared $proposal $ctx.replayProfile $null
-Assert-True ($r.status -ceq 'timed_out' -and $r.failure.stage -ceq 'replay-before' -and $r.failure.reason -ceq 'deadline-reached' -and $r.mode -ceq 'candidate-comparison' -and $r.sandboxes.Count -eq 0 -and $null -eq $r.allStopped -and $null -eq $r.before -and $null -eq $r.after) "期限後: timed_out・VM なし（$(ConvertTo-VerificationCanonicalJson $r)）"
+Assert-True ($r.status -ceq 'timed_out' -and $r.failure.stage -ceq 'replay-before' -and $r.failure.reason -ceq 'deadline-reached' -and $null -eq $r.mode -and $r.sandboxes.Count -eq 0 -and $null -eq $r.allStopped -and $null -eq $r.before -and $null -eq $r.after) "期限後: timed_out・VM なし（$(ConvertTo-VerificationCanonicalJson $r)）"
 Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.runRoot 'replay-inputs/before')) -and -not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'replay/replay-before-input-manifest.json'))) '期限後: replay-inputs・input manifest を作らない'
 Assert-True (-not(Test-Path -LiteralPath $ctx.case.callsPath)) '期限後: sbx を1回も呼ばない'
+# 期限後は入力検査より先に timed_out（仕様04。検査で blocked になる入力＝非ready・別 runId でも時間超過を返す）。recheck の run は mode=recheck・replay-after。
+$ctx=New-ReplayCtx -DeadlineIn -1;$proposal=New-Proposal $ctx;$proposal.status='incomplete';$proposal.runId=[guid]::NewGuid().ToString()
+$r=Invoke-VerificationReplay $ctx.prepared $proposal $ctx.replayProfile $null
+Assert-True ($r.status -ceq 'timed_out' -and $r.failure.reason -ceq 'deadline-reached' -and $r.failure.stage -ceq 'replay-before' -and $null -eq $r.mode) "期限後の不正な入力: 入力検査より先に timed_out（$(ConvertTo-VerificationCanonicalJson $r.failure)）"
+$ctx=New-ReplayCtx -DeadlineIn -1;$proposal=New-Proposal $ctx -Origin 'reused-tests'
+$r=Invoke-VerificationReplay $ctx.prepared $proposal $ctx.replayProfile $null
+Assert-True ($r.status -ceq 'timed_out' -and $r.failure.stage -ceq 'replay-after' -and $r.mode -ceq 'recheck') "期限後の recheck: replay-after・mode=recheck（$(ConvertTo-VerificationCanonicalJson $r)）"
+$count++
+
+# 17. 単調時計での全体期限（仕様01）: 壁時計の deadlineAt は未来のまま、run 単位の単調時計の totalSeconds を超えた状態で呼ぶと、入力も VM も作らず timed_out（sbx 呼び出し0回）。
+#     時計は Replay が使う RequestCopy のインスタンスの script スコープへ試験だけが登録する（totalSeconds=0 の Stopwatch）。
+$ctx=New-ReplayCtx -DeadlineIn 900;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
+& $replayModule {param($id) & (Get-Command Test-VerificationDeadlineReached).Module {param($runId) $script:RunClocks[$runId]=@{watch=[Diagnostics.Stopwatch]::StartNew();totalSeconds=0}} $id} $ctx.runId
+Assert-True ([DateTimeOffset]::Parse($ctx.prepared.deadlineAt).UtcDateTime -gt [DateTime]::UtcNow.AddSeconds(600)) '単調時計: 前提（壁時計の期限は未来）'
+$r=Invoke-VerificationReplay $ctx.prepared $proposal $ctx.replayProfile $null
+Assert-True ($r.status -ceq 'timed_out' -and $r.failure.stage -ceq 'replay-before' -and $r.failure.reason -ceq 'deadline-reached' -and $r.sandboxes.Count -eq 0 -and $null -eq $r.allStopped) "単調時計の到達: timed_out・VM なし（$(ConvertTo-VerificationCanonicalJson $r)）"
+Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.runRoot 'replay-inputs/before'))) '単調時計の到達: replay-inputs を作らない'
+Assert-True (-not(Test-Path -LiteralPath $ctx.case.callsPath)) '単調時計の到達: sbx を1回も呼ばない'
 $count++
 
 }finally{

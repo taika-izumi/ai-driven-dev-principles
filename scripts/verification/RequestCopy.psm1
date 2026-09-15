@@ -392,8 +392,19 @@ function Copy-VerificationRecheckTests([hashtable]$Recheck,[string]$RunsRoot,[st
     }
     @{previousRunId=$previous.runId;previousResultPath=$previousPath;previousResultHash=(Get-FileHash -LiteralPath $previousPath -Algorithm SHA256).Hash;artifacts=@($artifacts.ToArray())}
 }
+# run 単位の単調時計（仕様01「CLIは同時に単調増加時計で残時間を監督し」）。runId -> @{watch=Stopwatch;totalSeconds}。
+# New-ProposalReplayRun の開始時に Stopwatch を始め、準備に成功した run の runId で登録する。壁時計の deadlineAt と対にして、どちらかの到達を期限到達とする。
+# 同じプロセス内のモジュール状態なので、CLI は各モジュールを -Force なしで1回だけ読み込む（SbxRuntime の Lease と同じ前提）。
+$script:RunClocks=@{}
+function Get-VerificationRunRemainingSeconds([string]$RunId) {
+    # 当該 run の単調時計での残り秒数（totalSeconds - 経過）。時計が無い run（試験で PreparedRunV3 を直接組んだ場合など）は $null。
+    if([string]::IsNullOrEmpty($RunId) -or -not$script:RunClocks.ContainsKey($RunId)){return $null}
+    $clock=$script:RunClocks[$RunId]
+    [double]$clock.totalSeconds-$clock.watch.Elapsed.TotalSeconds
+}
 function New-ProposalReplayRun([hashtable]$Request,[hashtable]$Settings,[string]$StartedAt) {
     $runRoot=$null;$stage='request'
+    $watch=[Diagnostics.Stopwatch]::StartNew()   # 単調時計は受付直後（startedAt の確定直後に呼ばれる）から始め、準備時間も全体期限に含める
     try{
         Test-VerificationSchema $Request 'request.schema.json' 'request'
         $recheck=$Request.ContainsKey('recheck')
@@ -459,6 +470,7 @@ function New-ProposalReplayRun([hashtable]$Request,[hashtable]$Settings,[string]
         if(-not(Test-VerificationManifestEqual $before $after)){Throw-VerificationFailure 'source changed during copy' 'source_changed'}
         # 期限はCLI受付時刻を単一起点にし、準備時間も含める。停止猶予は停止時に別枠で計算する。
         $deadlineAt=[DateTimeOffset]::Parse($StartedAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind).AddSeconds($Settings.limits.totalSeconds).UtcDateTime.ToString('o',[Globalization.CultureInfo]::InvariantCulture)
+        $script:RunClocks[$runId]=@{watch=$watch;totalSeconds=[double]$Settings.limits.totalSeconds}
         return @{
             schemaVersion=3;runId=$runId;sourceRoot=$source;runRoot=$runRoot;baselineRoot=$baseline;proposalInputRoot=$proposalInput;acceptedRoot=$accepted;controlRoot=$control
             request=$Request;settings=$Settings
@@ -595,16 +607,25 @@ function Get-VerificationDaemonInstanceJson($Instance) {
     ConvertTo-VerificationCanonicalJson $Instance
 }
 function Get-VerificationBytesHash([byte[]]$Bytes) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)) }
+function Write-VerificationStageError([string]$Block,[string]$Stage,[string]$Reason,[Exception]$Failure) {
+    # 型付き結果へ丸めた例外の説明文を失わないよう、段・理由・1行化した例外メッセージを stderr に1行で出す（結果の形は変えない。stdout は CLI の結果 JSON 専用）。
+    $message=$(if($null -ne $Failure){([regex]::Replace([string]$Failure.Message,'\s+',' ')).Trim()}else{''})
+    if($message.Length -gt 400){$message=$message.Substring(0,400)+'...'}
+    [Console]::Error.WriteLine("$Block`: error at $Stage ($Reason): $message")
+}
 function Get-VerificationExceptionValue([Exception]$Failure,[string]$Key,[string]$Default) {
     # 例外の Data[Key] が空でない文字列ならその値、無ければ既定値。
     if($null -ne $Failure -and $Failure.Data.Contains($Key) -and -not[string]::IsNullOrEmpty([string]$Failure.Data[$Key])){return [string]$Failure.Data[$Key]}
     $Default
 }
-function Test-VerificationDeadlineReached([string]$DeadlineAt) {
+function Test-VerificationDeadlineReached([string]$DeadlineAt,[string]$RunId='') {
     # 期限（ISO 8601）に達したか。解釈できない期限は「達していない」と見なさず、到達側に倒す（時間超過を失敗より優先する判定を取りこぼさない）。
+    # RunId を渡し、その run の単調時計があれば、壁時計と単調時計のどちらかが到達したら到達とする（システム時刻が戻っても期限を延ばさない）。
     $parsed=[DateTimeOffset]::MinValue
     if([string]::IsNullOrWhiteSpace($DeadlineAt) -or -not[DateTimeOffset]::TryParse($DeadlineAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal,[ref]$parsed)){return $true}
-    [DateTime]::UtcNow -ge $parsed.UtcDateTime
+    if([DateTime]::UtcNow -ge $parsed.UtcDateTime){return $true}
+    $monotonic=Get-VerificationRunRemainingSeconds $RunId
+    ($null -ne $monotonic) -and ($monotonic -le 0)
 }
 function Read-VerificationVerifiedJson([string]$Path,[string]$ExpectedHash,[string]$RunId,[string]$ListKey,[string]$Status,[string]$Reason) {
     # 外側の control の記録を1回だけ読み、そのバイト列で 期待hash → 厳格 UTF-8 → 重複キー → 解析（オブジェクト）→ runId を確かめてから解析結果を返す。検査したデータと使うデータを同じ読込みにする。
@@ -654,4 +675,4 @@ function New-VerificationRun([hashtable]$Request,[hashtable]$Settings,[string]$S
     if($null -ne $Request -and $Request.ContainsKey('schemaVersion') -and (Test-VerificationInteger $Request.schemaVersion) -and $Request.schemaVersion -eq 3){return New-ProposalReplayRun $Request $Settings $StartedAt}
     return New-LegacyVerificationRun $Request $Settings
 }
-Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys,Get-VerificationValue,Invoke-VerificationFailure,Get-VerificationLimit,Select-VerificationProblem,ConvertTo-VerificationFileMap,Get-VerificationTreeFiles,Get-VerificationMapDifference,Test-VerificationProposalManifest,Split-VerificationProposalArtifacts,Test-VerificationReplacementDiff,Get-VerificationDaemonInstanceJson,Get-VerificationBytesHash,Get-VerificationExceptionValue,Test-VerificationDeadlineReached,Read-VerificationVerifiedJson,Get-VerificationTestsManifestHash,ConvertFrom-VerificationRuntimeFailure
+Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys,Get-VerificationValue,Invoke-VerificationFailure,Get-VerificationLimit,Select-VerificationProblem,ConvertTo-VerificationFileMap,Get-VerificationTreeFiles,Get-VerificationMapDifference,Test-VerificationProposalManifest,Split-VerificationProposalArtifacts,Test-VerificationReplacementDiff,Get-VerificationDaemonInstanceJson,Get-VerificationBytesHash,Get-VerificationExceptionValue,Test-VerificationDeadlineReached,Get-VerificationRunRemainingSeconds,Write-VerificationStageError,Read-VerificationVerifiedJson,Get-VerificationTestsManifestHash,ConvertFrom-VerificationRuntimeFailure

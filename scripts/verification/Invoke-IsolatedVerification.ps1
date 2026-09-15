@@ -9,8 +9,9 @@
 # - 各モジュールは -Force なしで1回だけ読み込む。Lease（名前付き Mutex）は SbxRuntime のモジュール状態にあり、別インスタンスを読み込むと
 #   Proposal・Replay の New-VerificationSandbox から Lease が見えなくなるため（計画の制約。CliV3 の正常往復が失敗して検出する）。
 # - 分岐は status・creationState・stopState とファイルの存否で行い、reason の符号では分岐しない。
-# - 全体期限（壁時計の deadlineAt）に達した後は、SbxRuntime が照会・作成・搬入・実行の起動を拒否し、Proposal・Replay は VM を作らず timed_out の型付き結果を返す。
-#   CLI はその結果も照合へ渡す（失敗結果で打ち切らない）。停止だけ停止フェーズの予算（台数分）で行う。単調時計（Stopwatch）は到達の診断と例外時の status に使う。
+# - 全体期限は壁時計の deadlineAt と、準備開始時に RequestCopy が始める run 単位の単調時計（totalSeconds）のどちらか早い方で到達とする（仕様01）。
+#   到達後は SbxRuntime（Execution の残時間）が照会・作成・搬入・実行の起動を拒否し、Proposal・Replay は VM を作らず timed_out の型付き結果を返す。
+#   CLI はその結果も照合へ渡す（失敗結果で打ち切らない）。停止だけ停止フェーズの予算（台数分）で行う。CLI 自身の到達判定も同じ判定（Test-VerificationDeadlineReached）を使う。
 # - clipboard の読取・退避・復元・消去はしない。
 [CmdletBinding()]
 param(
@@ -126,9 +127,10 @@ function Get-CliContext([hashtable]$Prepared,$Proposal,$Replay,[hashtable]$StopR
     }
     $context
 }
-function Test-CliDeadline([Diagnostics.Stopwatch]$Watch,[hashtable]$Prepared) {
-    # 単調時計での全体期限（startedAt を確定した時点から totalSeconds）。壁時計の deadlineAt 到達も到達とみなす（どちらか早い方）。
-    ($Watch.Elapsed.TotalSeconds -ge [double]$Prepared.settings.limits.totalSeconds) -or (Test-VerificationDeadlineReached ([string]$Prepared.deadlineAt))
+function Test-CliDeadline([hashtable]$Prepared) {
+    # 全体期限の到達（壁時計の deadlineAt、または RequestCopy が準備開始時に始めた run 単位の単調時計の totalSeconds。どちらか早い方）。
+    # Proposal・Replay・SbxRuntime と同じ判定を使い、CLI だけが別の時計で到達を判断しない。
+    Test-VerificationDeadlineReached ([string]$Prepared.deadlineAt) ([string]$Prepared.runId)
 }
 function Get-CliLastStopState([string]$ControlRoot,[string]$Role,$Record) {
     # SbxRuntime が停止ごとに書く control/runtime/<role>-stop-<UTC時刻>.json のうち、名前の時刻順で最後の、同じ runId・name・id の証拠の stopState（無ければ $null）。
@@ -191,9 +193,8 @@ function Invoke-CliRun {
         Write-Diagnostic "error: input: $(Get-OneLine $_.Exception.Message)"
         return @{result=(New-VerificationFailureResult @{} @{status='blocked';stage='input';reason=('input-invalid: '+(Get-OneLine $_.Exception.Message))})}
     }
-    # 2. startedAt を確定し、同時に単調時計を始める（準備時間も全体期限に含める）。
+    # 2. startedAt を確定する。run 単位の単調時計は準備（New-VerificationRun）の開始時に RequestCopy が始める（準備時間も全体期限に含める）。
     $startedAt=Get-VerificationUtcNow
-    $watch=[Diagnostics.Stopwatch]::StartNew()
     try{$prepared=New-VerificationRun $request $settings $startedAt}
     catch{
         $data=$_.Exception.Data
@@ -210,7 +211,7 @@ function Invoke-CliRun {
     $context=Get-CliContext $prepared $null $null @{}
     $recheck=@($prepared.recheckArtifacts | Where-Object {$null -ne $_}).Count -gt 0
     # 期限に達していても準備後は失敗結果で打ち切らず、提案・再実行の型付き結果（VM を作らない timed_out）を照合へ渡す（仕様00「not_runの型付き結果を作って照合へ渡す」）。
-    if(Test-CliDeadline $watch $prepared){Write-Diagnostic 'deadline: 準備の間に全体期限に到達した。以降は VM を作らず、時間超過の結果を照合へ渡す'}
+    if(Test-CliDeadline $prepared){Write-Diagnostic 'deadline: 準備の間に全体期限に到達した。以降は VM を作らず、時間超過の結果を照合へ渡す'}
     # 3. 実行設定の検査（replay は常に、proposal は recheck でないとき）。VM 作成前に拒否する。
     $proposalProfile=$null;$replayProfile=$null
     try{
@@ -225,16 +226,18 @@ function Invoke-CliRun {
         return @{result=(New-VerificationFailureResult $context @{status='blocked';stage='profile';reason=('profile-rejected: '+(Get-OneLine $_.Exception.Message))})}
     }
     # 4. pilot 排他（通常提案と recheck の両方）。競合・デーモン停止は VM を作らず blocked。
-    #    期限到達で照会を起動できなかった場合（status=timed_out）だけは Lease なしで先へ進み、期限後の Proposal・Replay が VM を作らずに返す timed_out の結果を照合する。
+    #    期限到達で照会を起動できなかった場合（status=timed_out かつ全体期限に到達済み）だけは Lease なしで先へ進み、期限後の Proposal・Replay が VM を作らずに返す timed_out の結果を照合する（ADR-0198）。
+    #    timed_out でも全体期限に達していなければ（照会の時間超過などの別の理由）、Lease なしで進まず blocked で返す。
     $lease=$null
     try{$lease=Acquire-VerificationPilotLease $prepared}
     catch{
         $data=$_.Exception.Data
         Write-Diagnostic "error: lease: $(Get-OneLine $_.Exception.Message)"
         $status=$(if($data.Contains('status') -and [string]$data['status'] -cin $script:FailureStatuses){[string]$data['status']}else{'blocked'})
-        if($status -cne 'timed_out'){
+        $deadlineReached=Test-CliDeadline $prepared
+        if($status -cne 'timed_out' -or -not$deadlineReached){
             $code=$(if($data.Contains('reason') -and -not[string]::IsNullOrEmpty([string]$data['reason'])){[string]$data['reason']}else{'lease-failed'})
-            return @{result=(New-VerificationFailureResult $context @{status=$status;stage='lease';reason=("$code`: "+(Get-OneLine $_.Exception.Message))})}
+            return @{result=(New-VerificationFailureResult $context @{status=$(if($status -ceq 'timed_out'){'blocked'}else{$status});stage='lease';reason=("$code`: "+(Get-OneLine $_.Exception.Message))})}
         }
         Write-Diagnostic 'pilot lease: 全体期限に達したため取得しない。VM を作らない時間超過の結果を照合へ渡す'
     }
@@ -245,8 +248,9 @@ function Invoke-CliRun {
             # 5. 提案。recheck では VM・モデルを起動しない（Proposal が判断する）。
             $proposal=Invoke-VerificationProposal $prepared $proposalProfile $lease
             Write-Diagnostic "proposal: status=$($proposal.status) stopState=$($proposal.stopState)$(Format-CliFailure $proposal)"
-            # 敵対的な wire の検査（最大約30秒）の後で期限に達していても、再実行は呼ぶ（期限後の Replay は VM を作らず timed_out を返す）。ここでは診断だけ出す。
-            if([string]$proposal.status -ceq 'ready' -and (Test-CliDeadline $watch $prepared)){Write-Diagnostic 'deadline: 提案の後に全体期限に到達した。再実行は VM を作らず時間超過を返す'}
+            # 敵対的な wire の検査（最大約30秒）の後で期限に達していても、再実行は呼ぶ。期限の判定は Replay が壁時計と単調時計の両方で行い、
+            # 到達していれば入力検査より先に VM を作らない timed_out の型付き結果を返す（再実行へ進まない）。ここでは診断だけ出す。
+            if([string]$proposal.status -ceq 'ready' -and (Test-CliDeadline $prepared)){Write-Diagnostic 'deadline: 提案の後に全体期限に到達した。再実行は VM を作らず時間超過を返す'}
             # 6. 再実行（提案が ready のときだけ）。それ以外は not_run の型付き結果を作る。
             $phase='replay'
             if([string]$proposal.status -ceq 'ready'){
@@ -254,9 +258,9 @@ function Invoke-CliRun {
                 Write-Diagnostic "replay: status=$($replay.status) allStopped=$($replay.allStopped)$(Format-CliFailure $replay)"
             }else{
                 $upstreamFailure=Get-VerificationValue $proposal 'failure'
+                # 提案VMの作成状態は再実行側のものではないので渡さない（実行していない再実行の allStopped は null。仕様03・04）。
+                # 提案VMの作成成否が不明な場合は、照合（Result）が提案結果（sandbox なし・stopState≠not-created）から incomplete にする。
                 $upstream=@{stage=[string](Get-VerificationValue $upstreamFailure 'stage');reason=[string](Get-VerificationValue $upstreamFailure 'reason')}
-                # 提案VMの作成成否が不明（handle なし・停止未確認）なら not_run へ丸めない（Replay の約束）。
-                if($null -eq $proposal.sandbox -and [string]$proposal.stopState -ceq 'unverified'){$upstream.creationState='unknown'}
                 $replay=New-VerificationReplayNotRun $prepared $upstream
                 Write-Diagnostic "replay: 実行しない（提案が ready でない。status=$($replay.status)）"
             }
@@ -265,7 +269,7 @@ function Invoke-CliRun {
             $result=Complete-VerificationRun $prepared $proposal $replay
         }catch{
             Write-Diagnostic "error: $phase`: $(Get-OneLine $_.Exception.Message)"
-            $failure=@{status=$(if(Test-CliDeadline $watch $prepared){'timed_out'}else{'incomplete'});stage=$phase;reason=("$phase-error: "+(Get-OneLine $_.Exception.Message))}
+            $failure=@{status=$(if(Test-CliDeadline $prepared){'timed_out'}else{'incomplete'});stage=$phase;reason=("$phase-error: "+(Get-OneLine $_.Exception.Message))}
         }
     }finally{
         # 8. 作成済み VM の停止確認と Lease の解放（途中の例外でも必ず行う）。

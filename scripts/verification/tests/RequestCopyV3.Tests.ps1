@@ -110,6 +110,10 @@ Assert-Equal $run.pilotInputHash (Get-FileSha $case.settings.pilotInputPath) '�
 Assert-Equal $run.pilotInputHash (Get-FileSha $run.pilotInputPath) 'pilotInputHash は複製現物と一致'
 Assert-Equal $run.startedAt $startedAt 'startedAt は引数のまま'
 Assert-Equal $run.deadlineAt '2026-09-15T00:30:00.0000000Z' 'deadlineAt は startedAt + totalSeconds'
+# run 単位の単調時計（仕様01）: 準備に成功した run の runId で totalSeconds と対にして登録され、準備の時間だけ減っている。時計の無い runId は $null。
+$monotonicRemaining=Get-VerificationRunRemainingSeconds $run.runId
+Assert-True ($null -ne $monotonicRemaining -and $monotonicRemaining -gt 0 -and $monotonicRemaining -lt 1800) "単調時計: 準備開始から totalSeconds の残り（$monotonicRemaining）"
+Assert-True ($null -eq (Get-VerificationRunRemainingSeconds ([guid]::NewGuid().ToString()))) '単調時計: 登録の無い runId は null'
 Assert-Equal $run.cleanupSeconds 30 'cleanupSeconds'
 Assert-True ($null -eq $run.recheckManifestPath -and $null -eq $run.recheckManifestHash -and $run.recheckArtifacts.Count -eq 0) 'recheckなしの既定値'
 Assert-Equal (Invoke-TestGit $case.sourceRoot @('status','--porcelain=v1')) $sourceStatus '原本の作業内容を保全'

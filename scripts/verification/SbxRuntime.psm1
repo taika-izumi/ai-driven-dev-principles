@@ -142,9 +142,10 @@ function New-VerificationSbxStartInfo([hashtable]$Client,[string[]]$Argv) {
     $start
 }
 function New-VerificationSbxBudget([hashtable]$RunBudget,[int]$CommandSeconds,[long]$MaxOutputBytes) {
-    # 呼出し側の期限（deadlineAt・cleanupDeadlineAt・phase）はそのまま、当該コマンドの上限だけを定数で置く（残時間との小さい方は Execution 側が取る）。
+    # 呼出し側の期限（deadlineAt・cleanupDeadlineAt・phase・runId）はそのまま、当該コマンドの上限だけを定数で置く（残時間との小さい方は Execution 側が取る）。
+    # runId は run 単位の単調時計の鍵（Execution が壁時計の残りと単調時計の残りの小さい方を取る）。
     if($null -eq $RunBudget -or -not$RunBudget.ContainsKey('deadlineAt') -or -not$RunBudget.ContainsKey('phase')){Throw-VerificationRuntimeFailure 'RunBudget with deadlineAt and phase required'}
-    @{deadlineAt=$RunBudget.deadlineAt;cleanupDeadlineAt=$(if($RunBudget.ContainsKey('cleanupDeadlineAt')){$RunBudget.cleanupDeadlineAt}else{$null});limits=@{maxOutputBytes=$MaxOutputBytes;commandSeconds=$CommandSeconds};phase=$RunBudget.phase}
+    @{deadlineAt=$RunBudget.deadlineAt;cleanupDeadlineAt=$(if($RunBudget.ContainsKey('cleanupDeadlineAt')){$RunBudget.cleanupDeadlineAt}else{$null});limits=@{maxOutputBytes=$MaxOutputBytes;commandSeconds=$CommandSeconds};phase=$RunBudget.phase;runId=$(if($RunBudget.ContainsKey('runId')){$RunBudget.runId}else{$null})}
 }
 function New-VerificationCleanupBudgetCore([string]$DeadlineAt,[int]$CleanupSeconds,[long]$MaxOutputBytes,[int]$TargetCount) {
     # 停止フェーズの予算: cleanupDeadlineAt = now + cleanupSeconds × 停止対象台数（対象0台なら1台分）。全体期限までの残時間は繰り入れない。
@@ -156,7 +157,7 @@ function New-VerificationCleanupBudget([hashtable]$PreparedRun,[int]$TargetCount
     New-VerificationCleanupBudgetCore $PreparedRun.deadlineAt ([int]$PreparedRun.cleanupSeconds) ([long]$PreparedRun.settings.limits.maxOutputBytes) $TargetCount
 }
 function New-VerificationWorkBudget([hashtable]$PreparedRun) {
-    @{deadlineAt=$PreparedRun.deadlineAt;cleanupDeadlineAt=$null;limits=@{maxOutputBytes=[long]$PreparedRun.settings.limits.maxOutputBytes;commandSeconds=$script:QuerySeconds};phase='work'}
+    @{deadlineAt=$PreparedRun.deadlineAt;cleanupDeadlineAt=$null;limits=@{maxOutputBytes=[long]$PreparedRun.settings.limits.maxOutputBytes;commandSeconds=$script:QuerySeconds};phase='work';runId=[string]$PreparedRun.runId}
 }
 function Invoke-VerificationSbx([hashtable]$Client,[string[]]$Argv,[hashtable]$Budget,[string]$Tag,[byte[]]$StdinBytes=$null,[bool]$ReadText=$true) {
     # 1回の sbx CLI 起動。出力は client の outDir に連番で残す。
@@ -693,7 +694,7 @@ function Invoke-VerificationSandboxCommand([hashtable]$Handle,[string[]]$Argv,[b
     $outDir=$(if($null -eq $OutputSignature){Join-Path $entry.runRoot 'quarantine/commands'}else{Join-Path $entry.runtimeDir ($entry.handle.role+'/commands')})
     [void][IO.Directory]::CreateDirectory($outDir)
     $paths=@{stdoutPath=(Join-Path $outDir "$commandId.stdout");stderrPath=(Join-Path $outDir "$commandId.stderr")}
-    $budget=@{deadlineAt=$RunBudget.deadlineAt;cleanupDeadlineAt=$(if($RunBudget.ContainsKey('cleanupDeadlineAt')){$RunBudget.cleanupDeadlineAt}else{$null});limits=@{maxOutputBytes=[long]$RunBudget.limits.maxOutputBytes;commandSeconds=[int]$RunBudget.limits.commandSeconds};phase=$RunBudget.phase}
+    $budget=@{deadlineAt=$RunBudget.deadlineAt;cleanupDeadlineAt=$(if($RunBudget.ContainsKey('cleanupDeadlineAt')){$RunBudget.cleanupDeadlineAt}else{$null});limits=@{maxOutputBytes=[long]$RunBudget.limits.maxOutputBytes;commandSeconds=[int]$RunBudget.limits.commandSeconds};phase=$RunBudget.phase;runId=$(if($RunBudget.ContainsKey('runId')){$RunBudget.runId}else{$null})}
     $startedAt=Get-VerificationUtcNow
     $result=Invoke-VerificationProcessV3 -StartInfo (New-VerificationSbxStartInfo $entry.client $full) -StdinBytes $StdinBytes -OutputPaths $paths -RunBudget $budget
     $transportVerified=$null

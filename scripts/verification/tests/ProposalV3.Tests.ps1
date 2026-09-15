@@ -355,6 +355,10 @@ foreach($broken in @($null,'{not json','{"creationState":"created","stopState":"
 $late=New-Ctx -DeadlineIn -1
 $r=Complete-Creation $late (New-RuntimeException 'incomplete' (@{schemaVersion=3;runId=$late.runId;role='proposal';stage='create';reason='create-timed-out';message='x';handle=$null;creationState='unknown';stopState='unverified'}))
 Assert-True ($r.status -ceq 'timed_out' -and $r.stopState -ceq 'unverified') 'unknown で期限到達: timed_out を優先'
+foreach($broken in @($null,'{not json')){
+    $r=Complete-Creation $late (New-RuntimeException 'blocked' $broken)
+    Assert-True ($r.status -ceq 'timed_out' -and $r.failure.reason -ceq 'creation-unresolved' -and $r.stopState -ceq 'unverified' -and $null -eq $r.sandbox) "runtimeFailure 欠落・不正で期限到達（$broken）: timed_out を優先（Replay と同じ。$($r.status)）"
+}
 $count++
 
 # ---- ここから偽sbx の VM を使う経路 ----
@@ -479,6 +483,22 @@ $result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $null
 Assert-True ($result.status -ceq 'timed_out' -and $null -eq $result.sandbox -and $result.stopState -ceq 'not-created' -and $result.failure.stage -ceq 'sandbox' -and $result.failure.reason -ceq 'deadline-reached' -and $result.origin -ceq 'generated') "期限後: timed_out・VM なし（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
 Assert-True ($null -eq $result.manifestPath -and @($result.artifacts).Count -eq 0 -and [IO.Directory]::GetFileSystemEntries($ctx.prepared.acceptedRoot).Length -eq 0) '期限後: accepted・manifest を作らない'
 Assert-True (-not(Test-Path -LiteralPath $ctx.case.callsPath)) '期限後: sbx を1回も呼ばない'
+$count++
+
+# 16. 単調時計での全体期限（仕様01）: 壁時計の deadlineAt は未来のまま、run 単位の単調時計の totalSeconds を超えた状態で呼ぶと、VM を作らず timed_out（sbx 呼び出し0回）。
+#     時計は Proposal が使う RequestCopy のインスタンスの script スコープへ試験だけが登録する（totalSeconds=0 の Stopwatch）。
+$ctx=New-Ctx -DeadlineIn 900
+Write-FakeSbxScenario $ctx.case
+& $proposalModule {param($id) & (Get-Command Test-VerificationDeadlineReached).Module {param($runId) $script:RunClocks[$runId]=@{watch=[Diagnostics.Stopwatch]::StartNew();totalSeconds=0}} $id} $ctx.runId
+Assert-True ([DateTimeOffset]::Parse($ctx.prepared.deadlineAt).UtcDateTime -gt [DateTime]::UtcNow.AddSeconds(600)) '単調時計: 前提（壁時計の期限は未来）'
+Assert-True (Test-VerificationDeadlineReached $ctx.prepared.deadlineAt $ctx.runId) '単調時計: 壁時計が未来でも単調時計の到達で期限到達'
+Assert-True (-not(Test-VerificationDeadlineReached $ctx.prepared.deadlineAt ([guid]::NewGuid().ToString()))) '単調時計: 時計の無い run は壁時計だけで判定（未到達）'
+$result=Invoke-VerificationProposal $ctx.prepared $ctx.profile $null
+Assert-True ($result.status -ceq 'timed_out' -and $null -eq $result.sandbox -and $result.stopState -ceq 'not-created' -and $result.failure.reason -ceq 'deadline-reached') "単調時計の到達: timed_out・VM なし（$($result.status) $(ConvertTo-VerificationCanonicalJson $result.failure)）"
+# SbxRuntime を直接呼んでも、当該 run の単調時計の到達で照会の起動が拒否される（Execution の残時間が壁時計と単調時計の小さい方）。
+$failure=Get-Failure {Acquire-VerificationPilotLease $ctx.prepared}
+Assert-True ($failure.Data['status'] -ceq 'timed_out' -and $failure.Data['reason'] -ceq 'deadline-reached') "単調時計の到達: 照会の起動も拒否（$($failure.Data['status']) $($failure.Data['reason'])）"
+Assert-True (-not(Test-Path -LiteralPath $ctx.case.callsPath)) '単調時計の到達: sbx を1回も呼ばない（照会も起動しない）'
 $count++
 
 }finally{

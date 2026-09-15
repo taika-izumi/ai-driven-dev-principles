@@ -258,9 +258,10 @@ function Resolve-ReplayCreationFailure([hashtable]$PreparedRun,[hashtable]$State
     # New-VerificationSandbox の runtimeFailure を creationState・stopState・status で分岐する（reason の符号では分岐しない）。
     # created は部分 handle を sandboxes に残して停止状態を引き継ぐ。unknown と runtimeFailure の欠落・不正は creation-unresolved（未作成・not_run へ丸めない）。
     $status=Get-VerificationExceptionValue $Failure 'status' ''
-    $timedOut=($status -ceq 'timed_out') -or (Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt))
+    $timedOut=($status -ceq 'timed_out') -or (Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt) ([string]$PreparedRun.runId))
     # 解析と値域の検査は RequestCopy の共通補助（Proposal と同じ判定）。不正・欠落は $null。
     $record=ConvertFrom-VerificationRuntimeFailure $Failure
+    Write-VerificationStageError 'replay' $Stage $(if($null -ne $record -and -not[string]::IsNullOrEmpty([string](Get-VerificationValue $record 'reason'))){[string](Get-VerificationValue $record 'reason')}else{'creation-unresolved'}) $Failure
     if($null -eq $record -or $record.creationState -ceq 'unknown'){
         $State.unresolved=$true
         return @{status=$(if($timedOut){'timed_out'}else{'incomplete'});stage=$Stage;reason='creation-unresolved'}
@@ -301,7 +302,7 @@ function Invoke-ReplayRole([hashtable]$PreparedRun,[hashtable]$Profile,[hashtabl
         if(-not$State.knownIds.Add([string]$handle.id)){$problem=@{status='incomplete';stage=$stage;reason='sandbox-reused'}}
         else{
             try{
-                $budget=@{deadlineAt=[string]$PreparedRun.deadlineAt;cleanupDeadlineAt=$null;limits=@{maxOutputBytes=[long](Get-VerificationLimit $PreparedRun 'maxOutputBytes');commandSeconds=[int](Get-VerificationLimit $PreparedRun 'replaySeconds')};phase='work'}
+                $budget=@{deadlineAt=[string]$PreparedRun.deadlineAt;cleanupDeadlineAt=$null;limits=@{maxOutputBytes=[long](Get-VerificationLimit $PreparedRun 'maxOutputBytes');commandSeconds=[int](Get-VerificationLimit $PreparedRun 'replaySeconds')};phase='work';runId=[string]$PreparedRun.runId}   # runId は run 単位の単調時計の鍵
                 Test-ReplayActivationRecord $PreparedRun $handle $State
                 [void](Copy-VerificationSandboxInput $handle ([string]$InputManifest.root) $script:SourceDestination $InputManifest.expected $budget)
                 [void](Confirm-VerificationSandboxInput $handle $script:SourceDestination $InputManifest.expected $budget)
@@ -309,13 +310,15 @@ function Invoke-ReplayRole([hashtable]$PreparedRun,[hashtable]$Profile,[hashtabl
                 $problem=Get-ReplayCommandProblem $command $stage
             }catch{
                 $problem=@{status=(Get-VerificationExceptionValue $_.Exception 'status' 'incomplete');stage=$stage;reason=(Get-VerificationExceptionValue $_.Exception 'reason' 'replay-error')}
+                Write-VerificationStageError 'replay' $stage $problem.reason $_.Exception
             }
         }
         $stopAttempted=$true
-        try{$stopState=[string](Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1)).stopState}catch{$stopState='unverified'}
+        try{$stopState=[string](Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1)).stopState}
+        catch{$stopState='unverified';Write-VerificationStageError 'replay' $stage 'stop-unverified' $_.Exception}
     }finally{
         # 途中で呼出しが打ち切られた場合も停止を試みる（結果は返せないが、VM を残さない）。
-        if(-not$stopAttempted){try{[void](Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1))}catch{}}
+        if(-not$stopAttempted){try{[void](Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $PreparedRun 1))}catch{Write-VerificationStageError 'replay' $stage 'stop-unverified' $_.Exception}}
     }
     $State.stopStates[$index]=$stopState
     $reference=$null
@@ -323,7 +326,11 @@ function Invoke-ReplayRole([hashtable]$PreparedRun,[hashtable]$Profile,[hashtabl
         try{
             $saved=Save-ReplayRecord $PreparedRun $Profile $handle $command $InputManifest ($stopState -ceq 'stopped')
             $reference=@{role=$stage;commandId=[string]$command.commandId;recordPath=$saved.path;recordHash=$saved.hash;sandbox=$handle;inputManifestPath=$InputManifest.path;inputManifestHash=$InputManifest.hash}
-        }catch{$problem=Select-VerificationProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'incomplete') $stage (Get-VerificationExceptionValue $_.Exception 'reason' 'replay-record')}
+        }catch{
+            $recordReason=Get-VerificationExceptionValue $_.Exception 'reason' 'replay-record'
+            Write-VerificationStageError 'replay' $stage $recordReason $_.Exception
+            $problem=Select-VerificationProblem $problem (Get-VerificationExceptionValue $_.Exception 'status' 'incomplete') $stage $recordReason
+        }
     }
     if($stopState -cne 'stopped'){$problem=Select-VerificationProblem $problem 'incomplete' $stage 'stop-unverified'}
     @{problem=$problem;reference=$reference}
@@ -334,16 +341,19 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
     # completed は必要な実行・外側記録・停止を確認したという意味で、合否を表さない。
     Assert-ReplayPreparedRun $PreparedRun
     $result=New-ReplayResult $PreparedRun $null
+    # 全体期限（壁時計または run 単位の単調時計）の後に呼ばれたら、入力検査より先に、入力を作らず VM も作らずに時間超過の型付き結果を返す
+    # （Lease を持たない recheck の呼出しでも lease-invalid にしない）。mode は提案結果を検査していないので recheck の run 以外は決めない（null。New-VerificationReplayNotRun と同じ）。
+    if(Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt) ([string]$PreparedRun.runId)){
+        $recheck=Test-ReplayRecheck $PreparedRun
+        $result.mode=$(if($recheck){'recheck'}else{$null})
+        $result.status='timed_out'
+        $result.failure=@{stage=$(if($recheck){$script:RoleNames.after}else{$script:RoleNames.before});reason='deadline-reached'}
+        return $result
+    }
     $stage='proposal-input';$manifests=[ordered]@{}
     try{
         $checked=Test-ReplayProposal $PreparedRun $ProposalResult
         $result.mode=$checked.mode
-        # 全体期限の後に呼ばれたら、入力を作らず VM も作らずに時間超過の型付き結果を返す（Lease を持たない recheck の呼出しでも lease-invalid にしない）。
-        if(Test-VerificationDeadlineReached ([string]$PreparedRun.deadlineAt)){
-            $result.status='timed_out'
-            $result.failure=@{stage=$(if($checked.mode -ceq 'recheck'){$script:RoleNames.after}else{$script:RoleNames.before});reason='deadline-reached'}
-            return $result
-        }
         $stage='profile'
         # SbxRuntime の検査は理由の符号を持たない拒否があるので、段の理由を profile-rejected にそろえる（状態は SbxRuntime の値。既定 blocked）。
         try{[void](Test-VerificationRuntimeProfile $Profile 'replay-before' $PreparedRun.settings)}
@@ -358,6 +368,7 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
     }catch{
         $result.status=Get-VerificationExceptionValue $_.Exception 'status' $(if($stage -ceq 'replay-input'){'incomplete'}else{'blocked'})
         $result.failure=@{stage=$stage;reason=(Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")}
+        Write-VerificationStageError 'replay' $stage $result.failure.reason $_.Exception
         return $result
     }
     $state=@{sandboxes=[Collections.Generic.List[object]]::new();stopStates=[Collections.Generic.List[string]]::new();knownIds=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal);unresolved=$false;daemonInstance=$null}
@@ -379,7 +390,8 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
 # ---- 未実行結果 ----
 function New-VerificationReplayNotRun([hashtable]$PreparedRun,[hashtable]$Failure) {
     # 提案が ready でない場合に CLI が呼ぶ。VM・モデルを起動しない。status=not_run、sandboxes=[]、before/after/allStopped=null、failure に上流の失敗段階。
-    # 作成成否・ID が不明な上流失敗（reason=creation-unresolved、または creationState=unknown）は not_run へ丸めず incomplete・allStopped=false にする。
+    # 作成成否・ID が不明な上流失敗（reason=creation-unresolved、または creationState=unknown）は not_run へ丸めず incomplete にする（仕様04）。
+    # この関数は再実行の VM を1台も作らないので、allStopped は常に null（仕様04「作成0台ならnull」・仕様03「未作成の停止値はnull」）。上流の VM の作成不明は照合が提案結果から incomplete にする。
     Assert-ReplayPreparedRun $PreparedRun
     $stage=[string](Get-VerificationValue $Failure 'stage');$reason=[string](Get-VerificationValue $Failure 'reason')
     if([string]::IsNullOrEmpty($stage) -or [string]::IsNullOrEmpty($reason)){throw 'Failure with stage and reason required'}
@@ -387,8 +399,6 @@ function New-VerificationReplayNotRun([hashtable]$PreparedRun,[hashtable]$Failur
     # mode は提案結果を受け取らないので recheck 以外は決められない（null）。
     $result=New-ReplayResult $PreparedRun $(if(Test-ReplayRecheck $PreparedRun){'recheck'}else{$null})
     $result.status=$(if($unresolved){'incomplete'}else{'not_run'})
-    # 作成成否不明は「停止を確認できていない」ので、Invoke-VerificationReplay と同じく allStopped=false（作成0台と確認できた not_run だけ null）。
-    if($unresolved){$result.allStopped=$false}
     $result.failure=@{stage=$stage;reason=$(if($unresolved){'creation-unresolved'}else{$reason})}
     $result
 }

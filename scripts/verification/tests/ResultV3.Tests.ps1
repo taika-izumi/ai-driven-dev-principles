@@ -350,6 +350,14 @@ $replay=@{schemaVersion=3;runId=$ctx.runId;status='not_run';mode=$null;sandboxes
 $r=Complete-VerificationRun $ctx.prepared $proposal $replay;Assert-Saved $ctx $r 'not_run timed_out'
 Assert-Outcome $r 'timed_out' 'undetermined' 2 'not_run が timed_out に従う'
 Assert-True ($r.execution.proposalCreated -eq $true -and $r.execution.proposalStopped -eq $true) 'not_run timed_out: 停止済みの提案VM'
+# 提案VMの作成成否が不明（sandbox なし・stopState=unverified）で、再実行は VM を作っていない not_run（allStopped=null）: 照合が提案結果から incomplete にし、再実行側の停止値は null のまま。
+$ctx=New-ResultCtx $sharedSource
+$proposal=@{schemaVersion=3;runId=$ctx.runId;status='incomplete';origin='generated';sandbox=$null;summary=$null;findings=$null;artifacts=@();manifestPath=$null;manifestHash=$null;testsManifestHash=$null;stopState='unverified';failure=@{stage='sandbox';reason='create-timed-out'}}
+$replay=@{schemaVersion=3;runId=$ctx.runId;status='not_run';mode=$null;sandboxes=@();before=$null;after=$null;allStopped=$null;failure=@{stage='sandbox';reason='create-timed-out'}}
+$r=Complete-VerificationRun $ctx.prepared $proposal $replay;Assert-Saved $ctx $r 'not_run 提案作成不明'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 '提案VMの作成成否不明'
+Assert-True ($r.execution.proposalStopped -eq $false -and $r.execution.replayCreatedCount -eq 0 -and $null -eq $r.execution.replayAllStopped) '提案VMの作成成否不明: 提案側は停止未確認、再実行側の停止値は null'
+Assert-Unverified $r 'result/proposal-stop:creation-unresolved*' '提案VMの作成成否不明'
 $run=New-Run -SkipReplay;$run.replay.status='not_run';$run.replay.failure=@{stage='proposal-input';reason='x'}
 $r=Invoke-Result $run 'ready なのに not_run'
 Assert-Outcome $r 'incomplete' 'undetermined' 2 '提案 ready なのに not_run'

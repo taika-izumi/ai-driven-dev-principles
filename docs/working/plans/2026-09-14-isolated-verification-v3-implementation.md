@@ -224,6 +224,8 @@
 逸脱記録: 計画の範囲外の既存欠陥 / 採用 / 全体期限の後の sbx daemon status の起動拒否を SbxRuntime が daemon-not-running（blocked）と表示していた欠陥（タスク3由来）を timed_out に直す（実装時レビューの Important を直す前提で、同一領域を触る本タスクに統合。検出元は CliV3 の実装者報告で、既存の SbxRuntimeV3・ProposalV3・ReplayV3 の試験は期限後の呼び出しを持たず捕捉しない）、あわせて期限後に呼ばれた Proposal・Replay は VM を作らず timed_out の型付き結果を返し、SbxRuntime の実行前の維持確認は期限到達を incomplete に言い換えない（2026-09-16 タスク7 修正ラウンド1）
 逸脱記録: 設計の変更 / 採用 / ADR-0198（全体期限の後に Lease を取得できない場合も CLI は VM を作らない型付き結果を照合へ渡す。仕様00「not_runの型付き結果を作って照合へ渡す」を満たす代わりに「Lease は両経路を覆う」の字面から外れる。保護条件は SbxRuntime の Lease 検査で維持し、ADR-0158 の補助設計の委任の範囲で主担当が判断）
 逸脱記録: 実体に合わせる調整 / 採用 / 既存の control/result.json がある場合の失敗結果は保存を試みず stdout に返し runRoot は準備結果の値を戻す、停止確認が例外で失敗しても -StopRecorded の案内を出す、停止予算は停止未確認の台数だけで組む、作成記録の読込失敗の理由を stderr に出す、SbxRuntimeV3 の停止猶予の既定を 30 秒にする（停止未確認を作るケースは短い値を明示）（2026-09-16 タスク7 修正ラウンド1）
+逸脱記録: 実体に合わせる調整 / 採用 / 最終レビュー後の修正（2026-09-16、コミット 7dc261f〜7450e74）で、停止手順の例外経路でも unverified の停止証拠と停止結果を残し復旧操作は対象ごとに続けて結果を保存する、ジョブ割当の失敗を assign-failed として作成成否不明に扱い搬入・所有者調整での割当失敗は incomplete にする、profile の sbxVersion をデーモンの版と照合する、daemonDisconnect は unverified だけを受理する、utf-8 以外の PEP 263 宣言を blocked にする、全体期限を run 単位の単調時計でも強制する、提案・再実行の例外の説明文を標準エラーに出す、未実行の再実行の allStopped を null にする、時間に依存する試験を直し未試験だった経路を足す。記録は docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md
+逸脱記録: 計画の範囲外の既存欠陥 / 不採用 / 復旧操作が Lease 取得後の照会失敗で recovery-result を保存したあと例外を再送出し、CLI の -StopRecorded が標準出力に結果を出さない食い違い（最終修正の報告で判明、2回目の修正ラウンドは行わない手順のため残す。直し方と勧める時期は docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md「未対応で残したもの」）
 
 ## タスク8: AIなしで実VMの再実行・停止・記録を実証する（個別承認）
 

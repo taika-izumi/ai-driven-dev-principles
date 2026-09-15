@@ -247,7 +247,7 @@ $v1Path=Join-Path $inputs.root 'request-v1.json'
 $v1Request=[ordered]@{};foreach($key in $inputs.request.Keys){$v1Request[$key]=$inputs.request[$key]};$v1Request.schemaVersion=1
 Write-Json $v1Path $v1Request
 $v1Run=Start-Cli $inputs 'v1' @('-RequestPath',$v1Path,'-SettingsPath',$inputs.settingsPath)
-# 9. 準備中に全体期限へ到達（totalSeconds=1、作業ファイル600件で準備に1秒以上かかる）: 準備後の単調時計の確認で、sbx を1回も呼ばずに timed_out。
+# 9. 準備中に全体期限へ到達（totalSeconds=1、作業ファイル600件で準備に1秒以上かかる）: sbx を1回も呼ばず、期限後の型付き結果を照合した timed_out。
 $prepLate=New-CliCase 'preplate' -Limits @{totalSeconds=1;proposalSeconds=1;replaySeconds=1} -ExtraFiles 600
 $prepLateRun=Start-Run $prepLate
 # 10. 復旧操作: 記録済み2台（提案・修正前）だけを止め、記録に無い running VM（修正後の名前）には触れない。縮約入力を使う。
@@ -345,7 +345,7 @@ $r=Get-ResultJson $midwayRun
 Assert-Equal $midwayRun.exitCode 2 '途中失敗: 終了2'
 Assert-True ($r.status -ceq 'incomplete' -and $r.execution.failureStage -ceq 'result' -and $r.execution.exitCodeForCli -eq 2 -and $r.replayVerdict -ceq 'undetermined') "途中失敗: incomplete・failureStage=result（$($r.status) $($r.summary)）"
 Assert-True ($r.execution.proposalCreated -eq $true -and $r.execution.proposalStopped -eq $true -and $r.execution.replayCreatedCount -eq 0) '途中失敗: 判明済みの VM 情報（提案VMは作成済み・停止済み、再実行VMなし）'
-Assert-True ($null -eq $r.runRoot -and $r.runId -ceq $midway.runId) '途中失敗: 保存しない失敗結果（runRoot=null、runId は当該 run）'
+Assert-True ($r.runRoot -ceq $midway.runRoot -and $r.runId -ceq $midway.runId) '途中失敗: 保存しない失敗結果でも runRoot・runId は作成済みの当該 run'
 Assert-ResultSchema $midwayRun
 Assert-Equal ([IO.File]::ReadAllText((Join-Path $midway.runRoot 'control/result.json'),$utf8)) $plantedText '途中失敗: 既存の control/result.json を上書きしない'
 $lines=Get-StderrLines $midwayRun
@@ -366,7 +366,10 @@ Assert-Equal $lateRun.exitCode 2 '期限到達: 終了2'
 Assert-True ($r.status -ceq 'timed_out' -and $r.execution.proposalCreated -eq $true -and $r.execution.proposalStopped -eq $false -and $r.execution.replayCreatedCount -eq 0) "期限到達: timed_out・提案VMは停止未確認（$($r.status) $($r.summary)）"
 Assert-ResultSchema $lateRun
 # 提案が ready でないので、期限後も再実行は not_run として照合へ進む（照合は VM を作らない）。上流の時間超過を優先した照合結果を保存する。
-Assert-True (@($r.unverified) -ccontains 'proposal/agent:agent-timed-out') "期限到達: 照合結果に提案の時間超過（$(@($r.unverified) -join ' | ')）"
+# 照合を経た結果であること: 固定入力と原本・基準版の再照合（sourceState・baselineState=unchanged、scope の付与）、提案VMの停止値は停止記録（最後が unverified）に基づく false。
+Assert-True (@($r.unverified) -ccontains 'proposal/agent:agent-timed-out' -and $r.execution.failureStage -ceq 'proposal/agent') "期限到達: 照合結果に提案の時間超過（$(@($r.unverified) -join ' | ')）"
+Assert-True ($r.sourceState -ceq 'unchanged' -and $r.baselineState -ceq 'unchanged' -and $r.scope -ceq 'synthetic-pilot' -and @($r.limitations).Count -eq 3) "期限到達: 照合を経た結果（原本・基準版の再照合と scope。$($r.sourceState)/$($r.baselineState)/$($r.scope)）"
+Assert-True (@($r.unverified | Where-Object {$_ -like 'result/proposal-stop:*'}).Count -ge 1) "期限到達: 提案VMの停止未確認は停止記録の照合から（$(@($r.unverified) -join ' | ')）"
 Assert-SavedResult $lateRun $r
 $lines=Get-StderrLines $lateRun
 $deadlineMatch=[regex]::Match(($lines -join "`n"),'(?m)^startedAt: \S+ deadlineAt: (\S+) totalSeconds: 60$')
@@ -434,8 +437,13 @@ $count++
 # ---- 9. 準備中に全体期限へ到達 ----
 $r=Get-ResultJson $prepLateRun
 Assert-Equal $prepLateRun.exitCode 2 '準備中の期限到達: 終了2'
-Assert-True ($r.status -ceq 'timed_out' -and $r.execution.failureStage -ceq 'deadline') "準備中の期限到達: timed_out（$($r.summary)）"
+# 期限後は Lease の照会も起動を拒否されるので Lease を取らずに進み、期限後の提案が VM を作らず返す timed_out と not_run の再実行を照合する。
+Assert-True ($r.status -ceq 'timed_out' -and $r.execution.failureStage -ceq 'proposal/sandbox' -and @($r.unverified) -ccontains 'proposal/sandbox:deadline-reached') "準備中の期限到達: 照合を経た timed_out（$($r.summary) / $(@($r.unverified) -join ' | ')）"
+Assert-True ($r.sourceState -ceq 'unchanged' -and $r.baselineState -ceq 'unchanged' -and $r.scope -ceq 'synthetic-pilot' -and $r.execution.proposalCreated -eq $false -and $null -eq $r.execution.proposalStopped -and $r.execution.replayCreatedCount -eq 0) '準備中の期限到達: 原本・基準版の再照合と scope、VM なし'
 Assert-SavedResult $prepLateRun $r
+Assert-ResultSchema $prepLateRun
+$lines=Get-StderrLines $prepLateRun
+Assert-True (@($lines | Where-Object {$_ -like 'pilot lease: 全体期限に達したため取得しない*'}).Count -eq 1 -and @($lines | Where-Object {$_ -like 'replay: 実行しない*'}).Count -eq 1) '準備中の期限到達: Lease を取らず、再実行は not_run'
 Assert-True (-not[IO.File]::Exists($prepLate.case.callsPath)) '準備中の期限到達: sbx を1回も呼ばない（Lease の照会も含む）'
 $count++
 

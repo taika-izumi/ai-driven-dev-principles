@@ -9,7 +9,8 @@
 # - 各モジュールは -Force なしで1回だけ読み込む。Lease（名前付き Mutex）は SbxRuntime のモジュール状態にあり、別インスタンスを読み込むと
 #   Proposal・Replay の New-VerificationSandbox から Lease が見えなくなるため（計画の制約。CliV3 の正常往復が失敗して検出する）。
 # - 分岐は status・creationState・stopState とファイルの存否で行い、reason の符号では分岐しない。
-# - 全体期限は単調時計（Stopwatch）でも監督し、到達後は新しいVM作成・搬入・実行を始めない。停止だけ停止フェーズの予算（台数分）で行う。
+# - 全体期限（壁時計の deadlineAt）に達した後は、SbxRuntime が照会・作成・搬入・実行の起動を拒否し、Proposal・Replay は VM を作らず timed_out の型付き結果を返す。
+#   CLI はその結果も照合へ渡す（失敗結果で打ち切らない）。停止だけ停止フェーズの予算（台数分）で行う。単調時計（Stopwatch）は到達の診断と例外時の status に使う。
 # - clipboard の読取・退避・復元・消去はしない。
 [CmdletBinding()]
 param(
@@ -98,7 +99,8 @@ function Get-CliRecordedRoles([string]$ControlRoot) {
     foreach($role in $script:SandboxRoles){
         $path=Join-Path $ControlRoot "runtime/$role-sandbox.json"
         if([IO.File]::Exists($path)){
-            try{$roles[$role]=Read-CliJson $path "$role sandbox record"}catch{$roles[$role]=$null}
+            try{$roles[$role]=Read-CliJson $path "$role sandbox record"}
+            catch{$roles[$role]=$null;Write-Diagnostic "stop: $role の作成記録を読めない（$path）: $(Get-OneLine $_.Exception.Message)"}
         }
     }
     $roles
@@ -128,6 +130,16 @@ function Test-CliDeadline([Diagnostics.Stopwatch]$Watch,[hashtable]$Prepared) {
     # 単調時計での全体期限（startedAt を確定した時点から totalSeconds）。壁時計の deadlineAt 到達も到達とみなす（どちらか早い方）。
     ($Watch.Elapsed.TotalSeconds -ge [double]$Prepared.settings.limits.totalSeconds) -or (Test-VerificationDeadlineReached ([string]$Prepared.deadlineAt))
 }
+function Get-CliLastStopState([string]$ControlRoot,[string]$Role,$Record) {
+    # SbxRuntime が停止ごとに書く control/runtime/<role>-stop-<UTC時刻>.json のうち、名前の時刻順で最後の、同じ runId・name・id の証拠の stopState（無ければ $null）。
+    $dir=Join-Path $ControlRoot 'runtime'
+    if(-not[IO.Directory]::Exists($dir)){return $null}
+    foreach($file in @(Get-ChildItem -LiteralPath $dir -File -Filter "$Role-stop-*.json" | Sort-Object Name -Descending)){
+        try{$evidence=Read-CliJson $file.FullName 'stop evidence'}catch{Write-Diagnostic "stop: 停止証拠を読めない（$($file.FullName)）: $(Get-OneLine $_.Exception.Message)";continue}
+        if([string](Get-VerificationValue $evidence 'runId') -ceq [string]$Record.runId -and [string](Get-VerificationValue $evidence 'name') -ceq [string]$Record.name -and [string](Get-VerificationValue $evidence 'id') -ceq [string]$Record.id){return [string](Get-VerificationValue $evidence 'stopState')}
+    }
+    $null
+}
 function Invoke-CliStopPhase([hashtable]$Prepared,$Proposal,$Replay) {
     # 作成済み VM の停止確認。停止を確認できていない VM（作成記録があり、結果が stopped と言っていないもの）だけを対象に、
     # 停止フェーズの予算（現在時刻 + cleanupSeconds × 対象台数）を1回組み、Stop-VerificationSandbox を再試行する。停止確認済みの handle へは SbxRuntime が何も発行しない。
@@ -144,6 +156,8 @@ function Invoke-CliStopPhase([hashtable]$Prepared,$Proposal,$Replay) {
         }
         $record=$recorded[$role]
         if($null -eq $record){$outcome[$role]='unverified';Write-Diagnostic "stop: $role の作成記録を読めない。復旧操作で確認する";continue}
+        # 再実行の allStopped=false は役割ごとの停止状態を持たないので、当該 VM の最後の停止証拠が stopped の役割は対象から外し、未確認の台数だけで予算を組む。
+        if($role -cne 'proposal' -and (Get-CliLastStopState ([string]$Prepared.controlRoot) $role $record) -ceq 'stopped'){continue}
         $targets.Add(@{role=$role;handle=@{runId=[string]$record.runId;role=$role;name=[string]$record.name;id=[string]$record.id}})
     }
     if($targets.Count -eq 0){return $outcome}
@@ -195,10 +209,8 @@ function Invoke-CliRun {
     Write-Diagnostic "startedAt: $($prepared.startedAt) deadlineAt: $($prepared.deadlineAt) totalSeconds: $($prepared.settings.limits.totalSeconds)"
     $context=Get-CliContext $prepared $null $null @{}
     $recheck=@($prepared.recheckArtifacts | Where-Object {$null -ne $_}).Count -gt 0
-    if(Test-CliDeadline $watch $prepared){
-        Write-Diagnostic 'deadline: 準備の間に全体期限に到達した。VM を作らない'
-        return @{result=(New-VerificationFailureResult $context @{status='timed_out';stage='deadline';reason='deadline-reached: after preparation'})}
-    }
+    # 期限に達していても準備後は失敗結果で打ち切らず、提案・再実行の型付き結果（VM を作らない timed_out）を照合へ渡す（仕様00「not_runの型付き結果を作って照合へ渡す」）。
+    if(Test-CliDeadline $watch $prepared){Write-Diagnostic 'deadline: 準備の間に全体期限に到達した。以降は VM を作らず、時間超過の結果を照合へ渡す'}
     # 3. 実行設定の検査（replay は常に、proposal は recheck でないとき）。VM 作成前に拒否する。
     $proposalProfile=$null;$replayProfile=$null
     try{
@@ -213,53 +225,55 @@ function Invoke-CliRun {
         return @{result=(New-VerificationFailureResult $context @{status='blocked';stage='profile';reason=('profile-rejected: '+(Get-OneLine $_.Exception.Message))})}
     }
     # 4. pilot 排他（通常提案と recheck の両方）。競合・デーモン停止は VM を作らず blocked。
+    #    期限到達で照会を起動できなかった場合（status=timed_out）だけは Lease なしで先へ進み、期限後の Proposal・Replay が VM を作らずに返す timed_out の結果を照合する。
+    $lease=$null
     try{$lease=Acquire-VerificationPilotLease $prepared}
     catch{
         $data=$_.Exception.Data
         Write-Diagnostic "error: lease: $(Get-OneLine $_.Exception.Message)"
         $status=$(if($data.Contains('status') -and [string]$data['status'] -cin $script:FailureStatuses){[string]$data['status']}else{'blocked'})
-        $code=$(if($data.Contains('reason') -and -not[string]::IsNullOrEmpty([string]$data['reason'])){[string]$data['reason']}else{'lease-failed'})
-        return @{result=(New-VerificationFailureResult $context @{status=$status;stage='lease';reason=("$code`: "+(Get-OneLine $_.Exception.Message))})}
+        if($status -cne 'timed_out'){
+            $code=$(if($data.Contains('reason') -and -not[string]::IsNullOrEmpty([string]$data['reason'])){[string]$data['reason']}else{'lease-failed'})
+            return @{result=(New-VerificationFailureResult $context @{status=$status;stage='lease';reason=("$code`: "+(Get-OneLine $_.Exception.Message))})}
+        }
+        Write-Diagnostic 'pilot lease: 全体期限に達したため取得しない。VM を作らない時間超過の結果を照合へ渡す'
     }
-    Write-Diagnostic "pilot lease: 取得した（leaseId=$($lease.leaseId)）"
-    $proposal=$null;$replay=$null;$result=$null;$phase='proposal';$stopRetry=@{}
+    if($null -ne $lease){Write-Diagnostic "pilot lease: 取得した（leaseId=$($lease.leaseId)）"}
+    $proposal=$null;$replay=$null;$result=$null;$phase='proposal';$stopRetry=@{};$stopPhaseFailed=$false
     try{
         try{
             # 5. 提案。recheck では VM・モデルを起動しない（Proposal が判断する）。
             $proposal=Invoke-VerificationProposal $prepared $proposalProfile $lease
             Write-Diagnostic "proposal: status=$($proposal.status) stopState=$($proposal.stopState)$(Format-CliFailure $proposal)"
-            # 敵対的な wire の検査（最大約30秒）を含めて全体期限を確かめてから再実行へ進む。提案が ready でなければ再実行の VM は作らないので、通常どおり not_run と照合へ進む。
-            if([string]$proposal.status -ceq 'ready' -and (Test-CliDeadline $watch $prepared)){
-                Write-Diagnostic 'deadline: 提案の後に全体期限に到達した。再実行の VM を作らない'
-                $failure=@{status='timed_out';stage='deadline';reason='deadline-reached: after proposal'}
+            # 敵対的な wire の検査（最大約30秒）の後で期限に達していても、再実行は呼ぶ（期限後の Replay は VM を作らず timed_out を返す）。ここでは診断だけ出す。
+            if([string]$proposal.status -ceq 'ready' -and (Test-CliDeadline $watch $prepared)){Write-Diagnostic 'deadline: 提案の後に全体期限に到達した。再実行は VM を作らず時間超過を返す'}
+            # 6. 再実行（提案が ready のときだけ）。それ以外は not_run の型付き結果を作る。
+            $phase='replay'
+            if([string]$proposal.status -ceq 'ready'){
+                $replay=Invoke-VerificationReplay $prepared $proposal $replayProfile $lease
+                Write-Diagnostic "replay: status=$($replay.status) allStopped=$($replay.allStopped)$(Format-CliFailure $replay)"
             }else{
-                # 6. 再実行（提案が ready のときだけ）。それ以外は not_run の型付き結果を作る。
-                $phase='replay'
-                if([string]$proposal.status -ceq 'ready'){
-                    $replay=Invoke-VerificationReplay $prepared $proposal $replayProfile $lease
-                    Write-Diagnostic "replay: status=$($replay.status) allStopped=$($replay.allStopped)$(Format-CliFailure $replay)"
-                }else{
-                    $upstreamFailure=Get-VerificationValue $proposal 'failure'
-                    $upstream=@{stage=[string](Get-VerificationValue $upstreamFailure 'stage');reason=[string](Get-VerificationValue $upstreamFailure 'reason')}
-                    # 提案VMの作成成否が不明（handle なし・停止未確認）なら not_run へ丸めない（Replay の約束）。
-                    if($null -eq $proposal.sandbox -and [string]$proposal.stopState -ceq 'unverified'){$upstream.creationState='unknown'}
-                    $replay=New-VerificationReplayNotRun $prepared $upstream
-                    Write-Diagnostic "replay: 実行しない（提案が ready でない。status=$($replay.status)）"
-                }
-                # 7. 照合。control/result.json へ一度だけ保存する。
-                $phase='result'
-                $result=Complete-VerificationRun $prepared $proposal $replay
+                $upstreamFailure=Get-VerificationValue $proposal 'failure'
+                $upstream=@{stage=[string](Get-VerificationValue $upstreamFailure 'stage');reason=[string](Get-VerificationValue $upstreamFailure 'reason')}
+                # 提案VMの作成成否が不明（handle なし・停止未確認）なら not_run へ丸めない（Replay の約束）。
+                if($null -eq $proposal.sandbox -and [string]$proposal.stopState -ceq 'unverified'){$upstream.creationState='unknown'}
+                $replay=New-VerificationReplayNotRun $prepared $upstream
+                Write-Diagnostic "replay: 実行しない（提案が ready でない。status=$($replay.status)）"
             }
+            # 7. 照合。control/result.json へ一度だけ保存する。
+            $phase='result'
+            $result=Complete-VerificationRun $prepared $proposal $replay
         }catch{
             Write-Diagnostic "error: $phase`: $(Get-OneLine $_.Exception.Message)"
             $failure=@{status=$(if(Test-CliDeadline $watch $prepared){'timed_out'}else{'incomplete'});stage=$phase;reason=("$phase-error: "+(Get-OneLine $_.Exception.Message))}
         }
     }finally{
         # 8. 作成済み VM の停止確認と Lease の解放（途中の例外でも必ず行う）。
-        try{$stopRetry=Invoke-CliStopPhase $prepared $proposal $replay}catch{Write-Diagnostic "stop: 停止確認に失敗した: $(Get-OneLine $_.Exception.Message)"}
-        try{Release-VerificationPilotLease $lease;Write-Diagnostic 'pilot lease: 解放した'}catch{Write-Diagnostic "pilot lease: 解放に失敗した: $(Get-OneLine $_.Exception.Message)"}
+        try{$stopRetry=Invoke-CliStopPhase $prepared $proposal $replay}catch{$stopPhaseFailed=$true;Write-Diagnostic "stop: 停止確認に失敗した: $(Get-OneLine $_.Exception.Message)"}
+        if($null -ne $lease){try{Release-VerificationPilotLease $lease;Write-Diagnostic 'pilot lease: 解放した'}catch{Write-Diagnostic "pilot lease: 解放に失敗した: $(Get-OneLine $_.Exception.Message)"}}
     }
-    if(@($stopRetry.Values | Where-Object {$_ -cne 'stopped'}).Count -gt 0){
+    # 停止確認そのものが失敗した場合も、停止を確認できないものとして復旧操作を案内する。
+    if($stopPhaseFailed -or @($stopRetry.Values | Where-Object {$_ -cne 'stopped'}).Count -gt 0){
         Write-Diagnostic "recovery: 停止を確認できない VM がある。復旧操作: pwsh -NoProfile -File `"$PSCommandPath`" -StopRecorded -RunRoot `"$($prepared.runRoot)`" -SettingsPath `"$SettingsPath`"。残置VMの後片付けは利用者承認の sbx rm で行う。"
     }
     if($null -ne $result){return @{result=$result}}
@@ -268,7 +282,11 @@ function Invoke-CliRun {
     $existing=Join-Path ([string]$prepared.controlRoot) 'result.json'
     if([IO.File]::Exists($existing)){
         Write-Diagnostic "result: control/result.json が既にあるため保存しない（$existing）。stdout の結果だけを返す"
+        # New-VerificationFailureResult は runRoot を受けると保存を試みるので null で作り、返す前に作成済みの runRoot（実在するパス）へ戻す（仕様03）。
         $context.runRoot=$null
+        $failed=New-VerificationFailureResult $context $failure
+        if([IO.Directory]::Exists([string]$prepared.runRoot)){$failed.runRoot=[string]$prepared.runRoot}
+        return @{result=$failed}
     }
     @{result=(New-VerificationFailureResult $context $failure)}
 }

@@ -307,7 +307,7 @@ foreach($variant in @('inspect-failed','policy-mismatch','ssh-forwarder')){Test-
 $count++
 
 # 9. 正常作成: handle の項目、作成記録、activationRecord（schema・全条件 verified/非該当）、保持セッションの生存、固定 argv と環境辞書（SSH_AUTH_SOCK なし）。停止で stopped、保持プロセス消失、当該名以外へ stop なし。
-$ctx=New-Case -CleanupSeconds 5;$vm=Add-Vm $ctx;Write-FakeSbxScenario $ctx.case
+$ctx=New-Case;$vm=Add-Vm $ctx;Write-FakeSbxScenario $ctx.case   # 停止猶予は既定30秒（5秒では負荷で停止後の世代照会が期限を越えることがある。ProposalV3 の d7a14a2 と同じ）
 $lease=Acquire-VerificationPilotLease $ctx.prepared
 $handle=New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease;$item=@{handle=$handle;ctx=$ctx;stopped=$false};$handles.Add($item)
 Assert-Equal (@($handle.Keys | Sort-Object) -join ',') 'activationRecordHash,activationRecordPath,createdAt,effectiveSettingsHash,id,keepAliveHandle,name,profileHash,role,runId' 'handle: 項目'
@@ -355,7 +355,7 @@ function New-Input([hashtable]$Ctx){
     $files=@(foreach($rel in @('a.py','sub/b.py')){$path=Join-Path $in $rel;@{path=$rel;size=([IO.FileInfo]::new($path)).Length;sha256=(Get-Hash $path)}})
     @{root=$in;manifest=@{schemaVersion=3;runId=$Ctx.runId;files=$files}}
 }
-$ctx=New-Case -CleanupSeconds 5;$trusted=New-Input $ctx;$vm=Add-Vm $ctx -ConfirmFiles $trusted.manifest.files
+$ctx=New-Case;$trusted=New-Input $ctx;$vm=Add-Vm $ctx -ConfirmFiles $trusted.manifest.files
 $unitOk=Get-FakeSbxResponse 'unittestOk';$unitFail=Get-FakeSbxResponse 'unittestFail'
 $unitArgv=@('exec','-w','/home/agent/workspace/source','-e','PYTHONDONTWRITEBYTECODE=1','-e','PYTHONHASHSEED=0',[regex]::Escape($vm.name),'python3','-m','unittest','discover','-s','\.verification-tests','-p','test_\*\.py','-v')
 Add-FakeSbxResponse $ctx.case $unitArgv -Stderr $unitFail.text -ExitCode 1 -Synthetic $unitFail.synthetic | Out-Null
@@ -474,7 +474,7 @@ Release-VerificationPilotLease $lease
 $count++
 
 # 12. 出力超過での停止: outputExceeded=true・exitCode null・当該 VM を停止（stop 1回、予算は現在時刻起点の1台分）。以後の exec は発行しない。
-$ctx=New-Case -CleanupSeconds 5;$vm=Add-Vm $ctx
+$ctx=New-Case;$vm=Add-Vm $ctx   # 停止猶予は既定30秒（5秒ではランナーで1回、停止後の世代照会が期限を越えて停止未確認になった）
 Add-FakeSbxResponse $ctx.case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($vm.name),'sh','-c','yes') -Stdout ('y'*(3*1024*1024)) -Synthetic $true -Source '出力洪水の応答は 8a で実測する（内容は創作）' | Out-Null
 Write-FakeSbxScenario $ctx.case
 $lease=Acquire-VerificationPilotLease $ctx.prepared
@@ -486,7 +486,7 @@ Assert-True ($record.outputExceeded -and $null -eq $record.exitCode -and $record
 Assert-Equal (@(Get-StopCalls $ctx) -join ',') $vm.name '出力超過: 当該名へ stop 1回'
 $stopEvidence=Get-Content -LiteralPath (Get-ChildItem -LiteralPath (Join-Path $ctx.controlRoot 'runtime') -Filter 'replay-before-stop-*.json')[0].FullName -Raw | ConvertFrom-Json -AsHashtable
 $cleanupAt=Get-Utc $stopEvidence.budget.cleanupDeadlineAt
-Assert-True ($cleanupAt -ge $before.AddSeconds(5) -and $cleanupAt -le [DateTime]::UtcNow.AddSeconds(5)) '出力超過: 停止予算は現在時刻起点の1台分（全体期限を含まない）'
+Assert-True ($cleanupAt -ge $before.AddSeconds(30) -and $cleanupAt -le [DateTime]::UtcNow.AddSeconds(30)) '出力超過: 停止予算は現在時刻起点の1台分（全体期限を含まない）'
 $failure=Get-Failure {Invoke-VerificationSandboxCommand $handle @('python3','--version') $null '/home/agent/workspace/source' @{} $flood $null}
 Assert-True ($failure.Data['reason'] -eq 'sandbox-stopped') '出力超過: 停止後は exec を発行しない'
 [void](Stop-TestSandbox $item (New-VerificationCleanupBudget $ctx.prepared 1))
@@ -615,18 +615,18 @@ try{
     Assert-Equal @(Get-Calls $ctx 'ls').Count 0 '復旧(競合): ls も発行しない'
 }finally{Stop-Job $holder;Remove-Job $holder -Force;$ready.Dispose()}
 $checkedBefore=[DateTime]::UtcNow
-$result=Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 6)
+$result=Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 30)   # 停止を確認するので猶予は既定の30秒
 Assert-True ($result.daemonRunning -and $result.targetCount -eq 2 -and $null -ne $result.lease -and $result.lease.daemonKey -ceq $probe.daemonKey) '復旧: 対象2台と Lease'
 foreach($target in $result.targets){Assert-True ($target.stateBefore -ceq 'running' -and $target.stopState -ceq 'stopped' -and (Test-Path -LiteralPath $target.evidencePath)) "復旧: $($target.name) を停止（$($target.stopState)）"}
 Assert-Equal ((@(Get-StopCalls $ctx) | Sort-Object) -join ',') ((@($recorded | ForEach-Object {$_.name}) | Sort-Object) -join ',') '復旧: 記録済み2台だけに stop（記録外の running VM には触れない）'
 $firstEvidence=Get-Content -LiteralPath $result.targets[0].evidencePath -Raw | ConvertFrom-Json -AsHashtable
 $evidence=Get-Content -LiteralPath $result.targets[1].evidencePath -Raw | ConvertFrom-Json -AsHashtable
-# 予算は停止フェーズ開始時に1回だけ確定する: 2台の証拠の cleanupDeadlineAt が同一で、1台目の証拠で下限（開始前時刻＋2台×6秒）を満たす。
-# 対象ごとに now+6 を計算し直す誤実装は、2台の値が食い違い、1台目が下限を割る。
+# 予算は停止フェーズ開始時に1回だけ確定する: 2台の証拠の cleanupDeadlineAt が同一で、1台目の証拠で下限（開始前時刻＋2台×30秒）を満たす。
+# 対象ごとに now+30 を計算し直す誤実装は、2台の値が食い違い、1台目が下限を割る。
 $firstCleanupAt=Get-Utc $firstEvidence.budget.cleanupDeadlineAt
 $cleanupAt=Get-Utc $evidence.budget.cleanupDeadlineAt
 Assert-True ($firstCleanupAt -eq $cleanupAt) "復旧: 2台の停止予算は同一の cleanupDeadlineAt（$firstCleanupAt / $cleanupAt）"
-Assert-True ($firstCleanupAt -ge $checkedBefore.AddSeconds(12) -and $firstCleanupAt -le $checkedBefore.AddSeconds(12+10)) "復旧: 予算は現在時刻起点で台数分（2台×6秒）に延びる（1台目の証拠: $firstCleanupAt）"
+Assert-True ($firstCleanupAt -ge $checkedBefore.AddSeconds(60) -and $firstCleanupAt -le $checkedBefore.AddSeconds(60+10)) "復旧: 予算は現在時刻起点で台数分（2台×30秒）に延びる（1台目の証拠: $firstCleanupAt）"
 Assert-True ($null -eq $evidence.keepAlive) '復旧: 保持ジョブが無ければ停止を省く'
 $json=ConvertTo-VerificationCanonicalJson $result
 Assert-True (Test-Json -Json $json -SchemaFile $schemaPath) '復旧: 戻り値が schema に適合'

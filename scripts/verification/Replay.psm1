@@ -147,24 +147,38 @@ function Test-ReplayProposal([hashtable]$PreparedRun,[hashtable]$ProposalResult)
 }
 
 # ---- 標準ライブラリ検査（VM なし。外にあるモジュールは VM 未作成の blocked） ----
+function Get-ReplayLogicalLines([string]$Text) {
+    # 行末の `\` 継続と、開き括弧が閉じるまでの括弧継続を1つの論理行へ空白で連結する。
+    # 括弧の深さは、1行内で閉じる単純な文字列リテラルとコメントを除いて数える。三重引用符などで数え違えても連結が増えるだけで、検出は過剰側（blocked 側）に倒れる。
+    $logical=[Collections.Generic.List[string]]::new();$buffer=[Text.StringBuilder]::new();$depth=0
+    foreach($raw in $Text.Replace("`r`n","`n").Split("`n")){
+        $continued=$raw.EndsWith('\')
+        $line=$(if($continued){$raw.Substring(0,$raw.Length-1)}else{$raw})
+        [void]$buffer.Append($line).Append(' ')
+        $scan=[regex]::Replace($line,'''[^'']*''|"[^"]*"','')
+        $comment=$scan.IndexOf('#');if($comment -ge 0){$scan=$scan.Substring(0,$comment)}
+        foreach($ch in $scan.ToCharArray()){if('([{'.IndexOf($ch) -ge 0){$depth++}elseif(')]}'.IndexOf($ch) -ge 0 -and $depth -gt 0){$depth--}}
+        if(-not$continued -and $depth -eq 0){$logical.Add($buffer.ToString());[void]$buffer.Clear()}
+    }
+    if($buffer.Length -gt 0){$logical.Add($buffer.ToString())}
+    ,$logical
+}
 function Get-ReplayImportedModules([string]$Text) {
-    # import 文を静的に列挙し、最上位のモジュール名を返す（import a.b, c as d / from x.y import z）。相対 import（from . / from .x）は題材内として数えない。
-    # 動的 import（__import__・importlib）は検出しない。行頭が import/from の行は文字列の中でも数える（過剰側に倒れて blocked になる）。
+    # import 文を静的に列挙し、最上位のモジュール名を返す。行頭に限らず論理行のどこにある `from X import …` と `import X[, Y …]` も拾う
+    # （`try: import x`・`if c: import x`・`;` 連結・`\` 継続・括弧継続を含む）。相対 import（from . / from .x）は題材内として数えない。
+    # 文字列・コメント内の import らしい語も数える（過剰側に倒れて blocked になる）。動的 import（__import__・importlib）は検出しない。ホストで Python を実行しない。
     $modules=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-    foreach($line in $Text.Split("`n")){
-        foreach($segment in $line.Split(';')){
-            $statement=$segment.Trim()
-            $comment=$statement.IndexOf('#');if($comment -ge 0){$statement=$statement.Substring(0,$comment).Trim()}
-            $from=[regex]::Match($statement,'^from\s+(\.*)([A-Za-z_][\w.]*)?\s+import\b')
-            if($from.Success){
-                if($from.Groups[1].Value.Length -eq 0 -and $from.Groups[2].Success){[void]$modules.Add($from.Groups[2].Value.Split('.')[0])}
-                continue
-            }
-            $import=[regex]::Match($statement,'^import\s+(.+)$')
-            if(-not$import.Success){continue}
-            foreach($part in $import.Groups[1].Value.Split(',')){
-                $name=(($part.Trim() -split '\s+')[0]).Trim('(',')','\')
-                if($name -match '^[A-Za-z_]\w*(\.\w+)*$'){[void]$modules.Add($name.Split('.')[0])}
+    $fromPattern='\bfrom\s+(\.*)([A-Za-z_][\w.]*)?\s+import\b'
+    foreach($line in (Get-ReplayLogicalLines $Text)){
+        foreach($match in [regex]::Matches($line,$fromPattern)){
+            if($match.Groups[1].Value.Length -eq 0 -and $match.Groups[2].Success){[void]$modules.Add($match.Groups[2].Value.Split('.')[0])}
+        }
+        # from … import の後ろの名前はモジュールではないので、キーワードごと消してから import X の走査へ進む。
+        $rest=[regex]::Replace($line,$fromPattern,' ')
+        foreach($match in [regex]::Matches($rest,'\bimport\s+([^;#]*)')){
+            foreach($part in $match.Groups[1].Value.Split(',')){
+                $words=@($part.Trim().Trim('(',')').Trim() -split '\s+')
+                if($words.Count -gt 0 -and $words[0] -match '^[A-Za-z_]\w*(\.\w+)*$'){[void]$modules.Add($words[0].Split('.')[0])}
             }
         }
     }
@@ -338,15 +352,23 @@ function Resolve-ReplayCreationFailure([hashtable]$PreparedRun,[hashtable]$State
     if($record.stopState -ceq 'stopped'){return @{status=$(if($status -and $status -cne 'incomplete'){$status}else{'blocked'});stage=$Stage;reason=$reason}}
     @{status=$(if($timedOut){'timed_out'}else{'incomplete'});stage=$Stage;reason=$reason}
 }
-function Test-ReplayActivationRecord([hashtable]$PreparedRun,[hashtable]$Handle) {
+function Test-ReplayActivationRecord([hashtable]$PreparedRun,[hashtable]$Handle,[hashtable]$State) {
     # 搬入の前に、新規VMの activationRecord（当該 run の control/runtime 内）を handle の記録hashで1回読み、runId・sandboxId・名前・役割・profileHash・effectiveSettingsHash が
     # 現在の handle と対応することを確かめる（仕様04。能力試験の古い証拠だけで現在の実行を承認しない）。実効値の各 check は SbxRuntime が作成時に判定済み。
+    # daemonInstance: SbxRuntime の handle は起動世代を持たない（公開の戻り値に無い）ため、記録に pid（正の整数）・startedAt（空でない文字列）があることと、
+    # 同じ run で先に確かめた役割（before）の値と一致すること（正規化JSONで比較）を照合する。欠落は blocked、役割間の不一致はデーモン世代の変化として incomplete。
     $path=[string]$Handle.activationRecordPath
     if([string]::IsNullOrEmpty($path) -or -not(Test-VerificationContainment (Join-Path ([string]$PreparedRun.controlRoot) 'runtime') $path)){Throw-VerificationReplayFailure "activation record must be inside control/runtime of this run: $path" 'blocked' 'activation-record'}
     $record=Read-VerificationVerifiedJson $path ([string]$Handle.activationRecordHash) ([string]$PreparedRun.runId) '' 'blocked' 'activation-record'
     foreach($pair in @(@('sandboxId','id'),@('sandboxName','name'),@('role','role'),@('profileHash','profileHash'),@('effectiveSettingsHash','effectiveSettingsHash'))){
         if([string]$record[$pair[0]] -cne [string]$Handle[$pair[1]]){Throw-VerificationReplayFailure "activation record $($pair[0]) does not match the sandbox handle" 'blocked' 'activation-record'}
     }
+    $daemon=$record['daemonInstance']
+    $daemonValid=($daemon -is [hashtable]) -and $daemon.ContainsKey('pid') -and (($daemon.pid -is [int]) -or ($daemon.pid -is [long])) -and $daemon.pid -ge 1 -and $daemon.ContainsKey('startedAt') -and ($daemon.startedAt -is [string]) -and -not[string]::IsNullOrWhiteSpace($daemon.startedAt)
+    if(-not$daemonValid){Throw-VerificationReplayFailure 'activation record lacks daemonInstance with pid and startedAt' 'blocked' 'activation-record'}
+    $daemonJson=ConvertTo-VerificationCanonicalJson $daemon
+    if($null -eq $State.daemonInstance){$State.daemonInstance=$daemonJson}
+    elseif($State.daemonInstance -cne $daemonJson){Throw-VerificationReplayFailure 'daemonInstance differs from the earlier replay sandbox of this run' 'incomplete' 'daemon-changed'}
 }
 function Invoke-ReplayRole([hashtable]$PreparedRun,[hashtable]$Profile,[hashtable]$Lease,[hashtable]$State,[string]$Role,[hashtable]$InputManifest) {
     # 1役割 = 新規VMの作成 → activationRecord の対応確認 → 搬入（Copy）・実体照合（Confirm）→ 固定 argv の unittest（replaySeconds・stderr の要約署名）→ 停止確認 → 外側記録。
@@ -362,7 +384,7 @@ function Invoke-ReplayRole([hashtable]$PreparedRun,[hashtable]$Profile,[hashtabl
         else{
             try{
                 $budget=@{deadlineAt=[string]$PreparedRun.deadlineAt;cleanupDeadlineAt=$null;limits=@{maxOutputBytes=[long](Get-ReplayLimit $PreparedRun 'maxOutputBytes');commandSeconds=[int](Get-ReplayLimit $PreparedRun 'replaySeconds')};phase='work'}
-                Test-ReplayActivationRecord $PreparedRun $handle
+                Test-ReplayActivationRecord $PreparedRun $handle $State
                 [void](Copy-VerificationSandboxInput $handle ([string]$InputManifest.root) $script:SourceDestination $InputManifest.expected $budget)
                 [void](Confirm-VerificationSandboxInput $handle $script:SourceDestination $InputManifest.expected $budget)
                 $command=Invoke-VerificationSandboxCommand $handle $script:ReplayArgv $null $script:SourceDestination $script:ReplayEnvironment $budget $script:OutputSignature
@@ -399,7 +421,9 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
         $checked=Test-ReplayProposal $PreparedRun $ProposalResult
         $result.mode=$checked.mode
         $stage='profile'
-        [void](Test-VerificationRuntimeProfile $Profile 'replay-before' $PreparedRun.settings)
+        # SbxRuntime の検査は理由の符号を持たない拒否があるので、段の理由を profile-rejected にそろえる（状態は SbxRuntime の値。既定 blocked）。
+        try{[void](Test-VerificationRuntimeProfile $Profile 'replay-before' $PreparedRun.settings)}
+        catch{Throw-VerificationReplayFailure ('replay profile rejected: '+$_.Exception.Message) (Get-VerificationExceptionValue $_.Exception 'status' 'blocked') 'profile-rejected'}
         $stage='stdlib'
         Test-ReplayStdlibImports $PreparedRun $Profile $checked
         $stage='replay-input'
@@ -412,7 +436,7 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
         $result.failure=@{stage=$stage;reason=(Get-VerificationExceptionValue $_.Exception 'reason' "$stage-error")}
         return $result
     }
-    $state=@{sandboxes=[Collections.Generic.List[object]]::new();stopStates=[Collections.Generic.List[string]]::new();knownIds=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal);unresolved=$false}
+    $state=@{sandboxes=[Collections.Generic.List[object]]::new();stopStates=[Collections.Generic.List[string]]::new();knownIds=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal);unresolved=$false;daemonInstance=$null}
     $proposalId=Get-ReplayValue $ProposalResult.sandbox 'id'
     if(-not[string]::IsNullOrEmpty([string]$proposalId)){[void]$state.knownIds.Add([string]$proposalId)}
     $problem=$null
@@ -431,7 +455,7 @@ function Invoke-VerificationReplay([hashtable]$PreparedRun,[hashtable]$ProposalR
 # ---- 未実行結果 ----
 function New-VerificationReplayNotRun([hashtable]$PreparedRun,[hashtable]$Failure) {
     # 提案が ready でない場合に CLI が呼ぶ。VM・モデルを起動しない。status=not_run、sandboxes=[]、before/after/allStopped=null、failure に上流の失敗段階。
-    # 作成成否・ID が不明な上流失敗（reason=creation-unresolved、または creationState=unknown）は not_run へ丸めず incomplete にする。
+    # 作成成否・ID が不明な上流失敗（reason=creation-unresolved、または creationState=unknown）は not_run へ丸めず incomplete・allStopped=false にする。
     Assert-ReplayPreparedRun $PreparedRun
     $stage=[string](Get-ReplayValue $Failure 'stage');$reason=[string](Get-ReplayValue $Failure 'reason')
     if([string]::IsNullOrEmpty($stage) -or [string]::IsNullOrEmpty($reason)){throw 'Failure with stage and reason required'}
@@ -439,6 +463,8 @@ function New-VerificationReplayNotRun([hashtable]$PreparedRun,[hashtable]$Failur
     # mode は提案結果を受け取らないので recheck 以外は決められない（null）。
     $result=New-ReplayResult $PreparedRun $(if(Test-ReplayRecheck $PreparedRun){'recheck'}else{$null})
     $result.status=$(if($unresolved){'incomplete'}else{'not_run'})
+    # 作成成否不明は「停止を確認できていない」ので、Invoke-VerificationReplay と同じく allStopped=false（作成0台と確認できた not_run だけ null）。
+    if($unresolved){$result.allStopped=$false}
     $result.failure=@{stage=$stage;reason=$(if($unresolved){'creation-unresolved'}else{$reason})}
     $result
 }

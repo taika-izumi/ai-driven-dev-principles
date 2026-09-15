@@ -175,6 +175,15 @@ $count++
 # 6. 標準ライブラリ検査（VM 不要）: 題材内（calc・tests の名前）と一覧内は通し、一覧外は blocked。相対 import は数えない。
 $modules=Invoke-Internal {param($t) Get-ReplayImportedModules $t} @("import os.path, json as j`nfrom __future__ import annotations`nfrom . import sibling`nfrom .pkg import x`nimport calc  # comment`nx = 1; import re`n    from xml.dom import minidom`n")
 Assert-Equal (@($modules | Sort-Object) -join ',') '__future__,calc,json,os,re,xml' 'import 列挙: 最上位名・相対 import を除く・; と字下げ'
+# 行頭以外・1行形式・継続行: try/if の後ろ、; の後ろ、\ 継続、括弧継続（from の後ろの名前はモジュールに数えない）、with の後ろ。
+$oneLine="try: import requests`nexcept ImportError: requests = None`nif True: import yaml`nx = 1; y = 2; import toml`nimport os, \`n    lxml as lx`nfrom pkg.sub import (`n    alpha,`n    beta)`ndef f(`n        a):`n    return a`nwith open('p') as fh: from bs4 import Soup`nvalue = call('(', x); import attr`n"
+$modules=Invoke-Internal {param($t) Get-ReplayImportedModules $t} @($oneLine)
+Assert-Equal (@($modules | Sort-Object) -join ',') 'attr,bs4,lxml,os,pkg,requests,toml,yaml' 'import 列挙: 1行形式（try:/if:/;/with:）・\ 継続・括弧継続・文字列内の括弧'
+$ctx=New-ReplayCtx;$checked=Test-Proposal $ctx (New-Proposal $ctx -Tests ([ordered]@{'test_calc.py'="import unittest`ntry: import requests`nexcept ImportError: requests = None`nimport calc`n"}))
+$failure=Get-Failure {Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports $p $r $c} @($ctx.prepared,$ctx.replayProfile,$checked)}
+Assert-True ($failure.Data['reason'] -ceq 'stdlib-outside' -and $failure.Message -like '*requests (tests/test_calc.py)*') "標準ライブラリ外（try: の1行形式）: blocked（$($failure.Message)）"
+$ctx=New-ReplayCtx;$checked=Test-Proposal $ctx (New-Proposal $ctx -Tests ([ordered]@{'test_calc.py'="import unittest, \`n    numpy`nimport calc`n"}))
+Assert-Failure {Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports $p $r $c} @($ctx.prepared,$ctx.replayProfile,$checked)} 'blocked' 'stdlib-outside' '標準ライブラリ外（\ 継続行）'
 $ctx=New-ReplayCtx;$checked=Test-Proposal $ctx (New-Proposal $ctx -Tests ([ordered]@{'test_calc.py'=$testText;'test_helper_use.py'="import unittest`nimport test_calc`n"}) -Replacements ([ordered]@{'calc.py'="import functools`n"+$fixedText}))
 Invoke-Internal {param($p,$r,$c) Test-ReplayStdlibImports $p $r $c} @($ctx.prepared,$ctx.replayProfile,$checked)
 $ctx=New-ReplayCtx;$checked=Test-Proposal $ctx (New-Proposal $ctx -Tests ([ordered]@{'test_calc.py'="import unittest`nimport requests`nimport calc`n"}))
@@ -195,9 +204,9 @@ Assert-True ($null -eq $notRun.before -and $null -eq $notRun.after -and $null -e
 Assert-True ($notRun.failure.stage -ceq 'agent' -and $notRun.failure.reason -ceq 'agent-failed' -and (@($notRun.failure.Keys | Sort-Object) -join ',') -ceq 'reason,stage') 'not_run: 上流の失敗段階'
 Assert-Equal (ConvertTo-VerificationCanonicalJson $notRun) ('{"after":null,"allStopped":null,"before":null,"failure":{"reason":"agent-failed","stage":"agent"},"mode":null,"runId":"'+$ctx.runId+'","sandboxes":[],"schemaVersion":3,"status":"not_run"}') 'not_run: 正規化JSONの書式'
 $unresolved=New-VerificationReplayNotRun $ctx.prepared @{stage='sandbox';reason='creation-unresolved'}
-Assert-True ($unresolved.status -ceq 'incomplete' -and $unresolved.failure.reason -ceq 'creation-unresolved' -and $unresolved.sandboxes.Count -eq 0) '作成成否不明: not_run へ丸めず incomplete'
+Assert-True ($unresolved.status -ceq 'incomplete' -and $unresolved.failure.reason -ceq 'creation-unresolved' -and $unresolved.sandboxes.Count -eq 0 -and $unresolved.allStopped -eq $false) '作成成否不明: not_run へ丸めず incomplete・allStopped=false（Invoke と同じ）'
 $unknown=New-VerificationReplayNotRun $ctx.prepared @{stage='sandbox';reason='create-timed-out';creationState='unknown'}
-Assert-True ($unknown.status -ceq 'incomplete' -and $unknown.failure.reason -ceq 'creation-unresolved') 'creationState=unknown も incomplete（理由は creation-unresolved）'
+Assert-True ($unknown.status -ceq 'incomplete' -and $unknown.failure.reason -ceq 'creation-unresolved' -and $unknown.allStopped -eq $false) 'creationState=unknown も incomplete（理由は creation-unresolved・allStopped=false）'
 [void](New-Proposal $ctx -Origin 'reused-tests')
 Assert-Equal (New-VerificationReplayNotRun $ctx.prepared @{stage='recheck';reason='recheck-tests-changed'}).mode 'recheck' 'not_run: recheck の run は mode=recheck'
 Assert-Throws {New-VerificationReplayNotRun $ctx.prepared @{stage='agent'}} '*stage and reason*'
@@ -211,7 +220,7 @@ $ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.p
 $r=Invoke-VerificationReplay $ctx.prepared $proposal $ctx.replayProfile $null
 Assert-True ($r.status -ceq 'blocked' -and $r.failure.stage -ceq 'proposal-input' -and $r.failure.reason -ceq 'proposal-not-ready' -and $null -eq $r.mode -and $r.sandboxes.Count -eq 0 -and $null -eq $r.allStopped) "非ready: blocked（$(ConvertTo-VerificationCanonicalJson $r)）"
 Assert-NoSbxCall $ctx '非ready'
-$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Tests ([ordered]@{'test_calc.py'="import unittest`nimport yaml`nimport calc`n"})
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Tests ([ordered]@{'test_calc.py'="import unittest`nif True: import yaml`nimport calc`n"})
 $r=Invoke-VerificationReplay $ctx.prepared $proposal $ctx.replayProfile $null
 Assert-True ($r.status -ceq 'blocked' -and $r.failure.stage -ceq 'stdlib' -and $r.failure.reason -ceq 'stdlib-outside' -and $r.mode -ceq 'reproduction-only' -and $r.sandboxes.Count -eq 0 -and $null -eq $r.before) "標準ライブラリ外: VM 未作成の blocked（$(ConvertTo-VerificationCanonicalJson $r.failure)）"
 Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.runRoot 'replay-inputs/before'))) '標準ライブラリ外: replay-inputs を作らない'
@@ -219,7 +228,7 @@ Assert-NoSbxCall $ctx '標準ライブラリ外'
 $ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
 $otherDigest=$ctx.replayProfile.Clone();$otherDigest.templateDigest='docker.io/docker/sandbox-templates@sha256:'+('0'*64)
 $r=Invoke-VerificationReplay $ctx.prepared $proposal $otherDigest $null
-Assert-True ($r.status -ceq 'blocked' -and $r.failure.stage -ceq 'profile' -and $r.sandboxes.Count -eq 0) "別 digest の profile（証拠と対応しない）: blocked（$(ConvertTo-VerificationCanonicalJson $r.failure)）"
+Assert-True ($r.status -ceq 'blocked' -and $r.failure.stage -ceq 'profile' -and $r.failure.reason -ceq 'profile-rejected' -and $r.sandboxes.Count -eq 0) "別 digest の profile（証拠と対応しない）: blocked（$(ConvertTo-VerificationCanonicalJson $r.failure)）"
 Assert-NoSbxCall $ctx '別 digest の profile'
 $count++
 
@@ -280,8 +289,83 @@ Assert-Equal (@($fakeCalls) -join ',') 'create:replay-before,stop:cleanup' 'acti
 Assert-Equal (& $replayModule {(Get-Command New-VerificationSandbox).ModuleName}) 'SbxRuntime' '差し替えを戻した（Replay から見える New-VerificationSandbox は SbxRuntime の公開操作）'
 $count++
 
-# ---- ここから偽sbx の VM を使う経路 ----
+# 10〜11 は判定分岐の確認なので、SbxRuntime の公開操作（作成・搬入・照合・実行・停止）を試験だけが Replay の script スコープで差し替えて VM なしで行う。
+# 差し替えの実行は、受け取った出力署名（パターン・ストリーム）を指定ストリームへ当てて transportVerified を決める（SbxRuntime と同じ判定。Replay が stderr の署名を渡すことも確かめる）。
+# 偽sbx との結合は 12〜15 に残す。
+function Invoke-WithFakeRuntime([hashtable]$Ctx,[hashtable]$Proposal,[hashtable]$Roles){
+    & $replayModule {param($roles)
+        $script:FakeRuntime=@{roles=$roles;calls=[Collections.Generic.List[string]]::new()}
+        function script:New-VerificationSandbox([hashtable]$PreparedRun,[string]$Role,[hashtable]$Profile,[hashtable]$Lease){
+            $spec=$script:FakeRuntime.roles[$Role];$script:FakeRuntime.calls.Add("create:$Role")
+            $name='iv-'+$PreparedRun.runId.Substring(0,8)+'-'+$Role.Substring(7)
+            $profileHash=Test-VerificationRuntimeProfile $Profile $Role $PreparedRun.settings
+            $effective=Get-VerificationEffectiveSettingsHash $Profile $PreparedRun.settings
+            $path=Join-Path $PreparedRun.controlRoot "runtime/$Role-activation.json"
+            Write-VerificationNewFile $path (ConvertTo-VerificationCanonicalJson @{schemaVersion=3;runId=$PreparedRun.runId;sandboxId=$spec.id;sandboxName=$name;role=$Role;daemonInstance=@{pid=$spec.daemonPid;startedAt='2026-09-15T00:00:00.0000000Z';version='v0.42.1 fake';socket='fake'};profileHash=$profileHash;effectiveSettingsHash=$effective;checkedAt='2026-09-15T00:00:01.0000000Z';checks=@{}})
+            @{runId=$PreparedRun.runId;role=$Role;name=$name;id=$spec.id;createdAt='2026-09-15T00:00:00.0000000Z';profileHash=$profileHash;effectiveSettingsHash=$effective;activationRecordPath=$path;activationRecordHash=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash;keepAliveHandle=$null}
+        }
+        function script:Copy-VerificationSandboxInput([hashtable]$Handle){$script:FakeRuntime.calls.Add("copy:$($Handle.role)")}
+        function script:Confirm-VerificationSandboxInput([hashtable]$Handle){$script:FakeRuntime.calls.Add("confirm:$($Handle.role)")}
+        function script:Invoke-VerificationSandboxCommand([hashtable]$Handle,[string[]]$Argv,[byte[]]$StdinBytes,[string]$WorkingDirectory,[hashtable]$Environment,[hashtable]$RunBudget,[hashtable]$OutputSignature){
+            $spec=$script:FakeRuntime.roles[$Handle.role];$script:FakeRuntime.calls.Add("exec:$($Handle.role):$($OutputSignature.stream)")
+            $commandId=$Handle.role+'-'+[guid]::NewGuid().ToString('N').Substring(0,12)
+            $dir=Join-Path ([IO.Path]::GetDirectoryName($Handle.activationRecordPath)) "$($Handle.role)/commands"
+            $utf8=[Text.UTF8Encoding]::new($false);$paths=@{}
+            foreach($stream in @('stdout','stderr')){$p=Join-Path $dir "$commandId.$stream";Write-VerificationNewFile $p ([string]$spec[$stream]);$paths[$stream]=$p}
+            $signed=[regex]::IsMatch([string]$spec[$OutputSignature.stream],$OutputSignature.pattern,[Text.RegularExpressions.RegexOptions]::Multiline)
+            $now=Get-VerificationUtcNow
+            @{commandId=$commandId;runId=$Handle.runId;role=$Handle.role;sandboxId=$Handle.id;argv=@('exec')+$Argv;workingDirectory=$WorkingDirectory;startedAt=$now;finishedAt=$now;started=$true;refusedReason=$null;exitCode=[int]$spec.exitCode
+              stdoutPath=$paths.stdout;stdoutHash=(Get-FileHash -LiteralPath $paths.stdout -Algorithm SHA256).Hash;stdoutBytes=[long]$utf8.GetByteCount([string]$spec.stdout);stderrPath=$paths.stderr;stderrHash=(Get-FileHash -LiteralPath $paths.stderr -Algorithm SHA256).Hash;stderrBytes=[long]$utf8.GetByteCount([string]$spec.stderr)
+              timedOut=$false;outputExceeded=$false;processTreeStopped=$true;transportVerified=$signed;stopState=$null}
+        }
+        function script:Stop-VerificationSandbox([hashtable]$Handle,[hashtable]$RunBudget){$script:FakeRuntime.calls.Add("stop:$($Handle.role):$($RunBudget.phase)");@{stopState=$script:FakeRuntime.roles[$Handle.role].stopState}}
+    } $Roles
+    try{$r=Invoke-VerificationReplay $Ctx.prepared $Proposal $Ctx.replayProfile $null;$calls=& $replayModule {@($script:FakeRuntime.calls)}}
+    finally{Import-Module (Join-Path $PSScriptRoot '../Replay.psm1') -Force;$script:replayModule=Get-Module Replay}
+    @{result=$r;calls=@($calls)}
+}
+function Read-Record([hashtable]$Reference){Get-Content -LiteralPath $Reference.recordPath -Raw | ConvertFrom-Json -AsHashtable -DateKind String}
+function New-RoleSpec([string]$Stdout='',[string]$Stderr='',[int]$ExitCode=0,[string]$StopState='stopped',[int]$DaemonPid=4242,[string]$Id=''){
+    @{id=$(if($Id){$Id}else{[guid]::NewGuid().ToString()});stdout=$Stdout;stderr=$Stderr;exitCode=$ExitCode;stopState=$StopState;daemonPid=$DaemonPid}
+}
 $unitOk=Get-FakeSbxResponse 'unittestOk';$unitFail=Get-FakeSbxResponse 'unittestFail'
+
+# 10. 判定分岐（VM なし）: 正常対照は completed。署名がどちらのストリームにも無い（接続失敗の模擬）・stdout にだけある出力は incomplete。before の停止未確認は after を作らず incomplete。
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
+$o=Invoke-WithFakeRuntime $ctx $proposal @{'replay-before'=(New-RoleSpec -Stderr $unitFail.text -ExitCode 1);'replay-after'=(New-RoleSpec -Stderr $unitOk.text)}
+Assert-True ($o.result.status -ceq 'completed' -and $o.result.allStopped -eq $true -and $null -ne $o.result.before -and $null -ne $o.result.after) "差し替えの正常対照: completed（$(ConvertTo-VerificationCanonicalJson $o.result.failure)）"
+Assert-Equal ($o.calls -join ',') 'create:replay-before,copy:replay-before,confirm:replay-before,exec:replay-before:stderr,stop:replay-before:cleanup,create:replay-after,copy:replay-after,confirm:replay-after,exec:replay-after:stderr,stop:replay-after:cleanup' '差し替えの正常対照: 順序・stderr の署名・cleanup 相の停止'
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx
+$o=Invoke-WithFakeRuntime $ctx $proposal @{'replay-before'=(New-RoleSpec -Stderr "error: failed to connect to the sandbox daemon`n" -ExitCode 1)}
+$record=Read-Record $o.result.before
+Assert-True ($o.result.status -ceq 'incomplete' -and $o.result.failure.reason -ceq 'command-transport-unverified' -and $record.transportVerified -eq $false -and $record.exitCode -eq 1 -and $record.stopVerified -eq $true -and $o.result.allStopped -eq $true) "署名がどちらにも無い: incomplete（$(ConvertTo-VerificationCanonicalJson $o.result.failure)）"
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx
+$o=Invoke-WithFakeRuntime $ctx $proposal @{'replay-before'=(New-RoleSpec -Stdout $unitOk.text -ExitCode 0)}
+$record=Read-Record $o.result.before
+Assert-True ($o.result.status -ceq 'incomplete' -and $o.result.failure.reason -ceq 'command-transport-unverified' -and $o.result.failure.stage -ceq 'replay-before' -and $record.transportVerified -eq $false -and $record.exitCode -eq 0) "stdout にだけ署名: 終了0でも incomplete（$(ConvertTo-VerificationCanonicalJson $o.result.failure)）"
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
+$o=Invoke-WithFakeRuntime $ctx $proposal @{'replay-before'=(New-RoleSpec -Stderr $unitFail.text -ExitCode 1 -StopState 'unverified');'replay-after'=(New-RoleSpec -Stderr $unitOk.text)}
+Assert-True ($o.result.status -ceq 'incomplete' -and $o.result.failure.reason -ceq 'stop-unverified' -and $o.result.allStopped -eq $false -and $null -eq $o.result.after -and $o.result.sandboxes.Count -eq 1 -and (Read-Record $o.result.before).stopVerified -eq $false) "before 停止未確認: incomplete（$(ConvertTo-VerificationCanonicalJson $o.result.failure)）"
+Assert-Equal @($o.calls | Where-Object {$_ -like '*replay-after*'}).Count 0 'before 停止未確認: after VM を作らない'
+$count++
+
+# 11. 実行環境の同一性（VM なし）: before/after の activationRecord の daemonInstance が違えば搬入せず incomplete。前の役割・提案VMと同じ sandbox id は sandbox-reused。
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
+$o=Invoke-WithFakeRuntime $ctx $proposal @{'replay-before'=(New-RoleSpec -Stderr $unitFail.text -ExitCode 1 -DaemonPid 100);'replay-after'=(New-RoleSpec -Stderr $unitOk.text -DaemonPid 200)}
+Assert-True ($o.result.status -ceq 'incomplete' -and $o.result.failure.reason -ceq 'daemon-changed' -and $o.result.failure.stage -ceq 'replay-after' -and $null -ne $o.result.before -and $null -eq $o.result.after -and $o.result.sandboxes.Count -eq 2 -and $o.result.allStopped -eq $true) "daemonInstance 不一致: incomplete（$(ConvertTo-VerificationCanonicalJson $o.result.failure)）"
+Assert-True (@($o.calls | Where-Object {$_ -ceq 'copy:replay-after'}).Count -eq 0 -and @($o.calls | Where-Object {$_ -ceq 'stop:replay-after:cleanup'}).Count -eq 1) 'daemonInstance 不一致: after へ搬入せず停止する'
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
+$sharedId=[guid]::NewGuid().ToString()
+$o=Invoke-WithFakeRuntime $ctx $proposal @{'replay-before'=(New-RoleSpec -Stderr $unitFail.text -ExitCode 1 -Id $sharedId);'replay-after'=(New-RoleSpec -Stderr $unitOk.text -Id $sharedId)}
+Assert-True ($o.result.status -ceq 'incomplete' -and $o.result.failure.reason -ceq 'sandbox-reused' -and $o.result.failure.stage -ceq 'replay-after' -and $null -eq $o.result.after) "after が before と同じ id: sandbox-reused（$(ConvertTo-VerificationCanonicalJson $o.result.failure)）"
+Assert-True (@($o.calls | Where-Object {$_ -ceq 'copy:replay-after'}).Count -eq 0 -and @($o.calls | Where-Object {$_ -ceq 'stop:replay-after:cleanup'}).Count -eq 1) 'id 再利用: 搬入せず停止する'
+$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx
+$o=Invoke-WithFakeRuntime $ctx $proposal @{'replay-before'=(New-RoleSpec -Stderr $unitFail.text -ExitCode 1 -Id $proposal.sandbox.id)}
+Assert-True ($o.result.status -ceq 'incomplete' -and $o.result.failure.reason -ceq 'sandbox-reused' -and $o.result.failure.stage -ceq 'replay-before' -and $null -eq $o.result.before -and @($o.calls | Where-Object {$_ -like 'copy:*'}).Count -eq 0) "before が提案VMと同じ id: sandbox-reused（$(ConvertTo-VerificationCanonicalJson $o.result.failure)）"
+Assert-Equal (& $replayModule {(Get-Command Invoke-VerificationSandboxCommand).ModuleName}) 'SbxRuntime' '差し替えを戻した（実行の公開操作）'
+$count++
+
+# ---- ここから偽sbx の VM を使う経路 ----
 function Get-TextEntry([string]$Path,[string]$Text){@{path=$Path;sha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($utf8.GetBytes($Text)))}}
 function Get-InputEntries([string]$CalcText,[string[]]$TestNames=@('test_calc.py')){
     @(Get-TextEntry 'calc.py' $CalcText)+@(Get-TextEntry 'README.md' "# pilot`n")+@(foreach($name in $TestNames){Get-TextEntry ".verification-tests/$name" $testText})
@@ -298,13 +382,13 @@ function Invoke-Replay([hashtable]$Ctx,[hashtable]$Proposal){
     $lease=Acquire-VerificationPilotLease $Ctx.prepared
     try{Invoke-VerificationReplay $Ctx.prepared $Proposal $Ctx.replayProfile $lease}finally{Release-VerificationPilotLease $lease}
 }
-function Read-Record([hashtable]$Reference){Get-Content -LiteralPath $Reference.recordPath -Raw | ConvertFrom-Json -AsHashtable -DateKind String}
 function Get-CallIndex([object[]]$Calls,[scriptblock]$Predicate){for($i=0;$i -lt $Calls.Count;$i++){if(& $Predicate $Calls[$i]){return $i}};-1}
-function Assert-StopsOnly([hashtable]$Ctx,[string[]]$Names,[string]$Label){
+function Assert-StopsOnly([hashtable]$Ctx,[string[]]$Names,[string]$Label,[switch]$AtLeastOnce){
     # stop は run が作った当該名だけに発行する（残置VM・他の名前への stop 0件）。
     $stops=@(Read-FakeSbxCalls $Ctx.case | Where-Object {$_.argv[0] -eq 'stop'} | ForEach-Object {$_.argv[1]})
     Assert-Equal @($stops | Where-Object {$Names -cnotcontains $_}).Count 0 "${Label}: 当該名以外への stop が0件（$($stops -join ',')）"
-    foreach($name in $Names){Assert-Equal @($stops | Where-Object {$_ -ceq $name}).Count 1 "${Label}: $name へ stop 1回"}
+    # 出力超過では SbxRuntime の内部停止が期限の都合で未確認になり、Replay が再発行することがある（-AtLeastOnce）。
+    foreach($name in $Names){$n=@($stops | Where-Object {$_ -ceq $name}).Count;if($AtLeastOnce){Assert-True ($n -ge 1) "${Label}: $name へ stop 1回以上（$n）"}else{Assert-Equal $n 1 "${Label}: $name へ stop 1回"}}
 }
 function Assert-NoLeftover([hashtable]$Ctx,[string]$Label){
     Stop-CaseFakeProcesses @($Ctx)
@@ -312,7 +396,7 @@ function Assert-NoLeftover([hashtable]$Ctx,[string]$Label){
 }
 $recordSchema=Join-Path $PSScriptRoot '../replay-record.schema.json'
 
-# 10. candidate-comparison の正常系: before（-before）終了1・after（-after）終了0 → completed（合否は付けない）。別 VM・別 id・effectiveSettingsHash 一致・記録の schema・停止の順序。
+# 12. candidate-comparison の正常系: before（-before）終了1・after（-after）終了0 → completed（合否は付けない）。別 VM・別 id・effectiveSettingsHash 一致・記録の schema・停止の順序。
 $ctx=New-ReplayCtx;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
 $vmBefore=Add-ReplayVm $ctx 'before' $buggyText -Stderr $unitFail.text -ExitCode 1
 $vmAfter=Add-ReplayVm $ctx 'after' $fixedText -Stderr $unitOk.text -ExitCode 0
@@ -320,7 +404,7 @@ $r=Invoke-Replay $ctx $proposal
 Assert-True ($r.status -ceq 'completed' -and $r.mode -ceq 'candidate-comparison' -and $null -eq $r.failure -and $r.allStopped -eq $true) "正常: completed（$($r.status) $(ConvertTo-VerificationCanonicalJson $r.failure)）"
 Assert-Equal (@($r.Keys | Sort-Object) -join ',') 'after,allStopped,before,failure,mode,runId,sandboxes,schemaVersion,status' '正常: ReplayResultV3 のキー'
 Assert-True ($r.sandboxes.Count -eq 2 -and $r.sandboxes[0].name -ceq $vmBefore.name -and $r.sandboxes[1].name -ceq $vmAfter.name -and $r.sandboxes[0].id -ceq $vmBefore.id -and $r.sandboxes[1].id -ceq $vmAfter.id) '正常: sandboxes は before・after の順の handle'
-Assert-True ($vmBefore.id -cne $vmAfter.id -and $proposal.sandbox.id -notin @($vmBefore.id,$vmAfter.id)) '正常: 各役割の sandbox id が相異なり、提案VMとも別'
+Assert-True ($r.sandboxes[0].id -cne $r.sandboxes[1].id -and $proposal.sandbox.id -cne $r.sandboxes[0].id -and $proposal.sandbox.id -cne $r.sandboxes[1].id -and $r.before.sandbox.id -ceq $r.sandboxes[0].id -and $r.after.sandbox.id -ceq $r.sandboxes[1].id) '正常: 結果の SandboxHandle の id が役割ごとに相異なり、提案VMとも別'
 Assert-True ($r.sandboxes[0].effectiveSettingsHash -ceq $r.sandboxes[1].effectiveSettingsHash -and $r.sandboxes[0].effectiveSettingsHash -ceq (Get-VerificationEffectiveSettingsHash $ctx.replayProfile $ctx.settings)) '正常: before/after の effectiveSettingsHash が一致'
 $beforeRecord=Read-Record $r.before;$afterRecord=Read-Record $r.after
 foreach($pair in @(@($r.before,$beforeRecord,$vmBefore,1,'replay-before'),@($r.after,$afterRecord,$vmAfter,0,'replay-after'))){
@@ -348,7 +432,7 @@ Assert-StopsOnly $ctx @($vmBefore.name,$vmAfter.name) '正常'
 Assert-NoLeftover $ctx '正常'
 $count++
 
-# 11. reproduction-only（before 終了0 = 非再現も completed）で after VM を作らない。recheck（after 終了1、stdout に偽の成功文字列 "OK"）で before VM を作らず、終了コードを覆さない。
+# 13. reproduction-only（before 終了0 = 非再現も completed）で after VM を作らない。recheck（after 終了1、stdout に偽の成功文字列 "OK"）で before VM を作らず、終了コードを覆さない。
 $ctx=New-ReplayCtx;$proposal=New-Proposal $ctx
 $vmBefore=Add-ReplayVm $ctx 'before' $buggyText -Stderr $unitOk.text -ExitCode 0
 $r=Invoke-Replay $ctx $proposal
@@ -368,42 +452,26 @@ Assert-StopsOnly $ctx @($vmAfter.name) 'recheck'
 Assert-NoLeftover $ctx 'recheck'
 $count++
 
-# 12. 署名が stderr に無い出力（接続失敗の模擬。stdout にだけ要約がある場合）: 終了0でも incomplete（transportVerified=false）。記録と停止は残す。
-$ctx=New-ReplayCtx;$proposal=New-Proposal $ctx
-$vmBefore=Add-ReplayVm $ctx 'before' $buggyText -Stdout $unitOk.text -ExitCode 0
-$r=Invoke-Replay $ctx $proposal
-$record=Read-Record $r.before
-Assert-True ($r.status -ceq 'incomplete' -and $r.failure.reason -ceq 'command-transport-unverified' -and $r.failure.stage -ceq 'replay-before' -and $record.transportVerified -eq $false -and $record.exitCode -eq 0 -and $record.stopVerified -eq $true -and $r.allStopped -eq $true) "stdout だけの署名: incomplete（$($r.status) $(ConvertTo-VerificationCanonicalJson $r.failure)）"
-Assert-StopsOnly $ctx @($vmBefore.name) 'stdout だけの署名'
-Assert-NoLeftover $ctx 'stdout だけの署名'
-$count++
-
-# 13. before 停止未確認: after を作らず incomplete（stop-unverified・allStopped=false・記録の stopVerified=false）。
-$ctx=New-ReplayCtx -CleanupSeconds 3;$proposal=New-Proposal $ctx -Replacements ([ordered]@{'calc.py'=$fixedText})
-$vmBefore=Add-ReplayVm $ctx 'before' $buggyText -Stderr $unitFail.text -ExitCode 1
-$vmAfter=Add-ReplayVm $ctx 'after' $fixedText -Stderr $unitOk.text -ExitCode 0
-Add-FakeSbxResponse $ctx.case @('stop',[regex]::Escape($vmBefore.name)) -Stdout (Get-FakeSbxResponse 'stop' @{name=$vmBefore.name}).text -Synthetic $true -Source '一覧が stopped にならない状態遷移は未観測の創作' -First | Out-Null
-$r=Invoke-Replay $ctx $proposal
-Assert-True ($r.status -ceq 'incomplete' -and $r.failure.reason -ceq 'stop-unverified' -and $r.allStopped -eq $false -and $null -eq $r.after -and $r.sandboxes.Count -eq 1 -and (Read-Record $r.before).stopVerified -eq $false) "before 停止未確認: incomplete（$($r.status) $(ConvertTo-VerificationCanonicalJson $r.failure)）"
-Assert-Equal @(Read-FakeSbxCalls $ctx.case | Where-Object {$_.argv[0] -eq 'create' -and $_.argv[3] -ceq $vmAfter.name}).Count 0 'before 停止未確認: after VM を作らない'
-Assert-StopsOnly $ctx @($vmBefore.name) 'before 停止未確認'
-Assert-NoLeftover $ctx 'before 停止未確認'
-$count++
-
 # 14. 出力洪水: 出力上限を超えれば incomplete（SbxRuntime が当該VMを止め、Replay の停止は同じ結果を返す）。
 $ctx=New-ReplayCtx -Limits @{maxOutputBytes=65536};$proposal=New-Proposal $ctx
 $vmBefore=Add-ReplayVm $ctx 'before' $buggyText -Stdout ('y'*(200*1024)) -Stderr $unitFail.text -ExitCode 1 -Source '出力洪水の応答は 8a で実測する（内容は創作）'
 $r=Invoke-Replay $ctx $proposal
 $record=Read-Record $r.before
 Assert-True ($r.status -ceq 'incomplete' -and $r.failure.reason -ceq 'command-output-exceeded' -and $record.outputExceeded -eq $true -and $record.transportVerified -eq $false -and $r.allStopped -eq $true) "出力洪水: incomplete（$($r.status) $(ConvertTo-VerificationCanonicalJson $r.failure)）"
-Assert-StopsOnly $ctx @($vmBefore.name) '出力洪水'
+Assert-StopsOnly $ctx @($vmBefore.name) '出力洪水' -AtLeastOnce
+$lastStop=@(Get-ChildItem -LiteralPath (Join-Path $ctx.controlRoot 'runtime') -Filter 'replay-before-stop-*.json' | Sort-Object Name)[-1]
+Assert-Equal (Get-Content -LiteralPath $lastStop.FullName -Raw | ConvertFrom-Json -AsHashtable).stopState 'stopped' '出力洪水: 最後の停止証拠は stopped'
 Assert-NoLeftover $ctx '出力洪水'
 $count++
 
 # 15. 時間超過: replaySeconds を超えれば timed_out。停止は cleanup 相の予算（cleanupDeadlineAt あり）で当該名へ1回。記録の終了コードは null。
 $ctx=New-ReplayCtx -Limits @{replaySeconds=3};$proposal=New-Proposal $ctx
-$vmBefore=Add-ReplayVm $ctx 'before' $buggyText -Stderr $unitFail.text -ExitCode 1 -DelaySeconds 8 -Source 'unittest が終わらない状況の創作（遅延）'
-$r=Invoke-Replay $ctx $proposal
+$vmBefore=Add-ReplayVm $ctx 'before' $buggyText -Stderr $unitFail.text -ExitCode 1 -DelaySeconds 5 -Source 'unittest が終わらない状況の創作（遅延は replaySeconds+2 秒）'
+# 停止に渡る予算の phase を直接見るため、試験だけが Replay の script スコープで Stop-VerificationSandbox を包み、渡された予算を控えてから SbxRuntime の公開操作を呼ぶ。
+& $replayModule {$script:StopBudgets=[Collections.Generic.List[object]]::new();function script:Stop-VerificationSandbox([hashtable]$Handle,[hashtable]$RunBudget){$script:StopBudgets.Add(@{name=$Handle.name;phase=$RunBudget.phase;cleanupDeadlineAt=$RunBudget.cleanupDeadlineAt});SbxRuntime\Stop-VerificationSandbox $Handle $RunBudget}}
+try{$r=Invoke-Replay $ctx $proposal;$stopBudgets=@(& $replayModule {@($script:StopBudgets)})}
+finally{Import-Module (Join-Path $PSScriptRoot '../Replay.psm1') -Force;$replayModule=Get-Module Replay}
+Assert-True (@($stopBudgets).Count -eq 1 -and $stopBudgets[0].name -ceq $vmBefore.name -and $stopBudgets[0].phase -ceq 'cleanup' -and -not[string]::IsNullOrEmpty([string]$stopBudgets[0].cleanupDeadlineAt)) "時間超過: Stop-VerificationSandbox へ phase=cleanup の予算で当該名を1回（$(ConvertTo-VerificationCanonicalJson @($stopBudgets))）"
 $record=Read-Record $r.before
 Assert-True ($r.status -ceq 'timed_out' -and $r.failure.reason -ceq 'command-timed-out' -and $record.timedOut -eq $true -and $null -eq $record.exitCode -and $record.stopVerified -eq $true -and $r.allStopped -eq $true) "時間超過: timed_out（$($r.status) $(ConvertTo-VerificationCanonicalJson $r.failure) exit=$($record.exitCode)）"
 $stopEvidence=@(Get-ChildItem -LiteralPath (Join-Path $ctx.controlRoot 'runtime') -Filter 'replay-before-stop-*.json')

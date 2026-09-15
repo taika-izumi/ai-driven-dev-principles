@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "sbxPath", "pwshPath", "runsRoot", "model", "proposalProfilePath", "replayProfilePath", "pilotInputPath", "limits"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 3},
+    "sbxPath": {"type": "string", "minLength": 1},
+    "pwshPath": {"type": "string", "minLength": 1},
+    "runsRoot": {"type": "string", "minLength": 1},
+    "model": {"type": ["string", "null"], "pattern": "\\S"},
+    "proposalProfilePath": {"type": ["string", "null"], "minLength": 1},
+    "replayProfilePath": {"type": "string", "minLength": 1},
+    "pilotInputPath": {"type": "string", "minLength": 1},
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["totalSeconds", "proposalSeconds", "replaySeconds", "cleanupSeconds", "cpus", "memoryMiB", "maxProposalFiles", "maxFileBytes", "maxProposalBytes", "maxWireBytes", "maxOutputBytes"],
+      "properties": {
+        "totalSeconds": {"type": "integer", "minimum": 1},
+        "proposalSeconds": {"type": "integer", "minimum": 1},
+        "replaySeconds": {"type": "integer", "minimum": 1},
+        "cleanupSeconds": {"type": "integer", "minimum": 1},
+        "cpus": {"type": "integer", "const": 2},
+        "memoryMiB": {"type": "integer", "const": 2048},
+        "maxProposalFiles": {"type": "integer", "minimum": 1},
+        "maxFileBytes": {"type": "integer", "minimum": 1},
+        "maxProposalBytes": {"type": "integer", "minimum": 1},
+        "maxWireBytes": {"type": "integer", "minimum": 1},
+        "maxOutputBytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

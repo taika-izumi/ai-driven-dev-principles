@@ -154,7 +154,8 @@ function Initialize-VerificationHistory([string]$Source,[string]$Work,[string]$C
     $valid=Invoke-VerificationGit $Work @('fsck','--full','--no-reflogs')
     if($valid.exitCode -ne 0){Throw-VerificationFailure 'copied history validation failed'}
 }
-function New-VerificationRun([hashtable]$Request,[hashtable]$Settings) {
+# v1（schemaVersion=1）の準備本体。公開契約と挙動を変えないため本文は抽出前のまま置く。
+function New-LegacyVerificationRun([hashtable]$Request,[hashtable]$Settings) {
     $runRoot=$null
     try{
         foreach($key in $Request.Keys){if($key -notin @('schemaVersion','caller','sourceRoot','objective','acceptanceCriteria','extraInputPaths')){Throw-VerificationFailure "unknown request key: $key"}}
@@ -203,4 +204,93 @@ function New-VerificationRun([hashtable]$Request,[hashtable]$Settings) {
         throw
     }
 }
-Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment
+# ---- v3 共通補助。正規化JSON・ハッシュ・新規作成書込・UTC時刻・重複キー検査を後続ブロックへ公開する（新モジュールは増やさない）。 ----
+function Add-VerificationCanonicalString([Text.StringBuilder]$Builder,[string]$Value) {
+    [void]$Builder.Append('"')
+    foreach($ch in $Value.ToCharArray()){
+        $code=[int]$ch
+        if($ch -eq '"'){[void]$Builder.Append('\"')}
+        elseif($ch -eq '\'){[void]$Builder.Append('\\')}
+        elseif($code -eq 10){[void]$Builder.Append('\n')}
+        elseif($code -eq 13){[void]$Builder.Append('\r')}
+        elseif($code -eq 9){[void]$Builder.Append('\t')}
+        elseif($code -lt 0x20){[void]$Builder.Append('\u'+$code.ToString('x4'))}
+        else{[void]$Builder.Append($ch)}
+    }
+    [void]$Builder.Append('"')
+}
+function Add-VerificationCanonicalValue([Text.StringBuilder]$Builder,$Value) {
+    if($null -eq $Value){[void]$Builder.Append('null');return}
+    if($Value -is [bool]){[void]$Builder.Append($(if($Value){'true'}else{'false'}));return}
+    if($Value -is [string]){Add-VerificationCanonicalString $Builder $Value;return}
+    if($Value -is [char]){Add-VerificationCanonicalString $Builder ([string]$Value);return}
+    if($Value -is [byte] -or $Value -is [sbyte] -or $Value -is [int16] -or $Value -is [uint16] -or $Value -is [int] -or $Value -is [uint32] -or $Value -is [long] -or $Value -is [uint64] -or $Value -is [bigint] -or $Value -is [decimal]){[void]$Builder.Append($Value.ToString([Globalization.CultureInfo]::InvariantCulture));return}
+    if($Value -is [double] -or $Value -is [single]){
+        if([double]::IsNaN($Value) -or [double]::IsInfinity($Value)){throw 'canonical JSON does not accept NaN or infinity'}
+        [void]$Builder.Append(([double]$Value).ToString('R',[Globalization.CultureInfo]::InvariantCulture));return
+    }
+    if($Value -is [Collections.IDictionary]){
+        $keys=[string[]]@(foreach($key in $Value.Keys){if($key -isnot [string]){throw 'canonical JSON requires string keys'};$key})
+        [Array]::Sort($keys,[StringComparer]::Ordinal)
+        [void]$Builder.Append('{');$first=$true
+        foreach($key in $keys){
+            if(-not$first){[void]$Builder.Append(',')};$first=$false
+            Add-VerificationCanonicalString $Builder $key;[void]$Builder.Append(':');Add-VerificationCanonicalValue $Builder $Value[$key]
+        }
+        [void]$Builder.Append('}');return
+    }
+    if($Value -is [Management.Automation.PSCustomObject]){
+        $properties=@{};foreach($property in $Value.PSObject.Properties){$properties[$property.Name]=$property.Value}
+        Add-VerificationCanonicalValue $Builder $properties;return
+    }
+    if($Value -is [Collections.IEnumerable]){
+        [void]$Builder.Append('[');$first=$true
+        foreach($item in $Value){if(-not$first){[void]$Builder.Append(',')};$first=$false;Add-VerificationCanonicalValue $Builder $item}
+        [void]$Builder.Append(']');return
+    }
+    throw "canonical JSON does not accept type $($Value.GetType().FullName)"
+}
+function ConvertTo-VerificationCanonicalJson($Object) {
+    # キー辞書順（序数）・空白なし。ハッシュの入力と保存形式を一致させる。
+    $builder=[Text.StringBuilder]::new()
+    Add-VerificationCanonicalValue $builder $Object
+    $builder.ToString()
+}
+function Get-VerificationCanonicalHash($Object) {
+    $bytes=[Text.UTF8Encoding]::new($false).GetBytes((ConvertTo-VerificationCanonicalJson $Object))
+    [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes))
+}
+function Write-VerificationNewFile([string]$Path,[string]$Content) {
+    # CreateNewで既存物を上書きしない。BOMなしUTF-8・LF。
+    [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($Path))
+    $stream=[IO.File]::Open($Path,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
+    try{$bytes=[Text.UTF8Encoding]::new($false).GetBytes($Content.Replace("`r`n","`n"));$stream.Write($bytes,0,$bytes.Length)}finally{$stream.Dispose()}
+}
+function Get-VerificationUtcNow() {
+    [DateTime]::UtcNow.ToString('o',[Globalization.CultureInfo]::InvariantCulture)
+}
+function Test-VerificationJsonElementDuplicate([Text.Json.JsonElement]$Element) {
+    if($Element.ValueKind -eq [Text.Json.JsonValueKind]::Object){
+        $names=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+        foreach($property in $Element.EnumerateObject()){
+            if(-not$names.Add($property.Name)){return $true}
+            if(Test-VerificationJsonElementDuplicate $property.Value){return $true}
+        }
+        return $false
+    }
+    if($Element.ValueKind -eq [Text.Json.JsonValueKind]::Array){
+        foreach($item in $Element.EnumerateArray()){if(Test-VerificationJsonElementDuplicate $item){return $true}}
+    }
+    return $false
+}
+function Test-VerificationJsonDuplicateKeys([string]$Json) {
+    # ConvertFrom-Jsonは重複キーを黙って上書きするため、重複を保持したまま走査できるJsonDocumentで同一オブジェクト内の重複を検出する。
+    $options=[Text.Json.JsonDocumentOptions]::new()
+    $options.CommentHandling=[Text.Json.JsonCommentHandling]::Disallow;$options.AllowTrailingCommas=$false;$options.MaxDepth=64
+    try{$document=[Text.Json.JsonDocument]::Parse($Json,$options)}catch{Throw-VerificationFailure ('invalid JSON text: '+$_.Exception.Message)}
+    try{return [bool](Test-VerificationJsonElementDuplicate $document.RootElement)}finally{$document.Dispose()}
+}
+function New-VerificationRun([hashtable]$Request,[hashtable]$Settings,[string]$StartedAt='') {
+    return New-LegacyVerificationRun $Request $Settings
+}
+Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys

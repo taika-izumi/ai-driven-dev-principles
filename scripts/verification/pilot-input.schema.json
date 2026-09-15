@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "inputId", "scope", "sourceRoot", "sourceManifestHash", "approvalReference"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 3},
+    "inputId": {"type": "string", "pattern": "\\S"},
+    "scope": {"type": "string", "const": "synthetic-pilot"},
+    "sourceRoot": {"type": "string", "minLength": 1},
+    "sourceManifestHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "approvalReference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "version"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

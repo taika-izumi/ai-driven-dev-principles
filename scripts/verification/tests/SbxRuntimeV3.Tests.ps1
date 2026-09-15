@@ -78,7 +78,7 @@ function New-Case([int]$CleanupSeconds=30,[int]$DeadlineIn=600){
 function New-Budget([hashtable]$Ctx,[string]$Phase='work',[int]$CommandSeconds=120,$CleanupIn=$null){
     @{deadlineAt=$Ctx.prepared.deadlineAt;cleanupDeadlineAt=$(if($null -eq $CleanupIn){$null}else{[DateTime]::UtcNow.AddSeconds([double]$CleanupIn).ToString('o')});limits=@{maxOutputBytes=$Ctx.settings.limits.maxOutputBytes;commandSeconds=$CommandSeconds};phase=$Phase}
 }
-function Get-Failure([scriptblock]$Action){try{& $Action | Out-Null}catch{return $_.Exception};throw 'ASSERT: expected an exception'}
+function Get-Failure([scriptblock]$Action){try{& $Action | Out-Null}catch{return $_.Exception};throw "ASSERT: expected an exception (called from line $($MyInvocation.ScriptLineNumber))"}
 function Get-Utc($Value){
     # ConvertFrom-Json は ISO 日時を DateTime にするため、文字列と DateTime の両方を UTC の DateTime にそろえる。
     if($Value -is [DateTime]){return $Value.ToUniversalTime()}
@@ -187,7 +187,8 @@ $ctx=New-Case;Write-FakeSbxScenario $ctx.case
 $probe=Acquire-VerificationPilotLease $ctx.prepared;$mutexName='Local\iv-sbx-pilot-'+$probe.daemonKey;Release-VerificationPilotLease $probe
 $eventName='Local\iv-sbx-test-'+[guid]::NewGuid().ToString('N')
 $ready=[Threading.EventWaitHandle]::new($false,[Threading.EventResetMode]::ManualReset,$eventName)
-$holder=Start-ThreadJob -ScriptBlock {param($m,$e) $mutex=[Threading.Mutex]::new($true,$m);$signal=[Threading.EventWaitHandle]::OpenExisting($e);[void]$signal.Set();Start-Sleep -Seconds 120;$mutex.ReleaseMutex()} -ArgumentList $mutexName,$eventName
+# 既存の名前付き Mutex を開く場合 initiallyOwned は効かないため、WaitOne で所有権を取ってから合図する（放棄状態でも取得できる）。
+$holder=Start-ThreadJob -ScriptBlock {param($m,$e) $mutex=[Threading.Mutex]::new($false,$m);try{[void]$mutex.WaitOne(5000)}catch [Threading.AbandonedMutexException]{};$signal=[Threading.EventWaitHandle]::OpenExisting($e);[void]$signal.Set();Start-Sleep -Seconds 120;$mutex.ReleaseMutex()} -ArgumentList $mutexName,$eventName
 try{
     Assert-True ($ready.WaitOne(15000)) 'mutex: 保持スレッドの準備'
     $failure=Get-Failure {Acquire-VerificationPilotLease $ctx.prepared}
@@ -459,6 +460,104 @@ foreach($variant in @('ls-still-running','auto-stop-line-only')){
     Assert-Equal (@(Get-StopCalls $ctx) -join ',') $vm.name "${variant}: stop は当該名へ1回"
     Release-VerificationPilotLease $lease
 }
+$count++
+
+# 14. 停止予算: cleanupDeadlineAt = now + cleanupSeconds × 台数（0台なら1台分）。全体期限までの残時間を含まない。
+$ctx=New-Case -CleanupSeconds 30 -DeadlineIn 3600
+$before=[DateTime]::UtcNow
+$budget=New-VerificationCleanupBudget $ctx.prepared 3
+$cleanupAt=Get-Utc $budget.cleanupDeadlineAt
+Assert-True ($cleanupAt -ge $before.AddSeconds(90) -and $cleanupAt -le [DateTime]::UtcNow.AddSeconds(90)) '予算: 3台分'
+Assert-True ($cleanupAt -lt (Get-Utc $ctx.prepared.deadlineAt)) '予算: 全体期限（1時間先）を繰り入れない'
+Assert-True ($budget.phase -ceq 'cleanup' -and $budget.deadlineAt -ceq $ctx.prepared.deadlineAt -and $budget.limits.commandSeconds -eq 60 -and $budget.limits.maxOutputBytes -eq 16MB) '予算: phase/limits'
+$zero=Get-Utc (New-VerificationCleanupBudget $ctx.prepared 0).cleanupDeadlineAt
+Assert-True ($zero -ge $before.AddSeconds(30) -and $zero -le [DateTime]::UtcNow.AddSeconds(30)) '予算: 0台なら1台分'
+$count++
+
+# 15. 定数の時間上限: 照会（QuerySeconds）・作成（SetupSeconds）を超える遅延で timedOut・runtimeFailure。定数は script スコープで試験だけが差し替える。
+$ctx=New-Case;$vm=Add-Vm $ctx
+$slowLs=Add-FakeSbxResponse $ctx.case @('ls','--json') -Stdout '{"sandboxes":[]}' -DelaySeconds 7 -First;Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+& $module {$script:QuerySeconds=3}   # 偽sbxは1呼び出し約1秒なので、それより長く遅延より短い値
+try{
+    $watch=[Diagnostics.Stopwatch]::StartNew()
+    $failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+    $watch.Stop()
+    Assert-True ($failure.reason -ceq 'query-timed-out' -and $failure.creationState -ceq 'not-created' -and $failure.message -like '*ls timed out (limit 3s)*') "照会上限: timedOut（$($failure.message)）"
+    Assert-True ($watch.Elapsed.TotalSeconds -lt 20) "照会上限: 遅延7秒を定数3秒で打ち切る（$([int]$watch.Elapsed.TotalSeconds)秒）"
+    Assert-Equal @(Get-Calls $ctx 'create').Count 0 '照会上限: create 0回'
+}finally{& $module {$script:QuerySeconds=60}}
+$ctx.case.entries.Remove($slowLs) | Out-Null
+Add-FakeSbxResponse $ctx.case @('create','shell','--name',[regex]::Escape($vm.name),'--cpus','2','--memory','2g','--no-share-skills','--deny-network','\*','--template','.+') -DelaySeconds 7 -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+& $module {$script:SetupSeconds=3}
+try{
+    $failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
+    Assert-True ($failure.reason -ceq 'create-timed-out' -and $failure.creationState -ceq 'not-created' -and $failure.stopState -ceq 'not-created' -and $failure.message -like '*timed out (limit 3s)*') "作成上限: timedOut 後に ls で不在を確かめ not-created（$($failure.message)）"
+    Assert-Equal @(Get-Calls $ctx 'create').Count 1 '作成上限: create 1回'
+}finally{& $module {$script:SetupSeconds=240}}
+Assert-True ((& $module {$script:QuerySeconds}) -eq 60 -and (& $module {$script:SetupSeconds}) -eq 240) '定数を元に戻した'
+Release-VerificationPilotLease $lease
+Start-Sleep -Seconds 7   # 遅延中の偽sbx（ジョブ外へ逃げた子）が自然終了するのを待つ
+$count++
+
+# 16. 復旧操作（ADR-0194）: デーモン停止時は ls を発行せず全対象 unverified、Lease 競合では何もしない、記録0件は targetCount=0、
+#     記録済み2台だけを台数分の新しい予算で停止し記録外の running VM に触れない。結果は recovery-result の schema に適合し recovery-<時刻>.json に残る。
+function New-RecoveryInput([hashtable]$Ctx,[int]$CleanupSeconds){@{schemaVersion=3;sbxPath=$Ctx.settings.sbxPath;pwshPath=$Ctx.settings.pwshPath;runsRoot=$Ctx.settings.runsRoot;limits=@{totalSeconds=1800;proposalSeconds=600;replaySeconds=120;cleanupSeconds=$CleanupSeconds;cpus=2;memoryMiB=2048;maxProposalFiles=100;maxFileBytes=1MB;maxProposalBytes=8MB;maxWireBytes=16MB;maxOutputBytes=16MB}}}
+function Get-RecoveryFiles([hashtable]$Ctx){@(Get-ChildItem -LiteralPath (Join-Path $Ctx.controlRoot 'runtime') -Filter 'recovery-*.json')}
+$schemaPath=Join-Path $PSScriptRoot '../recovery-result.schema.json'
+$ctx=New-Case
+$recorded=@(@{role='probe';suffix='probe'},@{role='replay-before';suffix='before'})
+foreach($r in $recorded){
+    $r.name='iv-'+$ctx.runId.Substring(0,8)+'-'+$r.suffix;$r.id=[guid]::NewGuid().ToString()
+    Add-FakeSbxSandboxScenario $ctx.case $r.name $r.id -AlreadyPresent -InitialStatus running
+    [void](Write-VerificationSandboxRecord $ctx.runRoot @{runId=$ctx.runId;role=$r.role;name=$r.name;id=$r.id;createdAt=(Get-VerificationUtcNow);profileHash=$null;effectiveSettingsHash=$null;activationRecordPath=$null;activationRecordHash=$null})
+}
+$unrecorded=@{name='iv-'+$ctx.runId.Substring(0,8)+'-after';id=[guid]::NewGuid().ToString()}
+Add-FakeSbxSandboxScenario $ctx.case $unrecorded.name $unrecorded.id -AlreadyPresent -InitialStatus running
+$stoppedDaemon=Add-FakeSbxResponse $ctx.case @('daemon','status','--json') -Stdout (Get-FakeSbxResponse 'daemonStatusStopped').text -Synthetic $true -First
+Write-FakeSbxScenario $ctx.case
+Assert-Throws {Stop-VerificationRecordedSandboxes $ctx.runRoot @{schemaVersion=3;sbxPath=$ctx.settings.sbxPath}} '*schema*'
+$result=Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 6)
+Assert-True (-not$result.daemonRunning -and $result.targetCount -eq 2 -and $result.runId -ceq $ctx.runId -and $null -eq $result.lease) '復旧(停止中): 列挙だけ'
+Assert-True (@($result.targets | Where-Object {$_.stopState -ceq 'unverified' -and $_.stateBefore -ceq 'unknown' -and $null -eq $_.evidencePath}).Count -eq 2) '復旧(停止中): 全対象 unverified'
+Assert-Equal @(Get-Calls $ctx 'ls').Count 0 '復旧(停止中): 停止中デーモンへ ls を発行しない'
+Assert-Equal @(Get-Calls $ctx 'stop').Count 0 '復旧(停止中): stop 0回'
+Assert-True (Test-Json -Json (Get-Content -LiteralPath (Get-RecoveryFiles $ctx)[0].FullName -Raw) -SchemaFile $schemaPath) '復旧(停止中): 結果ファイルが schema に適合'
+$ctx.case.entries.Remove($stoppedDaemon) | Out-Null;Write-FakeSbxScenario $ctx.case
+$probe=Acquire-VerificationPilotLease $ctx.prepared;$mutexName='Local\iv-sbx-pilot-'+$probe.daemonKey;Release-VerificationPilotLease $probe
+$eventName='Local\iv-sbx-test-'+[guid]::NewGuid().ToString('N')
+$ready=[Threading.EventWaitHandle]::new($false,[Threading.EventResetMode]::ManualReset,$eventName)
+# 既存の名前付き Mutex を開く場合 initiallyOwned は効かないため、WaitOne で所有権を取ってから合図する（放棄状態でも取得できる）。
+$holder=Start-ThreadJob -ScriptBlock {param($m,$e) $mutex=[Threading.Mutex]::new($false,$m);try{[void]$mutex.WaitOne(5000)}catch [Threading.AbandonedMutexException]{};$signal=[Threading.EventWaitHandle]::OpenExisting($e);[void]$signal.Set();Start-Sleep -Seconds 120;$mutex.ReleaseMutex()} -ArgumentList $mutexName,$eventName
+try{
+    Assert-True ($ready.WaitOne(15000)) '復旧(競合): 保持スレッドの準備'
+    $failure=Get-Failure {Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 6)}
+    Assert-True ($failure.Message -like '*held by another run*' -and $failure.Data['status'] -eq 'blocked') '復旧(競合): 稼働中の run があるとして blocked'
+    Assert-Equal @(Get-Calls $ctx 'stop').Count 0 '復旧(競合): 何もしない'
+    Assert-Equal @(Get-Calls $ctx 'ls').Count 0 '復旧(競合): ls も発行しない'
+}finally{Stop-Job $holder;Remove-Job $holder -Force;$ready.Dispose()}
+$checkedBefore=[DateTime]::UtcNow
+$result=Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 6)
+Assert-True ($result.daemonRunning -and $result.targetCount -eq 2 -and $null -ne $result.lease -and $result.lease.daemonKey -ceq $probe.daemonKey) '復旧: 対象2台と Lease'
+foreach($target in $result.targets){Assert-True ($target.stateBefore -ceq 'running' -and $target.stopState -ceq 'stopped' -and (Test-Path -LiteralPath $target.evidencePath)) "復旧: $($target.name) を停止（$($target.stopState)）"}
+Assert-Equal ((@(Get-StopCalls $ctx) | Sort-Object) -join ',') ((@($recorded | ForEach-Object {$_.name}) | Sort-Object) -join ',') '復旧: 記録済み2台だけに stop（記録外の running VM には触れない）'
+$evidence=Get-Content -LiteralPath $result.targets[1].evidencePath -Raw | ConvertFrom-Json -AsHashtable
+$cleanupAt=Get-Utc $evidence.budget.cleanupDeadlineAt
+Assert-True ($cleanupAt -ge $checkedBefore.AddSeconds(12) -and $cleanupAt -le $checkedBefore.AddSeconds(12+10)) "復旧: 予算は現在時刻起点で台数分（2台×6秒）に延びる（$cleanupAt）"
+Assert-True ($null -eq $evidence.keepAlive) '復旧: 保持ジョブが無ければ停止を省く'
+$json=ConvertTo-VerificationCanonicalJson $result
+Assert-True (Test-Json -Json $json -SchemaFile $schemaPath) '復旧: 戻り値が schema に適合'
+$files=Get-RecoveryFiles $ctx
+Assert-True ($files.Count -eq 2 -and (Get-Content -LiteralPath $files[-1].FullName -Raw) -ceq $json) '復旧: 同じ内容を recovery-<時刻>.json に保存'
+$again=Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 6)
+Assert-True (@($again.targets | Where-Object {$_.stateBefore -ceq 'stopped' -and $_.stopState -ceq 'stopped'}).Count -eq 2 -and @(Get-StopCalls $ctx).Count -eq 2) '復旧(再実行): 停止済みには stop を発行しない'
+Assert-True (-not(& $module {$script:PilotLeases.Count -gt 0})) '復旧: Lease を解放した'
+$empty=New-Case;Write-FakeSbxScenario $empty.case
+$result=Stop-VerificationRecordedSandboxes $empty.runRoot (New-RecoveryInput $empty 6)
+Assert-True ($result.targetCount -eq 0 -and $result.daemonRunning -and $null -eq $result.runId -and $result.targets.Count -eq 0 -and $null -eq $result.lease) '復旧(記録0件): targetCount=0'
+Assert-Equal @(Get-Calls $empty 'ls').Count 0 '復旧(記録0件): ls を発行しない'
+Assert-True ((Get-RecoveryFiles $empty).Count -eq 1) '復旧(記録0件): 結果ファイル'
 $count++
 
 }finally{

@@ -408,9 +408,16 @@ function Start-VerificationSandboxKeepAlive([hashtable]$Entry,[hashtable]$RunBud
     $deadline=[DateTimeOffset]::Parse($Entry.deadlineAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal).UtcDateTime
     $seconds=[int][Math]::Max(1,[Math]::Ceiling(($deadline.AddSeconds($Entry.cleanupSeconds*3)-[DateTime]::UtcNow).TotalSeconds))
     $argv=@('exec',$Entry.handle.name,'sh','-c',"sleep $seconds")
-    $paths=@{stdoutPath=(Join-Path $Entry.client.outDir 'keepalive.out');stderrPath=(Join-Path $Entry.client.outDir 'keepalive.err')}
-    try{Start-VerificationBackgroundProcess -StartInfo (New-VerificationSbxStartInfo $Entry.client $argv) -OutputPaths $paths -RunBudget (New-VerificationSbxBudget $RunBudget $script:QuerySeconds $Entry.client.maxOutputBytes)}
-    catch{Throw-VerificationRuntimeFailure ('keep-alive session not started: '+$_.Exception.Message) 'incomplete' 'keepalive-failed'}
+    $budget=New-VerificationSbxBudget $RunBudget $script:QuerySeconds $Entry.client.maxOutputBytes
+    # 開始マーカーの読取りが ProcessHost の書込みと競合して失敗することがある（断続的。Execution 側の既存欠陥として報告済み）ため、1回だけ再試行する。
+    # 失敗した起動は Start-VerificationBackgroundProcess が木ごと止めてから投げる。
+    $lastError=$null
+    foreach($attempt in @(1,2)){
+        $paths=@{stdoutPath=(Join-Path $Entry.client.outDir "keepalive-$attempt.out");stderrPath=(Join-Path $Entry.client.outDir "keepalive-$attempt.err")}
+        try{return (Start-VerificationBackgroundProcess -StartInfo (New-VerificationSbxStartInfo $Entry.client $argv) -OutputPaths $paths -RunBudget $budget)}
+        catch{$lastError=$_.Exception;if($lastError.Data.Contains('refusedReason')){break}}
+    }
+    Throw-VerificationRuntimeFailure ('keep-alive session not started: '+$lastError.Message) 'incomplete' 'keepalive-failed'
 }
 function Stop-VerificationSandboxKeepAlive([hashtable]$Entry) {
     if($null -eq $Entry.keepAlive){return $null}

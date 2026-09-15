@@ -286,6 +286,20 @@ function Test-ActivationFailureVariant([string]$Variant){
         'runtime-lacks-workspace'{$createEntry.writeFile[0].text=$createEntry.writeFile[0].text.Replace('"WorkspaceDir":"",','');$createEntry.synthetic=$true}
         'runtime-lacks-ssh-socket'{$createEntry.writeFile[0].text=$createEntry.writeFile[0].text.Replace('"SSHAgentSocketPath":"",','');$createEntry.synthetic=$true}
         'runtime-cpus-string'{$createEntry.writeFile[0].text=$createEntry.writeFile[0].text.Replace('"CPUs":2,','"CPUs":"2",');$createEntry.synthetic=$true}
+        # 作成時の値の不一致（V2）。runtimes/<name>.json は New-FakeRuntimeFileText -Overrides で、image digest と secrets は inspect の応答で作る（いずれも創作）。
+        'runtime-workspace-set'{$createEntry.writeFile[0].text=New-FakeRuntimeFileText $vm.name $vm.id -Overrides @{workspaceDir='/host/workspace'};$createEntry.synthetic=$true}
+        'runtime-ssh-socket-set'{$createEntry.writeFile[0].text=New-FakeRuntimeFileText $vm.name $vm.id -Overrides @{sshAgentSocketPath='/run/host-services/ssh-auth.sock'};$createEntry.synthetic=$true}
+        'runtime-cpus-4'{$createEntry.writeFile[0].text=New-FakeRuntimeFileText $vm.name $vm.id -Overrides @{cpus='4'};$createEntry.synthetic=$true}
+        'inspect-digest-mismatch'{
+            # Add-FakeSbxSandboxScenario -Digest は create の --template の照合にも使われ、profile と別の digest では create 自体が一致しないので、inspect の image_digest だけを変える。
+            $other='docker.io/docker/sandbox-templates@sha256:'+('1'*64)
+            $inspect=Get-FakeSbxResponse 'inspect' @{name=$vm.name;agent='shell';digest=$other;imageDigest=$other.Substring($other.IndexOf('@')+1)}
+            Add-FakeSbxResponse $ctx.case @('inspect',[regex]::Escape($vm.name),'--json') -Stdout $inspect.text -Synthetic $true -First | Out-Null
+        }
+        'inspect-extra-secret'{
+            $inspect=Get-FakeSbxResponse 'inspect' @{name=$vm.name;agent='shell';digest=$digest;imageDigest=$digest.Substring($digest.IndexOf('@')+1)}
+            Add-FakeSbxResponse $ctx.case @('inspect',[regex]::Escape($vm.name),'--json') -Stdout ($inspect.text.Replace('"secrets": [','"secrets": [{"name":"OPENAI_API_KEY","source":"host"},')) -Synthetic $true -First | Out-Null
+        }
     }
     Write-FakeSbxScenario $ctx.case
     $lease=Acquire-VerificationPilotLease $ctx.prepared
@@ -296,6 +310,8 @@ function Test-ActivationFailureVariant([string]$Variant){
     if($Variant -in @('policy-mismatch','ssh-forwarder')){Assert-True ($failure.message -like '*activation checks failed*') "${Variant}: 理由"}
     if($Variant -eq 'policy-mismatch'){Assert-True ($failure.message -like '*policy*') 'policy-mismatch: policy を名指す'}
     if($Variant -eq 'ssh-forwarder'){Assert-True ($failure.message -like '*sshForwarding*') 'ssh-forwarder: sshForwarding を名指す'}
+    $expectedCheck=@{'runtime-workspace-set'='mount';'runtime-ssh-socket-set'='sshForwarding';'runtime-cpus-4'='resource';'inspect-digest-mismatch'='mount';'inspect-extra-secret'='credentialExposure'}[$Variant]
+    if($null -ne $expectedCheck){Assert-True ($failure.reason -ceq 'activation-mismatch' -and $failure.message -like "*activation checks failed*$expectedCheck*") "${Variant}: 値の不一致を $expectedCheck で名指す（$($failure.message)）"}
     $expectedKey=@{'runtime-lacks-workspace'='WorkspaceDir';'runtime-lacks-ssh-socket'='SSHAgentSocketPath';'runtime-cpus-string'='CPUs'}[$Variant]
     if($null -ne $expectedKey){Assert-True ($failure.reason -ceq 'activation-mismatch' -and $failure.message -like "*Spec.$expectedKey is missing or not a*") "${Variant}: 取得できないキーを名指す（$($failure.message)）"}
     $record=Get-Content -LiteralPath (Join-Path $ctx.controlRoot 'runtime/replay-before-sandbox.json') -Raw | ConvertFrom-Json -AsHashtable
@@ -497,7 +513,7 @@ $count++
 
 # 13. 停止未確認: ls が stopped にならなければ unverified。自動停止行だけでは stopped と判定しない。保持ジョブの停止はどちらでも行う。
 foreach($variant in @('ls-still-running','auto-stop-line-only')){
-    $ctx=New-Case -CleanupSeconds 8;$vm=Add-Vm $ctx   # 偽sbxの照会は約1秒/回なので、ls を数回待てる予算にする
+    $ctx=New-Case -CleanupSeconds 20;$vm=Add-Vm $ctx   # 偽sbxの照会は約1秒/回で負荷により伸びるので、停止前後の世代照会と ls の待機を含めて余裕のある予算にする（8秒では揺れた）
     $stopText=(Get-FakeSbxResponse 'stop' @{name=$vm.name}).text
     # stop の本文は 41-stop.txt 由来だが、「一覧が stopped にならない」「停止行の代わりに自動停止行が出る」という状態遷移は未観測の創作。
     if($variant -eq 'ls-still-running'){Add-FakeSbxResponse $ctx.case @('stop',[regex]::Escape($vm.name)) -Stdout $stopText -Synthetic $true -First | Out-Null}
@@ -509,9 +525,10 @@ foreach($variant in @('ls-still-running','auto-stop-line-only')){
     $stop=Stop-TestSandbox $item (New-VerificationCleanupBudget $ctx.prepared 1)
     $watch.Stop()
     Assert-True ($stop.stopState -ceq 'unverified') "${variant}: unverified（$($stop.reason)）"
-    if($variant -eq 'ls-still-running'){Assert-True ($stop.reason -like "*ls status 'running'*" -and $watch.Elapsed.TotalSeconds -ge 6) "${variant}: cleanupSeconds 内で ls を待ってから諦める（$([int]$watch.Elapsed.TotalSeconds)秒: $($stop.reason)）"}
-    else{Assert-True ($stop.reason -like '*no stopped-runtime-container line*') "${variant}: 自動停止行は外側停止の証拠にしない（$($stop.reason)）"}
     $evidence=Get-Content -LiteralPath $stop.evidencePath -Raw | ConvertFrom-Json -AsHashtable
+    # 理由の文言は負荷による照会失敗の混入で変わりうるので、判定の根拠（stopped の一覧を観測していない・停止行を採用していない）を証拠の観測値で確かめる。
+    if($variant -eq 'ls-still-running'){Assert-True ($evidence.listObserved -cne 'stopped' -and $watch.Elapsed.TotalSeconds -ge 18) "${variant}: stopped の一覧を観測しないまま cleanupSeconds（20秒）を待ってから諦める（$([int]$watch.Elapsed.TotalSeconds)秒: listObserved=$($evidence.listObserved)）"}
+    else{Assert-True ($null -eq $evidence.stopLogLine) "${variant}: 自動停止行を外側停止の証拠（停止行）に採用しない（$($stop.reason)）"}
     Assert-True ($null -ne $evidence.keepAlive -and $evidence.keepAlive.stopped -is [bool] -and $null -eq $evidence.stopLogLine) "${variant}: 保持ジョブの停止を実行し、停止行なし"
     Assert-True (-not(Test-ProcessAlive $handle.keepAliveHandle.processId)) "${variant}: 未確認でも保持セッションの対象は止まった"
     Stop-CaseFakeProcesses @($ctx)
@@ -534,15 +551,15 @@ $count++
 
 # 15. 定数の時間上限: 照会（QuerySeconds）・作成（SetupSeconds）を超える遅延で timedOut・runtimeFailure。定数は script スコープで試験だけが差し替える。
 $ctx=New-Case;$vm=Add-Vm $ctx
-$slowLs=Add-FakeSbxResponse $ctx.case @('ls','--json') -Stdout '{"sandboxes":[]}' -DelaySeconds 7 -Synthetic $true -First;Write-FakeSbxScenario $ctx.case
+$slowLs=Add-FakeSbxResponse $ctx.case @('ls','--json') -Stdout '{"sandboxes":[]}' -DelaySeconds 15 -Synthetic $true -First;Write-FakeSbxScenario $ctx.case
 $lease=Acquire-VerificationPilotLease $ctx.prepared
-& $module {$script:QuerySeconds=3}   # 偽sbxは1呼び出し約1秒なので、それより長く遅延より短い値
+& $module {$script:QuerySeconds=6}   # 上限は ls 以外の照会（daemon status・settings・mcp）にもかかるので、偽sbxの1呼び出し（約1秒、負荷で伸びる）より十分長く、遅延15秒より短い値
 try{
     $watch=[Diagnostics.Stopwatch]::StartNew()
     $failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}
     $watch.Stop()
-    Assert-True ($failure.reason -ceq 'query-timed-out' -and $failure.creationState -ceq 'not-created' -and $failure.message -like '*ls timed out (limit 3s)*') "照会上限: timedOut（$($failure.message)）"
-    Assert-True ($watch.Elapsed.TotalSeconds -lt 20) "照会上限: 遅延7秒を定数3秒で打ち切る（$([int]$watch.Elapsed.TotalSeconds)秒）"
+    Assert-True ($failure.reason -ceq 'query-timed-out' -and $failure.creationState -ceq 'not-created' -and $failure.message -like '*sbx ls timed out*') "照会上限: ls の時間超過（$($failure.message)）"
+    Assert-True ($watch.Elapsed.TotalSeconds -lt 25) "照会上限: 遅延15秒の ls を定数6秒で打ち切り、遅延を待たない（$([int]$watch.Elapsed.TotalSeconds)秒）"
     Assert-Equal @(Get-Calls $ctx 'create').Count 0 '照会上限: create 0回'
 }finally{& $module {$script:QuerySeconds=60}}
 $ctx.case.entries.Remove($slowLs) | Out-Null
@@ -662,6 +679,8 @@ $count++
 # 17. runtimes/<name>.json の判定キー（WorkspaceDir・SSHAgentSocketPath・CPUs など）の欠落・型違いは「取得できない」扱い: 観測なしで verified にせず、
 #     作成済み ID の停止を試みて runtimeFailure.creationState=created・blocked。
 foreach($variant in @('runtime-lacks-workspace','runtime-lacks-ssh-socket','runtime-cpus-string')){Test-ActivationFailureVariant $variant}
+# 作成時の値の不一致（WorkspaceDir・SSHAgentSocketPath が空でない、CPUs の値違い、image digest の不一致、mcpgateway 以外の secret）も同じく停止を試みて blocked。
+foreach($variant in @('runtime-workspace-set','runtime-ssh-socket-set','runtime-cpus-4','inspect-digest-mismatch','inspect-extra-secret')){Test-ActivationFailureVariant $variant}
 $count++
 
 # 17b. デーモンの版の照合（仕様02「版・テンプレート一致」）: daemon.log の起動行の版（"v0.42.1 <commit>"）と profile の sbxVersion が違えば VM を作らず blocked（sbx-version）。

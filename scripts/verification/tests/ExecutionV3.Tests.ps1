@@ -285,7 +285,7 @@ Assert-True ($r.stderr -like '*job handle required*') "ジョブハンドルな�
 $count++
 
 # 14. 開始マーカー・終了記録の読取りがホストの書込みと競合しても例外にせず読み直す（共有違反・空・不完全 JSON）。
-#     モジュール内の読取り補助を直接呼ぶ。共有違反は別プロセス（pwsh）がファイルを排他で開いて作り、一定時間後に解放する。
+#     モジュール内の読取り補助を直接呼ぶ。共有違反は別プロセス（pwsh）がファイルを排他で開いて作り、試験側の合図（解放ファイル）を見てから解放する（固定時間の保持に依存しない）。
 $execution=Get-Module Execution
 $mk=Join-Path $root 'rd.started.json'
 [IO.File]::WriteAllText($mk,'')
@@ -298,15 +298,17 @@ try{Assert-True ($null -eq (& $execution {param($p) Read-VerificationStartMarker
 $info=& $execution {param($p) Read-VerificationStartMarker $p} $mk
 Assert-True ($null -ne $info -and $info.pid -eq 1234 -and $info.startTicks -eq 5678) '読取り競合: 書き終えたマーカーは読める'
 [IO.File]::WriteAllText($mk+'.exit.json','{"exitCode":5}')
-$signal=Join-Path $root 'rd.locked'
+$signal=Join-Path $root 'rd.locked';$release=Join-Path $root 'rd.release'
 $holder=[Diagnostics.ProcessStartInfo]::new($pwsh);$holder.UseShellExecute=$false;$holder.CreateNoWindow=$true
-$holderScript="`$f=[IO.File]::Open('$($mk+'.exit.json')','Open','ReadWrite','None');[IO.File]::WriteAllText('$signal','x');Start-Sleep -Milliseconds 1500;`$f.Dispose()"
+# 保持側は解放ファイルが現れるまで排他を保ち（上限60秒）、現れてから 300ms 後に解放する（読み直し側が共有違反の間に読み始めるための短い間。解放の順序は合図で決まる）。
+$holderScript="`$f=[IO.File]::Open('$($mk+'.exit.json')','Open','ReadWrite','None');[IO.File]::WriteAllText('$signal','x');`$until=[DateTime]::UtcNow.AddSeconds(60);while(-not[IO.File]::Exists('$release') -and [DateTime]::UtcNow -lt `$until){Start-Sleep -Milliseconds 25};Start-Sleep -Milliseconds 300;`$f.Dispose()"
 foreach($a in @('-NoProfile','-NonInteractive','-Command',$holderScript)){$holder.ArgumentList.Add($a)}
 $holderProcess=[Diagnostics.Process]::Start($holder);$holderRecord=@{pid=$holderProcess.Id;startTicks=$holderProcess.StartTime.ToUniversalTime().Ticks}
 try{
     $wait=[DateTime]::UtcNow.AddSeconds(15);while(-not[IO.File]::Exists($signal) -and [DateTime]::UtcNow -lt $wait){Start-Sleep -Milliseconds 25}
     Assert-True ([IO.File]::Exists($signal)) '読取り競合: 別プロセスが終了記録を排他で開いた'
     Assert-True ($null -eq (& $execution {param($p) Read-VerificationTargetExit $p} $mk)) '読取り競合: 再試行なしの終了記録読取りは共有違反で null（例外にしない）'
+    [IO.File]::WriteAllText($release,'x')   # 解放を合図する（保持側は合図の後に解放するので、直後の読み直しは共有違反の間に始まる）
     $watch=[Diagnostics.Stopwatch]::StartNew()
     $exit=& $execution {param($p) Read-VerificationTargetExit $p 10} $mk
     $watch.Stop()

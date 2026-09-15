@@ -125,7 +125,10 @@ $r=$bad.request.Clone();$r.unexpected='x';$null=Check-Status $r $bad.settings
 $r=$bad.request.Clone();$r.schemaVersion='3';$null=Check-Status $r $bad.settings
 $r=$bad.request.Clone();$r.schemaVersion=2;$null=Check-Status $r $bad.settings
 $r=$bad.request.Clone();$r.caller='other';$null=Check-Status $r $bad.settings
-$r=$bad.request.Clone();$r.recheck=@{previousResultPath='x';testPaths=@('tests/a.py');extra=1};$null=Check-Status $r $bad.settings
+# recheck の未知キーは依頼の schema で拒否する。previousResultPath='x' は extra が無くても後の recheck 段階（run の作成後）で拒否されるので、
+# 拒否の段が request であることで extra による拒否だと確かめる（schema の最初のエラー文は oneOf の別の枝を指すことがあり、extra を名指すとは限らない）。
+$r=$bad.request.Clone();$r.recheck=@{previousResultPath='x';testPaths=@('tests/a.py');extra=1};$f=Check-Status $r $bad.settings
+Assert-Equal $f.Exception.Data['stage'] 'request' "recheck の未知キーは request 段階（schema）で拒否（$($f.Exception.Message)）"
 $null=Check-Status $bad.request $bad.settings 'blocked' ''
 $null=Check-Status $bad.request $bad.settings 'blocked' '2026-09-15T09:00:00+09:00'
 $s=$bad.settings.Clone();$s.extra='x';$null=Check-Status $bad.request $s

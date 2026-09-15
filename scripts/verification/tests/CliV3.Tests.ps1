@@ -160,10 +160,10 @@ function Assert-StartDiagnostics([hashtable]$Launch,[string]$RunRootText){
 function Get-Calls([hashtable]$Ctx){@(Read-FakeSbxCalls $Ctx.case)}
 function Get-CallTime($Call){if($Call.time -is [DateTime]){$Call.time.ToUniversalTime()}else{[DateTimeOffset]::Parse([string]$Call.time).UtcDateTime}}
 function Get-CallIndex([object[]]$Calls,[scriptblock]$Predicate){for($i=0;$i -lt $Calls.Count;$i++){if(& $Predicate $Calls[$i]){return $i}};-1}
-function Assert-StopsOnly([hashtable]$Ctx,[string[]]$Names,[string]$Label){
+function Assert-StopsOnly([hashtable]$Ctx,[string[]]$Names,[string]$Label,[int]$Times=1){
     $stops=@(Get-Calls $Ctx | Where-Object {$_.argv[0] -eq 'stop'} | ForEach-Object {[string]$_.argv[1]})
     Assert-Equal @($stops | Where-Object {$Names -cnotcontains $_}).Count 0 "${Label}: 当該名以外への stop が0件（$($stops -join ',')）"
-    foreach($name in $Names){Assert-Equal @($stops | Where-Object {$_ -ceq $name}).Count 1 "${Label}: $name へ stop 1回"}
+    foreach($name in $Names){Assert-Equal @($stops | Where-Object {$_ -ceq $name}).Count $Times "${Label}: $name へ stop $Times 回"}
 }
 function Assert-NoKnownVmTouched([hashtable]$Ctx,[string]$Label){
     foreach($call in @(Get-Calls $Ctx)){foreach($name in $script:knownStopped){Assert-True (-not(@($call.argv) -ccontains $name)) "${Label}: 残置VM $name を操作しない"}}
@@ -215,12 +215,22 @@ $plantedText='{"planted":"existing result"}'
 $midwayRun=Start-Run $midway 'run' {param($l,$runRoot) Write-V3TestText (Join-Path $runRoot 'control/result.json') $script:plantedText;Add-RunScenario $l.ctx $runRoot}
 # 4. 全体期限の到達（VM あり）: 提案VM 作成後、Codex が期限を越えて終わらない。期限後は stop・停止確認の照会だけ。stop は一覧が stopped にならず未確認のまま（創作）で、
 #    CLI の finally が停止フェーズの予算（台数分＝1台）で再試行する。
-$late=New-CliCase 'late' -Limits @{totalSeconds=60;proposalSeconds=60;replaySeconds=60;cleanupSeconds=10}
+#    全体期限は150秒（60秒では13件の一斉起動の負荷で、期限前に提案VMの作成と Codex の起動が終わらないことがあった）。Codex の遅延は期限を越える600秒のまま。
+$late=New-CliCase 'late' -Limits @{totalSeconds=150;proposalSeconds=150;replaySeconds=60;cleanupSeconds=10}
 $late.spec=@{agentDelay=600;replacement=$fixedText;replay=$false;edit={param($c)
     $stopText=(Get-FakeSbxResponse 'stop' @{name=$c.names.proposal}).text
     Add-FakeSbxResponse $c.case @('stop',[regex]::Escape($c.names.proposal)) -Stdout $stopText -Synthetic $true -Source '一覧が stopped にならない状態遷移は未観測の創作' -First | Out-Null
 }}
 $lateRun=Start-Run $late 'run' {param($l,$runRoot) Add-RunScenario $l.ctx $runRoot}
+# 4b. 停止未確認の VM を残したまま CLI の段が例外になる: 提案VMの作成・Codex・回収の後、提案の停止は一覧が stopped にならず未確認（1回目の stop だけ状態を変えない。創作）。
+#     提案は ready にならず、照合は既存の control/result.json で例外になる。CLI の finally が作成記録を正本に停止を再発行し（2回目の stop は一覧を stopped にする）、
+#     停止証拠を残し、Lease を解放する。
+$stopExc=New-CliCase 'stopexc'
+$stopExc.spec=@{agentDelay=0;replacement=$fixedText;replay=$false;edit={param($c)
+    $stopText=(Get-FakeSbxResponse 'stop' @{name=$c.names.proposal}).text
+    Add-FakeSbxResponse $c.case @('stop',[regex]::Escape($c.names.proposal)) -Stdout $stopText -Requires @{"stop-once:$($c.names.proposal)"=''} -Sets @{"stop-once:$($c.names.proposal)"='1'} -Synthetic $true -Source '1回目の stop で一覧が stopped にならない状態遷移は未観測の創作' -First | Out-Null
+}}
+$stopExcRun=Start-Run $stopExc 'run' {param($l,$runRoot) Write-V3TestText (Join-Path $runRoot 'control/result.json') $script:plantedText;Add-RunScenario $l.ctx $runRoot}
 # 5. 提案が ready でない（作成前の拒否: MCP 登録あり）→ 再実行は not_run（VM を作らない）。
 $notReady=New-CliCase 'notready'
 Add-FakeSbxResponse $notReady.case @('mcp','ls','--json') -Stdout (Get-FakeSbxResponse 'mcpLsOne').text -Synthetic $true -Source 'mcpLsOne（創作）' -First | Out-Null
@@ -351,6 +361,7 @@ Assert-Equal ([IO.File]::ReadAllText((Join-Path $midway.runRoot 'control/result.
 $lines=Get-StderrLines $midwayRun
 Assert-True (@($lines | Where-Object {$_ -like 'result: control/result.json が既にあるため保存しない*'}).Count -eq 1) '途中失敗: 保存しないことを stderr に表示'
 Assert-True (@($lines | Where-Object {$_ -like 'error: result: *result already exists*'}).Count -eq 1) '途中失敗: 例外のメッセージを stderr の診断に残す'
+Assert-True (@($lines | Where-Object {$_ -like 'proposal: error at sandbox (query-failed): *inspect failed*'}).Count -eq 1) "途中失敗: 提案が型付き結果へ丸めた例外の段・理由・説明文を stderr に残す（$(@($lines | Where-Object {$_ -like 'proposal: error*'}) -join ' | ')）"
 Assert-True ($lines -ccontains 'pilot lease: 解放した') '途中失敗: Lease を解放する'
 Assert-StartDiagnostics $midwayRun $midway.runRoot
 $calls=Get-Calls $midway
@@ -372,7 +383,7 @@ Assert-True ($r.sourceState -ceq 'unchanged' -and $r.baselineState -ceq 'unchang
 Assert-True (@($r.unverified | Where-Object {$_ -like 'result/proposal-stop:*'}).Count -ge 1) "期限到達: 提案VMの停止未確認は停止記録の照合から（$(@($r.unverified) -join ' | ')）"
 Assert-SavedResult $lateRun $r
 $lines=Get-StderrLines $lateRun
-$deadlineMatch=[regex]::Match(($lines -join "`n"),'(?m)^startedAt: \S+ deadlineAt: (\S+) totalSeconds: 60$')
+$deadlineMatch=[regex]::Match(($lines -join "`n"),'(?m)^startedAt: \S+ deadlineAt: (\S+) totalSeconds: 150$')
 Assert-True $deadlineMatch.Success '期限到達: stderr に startedAt・deadlineAt'
 $deadlineAt=[DateTimeOffset]::Parse($deadlineMatch.Groups[1].Value).UtcDateTime
 $calls=Get-Calls $late
@@ -391,6 +402,24 @@ Assert-True ($retry.stopState -ceq 'unverified' -and $budgetSeconds -gt 0 -and $
 Assert-True (@($lines | Where-Object {$_ -like 'stop: 停止未確認の VM 1 台*'}).Count -eq 1) '期限到達: 停止フェーズの対象台数を stderr に表示'
 Assert-True (@($lines | Where-Object {$_ -like 'recovery: *-StopRecorded -RunRoot*'}).Count -eq 1) '期限到達: 停止未確認なら復旧操作の入口を stderr に表示'
 Assert-True ($lines -ccontains 'pilot lease: 解放した') '期限到達: Lease を解放する'
+$count++
+
+# ---- 4b. 停止未確認の VM を残したまま段が例外: CLI の finally が作成記録を正本に停止を再発行する ----
+$r=Get-ResultJson $stopExcRun
+Assert-Equal $stopExcRun.exitCode 2 '停止未確認で例外: 終了2'
+Assert-True ($r.status -ceq 'incomplete' -and $r.execution.failureStage -ceq 'result' -and $r.execution.proposalCreated -eq $true -and $r.execution.proposalStopped -eq $true -and $r.execution.replayCreatedCount -eq 0) "停止未確認で例外: incomplete・failureStage=result・再発行で停止を確認（$($r.status) $($r.summary)）"
+Assert-ResultSchema $stopExcRun
+Assert-Equal ([IO.File]::ReadAllText((Join-Path $stopExc.runRoot 'control/result.json'),$utf8)) $plantedText '停止未確認で例外: 既存の control/result.json を上書きしない'
+$lines=Get-StderrLines $stopExcRun
+Assert-True (@($lines | Where-Object {$_ -like 'proposal: status=incomplete stopState=unverified*'}).Count -eq 1) '停止未確認で例外: 提案の停止は未確認'
+Assert-True (@($lines | Where-Object {$_ -like 'error: result: *already exists*'}).Count -eq 1) '停止未確認で例外: 照合の段が例外になった'
+Assert-True (@($lines | Where-Object {$_ -like 'stop: 停止未確認の VM 1 台*'}).Count -eq 1 -and @($lines | Where-Object {$_ -like "stop: $($stopExc.names.proposal) stopState=stopped*"}).Count -eq 1) '停止未確認で例外: finally が作成記録の VM 1台へ停止を再発行し stopped'
+Assert-True ($lines -ccontains 'pilot lease: 解放した' -and @($lines | Where-Object {$_ -like 'recovery: *'}).Count -eq 0) '停止未確認で例外: Lease を解放し、停止を確認できたので復旧操作は案内しない'
+Assert-StopsOnly $stopExc @($stopExc.names.proposal) '停止未確認で例外（当該名だけ）' -Times 2
+$record=Get-Content -LiteralPath (Join-Path $stopExc.runRoot 'control/runtime/proposal-sandbox.json') -Raw | ConvertFrom-Json -AsHashtable -DateKind String
+$evidence=@(Get-ChildItem -LiteralPath (Join-Path $stopExc.runRoot 'control/runtime') -Filter 'proposal-stop-*.json' | Sort-Object Name | ForEach-Object {Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json -AsHashtable -DateKind String})
+Assert-True ($evidence.Count -eq 2 -and $evidence[0].stopState -ceq 'unverified' -and $evidence[1].stopState -ceq 'stopped') "停止未確認で例外: 停止証拠2件（未確認 → 再発行で stopped。$(@($evidence | ForEach-Object {$_.stopState}) -join ',')）"
+Assert-True ($evidence[1].name -ceq $record.name -and $evidence[1].id -ceq $record.id -and $evidence[1].runId -ceq $record.runId) '停止未確認で例外: 再発行は作成記録の runId・name・id を正本にする'
 $count++
 
 # ---- 5. 提案が ready でない → 再実行は not_run ----

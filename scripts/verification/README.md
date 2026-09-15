@@ -23,7 +23,7 @@ pwsh -NoProfile -File scripts/verification/Invoke-IsolatedVerification.ps1 -Requ
 
 - 依頼（`request.schema.json` の v3）と設定（`settings.schema.json`）は schemaVersion=3 だけを受けます。重複キー・未知キー・数字の文字列表現は拒否します。
 - 順序: 入力の読込と検査 → 受付時刻（startedAt）の確定 → 基準版と提案用コピーの準備 → 実行設定の検査（再実行用は常に、提案用は再検証〈recheck〉以外）→ pilot 排他（同じデーモンでの同時実行を1つにする Lease）の取得 → 提案 → 提案が ready なら再実行、そうでなければ未実行（not_run）の結果 → 照合 → 作成したVMの停止確認と Lease の解放。
-- 全体の制限時間（`limits.totalSeconds`）は受付時刻から数え、準備の時間も含みます。到達後は新しいVMの作成・搬入・実行を始めず、停止だけを停止フェーズの予算（停止を始めた時刻 + `cleanupSeconds` × 停止対象の台数）の範囲で行います。
+- 全体の制限時間（`limits.totalSeconds`）は受付時刻から数え、準備の時間も含みます。壁時計の期限（deadlineAt）と、準備の開始時に始める単調増加時計のどちらかが到達したら到達とします（システム時刻が戻っても延びません）。到達後は新しいVMの作成・搬入・実行を始めず、停止だけを停止フェーズの予算（停止を始めた時刻 + `cleanupSeconds` × 停止対象の台数）の範囲で行います。
 
 出力と終了値:
 
@@ -41,7 +41,8 @@ pwsh -NoProfile -File scripts/verification/Invoke-IsolatedVerification.ps1 -Stop
 
 - `-SettingsPath` は通常の設定（SettingsV3）でも、`schemaVersion`・`sbxPath`・`pwshPath`・`runsRoot`・`limits` だけの縮約入力でもかまいません。CLI はこの5項目を取り出して `recovery-input.schema.json` で検査します（`schemaVersion` の欠落も拒否）。
 - VMを作りません。`<runRoot>/control/runtime/<役割>-sandbox.json` に記録された名前と ID のVMだけを停止・確認し、記録に無いVMには触れません。別の run が Lease を持っていれば何もせず終了値 2 を返します。
-- stdout: `recovery-result.schema.json` の JSON 1件（同じ内容を `control/runtime/recovery-<時刻>.json` に保存）。入力・排他の拒否では stdout に何も書きません。
+- 読めない作成記録は、名前・ID を推定せず `(unreadable record: <ファイル名>)` として停止未確認（unverified）で列挙し、残りの記録の処理を続けます。
+- stdout: `recovery-result.schema.json` の JSON 1件（同じ内容を `control/runtime/recovery-<時刻>.json` に保存）。入力・排他の拒否では stdout に何も書きません。Lease の取得後にデーモンの世代や一覧を照会できなかった場合は、停止を発行せず全対象を unverified とした結果を `recovery-<時刻>.json` に保存してから、stdout に何も書かずに終了値 2 で理由を stderr に出します。
 - 終了値: 全対象の停止を確認できれば 0（記録0件も 0。`targetCount=0` を stdout と stderr に出します）、それ以外は 2。
 
 ### 既知の制約
@@ -56,6 +57,7 @@ pwsh -NoProfile -File scripts/verification/Invoke-IsolatedVerification.ps1 -Stop
 - 停止したまま残ったVMの後片付け（`sbx rm`）は CLI も復旧操作も行いません。利用者の承認を得てから実行します。
 - runsRoot は短いパスにしてください。基準版の `.git/objects/pack` までのパスが Windows のパス長上限に達すると、履歴の取り込みに失敗します（Issue-0146）。
 - 対象プロセスをジョブへ割り当てる前の数ミリ秒の間に対象が起動した子プロセスは、ジョブに入らず外側の停止が届きません（Issue-0147 の残り）。実際の `sbx.exe` での影響はタスク8aの実VM試験で確かめます。
+- ジョブへの割当そのものに失敗した場合、起動側は対象（sbx クライアント）が起動済みでジョブ外にありうるものとして扱います（`refusedReason=assign-failed`・`processTreeStopped=false`）。VM の作成要求でこれが起きると、一覧に名前が無くても未作成とは確定せず、作成成否不明（incomplete）で返します。
 - 再実行の unittest に渡す環境変数は空で固定しています（VM の既定の環境に何も足しません）。
 
 ## 部品の独立試験（VMもモデルも起動しない）
@@ -64,7 +66,9 @@ pwsh -NoProfile -File scripts/verification/Invoke-IsolatedVerification.ps1 -Stop
 pwsh -NoProfile -File scripts/verification/tests/Run-IndependentTests.ps1
 ```
 
-v1 の4群（RequestCopy・History・Execution・Result）と v3 の7群（RequestCopyV3・ExecutionV3・SbxRuntimeV3・ProposalV3・ReplayV3・ResultV3・CliV3）を順に実行し、1群でも失敗すればそこで止まります。成功すると最後に `Independent verification: 11 suites passed (no agent launched)` と表示します。全体の所要は約24分です（2026-09-16 の実測 1427 秒。SbxRuntimeV3 約9分、ReplayV3 約6.5分、ProposalV3 約4.5分、CliV3 約3.5分、他は各1分未満）。偽の sbx の応答時間に依存する試験があり、停止猶予を短くしたケースが負荷によって停止未確認で失敗することがあります（その場合は再実行して切り分けてください）。v3 の試験は記録済みの応答を返す偽の sbx（`tests/fixtures/FakeSbx.ps1`）を使い、実VM・実デーモンは使いません。実測の無い応答には `synthetic: true` の印を付けています。偽の sbx で合格しても実機の実証には数えません。
+v1 の4群（RequestCopy・History・Execution・Result）と v3 の7群（RequestCopyV3・ExecutionV3・SbxRuntimeV3・ProposalV3・ReplayV3・ResultV3・CliV3）を順に実行し、1群でも失敗すればそこで止まります。成功すると最後に `Independent verification: 11 suites passed (no agent launched)` と表示します。各群の開始前に群名を、終了後に経過秒を表示します。全体の所要は約26分です（2026-09-16 の最終修正後の実測 1577 秒。SbxRuntimeV3 約11分、ReplayV3 約5.5分、ProposalV3 約4分、CliV3 約3.7分、他は各1分未満）。偽の sbx は1呼び出しに1秒前後かかるため、停止を確認するケースの停止猶予・照会上限・全体期限は、その所要に負荷の揺れを見込んだ値にしています。
+
+試験群は手動で並行に実行しないでください（群どうしが同じ名前付き Mutex を使うため、Lease の競合で失敗します）。v3 の試験は記録済みの応答を返す偽の sbx（`tests/fixtures/FakeSbx.ps1`）を使い、実VM・実デーモンは使いません。実測の無い応答には `synthetic: true` の印を付けています。偽の sbx で合格しても実機の実証には数えません。
 
 試験用データはこのworktreeの`.tmp/verification-tests/`に実行ごとに新規作成します。自動の後片付けは行いません。一部の試験は `codex` の実行ファイルが PATH にあることを前提にします（v1 の起動検査。モデルは起動しません）。
 

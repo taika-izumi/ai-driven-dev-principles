@@ -236,6 +236,16 @@ $run=New-Run 'reproduction-only' 1 -Options @{proposal=@{daemon=@{pid=6161;start
 $r=Invoke-Result $run '提案VMと別世代'
 Assert-Outcome $r 'incomplete' 'undetermined' 2 '1台だけの mode でも提案VMの世代と照合'
 Assert-Unverified $r '*daemon-changed*' '1台だけの mode でも提案VMの世代と照合'
+# V6 の別 runId（照合側）: 再実行記録の runId だけが別（参照の recordHash は書き換え後の現物に合わせる）→ 当該 run の記録と認めず incomplete。
+$run=New-Run;Update-Record $run.replay.before {param($v) $v.runId=[guid]::NewGuid().ToString()}
+$r=Invoke-Result $run '記録が別 runId'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 '再実行記録が別 runId'
+Assert-Unverified $r 'result/replay-before-record:record-missing: control record does not belong to this run*' '再実行記録が別 runId'
+# 提案結果の runId だけが別（記録・manifest は当該 run のまま）→ 別 run の結果として incomplete。
+$run=New-Run;$run.proposal.runId=[guid]::NewGuid().ToString()
+$r=Invoke-Result $run '提案結果が別 runId'
+Assert-Outcome $r 'incomplete' 'undetermined' 2 '提案結果が別 runId'
+Assert-Unverified $r 'proposal:run-id*' '提案結果が別 runId'
 $count++
 
 # 5b. 役割と VM id の対応（I1）: 参照が別役割の VM を指す、before と after が同じ id、再実行 VM が提案 VM と同じ id → incomplete。

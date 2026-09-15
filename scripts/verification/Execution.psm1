@@ -163,8 +163,13 @@ function Test-VerificationProcessInput([Diagnostics.ProcessStartInfo]$StartInfo,
     }
     if($OutputPaths.stdoutPath -eq $OutputPaths.stderrPath){throw 'stdout and stderr paths must differ'}
     $marker=$OutputPaths.stdoutPath+'.started.json'
-    if((Test-Path -LiteralPath $marker) -or (Test-Path -LiteralPath ($marker+'.exit.json'))){throw 'existing process marker rejected'}
+    if((Test-Path -LiteralPath $marker) -or (Test-Path -LiteralPath ($marker+'.exit.json')) -or (Test-Path -LiteralPath ($marker+'.assign-failed.json'))){throw 'existing process marker rejected'}
     $marker
+}
+function Test-VerificationAssignFailed([string]$Marker,[Diagnostics.Process]$HostProcess) {
+    # ProcessHost がジョブ割当に失敗した（対象は起動済みでジョブ外にある）か。割当失敗マーカー、またはホストの終了コード 126 で判定する。
+    if([IO.File]::Exists($Marker+'.assign-failed.json')){return $true}
+    try{return ($HostProcess.HasExited -and $HostProcess.ExitCode -eq 126)}catch{return $false}
 }
 function New-VerificationHostProcess([Diagnostics.ProcessStartInfo]$StartInfo,[string]$Marker) {
     # ProcessHost.ps1 を起動側の環境辞書だけで起動する。制御要求の送信は呼出し側が行う。
@@ -265,7 +270,12 @@ function Invoke-VerificationProcessV3 {
         while($job.Active() -gt 0 -and [DateTime]::UtcNow -lt $stopDeadline){Start-Sleep -Milliseconds 25}
         $result.processTreeStopped=($job.Active() -eq 0)
         $result.started=[IO.File]::Exists($marker)
-        if(-not$result.started){$result.exitCode=$null;$result.refusedReason='launch-failed'}
+        if(-not$result.started){
+            $result.exitCode=$null
+            # 割当失敗は対象がジョブ外で起動済みでありうるので launch-failed と区別し、ジョブが空でも木の停止を確認済みとしない（ホストの停止報告は割当失敗マーカーと stderr に残る）。
+            if(Test-VerificationAssignFailed $marker $process){$result.refusedReason='assign-failed';$result.processTreeStopped=$false}
+            else{$result.refusedReason='launch-failed'}
+        }
         # 打ち切った実行の exitCode は採否に使わせない（切詰めて成功にしない）。
         if($result.timedOut -or $result.outputExceeded){$result.exitCode=$null}
     }catch{
@@ -331,7 +341,13 @@ function Start-VerificationBackgroundProcess {
             if($null -ne $info){break}
             if($process.HasExited){if(-not[IO.File]::Exists($marker)){break};Start-Sleep -Milliseconds 25}else{[void]$process.WaitForExit(25)}
         }
-        if($null -eq $info){throw 'background process not started'}
+        if($null -eq $info){
+            if(Test-VerificationAssignFailed $marker $process){
+                # 対象はジョブ外で起動済みでありうる。呼出し側が同じ対象を再試行で重ねて起動しないよう、理由を Data に載せる。
+                $failure=[InvalidOperationException]::new('background process started outside the job (job assignment failed)');$failure.Data['refusedReason']='assign-failed';throw $failure
+            }
+            throw 'background process not started'
+        }
         $token=[guid]::NewGuid().ToString('N')
         $script:BackgroundProcesses[$token]=$entry
         return @{processId=[int]$info.pid;jobToken=$token;markerPath=$marker;startedAt=Get-VerificationUtcNow}

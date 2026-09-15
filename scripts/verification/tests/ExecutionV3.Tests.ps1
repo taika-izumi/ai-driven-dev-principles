@@ -316,4 +316,37 @@ try{
 }
 $count++
 
+# 15. 起動側から見たジョブ割当の失敗（Issue-0147 以後の区別）: 対象は起動済みでジョブ外なので launch-failed にせず refusedReason=assign-failed・processTreeStopped=false。
+#     ホストは対象を止めた成否を割当失敗マーカーと stderr で伝える。試験だけがモジュール内の制御行の組み立てを包み、ホスト内で無効なジョブハンドル値を渡して割当失敗の経路を通す。
+& $execution {
+    $script:ControlBytesOriginal=${function:Get-VerificationControlBytes}
+    Set-Item -LiteralPath 'function:script:Get-VerificationControlBytes' -Value {param([Diagnostics.ProcessStartInfo]$StartInfo,[byte[]]$StdinBytes,[long]$JobHandle) & $script:ControlBytesOriginal $StartInfo $StdinBytes 2147483644}
+}
+try{
+    $paths=New-Paths 'assign-fail';$watch=[Diagnostics.Stopwatch]::StartNew()
+    $r=Invoke-VerificationProcessV3 -StartInfo (New-Native 'ping.exe' @('-n','60','127.0.0.1')) -StdinBytes $null -OutputPaths $paths -RunBudget (New-Budget -CommandSeconds 20)
+    $watch.Stop()
+    $assignMarker=$paths.stdoutPath+'.started.json.assign-failed.json'
+    $assign=$(if([IO.File]::Exists($assignMarker)){[IO.File]::ReadAllText($assignMarker) | ConvertFrom-Json}else{$null})
+    $left=$(if($null -ne $assign){Stop-Leftover @(@{pid=[int]$assign.pid;startTicks=[long]$assign.startTicks})}else{-1})
+    Assert-True (-not$r.started -and $null -eq $r.exitCode -and $r.refusedReason -ceq 'assign-failed') "割当失敗(起動側): refusedReason=assign-failed（$($r.refusedReason)）"
+    Assert-True ($r.processTreeStopped -eq $false) '割当失敗(起動側): 対象はジョブ外なので processTreeStopped=false'
+    Assert-True ($null -ne $assign -and $assign.targetKilled -eq $true -and $assign.reason -like '*job assignment failed*') "割当失敗(起動側): ホストは割当失敗マーカーに理由と停止の成否を書く（$([IO.File]::Exists($assignMarker))）"
+    Assert-Equal $left 0 '割当失敗(起動側): ホストが止めた対象（ping.exe）が残っていない'
+    Assert-True (([IO.File]::ReadAllText($paths.stderrPath)) -like '*job assignment failed*targetKilled=True*') '割当失敗(起動側): 理由と停止の成否を stderr に残す'
+    Assert-True (-not[IO.File]::Exists($paths.stdoutPath+'.started.json')) '割当失敗(起動側): 開始マーカーなし'
+    Assert-True ($watch.Elapsed.TotalSeconds -lt 15) "割当失敗(起動側): 上限20秒を待たない（実測 $([int]$watch.Elapsed.TotalSeconds) 秒）"
+    $fresh=New-Paths 'assign-mk';[IO.File]::WriteAllText($fresh.stdoutPath+'.started.json.assign-failed.json','{}')
+    Assert-Throws {Invoke-VerificationProcessV3 -StartInfo (New-Start 'echo') -StdinBytes $null -OutputPaths $fresh -RunBudget (New-Budget)} '*existing process marker*'
+    # 背景起動: 開始マーカーが無く割当失敗なら Data.refusedReason=assign-failed で投げる（呼出し側が同じ対象を再試行で重ねて起動しない）。
+    $paths=New-Paths 'assign-bg'
+    $failure=$null;try{[void](Start-VerificationBackgroundProcess -StartInfo (New-Native 'ping.exe' @('-n','60','127.0.0.1')) -OutputPaths $paths -RunBudget (New-Budget))}catch{$failure=$_.Exception}
+    $assignMarker=$paths.stdoutPath+'.started.json.assign-failed.json'
+    if([IO.File]::Exists($assignMarker)){$assign=[IO.File]::ReadAllText($assignMarker) | ConvertFrom-Json;[void](Stop-Leftover @(@{pid=[int]$assign.pid;startTicks=[long]$assign.startTicks}))}
+    Assert-True ($null -ne $failure -and $failure.Data['refusedReason'] -ceq 'assign-failed') "割当失敗(背景起動): refusedReason=assign-failed で投げる（$($failure.Message)）"
+}finally{
+    & $execution {Set-Item -LiteralPath 'function:script:Get-VerificationControlBytes' -Value $script:ControlBytesOriginal}
+}
+$count++
+
 "ExecutionV3: $count cases passed"

@@ -118,7 +118,8 @@ Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{} {p
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'proposal' @{} {param($e) $e.checks.Remove('modelEndpointAllowOnly')}) 'proposal' $ctx.settings} '*lacks required check: modelEndpointAllowOnly*'
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{} {param($e) $e.checks.hostPathIsolation.verdict='unverified'}) 'replay-before' $ctx.settings} '*not verified: hostPathIsolation*'
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{} {param($e) $e.checks.daemonDisconnect.verdict='failed'}) 'replay-before' $ctx.settings} '*daemonDisconnect*'
-[void](Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{} {param($e) $e.checks.daemonDisconnect.verdict='verified'}) 'replay-before' $ctx.settings)
+# daemonDisconnect は unverified だけを受ける（ADR-0196。verified と書ける観測が表に無い。偽 fixture の証拠に verified を付けても通さない）。
+Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{} {param($e) $e.checks.daemonDisconnect.verdict='verified'}) 'replay-before' $ctx.settings} '*daemonDisconnect must be unverified*'
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{} {param($e) $e.transportContrast.Remove('clientKilled')}) 'replay-before' $ctx.settings} '*schema*'
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{} {param($e) $e.checks.limitsAndTransport.evidenceHash=('B'*64)}) 'replay-before' $ctx.settings} '*evidence hash mismatch for check limitsAndTransport*'
 $tampered=New-Profile $ctx 'replay';$tampered.activationEvidenceHash=('C'*64)
@@ -661,6 +662,99 @@ $count++
 # 17. runtimes/<name>.json の判定キー（WorkspaceDir・SSHAgentSocketPath・CPUs など）の欠落・型違いは「取得できない」扱い: 観測なしで verified にせず、
 #     作成済み ID の停止を試みて runtimeFailure.creationState=created・blocked。
 foreach($variant in @('runtime-lacks-workspace','runtime-lacks-ssh-socket','runtime-cpus-string')){Test-ActivationFailureVariant $variant}
+$count++
+
+# 17b. デーモンの版の照合（仕様02「版・テンプレート一致」）: daemon.log の起動行の版（"v0.42.1 <commit>"）と profile の sbxVersion が違えば VM を作らず blocked（sbx-version）。
+#      表記の差（先頭の v、起動行の commit 部分）は正規化して比べる。
+Assert-Equal (& $module {ConvertTo-VerificationSbxVersion 'v0.42.1 cc6e400a4a3ce3ce5e0b2b77b8ee352aac854c64'}) '0.42.1' '版の正規化: 起動行の commit を除き先頭の v を除く'
+Assert-Equal (& $module {ConvertTo-VerificationSbxVersion '0.42.1'}) (& $module {ConvertTo-VerificationSbxVersion ' v0.42.1'}) '版の正規化: v の有無と前後の空白の差を同じとみなす'
+$ctx=New-Case;$vm=Add-Vm $ctx;Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' (New-Profile $ctx 'replay' @{sbxVersion='v0.42.2'}) $lease}
+Assert-True ($failure.reason -ceq 'sbx-version' -and $failure.status -ceq 'blocked' -and $failure.creationState -ceq 'not-created' -and $failure.stopState -ceq 'not-created' -and $failure.message -like '*v0.42.2*') "版の不一致: blocked・not-created（$($failure.reason) $($failure.message)）"
+Assert-Equal @(Get-Calls $ctx 'create').Count 0 '版の不一致: create 0回'
+Release-VerificationPilotLease $lease
+$count++
+
+# 17c. ジョブ割当の失敗（assign-failed）の create: sbx クライアントはジョブ外で起動済みでありうるので、一覧に名前が無くても not-created にせず unknown・unverified・incomplete。
+#      試験だけがモジュール内の Invoke-VerificationSbx を包み、create の戻り値を割当失敗の形（Execution の refusedReason=assign-failed・processTreeStopped=false）にする（7b と同じ差し替え）。
+$ctx=New-Case;$vm=Add-Vm $ctx
+$create500=Get-FakeSbxResponse 'create500' @{name=$vm.name}
+Add-FakeSbxResponse $ctx.case @('create','shell','--name',[regex]::Escape($vm.name),'--cpus','2','--memory','2g','--no-share-skills','--deny-network','\*','--template','.+') -Stderr $create500.text -ExitCode 1 -Synthetic $create500.synthetic -Source $create500.source -First | Out-Null
+Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+& $module {
+    $script:InvokeSbxOriginal=${function:Invoke-VerificationSbx}
+    Set-Item -LiteralPath 'function:script:Invoke-VerificationSbx' -Value {
+        param([hashtable]$Client,[string[]]$Argv,[hashtable]$Budget,[string]$Tag,[byte[]]$StdinBytes=$null,[bool]$ReadText=$true)
+        $call=& $script:InvokeSbxOriginal $Client $Argv $Budget $Tag $StdinBytes $ReadText
+        if($Tag -ceq 'create'){$call.result.started=$false;$call.result.exitCode=$null;$call.result.refusedReason='assign-failed';$call.result.processTreeStopped=$false}
+        $call
+    }
+}
+try{$failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease}}
+finally{& $module {Set-Item -LiteralPath 'function:script:Invoke-VerificationSbx' -Value $script:InvokeSbxOriginal}}
+Assert-True ($failure.creationState -ceq 'unknown' -and $failure.stopState -ceq 'unverified' -and $failure.status -ceq 'incomplete' -and $null -eq $failure.handle -and $failure.message -like '*assign-failed*') "割当失敗の create: unknown・unverified・incomplete（$($failure.creationState)/$($failure.stopState)/$($failure.status): $($failure.message)）"
+Assert-Equal @(Get-Calls $ctx 'create').Count 1 '割当失敗の create: 作成要求は発行済み'
+Assert-True (-not(Test-Path -LiteralPath (Join-Path $ctx.controlRoot 'runtime/replay-before-sandbox.json'))) '割当失敗の create: 一覧に無いので作成記録は無い'
+Release-VerificationPilotLease $lease
+$count++
+
+# 17d. 停止手順の例外経路: 停止の途中で daemon.log を開けない・stop の発行が例外になる場合も、unverified の停止証拠を書き、stopResult を設定して以後の exec を拒否する。
+#      daemon.log は試験だけが stop の発行直後に排他で開いて塞ぐ（Invoke-VerificationSbx の包み）。2回目は stop の発行そのものを例外にする。
+$ctx=New-Case;$vm=Add-Vm $ctx;Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared
+$handle=New-VerificationSandbox $ctx.prepared 'replay-before' $ctx.replayProfile $lease;$item=@{handle=$handle;ctx=$ctx;stopped=$false};$handles.Add($item)
+$keepAliveTarget=$handle.keepAliveHandle.processId
+# 保持セッションの exec（sh -c sleep）は背景で起動し呼び出し記録が遅れて現れうるので数えない。
+function Get-CommandExecCount([hashtable]$Ctx){@(Get-Calls $Ctx 'exec' | Where-Object {($_.argv -join ' ') -notlike '* sh -c sleep *'}).Count}
+$execBefore=Get-CommandExecCount $ctx
+& $module {param($logPath,$mode)
+    $script:InvokeSbxOriginal=${function:Invoke-VerificationSbx};$script:StopInjection=@{logPath=$logPath;mode=$mode;lock=$null}
+    Set-Item -LiteralPath 'function:script:Invoke-VerificationSbx' -Value {
+        param([hashtable]$Client,[string[]]$Argv,[hashtable]$Budget,[string]$Tag,[byte[]]$StdinBytes=$null,[bool]$ReadText=$true)
+        if($Tag -ceq 'stop' -and $script:StopInjection.mode -ceq 'throw'){throw [IO.IOException]::new('injected: stop call failed')}
+        $call=& $script:InvokeSbxOriginal $Client $Argv $Budget $Tag $StdinBytes $ReadText
+        if($Tag -ceq 'stop' -and $script:StopInjection.mode -ceq 'lock-log'){$script:StopInjection.lock=[IO.File]::Open($script:StopInjection.logPath,[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)}
+        $call
+    }
+} $ctx.case.logPath 'lock-log'
+try{$stop=Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $ctx.prepared 1)}
+finally{& $module {if($null -ne $script:StopInjection.lock){$script:StopInjection.lock.Dispose()};$script:StopInjection.mode='throw'}}
+Assert-True ($stop.stopState -ceq 'unverified' -and $stop.reason -like '*daemon.log unreadable after stop*' -and $null -ne $stop.evidencePath -and (Test-Path -LiteralPath $stop.evidencePath)) "daemon.log を開けない: unverified の停止証拠（$($stop.reason)）"
+$stopEvidence=Get-Content -LiteralPath $stop.evidencePath -Raw | ConvertFrom-Json -AsHashtable
+Assert-True ($stopEvidence.stopState -ceq 'unverified' -and $stopEvidence.listObserved -ceq 'stopped' -and $null -ne $stopEvidence.keepAlive) 'daemon.log を開けない: 証拠に一覧の観測と保持ジョブの停止を残す'
+Assert-True (-not(Test-ProcessAlive $keepAliveTarget)) 'daemon.log を開けない: 保持セッションの対象は止まった'
+$failure=Get-Failure {Invoke-VerificationSandboxCommand $handle @('python3','--version') $null '/home/agent/workspace/source' @{} (New-Budget $ctx) $null}
+Assert-True ($failure.Data['reason'] -ceq 'sandbox-stopped' -and $failure.Data['status'] -ceq 'blocked') "daemon.log を開けない: 以後の exec を拒否（$($failure.Data['reason'])）"
+try{$again=Stop-VerificationSandbox $handle (New-VerificationCleanupBudget $ctx.prepared 1)}
+finally{& $module {Set-Item -LiteralPath 'function:script:Invoke-VerificationSbx' -Value $script:InvokeSbxOriginal}}
+$item.stopped=$true
+Assert-True ($again.stopState -ceq 'unverified' -and $again.reason -like '*stop procedure failed: injected: stop call failed*' -and (Test-Path -LiteralPath $again.evidencePath) -and $again.evidencePath -cne $stop.evidencePath) "stop の例外: 例外を理由にした unverified の停止証拠（$($again.reason)）"
+$failure=Get-Failure {Invoke-VerificationSandboxCommand $handle @('python3','--version') $null '/home/agent/workspace/source' @{} (New-Budget $ctx) $null}
+Assert-True ($failure.Data['reason'] -ceq 'sandbox-stopped') 'stop の例外: 以後の exec を拒否'
+Assert-Equal (Get-CommandExecCount $ctx) $execBefore '停止手順の例外: 停止の後に exec を発行しない（保持セッションの exec を除く）'
+Assert-Equal @(Get-StopCalls $ctx).Count 1 '停止手順の例外: 発行できた stop は1回目だけ'
+Stop-CaseFakeProcesses @($ctx)
+Release-VerificationPilotLease $lease
+$count++
+
+# 17e. 復旧操作で作成記録1件が壊れていても、読めない記録を unverified として列挙し、他の記録済み VM を停止して結果を保存する。
+$ctx=New-Case
+$good=@{name='iv-'+$ctx.runId.Substring(0,8)+'-before';id=[guid]::NewGuid().ToString()}
+Add-FakeSbxSandboxScenario $ctx.case $good.name $good.id -AlreadyPresent -InitialStatus running
+[void](Write-VerificationSandboxRecord $ctx.runRoot @{runId=$ctx.runId;role='replay-before';name=$good.name;id=$good.id;createdAt=(Get-VerificationUtcNow);profileHash=$null;effectiveSettingsHash=$null;activationRecordPath=$null;activationRecordHash=$null})
+Write-Text (Join-Path $ctx.controlRoot 'runtime/proposal-sandbox.json') '{"runId":"broken",'
+Write-FakeSbxScenario $ctx.case
+$result=Stop-VerificationRecordedSandboxes $ctx.runRoot (New-RecoveryInput $ctx 30)
+$broken=@($result.targets | Where-Object {$_.name -like '*unreadable record: proposal-sandbox.json*'})
+$stoppedGood=@($result.targets | Where-Object {$_.name -ceq $good.name})
+Assert-True ($result.targetCount -eq 2 -and @($result.targets).Count -eq 2 -and $result.runId -ceq $ctx.runId) "壊れた記録: 対象2件を列挙（$(ConvertTo-VerificationCanonicalJson $result.targets)）"
+Assert-True ($broken.Count -eq 1 -and $broken[0].stopState -ceq 'unverified' -and $broken[0].stateBefore -ceq 'unknown' -and $null -eq $broken[0].evidencePath) '壊れた記録: unverified として列挙し推定で名指ししない'
+Assert-True ($stoppedGood.Count -eq 1 -and $stoppedGood[0].stopState -ceq 'stopped' -and (Test-Path -LiteralPath $stoppedGood[0].evidencePath)) '壊れた記録: 他の記録済み VM は停止して確認する'
+Assert-Equal (@(Get-StopCalls $ctx) -join ',') $good.name '壊れた記録: stop は読めた記録の VM だけ'
+Assert-True ((Get-RecoveryFiles $ctx).Count -eq 1 -and (Test-Json -Json (Get-Content -LiteralPath (Get-RecoveryFiles $ctx)[0].FullName -Raw) -SchemaFile $schemaPath)) '壊れた記録: recovery-result を保存し schema に適合'
+Assert-True (-not(& $module {$script:PilotLeases.Count -gt 0})) '壊れた記録: Lease を解放した'
 $count++
 
 # 18. 全ケース（復旧操作の経路を含む）の calls.jsonl に SSH_AUTH_SOCK が無い。試験プロセスにはダミー値を置いている。

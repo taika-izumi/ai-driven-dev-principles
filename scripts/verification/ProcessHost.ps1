@@ -54,11 +54,17 @@ public static class VerificationHostJob {
         [void]$process.Start()
         # 起動直後にジョブへ割り当てる。失敗したら対象を木ごと止めて失敗終了し、開始マーカーは書かない（起動側は started=false）。
         # 割当前に対象が作った子はジョブに入らない（残る競合。Process.Start は一時停止での起動を持たない）。割当後に作られる子は継承で入る。
+        # 割当の失敗は「対象は起動済みでジョブ外にある」ことを意味するので、起動できなかった場合（launch-failed）と区別して起動側へ伝える:
+        # 割当失敗マーカー（<StartedPath>.assign-failed.json: 理由・対象の PID と開始時刻・停止できたか）を書き、終了コード 126 で終わる（マーカーを書けなくても終了コードで伝わる）。
         try{[VerificationHostJob]::Assign($jobHandle,$process.Handle)}
         catch{
             $reason=$_.Exception.Message
-            try{$process.Kill($true);[void]$process.WaitForExit(5000)}catch{}
-            throw $reason
+            $targetPid=$process.Id;$targetTicks=$null;try{$targetTicks=$process.StartTime.ToUniversalTime().Ticks}catch{}
+            $killed=$false
+            try{$process.Kill($true);$killed=$process.WaitForExit(5000)}catch{$killed=$false}
+            try{[IO.File]::WriteAllText(($StartedPath+'.assign-failed.json'),(@{reason=$reason;pid=$targetPid;startTicks=$targetTicks;targetKilled=$killed} | ConvertTo-Json -Compress))}catch{}
+            [Console]::Error.WriteLine("$reason (targetKilled=$killed)")
+            exit 126
         }
         [VerificationHostJob]::Close($jobHandle)   # 失敗時は閉じない（値が別種の有効ハンドルでありうるため。終了で OS が閉じる）
         [IO.File]::WriteAllText($StartedPath,(@{pid=$process.Id;startTicks=$process.StartTime.ToUniversalTime().Ticks} | ConvertTo-Json -Compress))

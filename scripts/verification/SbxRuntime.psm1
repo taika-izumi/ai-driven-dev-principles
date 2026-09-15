@@ -97,7 +97,8 @@ function Test-VerificationRuntimeProfile([hashtable]$Profile,[string]$Role,[hash
         if(-not$evidence.checks.ContainsKey($name)){Throw-VerificationRuntimeFailure "activation evidence lacks required check: $name"}
         $check=$evidence.checks[$name]
         if($name -eq 'daemonDisconnect'){
-            if($check.verdict -notin @('verified','unverified')){Throw-VerificationRuntimeFailure "activation check $name must be verified or unverified"}
+            # ADR-0196: synthetic-pilot では未確認のまま認める条件で、verified と書ける観測は無い（profiles/evidence-checks.md）。verified を付けた証拠は表に無い観測での主張として拒否する。
+            if($check.verdict -cne 'unverified'){Throw-VerificationRuntimeFailure "activation check $name must be unverified (ADR-0196)"}
         }elseif($check.verdict -cne 'verified'){Throw-VerificationRuntimeFailure "activation check not verified: $name ($($check.verdict))"}
         $checkPath=Resolve-VerificationRelativePath $check.evidencePath $evidenceDir
         if(-not[IO.File]::Exists($checkPath)){Throw-VerificationRuntimeFailure "evidence file missing for check $name"}
@@ -249,6 +250,14 @@ function Get-VerificationDaemonInstance([hashtable]$Client,[hashtable]$RunBudget
     if($null -eq $process){Throw-VerificationRuntimeFailure "daemon process $daemonPid not found" 'blocked' 'daemon-generation'}
     try{$startedAt=$process.StartTime.ToUniversalTime().ToString('o',[Globalization.CultureInfo]::InvariantCulture)}catch{Throw-VerificationRuntimeFailure 'daemon process StartTime unavailable' 'blocked' 'daemon-generation'}
     @{instance=@{pid=$daemonPid;startedAt=$startedAt;version=[string]$startLine.version;socket=[string]$status.socket};stateRoot=$stateRoot;logPath=$logPath;startLogTime=$startLine.time}
+}
+function ConvertTo-VerificationSbxVersion([string]$Value) {
+    # 版の表記をそろえる: 前後の空白を除き、最初の空白までの語（daemon.log の起動行は "v0.42.1 <commit>"）の先頭の v を1つ除く。
+    $word=([string]$Value).Trim()
+    $space=$word.IndexOfAny([char[]]@(' ',"`t"))
+    if($space -ge 0){$word=$word.Substring(0,$space)}
+    if($word.Length -gt 1 -and ($word[0] -ceq 'v' -or $word[0] -ceq 'V')){$word=$word.Substring(1)}
+    $word
 }
 function Test-VerificationDaemonInstanceEqual([hashtable]$Left,[hashtable]$Right) {
     (ConvertTo-VerificationCanonicalJson $Left) -ceq (ConvertTo-VerificationCanonicalJson $Right)
@@ -448,50 +457,67 @@ function Stop-VerificationSandboxEntry([hashtable]$Entry,[hashtable]$RunBudget) 
     $client=$Entry.client;$name=$Entry.handle.name;$id=$Entry.handle.id
     $evidence=@{schemaVersion=3;runId=$Entry.handle.runId;role=$Entry.handle.role;name=$name;id=$id;budget=@{cleanupDeadlineAt=$RunBudget.cleanupDeadlineAt;cleanupSeconds=$Entry.cleanupSeconds};stopIssuedAt=$null;stopCall=$null;daemonBefore=$null;daemonAfter=$null;listObserved=$null;stopLogLine=$null;keepAlive=$null;stopState='unverified';reason=$null}
     $problems=[Collections.Generic.List[string]]::new()   # 未確認の理由をすべて集める（上書きしない）
+    # 手順の途中の例外（daemon.log を開けない、Execution の再送出など）は問題として記録し、unverified の停止証拠を書くところまで進める。
+    # stopResult は例外で抜ける場合も finally で必ず設定し、「停止後はコマンドを出さない」防護（Assert-VerificationSandboxUnchanged）を効かせる。
+    $evidencePath=$null;$written=$false
     try{
-        $before=$null
-        try{$before=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonBefore=$before.instance}catch{$problems.Add('daemon generation unavailable before stop: '+$_.Exception.Message)}
-        if($null -ne $before){
-            $generationSame=Test-VerificationDaemonInstanceEqual $before.instance $Entry.daemonInstance
-            if(-not$generationSame){$problems.Add('daemon generation changed before stop')}
-            $evidence.stopIssuedAt=Get-VerificationUtcNow
-            $issued=[DateTimeOffset]::Parse($evidence.stopIssuedAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal).UtcDateTime
-            $stop=Invoke-VerificationSbx $client @('stop',$name) (New-VerificationSbxBudget $RunBudget $script:QuerySeconds $client.maxOutputBytes) 'stop'
-            $evidence.stopCall=@{started=$stop.result.started;exitCode=$stop.result.exitCode;timedOut=$stop.result.timedOut;refusedReason=$stop.result.refusedReason;stdoutPath=$stop.stdoutPath}
-            $waitUntil=[DateTime]::UtcNow.AddSeconds($Entry.cleanupSeconds)
-            $cleanupDeadline=Get-VerificationBudgetUtc $RunBudget 'cleanupDeadlineAt'
-            if($cleanupDeadline -lt $waitUntil){$waitUntil=$cleanupDeadline}
-            $observed=$null
-            while($true){
-                try{$list=Get-VerificationSandboxList $client $RunBudget}catch{$problems.Add('ls unavailable after stop: '+$_.Exception.Message);break}
-                $same=@($list | Where-Object {$_.id -ceq $id -and $_.name -ceq $name})
-                $observed=$(if($same.Count -eq 1){$same[0].status}else{'not-listed'})
-                if($observed -ceq 'stopped' -or [DateTime]::UtcNow -ge $waitUntil){break}
-                Start-Sleep -Milliseconds 500
-            }
-            $evidence.listObserved=$observed
+        try{Invoke-VerificationStopProcedure $Entry $RunBudget $evidence $problems}
+        catch{
+            # 想定外の例外で手順を打ち切った。例外のあった停止は確認済みにしない。
+            $evidence.stopState='unverified'
+            $problems.Add('stop procedure failed: '+$_.Exception.Message)
+        }finally{
+            # 保持セッションのジョブ停止は stop 確認の成否に関わらず行う（Stop-VerificationSandboxKeepAlive は例外を戻り値に変える）。
+            $evidence.keepAlive=Stop-VerificationSandboxKeepAlive $Entry
+        }
+        if($evidence.stopState -cne 'stopped'){$evidence.reason='stop unverified: '+($problems -join '; ')}
+        $evidencePath=Join-Path $Entry.runtimeDir ($Entry.handle.role+'-stop-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfff')+'.json')
+        Write-VerificationNewFile $evidencePath (ConvertTo-VerificationCanonicalJson $evidence)
+        $written=$true
+    }finally{
+        # 証拠を書けなかった場合（例外が伝播する）は stopped を名乗らず unverified にする（再試行で証拠を残せるように、確認済みの早期戻りに入れない）。
+        $Entry.stopResult=@{stopState=$(if($written){$evidence.stopState}else{'unverified'});stopIssuedAt=$evidence.stopIssuedAt;evidencePath=$(if($written){$evidencePath}else{$null});reason=$(if($written){$evidence.reason}else{'stop evidence was not written'});name=$name;id=$id}
+    }
+    $Entry.stopResult
+}
+function Invoke-VerificationStopProcedure([hashtable]$Entry,[hashtable]$RunBudget,[hashtable]$Evidence,[Collections.Generic.List[string]]$Problems) {
+    # 停止手順の本体。観測を Evidence に、未確認の理由を Problems に書く。個々の照会の失敗は理由として続け、想定外の例外は呼出し側が理由にする。
+    $client=$Entry.client;$name=$Entry.handle.name;$id=$Entry.handle.id;$evidence=$Evidence;$problems=$Problems
+    $before=$null
+    try{$before=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonBefore=$before.instance}catch{$problems.Add('daemon generation unavailable before stop: '+$_.Exception.Message)}
+    if($null -ne $before){
+        $generationSame=Test-VerificationDaemonInstanceEqual $before.instance $Entry.daemonInstance
+        if(-not$generationSame){$problems.Add('daemon generation changed before stop')}
+        $evidence.stopIssuedAt=Get-VerificationUtcNow
+        $issued=[DateTimeOffset]::Parse($evidence.stopIssuedAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::AssumeUniversal).UtcDateTime
+        $stop=Invoke-VerificationSbx $client @('stop',$name) (New-VerificationSbxBudget $RunBudget $script:QuerySeconds $client.maxOutputBytes) 'stop'
+        $evidence.stopCall=@{started=$stop.result.started;exitCode=$stop.result.exitCode;timedOut=$stop.result.timedOut;refusedReason=$stop.result.refusedReason;stdoutPath=$stop.stdoutPath}
+        $waitUntil=[DateTime]::UtcNow.AddSeconds($Entry.cleanupSeconds)
+        $cleanupDeadline=Get-VerificationBudgetUtc $RunBudget 'cleanupDeadlineAt'
+        if($cleanupDeadline -lt $waitUntil){$waitUntil=$cleanupDeadline}
+        $observed=$null
+        while($true){
+            try{$list=Get-VerificationSandboxList $client $RunBudget}catch{$problems.Add('ls unavailable after stop: '+$_.Exception.Message);break}
+            $same=@($list | Where-Object {$_.id -ceq $id -and $_.name -ceq $name})
+            $observed=$(if($same.Count -eq 1){$same[0].status}else{'not-listed'})
+            if($observed -ceq 'stopped' -or [DateTime]::UtcNow -ge $waitUntil){break}
+            Start-Sleep -Milliseconds 500
+        }
+        $evidence.listObserved=$observed
+        try{
             $runtimeLines=Get-VerificationRuntimeLogLines $Entry.logPath $name
             $stopLines=@($runtimeLines | Where-Object {$_.msg -ceq 'stopped runtime container' -and $null -ne $_.time -and $_.time -ge $issued})
             if($stopLines.Count -gt 0){$evidence.stopLogLine=$stopLines[-1].raw}
-            try{$after=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonAfter=$after.instance}catch{$problems.Add('daemon generation unavailable after stop: '+$_.Exception.Message)}
-            $generationStable=$generationSame -and ($null -ne $evidence.daemonAfter) -and (Test-VerificationDaemonInstanceEqual $before.instance $evidence.daemonAfter)
-            if($observed -ceq 'stopped' -and $null -ne $evidence.stopLogLine -and $generationStable){$evidence.stopState='stopped'}
-            else{
-                if($observed -cne 'stopped'){$problems.Add("ls status '$observed'")}
-                if($null -eq $evidence.stopLogLine){$problems.Add('no stopped-runtime-container line after stop')}
-                if(-not$generationStable){$problems.Add('daemon generation not stable')}
-            }
+        }catch{$problems.Add('daemon.log unreadable after stop: '+$_.Exception.Message)}
+        try{$after=Get-VerificationDaemonInstance $client $RunBudget;$evidence.daemonAfter=$after.instance}catch{$problems.Add('daemon generation unavailable after stop: '+$_.Exception.Message)}
+        $generationStable=$generationSame -and ($null -ne $evidence.daemonAfter) -and (Test-VerificationDaemonInstanceEqual $before.instance $evidence.daemonAfter)
+        if($observed -ceq 'stopped' -and $null -ne $evidence.stopLogLine -and $generationStable){$evidence.stopState='stopped'}
+        else{
+            if($observed -cne 'stopped'){$problems.Add("ls status '$observed'")}
+            if($null -eq $evidence.stopLogLine){$problems.Add('no stopped-runtime-container line after stop')}
+            if(-not$generationStable){$problems.Add('daemon generation not stable')}
         }
-        if($evidence.stopState -cne 'stopped'){$evidence.reason='stop unverified: '+($problems -join '; ')}
-    }finally{
-        # 保持セッションのジョブ停止は stop 確認の成否に関わらず行う。
-        $evidence.keepAlive=Stop-VerificationSandboxKeepAlive $Entry
     }
-    $evidencePath=Join-Path $Entry.runtimeDir ($Entry.handle.role+'-stop-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfff')+'.json')
-    Write-VerificationNewFile $evidencePath (ConvertTo-VerificationCanonicalJson $evidence)
-    $result=@{stopState=$evidence.stopState;stopIssuedAt=$evidence.stopIssuedAt;evidencePath=$evidencePath;reason=$evidence.reason;name=$name;id=$id}
-    $Entry.stopResult=$result
-    $result
 }
 
 # ---- VM 作成 ----
@@ -520,6 +546,9 @@ function New-VerificationSandbox([hashtable]$PreparedRun,[string]$Role,[hashtabl
         $client=New-VerificationSbxClient $settings.sbxPath (Join-Path $runtimeDir $Role) ([long]$settings.limits.maxOutputBytes)
         $budget=New-VerificationWorkBudget $PreparedRun
         $daemon=Get-VerificationDaemonInstance $client $budget
+        # 仕様02「版・テンプレート一致」: 通常起動済みデーモンの版（daemon.log の起動行）が profile の sbxVersion と一致しなければ VM を作らない。
+        $daemonVersion=ConvertTo-VerificationSbxVersion ([string]$daemon.instance.version)
+        if([string]::IsNullOrEmpty($daemonVersion) -or $daemonVersion -cne (ConvertTo-VerificationSbxVersion ([string]$Profile.sbxVersion))){Throw-VerificationRuntimeFailure "sbx daemon version '$($daemon.instance.version)' does not match profile sbxVersion '$($Profile.sbxVersion)'" 'blocked' 'sbx-version'}
         $stage='daemon-settings'
         $clipboard=Get-VerificationClipboardImagePaste $client $budget
         if($clipboard){Throw-VerificationRuntimeFailure 'clipboard.imagePaste must be false' 'blocked' 'daemon-settings'}
@@ -546,9 +575,10 @@ function New-VerificationSandbox([hashtable]$PreparedRun,[string]$Role,[hashtabl
             Throw-VerificationRuntimeFailure 'deadline reached before create' 'timed_out' 'deadline-reached'
         }
         $createOk=(Test-VerificationSbxCallOk $create) -and $create.stdout.Contains("Created sandbox $name")
-        # ls の不在を「未作成」の確認に使えるのは、クライアントが外側の打ち切りなしに自ら終了した場合か、対象を起動できなかった場合（launch-failed）だけ。
+        # ls の不在を「未作成」の確認に使えるのは、クライアントが外側の打ち切りなしに自ら終了した場合か、ホストが対象を起動できずジョブも空になった場合（launch-failed かつ processTreeStopped）だけ。
         # 時間超過・出力超過・起動側の失敗（host-failed）で外側が止めたのはクライアントだけで、デーモン側の作成が止まった保証はなく、ls の後に完成しうる。
-        $clientSettled=(-not$createResult.timedOut -and -not$createResult.outputExceeded) -and (($createResult.started -and $null -ne $createResult.exitCode) -or (-not$createResult.started -and $createResult.refusedReason -eq 'launch-failed'))
+        # ジョブ割当の失敗（assign-failed）は、対象（sbx クライアント）が起動済みでジョブ外にあり、作成要求を送った可能性があるので、作成要求の発行済みとして unknown に残す。
+        $clientSettled=(-not$createResult.timedOut -and -not$createResult.outputExceeded) -and (($createResult.started -and $null -ne $createResult.exitCode) -or (-not$createResult.started -and $createResult.refusedReason -eq 'launch-failed' -and $createResult.processTreeStopped))
         $createDetail=$(if($createResult.timedOut){"timed out (limit $($script:SetupSeconds)s)"}elseif($createResult.outputExceeded){'output exceeded the limit'}elseif(-not$createResult.started){"not started ($($createResult.refusedReason))"}else{"exit $($createResult.exitCode): $($create.stderr.Trim())"})
         $createReason=$(if($createResult.timedOut){'create-timed-out'}else{'create-failed'})
         $stage='confirm-id'
@@ -727,6 +757,8 @@ function Get-VerificationFileMapDifference([hashtable]$Expected,[hashtable]$Actu
 function Test-VerificationSetupCall([hashtable]$Call,[string]$Tag) {
     # cp・chown は CommandRecord を持たず、終了0以外を失敗として扱う。
     $r=$Call.result
+    # ジョブ割当の失敗（assign-failed）は対象がジョブ外で起動済みでありうる（搬入・所有者調整が外側の上限なしに進みうる）ので、失敗ではなく incomplete にする。
+    if(-not$r.started -and $r.refusedReason -eq 'assign-failed'){Throw-VerificationRuntimeFailure "sbx $Tag started outside the job (job assignment failed)" 'incomplete' 'setup-assign-failed'}
     if(-not$r.started){Throw-VerificationRuntimeFailure "sbx $Tag not started: $($r.refusedReason)" $(if($r.refusedReason -eq 'deadline-reached'){'timed_out'}else{'failed'}) 'setup-failed'}
     if($r.timedOut){Throw-VerificationRuntimeFailure "sbx $Tag timed out (limit $($script:SetupSeconds)s)" 'incomplete' 'setup-timed-out'}
     if($r.outputExceeded){Throw-VerificationRuntimeFailure "sbx $Tag output exceeded the limit" 'incomplete' 'setup-output-exceeded'}
@@ -781,6 +813,7 @@ function Save-VerificationRecoveryResult([string]$RuntimeDir,[hashtable]$Result)
 }
 function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$RecoveryInput) {
     # control/runtime/<role>-sandbox.json の runId・name・id を正本に、running の対象だけへ停止手順を適用する。記録に無い VM には触れない。VerificationResultV3 を名乗らない。
+    # 読めない作成記録は unverified として列挙して残りを続け、対象ごとの例外も当該対象の unverified にする。Lease 取得後の例外でも recovery-result を CreateNew で保存する。
     if($null -eq $RecoveryInput){Throw-VerificationRuntimeFailure 'RecoveryInput required'}
     Test-VerificationRuntimeSchema $RecoveryInput 'recovery-input.schema.json' 'recovery input'
     if($RecoveryInput.schemaVersion -ne 3){Throw-VerificationRuntimeFailure 'recovery input schemaVersion must be integer 3'}
@@ -788,54 +821,81 @@ function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$Recover
     $root=Resolve-VerificationPath $RunRoot
     if(-not[IO.Directory]::Exists($root)){Throw-VerificationRuntimeFailure 'run root missing'}
     $runtimeDir=Join-Path $root 'control/runtime'
-    $records=@()
+    $records=@()   # 記録ファイルごとの @{record(読めなければ null);name;id}
     if([IO.Directory]::Exists($runtimeDir)){
         foreach($file in @(Get-ChildItem -LiteralPath $runtimeDir -File -Filter '*-sandbox.json' | Sort-Object Name)){
             if($file.Name -notmatch '^(proposal|replay-before|replay-after|probe)-sandbox\.json$'){continue}
-            $record=Read-VerificationJsonFile $file.FullName 'sandbox record'
-            foreach($key in @('runId','role','name','id')){if(-not$record.ContainsKey($key) -or $record[$key] -isnot [string] -or [string]::IsNullOrWhiteSpace($record[$key])){Throw-VerificationRuntimeFailure "sandbox record lacks $key`: $($file.Name)"}}
-            $records+=$record
+            $record=$null;$raw=$null
+            try{
+                $raw=Read-VerificationJsonFile $file.FullName 'sandbox record'
+                foreach($key in @('runId','role','name','id')){if(-not$raw.ContainsKey($key) -or $raw[$key] -isnot [string] -or [string]::IsNullOrWhiteSpace($raw[$key])){Throw-VerificationRuntimeFailure "sandbox record lacks $key`: $($file.Name)"}}
+                $record=$raw
+            }catch{$record=$null}
+            # 読めない記録の name・id は、取り出せた値があればそれを、無ければ記録ファイル名を示す印を置く（停止対象として特定できないことを明示し、推定で名指ししない）。
+            $known={param($key) if($raw -is [hashtable] -and $raw.ContainsKey($key) -and $raw[$key] -is [string] -and -not[string]::IsNullOrWhiteSpace($raw[$key])){[string]$raw[$key]}else{"(unreadable record: $($file.Name))"}}
+            $records+=@{record=$record;name=(& $known 'name');id=(& $known 'id')}
         }
     }
+    $readable=@($records | Where-Object {$null -ne $_.record})
     $checkedAt=Get-VerificationUtcNow
-    $runId=$(if($records.Count -gt 0){[string]$records[0].runId}else{$null})
-    foreach($record in $records){if($record.runId -cne $runId){Throw-VerificationRuntimeFailure 'sandbox records span multiple runs' 'blocked' 'records-inconsistent'}}
+    $runId=$(if($readable.Count -gt 0){[string]$readable[0].record.runId}else{$null})
+    foreach($item in $readable){if($item.record.runId -cne $runId){Throw-VerificationRuntimeFailure 'sandbox records span multiple runs' 'blocked' 'records-inconsistent'}}
     $cleanupSeconds=[int]$RecoveryInput.limits.cleanupSeconds
     $client=New-VerificationSbxClient $RecoveryInput.sbxPath (Join-Path $runtimeDir 'recovery') ([long]$RecoveryInput.limits.maxOutputBytes)
     $result=@{schemaVersion=3;runId=$runId;checkedAt=$checkedAt;daemonRunning=$false;targetCount=$records.Count;targets=@();lease=$null}
+    $unverifiedItem={param($item) @{name=$item.name;id=$item.id;stateBefore='unknown';stopState='unverified';evidencePath=$null}}
     $daemon=Get-VerificationDaemonStatus $client (New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $records.Count)
     if(-not$daemon.running){
         # 停止中デーモンへ ls を発行しない。記録済みの id/name を列挙だけして全対象 unverified（利用者の通常起動が必要）。
-        $result.targets=@(foreach($record in $records){@{name=$record.name;id=$record.id;stateBefore='unknown';stopState='unverified';evidencePath=$null}})
+        $result.targets=@(foreach($item in $records){& $unverifiedItem $item})
         return Save-VerificationRecoveryResult $runtimeDir $result
     }
     $result.daemonRunning=$true
     if($records.Count -eq 0){return Save-VerificationRecoveryResult $runtimeDir $result}
+    if($readable.Count -eq 0){
+        # 停止対象を特定できる記録が無い（すべて読めない）。Lease も照会も使わずに全対象 unverified で保存する。
+        $result.targets=@(foreach($item in $records){& $unverifiedItem $item})
+        return Save-VerificationRecoveryResult $runtimeDir $result
+    }
     $lease=Acquire-VerificationPilotLeaseCore $runId (Get-VerificationDaemonKey ([string]$daemon.status.socket))   # 競合時は「稼働中の run がある」として何もせず blocked
+    $queryFailure=$null
     try{
         $result.lease=@{leaseId=$lease.leaseId;daemonKey=$lease.daemonKey}
-        $probeBudget=New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $records.Count
-        $instance=Get-VerificationDaemonInstance $client $probeBudget
-        $list=Get-VerificationSandboxList $client $probeBudget
-        $targets=@(foreach($record in $records){
-            $same=@($list | Where-Object {$_.id -ceq $record.id -and $_.name -ceq $record.name})
-            @{record=$record;stateBefore=$(if($same.Count -eq 1){$same[0].status}else{'not-listed'})}
+        $probeBudget=New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $readable.Count
+        $instance=$null;$list=$null
+        try{$instance=Get-VerificationDaemonInstance $client $probeBudget;$list=Get-VerificationSandboxList $client $probeBudget}
+        catch{$queryFailure=$_}   # 世代・一覧を取れなければ停止を発行せず、全対象 unverified で保存してから例外を返す
+        $targets=@(foreach($item in $records){
+            $stateBefore='unknown'
+            if($null -ne $item.record -and $null -eq $queryFailure){
+                $same=@($list | Where-Object {$_.id -ceq $item.record.id -and $_.name -ceq $item.record.name})
+                $stateBefore=$(if($same.Count -eq 1){$same[0].status}else{'not-listed'})
+            }
+            @{item=$item;stateBefore=$stateBefore}
         })
-        $toStop=@($targets | Where-Object {$_.stateBefore -cne 'stopped' -and $_.stateBefore -cne 'not-listed'})
+        $toStop=@($targets | Where-Object {$null -ne $_.item.record -and $_.stateBefore -cnotin @('stopped','not-listed','unknown')})
         # 現在時刻を起点に新しい予算（startedAt=now、deadlineAt=now、cleanupDeadlineAt=now + cleanupSeconds×対象台数、phase=cleanup）。
         $budget=New-VerificationCleanupBudgetCore $checkedAt $cleanupSeconds $client.maxOutputBytes $toStop.Count
         foreach($target in $targets){
-            $record=$target.record
-            $item=@{name=$record.name;id=$record.id;stateBefore=$target.stateBefore;stopState='unverified';evidencePath=$null}
-            if($target.stateBefore -ceq 'stopped'){$item.stopState='stopped'}
-            elseif($target.stateBefore -cne 'not-listed'){
+            $item=& $unverifiedItem $target.item
+            $item.stateBefore=$target.stateBefore
+            $record=$target.item.record
+            if($null -ne $record -and $target.stateBefore -ceq 'stopped'){$item.stopState='stopped'}
+            elseif($null -ne $record -and $target.stateBefore -cnotin @('not-listed','unknown')){
                 $entry=@{handle=@{runId=$record.runId;role=$record.role;name=$record.name;id=$record.id};client=$client;stateRoot=$instance.stateRoot;logPath=$instance.logPath;daemonInstance=$instance.instance;runRoot=$root;runtimeDir=$runtimeDir;cleanupSeconds=$cleanupSeconds;deadlineAt=$checkedAt;createdAtUtc=$null;expected=$null;keepAlive=$null;stopResult=$null}
-                $stop=Stop-VerificationSandboxEntry $entry $budget
-                $item.stopState=$stop.stopState;$item.evidencePath=$stop.evidencePath
+                try{$stop=Stop-VerificationSandboxEntry $entry $budget;$item.stopState=$stop.stopState;$item.evidencePath=$stop.evidencePath}
+                catch{
+                    # 停止手順は例外でも stopResult を設定する（証拠を書けなかった場合は evidencePath=null・unverified）。
+                    $item.stopState='unverified';$item.evidencePath=$(if($null -ne $entry.stopResult){$entry.stopResult.evidencePath}else{$null})
+                }
             }
             $result.targets+=$item
         }
-    }finally{Release-VerificationPilotLease $lease}
-    Save-VerificationRecoveryResult $runtimeDir $result
+    }finally{
+        try{Release-VerificationPilotLease $lease}
+        finally{$saved=Save-VerificationRecoveryResult $runtimeDir $result}
+    }
+    if($null -ne $queryFailure){throw $queryFailure}
+    $saved
 }
 Export-ModuleMember -Function Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Copy-VerificationSandboxInput,Confirm-VerificationSandboxInput,Invoke-VerificationSandboxCommand,Stop-VerificationSandbox,Stop-VerificationRecordedSandboxes,Write-VerificationSandboxRecord,New-VerificationCleanupBudget

@@ -18,7 +18,7 @@
 
 | 条件名 | replay（agent=shell、`deny *`） | proposal（agent=codex、通信許可はタスク9で確定） |
 |---|---|---|
-| `daemonHealthAndTemplate` | (8a) `daemon status --json` が running。`inspect --json` の `image_digest` が profile の `templateDigest` と一致 | (9) 同じ観測を proposal VM で取る |
+| `daemonHealthAndTemplate` | (8a) `daemon status --json` が running。`inspect --json` の `image_digest` が profile の `templateDigest` と一致。daemon.log の最後の `starting sandboxd` 行の `version`（例 `v0.42.1 <commit>`）が profile の `sbxVersion` と一致（先頭の `v` と commit 部分は除いて比べる。`New-VerificationSandbox` も VM 作成前に同じ照合を行い、不一致なら blocked） | (9) 同じ観測を proposal VM で取る |
 | `noWorkspaceNoSkillsNoMcp` | (8a) 状態ディレクトリの `runtimes/<VM名>.json` で `WorkspaceDir=""`・`ShareSkills=false`。`mcp ls --json` の `servers` が空（製品が常設する MCP ゲートウェイと `mcpgateway` secret は製品挙動として記録する。ADR-0195） | (9) 同じ観測を proposal VM で取る |
 | `hostPathIsolation`（SSH転送・ホームなど例外以外の追加ホスト経路の拒否。clipboard 画像読取無効を含む） | (8a) daemon.log の当該 runtime 行に `started SSH agent forwarder` が無い・`SSHAgentSocketPath=""`・`settings get --json clipboard.imagePaste` の `value` が false。(既存) 「2026-09-14 23:00以降: 試験A〜Dの実施結果」の試験A（ゲスト側の SSH ソケット不在・エージェント要求への応答0バイト・policy log の拒否） | (9) 上記 (8a) 相当の観測を proposal VM で取り、さらに試験Aのゲスト側の否定確認（SSH エージェントのソケット不在・透過プロキシの中継ポートへの応答・policy log）を数秒のコマンドで取り直す。(既存) の流用はしない |
 | `resourceAndOutsideStop` | (既存) 試験B（`Spec.CPUs`=2・`Spec.Memory`="2g"・daemon.log の `vcpu_count: 2`・`total_mb: 2048`・ゲスト `nproc`=2）と試験C（負荷中の外側 `stop` で同一 ID が stopped）。(8a) `runtimes/<VM名>.json` の `CPUs=2`・`Memory="2g"` | (9) `runtimes/<VM名>.json` の `CPUs=2`・`Memory="2g"` と、試験Bのゲスト側の実効値（`nproc`・メモリ量）を数秒のコマンドで取る。負荷なしの外側停止は proposal VM 自体の停止で観測する。**負荷中の外側停止だけは (既存) の試験Cを流用する**（ADR-0197。仕様00「保護条件を共用済みにしない」の例外はこの1点に限る） |
@@ -27,7 +27,7 @@
 | `replayNetworkDeny` | (8a) `policy ls <VM名> --json` に `resource_type=network`・`decision=deny`・`resources=["*"]` の規則がある。(既存) 試験Aの方式による拒否応答（HTTP プロキシの 403・policy log の拒否記録） | 不要（proposal は通信許可側の条件 `modelEndpointAllowOnly` で扱う） |
 | `limitsAndTransport`（時間・出力上限、transport 対照、対象VMの停止確認） | (8a) transport 対照5種（終了0・7・127・時間超過・sbx クライアント子プロセスの外側からの強制終了）で外側が観測する終了コードと stderr の型を `transportContrast` に記録。出力洪水の exec 1本が上限で打ち切られること。(既存) 試験Cの外側 `stop` による停止確認（同一固定 argv・同一 digest・sbx 0.42.1） | (9) 同じ観測を proposal VM で取る（transport 対照5種・出力洪水・停止確認） |
 | `abnormalExitRecovery`（外側 CLI 異常後の自動停止と復旧操作、他VMの非停止、停止中の自動再起動防止） | (8a) 保持セッション開始 → probe プロセス（CLI 相当）の強制終了 → 保持プロセスの消失と daemon.log の自動停止行 → 復旧操作 `Stop-VerificationRecordedSandboxes` による記録済み ID だけの停止 → 他VM（停止中の試験VM2台）の `ls --json` 上の不変 → 停止後に当該名への `exec`/`cp` を発行しないこと（`calls` 相当の記録） | (9) proposal VM で同じ手順（保持 → 強制終了 → 保持消失 → 自動停止 → 復旧操作 → 他VM不変 → 停止後の未発行）を1回取る。役割非依存とはみなさず、replay 側の (8a) の記録を流用しない |
-| `daemonDisconnect` | `unverified` を許す唯一の条件（ADR-0196）。証拠は補償機構（各実コマンド直前の世代確認と自動停止痕跡の検知）の偽 fixture 試験 `tests/SbxRuntimeV3.Tests.ps1` の結果を指す。verified を課さない | 同左 |
+| `daemonDisconnect` | `unverified` だけを受理する条件（ADR-0196。`verified` と書ける観測は本表に無く、`verified` を付けた証拠は `Test-VerificationRuntimeProfile` が拒否する）。証拠は補償機構（各実コマンド直前の世代確認と自動停止痕跡の検知）の偽 fixture 試験 `tests/SbxRuntimeV3.Tests.ps1` の結果を指す | 同左 |
 
 ## 読み方の注意
 

@@ -256,9 +256,11 @@ function ConvertTo-VerificationCanonicalJson($Object) {
     Add-VerificationCanonicalValue $builder $Object
     $builder.ToString()
 }
+function Get-VerificationTextHash([string]$Text) {
+    [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.UTF8Encoding]::new($false).GetBytes($Text)))
+}
 function Get-VerificationCanonicalHash($Object) {
-    $bytes=[Text.UTF8Encoding]::new($false).GetBytes((ConvertTo-VerificationCanonicalJson $Object))
-    [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes))
+    Get-VerificationTextHash (ConvertTo-VerificationCanonicalJson $Object)
 }
 function Write-VerificationNewFile([string]$Path,[string]$Content) {
     # CreateNewで既存物を上書きしない。BOMなしUTF-8・LF。
@@ -290,7 +292,192 @@ function Test-VerificationJsonDuplicateKeys([string]$Json) {
     try{$document=[Text.Json.JsonDocument]::Parse($Json,$options)}catch{Throw-VerificationFailure ('invalid JSON text: '+$_.Exception.Message)}
     try{return [bool](Test-VerificationJsonElementDuplicate $document.RootElement)}finally{$document.Dispose()}
 }
+# ---- v3（schemaVersion=3）の準備。v1の起動検査（codexPath）は流用せず、列挙・履歴コピーの下位処理だけを共有する。 ----
+function Test-VerificationInteger($Value) { ($Value -is [int]) -or ($Value -is [long]) }
+function Test-VerificationIsoUtc([string]$Value) { $Value -match '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,7})?Z$' }
+function Test-VerificationRelativePath([string]$Value) {
+    # POSIX相対表記の通常ファイルパスだけを受ける（絶対・ドライブ・バックスラッシュ・空成分・.・..を拒否）。
+    if([string]::IsNullOrWhiteSpace($Value) -or [IO.Path]::IsPathRooted($Value) -or $Value.Contains(':') -or $Value.Contains('\') -or $Value.Contains([char]0)){return $false}
+    foreach($part in $Value.Split('/')){if($part -in @('','.','..')){return $false}}
+    return $true
+}
+function Test-VerificationSchema([hashtable]$Object,[string]$SchemaName,[string]$Label) {
+    $json=$Object | ConvertTo-Json -Depth 15
+    $errors=$null
+    if(-not(Test-Json -Json $json -SchemaFile (Join-Path $PSScriptRoot $SchemaName) -ErrorAction SilentlyContinue -ErrorVariable errors)){
+        $detail=$(if($errors -and $errors.Count -gt 0){$errors[0].Exception.Message}else{'schema violation'})
+        Throw-VerificationFailure "invalid $Label schema: $detail"
+    }
+}
+function Test-VerificationSettingsV3([hashtable]$Settings,[bool]$Recheck) {
+    Test-VerificationSchema $Settings 'settings.schema.json' 'settings'
+    if(-not(Test-VerificationInteger $Settings.schemaVersion) -or $Settings.schemaVersion -ne 3){Throw-VerificationFailure 'settings schemaVersion must be integer 3'}
+    $limits=$Settings.limits
+    foreach($key in @($limits.Keys)){if(-not(Test-VerificationInteger $limits[$key]) -or $limits[$key] -le 0){Throw-VerificationFailure "limits.$key must be a positive integer"}}
+    if($limits.proposalSeconds -gt $limits.totalSeconds -or $limits.replaySeconds -gt $limits.totalSeconds){Throw-VerificationFailure 'proposalSeconds and replaySeconds must not exceed totalSeconds'}
+    # recheckのときだけ提案段階の設定をnullにできる。replayProfilePathは常に必須（schemaでnullを拒否）。
+    if(-not$Recheck -and ($null -eq $Settings.model -or $null -eq $Settings.proposalProfilePath)){Throw-VerificationFailure 'model and proposalProfilePath are required unless recheck'}
+    foreach($key in @('sbxPath','pwshPath')){$path=Resolve-VerificationPath $Settings[$key];if(-not[IO.File]::Exists($path)){Throw-VerificationFailure "executable missing: $key"}}
+    foreach($key in @('runsRoot','replayProfilePath','pilotInputPath')){$null=Resolve-VerificationPath $Settings[$key]}
+    if($null -ne $Settings.proposalProfilePath){$null=Resolve-VerificationPath $Settings.proposalProfilePath}
+}
+function Get-VerificationPilotInput([string]$Path,[string]$SourceRoot,[string]$SourceManifestHash) {
+    # 名指しで承認した合成題材の固定入力記録。scopeの文字列ではなく正規化パスと現物manifestのhashで照合する。
+    $resolved=Resolve-VerificationPath $Path
+    if(-not[IO.File]::Exists($resolved)){Throw-VerificationFailure 'pilot input record missing'}
+    $json=[IO.File]::ReadAllText($resolved,[Text.UTF8Encoding]::new($false))
+    if(Test-VerificationJsonDuplicateKeys $json){Throw-VerificationFailure 'pilot input record has duplicate keys'}
+    $record=$json | ConvertFrom-Json -AsHashtable -Depth 15
+    if($record -isnot [hashtable]){Throw-VerificationFailure 'pilot input record must be a JSON object'}
+    Test-VerificationSchema $record 'pilot-input.schema.json' 'pilot input'
+    $recordRoot=[IO.Path]::TrimEndingDirectorySeparator((Resolve-VerificationPath $record.sourceRoot))
+    if(-not$recordRoot.Equals($SourceRoot,[StringComparison]::OrdinalIgnoreCase)){Throw-VerificationFailure 'pilot input record does not match sourceRoot'}
+    if($record.sourceManifestHash -ine $SourceManifestHash){Throw-VerificationFailure 'pilot input record does not match source manifest hash'}
+    @{id=$record.inputId;path=$resolved}
+}
+function Get-VerificationTreeManifest([string]$Root) {
+    # コピー内の全通常ファイル（.git含む）。リンクは自分の領域内でも受理しない。
+    # 序数順の辞書で並べる（[Array]::Sort(keys,items) はPowerShell経由だとitems側が並び替わらない）。
+    $entries=[Collections.Generic.SortedDictionary[string,object]]::new([StringComparer]::Ordinal)
+    foreach($info in [IO.DirectoryInfo]::new($Root).EnumerateFileSystemInfos('*',[IO.SearchOption]::AllDirectories)){
+        if($info.Attributes -band [IO.FileAttributes]::ReparsePoint){Throw-VerificationFailure "reparse point inside copy: $($info.FullName)" 'incomplete'}
+        if($info -is [IO.FileInfo]){
+            $relative=[IO.Path]::GetRelativePath($Root,$info.FullName).Replace('\','/')
+            $entries.Add($relative,@{path=$relative;size=$info.Length;sha256=(Get-FileHash -LiteralPath $info.FullName -Algorithm SHA256).Hash})
+        }
+    }
+    return @($entries.Values)
+}
+function Test-VerificationCopyGit([string]$Root) {
+    foreach($check in @(@{args=@('rev-parse','--show-toplevel');expected=$Root},@{args=@('rev-parse','--absolute-git-dir');expected=(Join-Path $Root '.git')})){
+        $actual=Invoke-VerificationGit $Root $check.args
+        if($actual.exitCode -ne 0 -or -not([IO.Path]::GetFullPath($actual.stdout.Trim()).Equals($check.expected,[StringComparison]::OrdinalIgnoreCase))){Throw-VerificationFailure "copy Git points outside copy: $Root"}
+    }
+}
+function Copy-VerificationRecheckTests([hashtable]$Recheck,[string]$RunsRoot,[string]$AcceptedRoot) {
+    # 前回のホスト確定結果から、掲載済みのテストだけをハッシュ照合のうえ通常ファイルとして複製する。
+    $previousPath=Resolve-VerificationPath $Recheck.previousResultPath
+    if(-not(Test-VerificationContainment $RunsRoot $previousPath)){Throw-VerificationFailure 'previousResultPath must be inside runsRoot'}
+    if(-not[IO.File]::Exists($previousPath)){Throw-VerificationFailure 'previous result missing'}
+    $previousJson=[IO.File]::ReadAllText($previousPath,[Text.UTF8Encoding]::new($false))
+    if(Test-VerificationJsonDuplicateKeys $previousJson){Throw-VerificationFailure 'previous result has duplicate keys'}
+    $previous=$previousJson | ConvertFrom-Json -AsHashtable -Depth 25
+    if($previous -isnot [hashtable] -or -not(Test-VerificationInteger $previous.schemaVersion) -or $previous.schemaVersion -ne 3){Throw-VerificationFailure 'previous result must be schemaVersion 3'}
+    if($previous.runId -isnot [string] -or [string]::IsNullOrWhiteSpace($previous.runId)){Throw-VerificationFailure 'previous result runId missing'}
+    $previousRunRoot=Join-Path $RunsRoot $previous.runId
+    if(-not$previousPath.Equals([IO.Path]::GetFullPath((Join-Path $previousRunRoot 'control/result.json')),[StringComparison]::OrdinalIgnoreCase)){Throw-VerificationFailure 'previous result location does not match its runId'}
+    if($previous.status -eq 'timed_out'){Throw-VerificationFailure 'previous result timed out; its tests are not reusable'}
+    $execution=$previous.execution
+    if($execution -isnot [hashtable] -or $execution.replayAllStopped -isnot [bool] -or -not$execution.replayAllStopped){Throw-VerificationFailure 'previous replay stop unverified; its tests are not reusable'}
+    if($execution.ContainsKey('proposalStopped') -and $execution.proposalStopped -is [bool] -and -not$execution.proposalStopped){Throw-VerificationFailure 'previous proposal stop unverified; its tests are not reusable'}
+    $listed=@($previous.artifacts | Where-Object {$_ -is [hashtable] -and $_.kind -eq 'test'})
+    $previousAccepted=Join-Path $previousRunRoot 'accepted'
+    $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $artifacts=[Collections.Generic.List[object]]::new()
+    foreach($path in $Recheck.testPaths){
+        if($path -isnot [string] -or -not(Test-VerificationRelativePath $path) -or -not$path.StartsWith('tests/')){Throw-VerificationFailure "recheck test path must be a relative path under tests/: $path"}
+        if(-not$seen.Add($path)){Throw-VerificationFailure "duplicate recheck test path: $path"}
+        $found=@($listed | Where-Object {$_.path -ceq $path})
+        if($found.Count -ne 1){Throw-VerificationFailure "test not listed in previous result: $path"}
+        $artifact=$found[0]
+        $src=Resolve-VerificationPath (Join-Path $previousAccepted $path)
+        if(-not(Test-VerificationContainment $previousAccepted $src) -or -not[IO.File]::Exists($src)){Throw-VerificationFailure "previous test missing: $path"}
+        $item=Get-Item -LiteralPath $src -Force
+        $hash=(Get-FileHash -LiteralPath $src -Algorithm SHA256).Hash
+        if($artifact.sha256 -isnot [string] -or $hash -ine $artifact.sha256 -or $item.Length -ne $artifact.size){Throw-VerificationFailure "previous test changed since its result: $path"}
+        $dst=Join-Path $AcceptedRoot $path
+        Copy-VerificationFile $src $dst
+        if((Get-FileHash -LiteralPath $dst -Algorithm SHA256).Hash -cne $hash){Throw-VerificationFailure "recheck test copy mismatch: $path" 'incomplete'}
+        $artifacts.Add(@{kind='test';path=$path;size=$item.Length;sha256=$hash;previousRunId=$previous.runId})
+    }
+    @{previousRunId=$previous.runId;previousResultPath=$previousPath;previousResultHash=(Get-FileHash -LiteralPath $previousPath -Algorithm SHA256).Hash;artifacts=@($artifacts.ToArray())}
+}
+function New-ProposalReplayRun([hashtable]$Request,[hashtable]$Settings,[string]$StartedAt) {
+    $runRoot=$null;$stage='request'
+    try{
+        Test-VerificationSchema $Request 'request.schema.json' 'request'
+        $recheck=$Request.ContainsKey('recheck')
+        if(-not(Test-VerificationIsoUtc $StartedAt)){Throw-VerificationFailure 'startedAt must be ISO8601 UTC'}
+        $stage='settings'
+        Test-VerificationSettingsV3 $Settings $recheck
+        $stage='source'
+        $source=[IO.Path]::TrimEndingDirectorySeparator((Resolve-VerificationPath $Request.sourceRoot))
+        $runs=[IO.Path]::TrimEndingDirectorySeparator((Resolve-VerificationPath $Settings.runsRoot))
+        if(-not[IO.Directory]::Exists($source)){Throw-VerificationFailure 'source missing'}
+        if(Test-VerificationContainment $runs $source){Throw-VerificationFailure 'runsRoot must not contain sourceRoot'}
+        $top=Invoke-VerificationGit $source @('rev-parse','--show-toplevel')
+        if($top.exitCode -ne 0 -or -not([IO.Path]::GetFullPath($top.stdout.Trim()).Equals($source,[StringComparison]::OrdinalIgnoreCase))){Throw-VerificationFailure 'sourceRoot must be Git worktree root'}
+        foreach($reserved in @('.verification-tests','.verification-control')){if(Test-Path -LiteralPath (Join-Path $source $reserved)){Throw-VerificationFailure "reserved path exists in source: $reserved"}}
+        $before=Get-VerificationSourceManifest $Request $Settings
+        $sourceManifestJson=ConvertTo-VerificationCanonicalJson $before
+        $sourceManifestHash=Get-VerificationTextHash $sourceManifestJson
+        $stage='pilot-input'
+        $pilot=Get-VerificationPilotInput $Settings.pilotInputPath $source $sourceManifestHash
+        $stage='run-layout'
+        $runId=[guid]::NewGuid().ToString();$runRoot=Join-Path $runs $runId
+        if(Test-Path -LiteralPath $runRoot){Throw-VerificationFailure 'run already exists'}
+        [void][IO.Directory]::CreateDirectory($runs)
+        New-Item -ItemType Directory -Path $runRoot -ErrorAction Stop | Out-Null
+        foreach($part in @('baseline','proposal-input','quarantine','accepted','replay-inputs','temp','control','control/empty-template','control/runtime','control/proposal','control/replay')){[void][IO.Directory]::CreateDirectory((Join-Path $runRoot $part))}
+        $baseline=Join-Path $runRoot 'baseline';$proposalInput=Join-Path $runRoot 'proposal-input';$accepted=Join-Path $runRoot 'accepted';$control=Join-Path $runRoot 'control'
+        Write-VerificationNewFile (Join-Path $control 'request.json') (ConvertTo-VerificationCanonicalJson $Request)
+        $sourceManifestPath=Join-Path $control 'source-manifest.json'
+        Write-VerificationNewFile $sourceManifestPath $sourceManifestJson
+        $pilotInputPath=Join-Path $control 'pilot-input.json'
+        [IO.File]::Copy($pilot.path,$pilotInputPath,$false)
+        $stage='baseline'
+        foreach($file in $before.files){
+            if($file.deleted){continue}
+            $src=Resolve-VerificationPath (Join-Path $source $file.path)
+            $dst=Join-Path $baseline $file.path
+            try{Copy-VerificationFile $src $dst}catch{Throw-VerificationFailure "copy failed: $($file.path)" 'source_changed'}
+            if((Get-FileHash -LiteralPath $dst -Algorithm SHA256).Hash -cne $file.sha256){Throw-VerificationFailure 'input changed during copy' 'source_changed'}
+        }
+        Initialize-VerificationHistory $source $baseline $control $before
+        Test-VerificationCopyGit $baseline
+        $baselineFiles=Get-VerificationTreeManifest $baseline
+        $baselineManifestPath=Join-Path $control 'baseline-manifest.json'
+        Write-VerificationNewFile $baselineManifestPath (ConvertTo-VerificationCanonicalJson @{schemaVersion=3;runId=$runId;files=$baselineFiles})
+        $stage='proposal-input'
+        # 子へ搬入する提案用コピーは baseline のファイル単位の独立コピー。baseline 自体は子に渡さない。
+        foreach($file in $baselineFiles){
+            $dst=Join-Path $proposalInput $file.path
+            Copy-VerificationFile (Join-Path $baseline $file.path) $dst
+            if((Get-FileHash -LiteralPath $dst -Algorithm SHA256).Hash -cne $file.sha256){Throw-VerificationFailure "baseline changed during proposal-input copy: $($file.path)" 'incomplete'}
+        }
+        Test-VerificationCopyGit $proposalInput
+        $stage='recheck'
+        $recheckManifestPath=$null;$recheckArtifacts=@()
+        if($recheck){
+            $copied=Copy-VerificationRecheckTests $Request.recheck $runs $accepted
+            $recheckArtifacts=$copied.artifacts
+            $recheckManifestPath=Join-Path $control 'recheck-manifest.json'
+            Write-VerificationNewFile $recheckManifestPath (ConvertTo-VerificationCanonicalJson @{schemaVersion=3;runId=$runId;previousRunId=$copied.previousRunId;previousResultPath=$copied.previousResultPath;previousResultHash=$copied.previousResultHash;tests=$recheckArtifacts})
+        }
+        $stage='source-recheck'
+        $after=Get-VerificationSourceManifest $Request $Settings
+        if(-not(Test-VerificationManifestEqual $before $after)){Throw-VerificationFailure 'source changed during copy' 'source_changed'}
+        # 期限はCLI受付時刻を単一起点にし、準備時間も含める。停止猶予は停止時に別枠で計算する。
+        $deadlineAt=[DateTimeOffset]::Parse($StartedAt,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind).AddSeconds($Settings.limits.totalSeconds).UtcDateTime.ToString('o',[Globalization.CultureInfo]::InvariantCulture)
+        return @{
+            schemaVersion=3;runId=$runId;sourceRoot=$source;runRoot=$runRoot;baselineRoot=$baseline;proposalInputRoot=$proposalInput;acceptedRoot=$accepted;controlRoot=$control
+            request=$Request;settings=$Settings
+            sourceManifestPath=$sourceManifestPath;sourceManifestHash=(Get-FileHash -LiteralPath $sourceManifestPath -Algorithm SHA256).Hash
+            baselineManifestPath=$baselineManifestPath;baselineManifestHash=(Get-FileHash -LiteralPath $baselineManifestPath -Algorithm SHA256).Hash
+            recheckManifestPath=$recheckManifestPath;recheckManifestHash=$(if($recheckManifestPath){(Get-FileHash -LiteralPath $recheckManifestPath -Algorithm SHA256).Hash}else{$null});recheckArtifacts=$recheckArtifacts
+            startedAt=$StartedAt;deadlineAt=$deadlineAt;cleanupSeconds=$Settings.limits.cleanupSeconds
+            pilotInputId=$pilot.id;pilotInputPath=$pilotInputPath;pilotInputHash=(Get-FileHash -LiteralPath $pilotInputPath -Algorithm SHA256).Hash
+        }
+    }catch{
+        if(-not$_.Exception.Data.Contains('status')){$_.Exception.Data['status']='blocked'}
+        if(-not$_.Exception.Data.Contains('stage')){$_.Exception.Data['stage']=$stage}
+        if($runRoot){$_.Exception.Data['runRoot']=$runRoot}
+        throw
+    }
+}
 function New-VerificationRun([hashtable]$Request,[hashtable]$Settings,[string]$StartedAt='') {
+    # 整数3のときだけv3。それ以外（1・数字の文字列表現・未実装v2）は既存v1の検査に渡し、v1は1以外を拒否する。
+    if($null -ne $Request -and $Request.ContainsKey('schemaVersion') -and (Test-VerificationInteger $Request.schemaVersion) -and $Request.schemaVersion -eq 3){return New-ProposalReplayRun $Request $Settings $StartedAt}
     return New-LegacyVerificationRun $Request $Settings
 }
 Export-ModuleMember -Function New-VerificationRun,Get-VerificationSourceManifest,Test-VerificationManifestEqual,Resolve-VerificationPath,Test-VerificationContainment,ConvertTo-VerificationCanonicalJson,Get-VerificationCanonicalHash,Write-VerificationNewFile,Get-VerificationUtcNow,Test-VerificationJsonDuplicateKeys

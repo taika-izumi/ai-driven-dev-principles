@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 3,
+  "sbxPath": "C:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe",
+  "pwshPath": "C:/Program Files/WindowsApps/Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe/pwsh.exe",
+  "runsRoot": "D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification/.tmp/probe-9",
+  "limits": {
+    "totalSeconds": 7200,
+    "proposalSeconds": 600,
+    "replaySeconds": 120,
+    "cleanupSeconds": 30,
+    "cpus": 2,
+    "memoryMiB": 2048,
+    "maxProposalFiles": 100,
+    "maxFileBytes": 1048576,
+    "maxProposalBytes": 8388608,
+    "maxWireBytes": 16777216,
+    "maxOutputBytes": 16777216
+  }
+}

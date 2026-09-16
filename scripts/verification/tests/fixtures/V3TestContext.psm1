@@ -25,7 +25,7 @@ function New-V3TestProfile([hashtable]$Ctx,[string]$Role,[hashtable]$Overrides=@
     $profile=@{
         schemaVersion=3;role=$Role;sbxVersion='v0.42.1';templateDigest=(Get-FakeSbxTemplateDigest);agent=$(if($Role -eq 'proposal'){'codex'}else{'shell'});model=$(if($Role -eq 'proposal'){'unit-model'}else{$null})
         startupArgv=[string[]]$(if($Role -eq 'proposal'){@('codex','exec','--json')}else{@('sh')});executableInVm=$(if($Role -eq 'proposal'){'/usr/local/bin/codex'}else{'/usr/bin/python3'})
-        policyExpectation=@{networkPolicy='deny *'};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
+        policyExpectation=@{networkPolicy=$(if($Role -eq 'proposal'){'allow auth.openai.com chatgpt.com all ports only'}else{'deny *'})};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
         scope='synthetic-pilot';acceptedLimitations=$script:Limitations
         stdlibModulesPath='stdlib-modules.txt';stdlibModulesHash=(Get-V3TestHash (Join-Path $Ctx.prof 'stdlib-modules.txt'))
         activationEvidencePath=$null;activationEvidenceHash=$null

@@ -253,12 +253,24 @@
 
 ## タスク9: 最小モデル往復（個別承認、認証方式の実測が前提）
 
+**2026-09-16の実装再開**: Issue-0150で通信許可の単位を確認した後、利用者が「一旦選択肢2で進めましょう」と明示した。改訂ADR-0199に従い、2ホストの全ポートを許可し、残る11ホストは全ポート拒否する。専用キットは追加しない。実装・試験・レビューを行い、その後に実機操作の個別承認を得る。
+
 **依存:** タスク8。**対象:** `profiles/proposal/`（`profile.json`、`activation-evidence.json`）、`tests/Invoke-SbxPilotProbe.ps1` の proposal 対応（role と固定argv を引数化）、`tests/fixtures/proposal-probe-settings.json`（proposal 用縮約入力の雛形。8a と同じ方式）、`docs/records/experiments/`。足場は証拠取得の1台目・2台目にそれぞれ別の runId（UUID）を発番し、VM 名は `iv-<runId8>-proposal` で互いに衝突しない。
 
-- [ ] sbx の資格情報の渡し方（プロキシによるヘッダー注入、`sbx secret`）と、通信の許可リスト設定（承認されたモデル接続先だけを許す方法。`docs/reference/sbx-sandbox-runtime-facts.md` では未実測）を読み取りで調べ、raw の認証値を VM に渡さない構成と、接続先を限定した proposal 用の固定argv・`networkPolicy` が成立するかを提示する。どのホストへの送信を許すかは送信範囲の決定であり、利用者の判断で確定する（ADR-0158 の相談事項）。成立しなければ blocked のまま相談する。確定した固定argv・`networkPolicy`・evidence の `modelEndpointAllowOnly` の観測は設計の変更として記録する。
+- [x] sbx の資格情報の渡し方（プロキシによるヘッダー注入、`sbx secret`）と、通信の許可リスト設定（承認されたモデル接続先だけを許す方法。`docs/reference/sbx-sandbox-runtime-facts.md` では未実測）を読み取りで調べ、raw の認証値を VM に渡さない構成と、接続先を限定した proposal 用の固定argv・`networkPolicy` が成立するかを提示する。どのホストへの送信を許すかは送信範囲の決定であり、利用者の判断で確定する（ADR-0158 の相談事項）。成立しなければ blocked のまま相談する。確定した固定argv・`networkPolicy`・evidence の `modelEndpointAllowOnly` の観測は設計の変更として記録する。
+- [x] **ADR-0199 の実装反映（実機操作前）**: 決定3・4に従い、`SbxRuntime.psm1` の固定作成argv、`New-VerificationActivationRecord` の `policy`・`credentialExposure` 検査、`Test-VerificationRuntimeProfile` の役割整合検査、`runtime-profile.schema.json` を役割別に更新する。提案用は `auth.openai.com`・`chatgpt.com` の2ホスト・全ポートだけを実効許可とし、キット宣言の残る11ホストはポートなしの拒否規則で全ポートを拒否する。規則一覧全体と、許可先の443番・8443番および拒否先の対照を照合し、未知の追加allow・ワイルドカード・拒否漏れを受理しない。再実行用は `deny *` を維持する。試験側4か所（`SbxRuntimeV3.Tests.ps1` の `New-Profile`、`V3TestContext.psm1` の `New-V3TestProfile`、`ProposalV3.Tests.ps1` の提案用profile生成、`FakeSbxScenario.psm1` の作成argv照合）、提案用probe・縮約設定と `profiles/evidence-checks.md` の観測対応を合わせ、追加試験・実装レビュー・独立試験11群を実施する。当初の構成確定は ADR-0199（0675154）、全ポートへの改訂は同日の利用者の選択肢2の回答、レビュー記録は `docs/records/reviews/2026-09-16-adr-0199-pre-finalization-review.md`。
+- [ ] **最初の提案用VMでの前提確認（個別承認後）**: ADR-0199 決定6(a)(b)の実効許可・secretsに加え、決定6(c)の「`sbx create` の時点でエージェント本体が起動するか、それが仕様02の搬入→標準入力で依頼→作業の順序と両立するか」を確認する。想定と異なれば停止して利用者に諮る。決定6(c)の明記は確定前レビュー差分再確認の指摘#3の反映である。
 - [ ] 承認後、proposal 用 profile の証拠を取る: 確定した proposal 用固定argv で VM 1台を作り、タスク8a と同じ手順（版・照会・transport 対照・出力洪水）に加えて、ゲスト側の否定確認（SSHエージェントのソケット不在・透過プロキシの中継ポートへの応答・policy log。試験Aの方式）とゲスト側の実効値（`nproc`・メモリ量。試験Bの方式）を取り、`credentialMethod`・`modelEndpointAllowOnly` の観測を加え、最後に外側から `stop` → `ls` で停止確認を取る（1台目。`limitsAndTransport` の停止確認）。続けて proposal 用 VM をもう1台（別の足場 runId、名前は `iv-<runId8>-proposal`）作り、8a の (1) の保持開始と (6)(7)（probe プロセスの強制終了後の自動停止・復旧操作・他VM不変・停止後の未発行）だけを取る（2台目。`abnormalExitRecovery`。自動停止で終わる VM では外側 stop を観測できないため台を分ける。約30分の連続保持はタスク8で1回のみで、ここでは行わない〈ADR-0193〉）。これらから `profiles/proposal/` を生成する。この2台の名前はタスク9の承認区切りの「使うVM名」に含める（ADR-0197 の改訂記録参照）。既存記録の流用は負荷中の外側停止（試験C）だけで、replay 側の 8a の記録も流用しない（ADR-0197）。
 - [ ] 承認後、`pilot-source` で Claude Code・Codex 双方の主担当から1往復（依頼→提案→再実行→結果→主担当の修正→recheck）を行い、記録する。ここで `Invoke-VerificationReplay` の統合（candidate-comparison と recheck の両 mode）が初めて実機で成立する。送信範囲・最大時間・モデルは承認どおり（profile.model と Settings.model の一致を含む）。
 - [ ] 記録をコミットし、サイクル全体整合検査と最終レビューへ進む（ADR-0162・0192〜0195 の昇格を含む）。
+
+逸脱記録: 設計の変更 / 採用 / ADR-0199の改訂、Issue-0150、2026-09-16の利用者の選択肢2の回答により提案用通信を2ホストの全ポートへ変更。認証観測先を実体に合わせて補足し、規則一覧による追加allow拒否を具体化する。
+
+逸脱記録: 設計の変更 / 不採用 / ADR-0199決定6(c)の確認へStartupAssessmentの手動承認フラグと新たな利用者作業を加える案は採らない。初回の作成直後の観測と実行順を主担当が照合し、観測時点の不在を過去全域の未起動保証へ広げない。
+
+逸脱記録: 事実誤り・期待値の陳腐化の訂正 / 採用 / 試験全体のpolicyExpectationを列挙し、ProposalV3.Tests.ps1にも独立した提案用profile生成があることを確認。従来の3か所という対象列挙へ同ファイルを追加し、改訂ADR-0199へ合わせる。
+
+逸脱記録: 実体に合わせる調整 / 採用 / 2026-09-17-task9a2-independent-reviewのF1・F2、既存の拒否漏れ検出の試験を追加し、proxyの欠落・不正形式をゲストexec前に拒否する。承認した通信範囲と認証方式は変更しない。
 
 ## 完了基準と検証期待値の対応
 

@@ -12,6 +12,7 @@ $digest=Get-FakeSbxTemplateDigest
 $limitations=@('clipboard-text-write-possible','pid-count-unbounded','daemon-disconnect-unverified')
 $evidenceTemplate=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'fixtures/activation-evidence.json'),$utf8)
 $module=Get-Module SbxRuntime
+$proposalDeniedHosts=@('api.openai.com','openai.com','files.openai.com','registry.npmjs.org','api.github.com','github.com','codeload.github.com','archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com','download.docker.com')
 $count=0
 $allCases=[Collections.Generic.List[hashtable]]::new()   # 全ケースの calls.jsonl を最後に検査する（SSH_AUTH_SOCK の不在）
 # 試験プロセスに SSH_AUTH_SOCK のダミー値を置く。親環境を丸ごと渡す誤実装なら偽sbxの calls.jsonl に現れる。終了時に元へ戻す。
@@ -24,7 +25,7 @@ function New-Profile([hashtable]$Ctx,[string]$Role,[hashtable]$Overrides=@{},[sc
     $profile=@{
         schemaVersion=3;role=$Role;sbxVersion='v0.42.1';templateDigest=$digest;agent=$(if($Role -eq 'proposal'){'codex'}else{'shell'});model=$(if($Role -eq 'proposal'){'unit-model'}else{$null})
         startupArgv=[string[]]$(if($Role -eq 'proposal'){@('codex','exec','--json')}else{@('sh')});executableInVm=$(if($Role -eq 'proposal'){'/usr/local/bin/codex'}else{'/usr/bin/python3'})
-        policyExpectation=@{networkPolicy='deny *'};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
+        policyExpectation=@{networkPolicy=$(if($Role -eq 'proposal'){'allow auth.openai.com chatgpt.com all ports only'}else{'deny *'})};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
         scope='synthetic-pilot';acceptedLimitations=$limitations
         stdlibModulesPath='stdlib-modules.txt';stdlibModulesHash=(Get-Hash (Join-Path $Ctx.prof 'stdlib-modules.txt'))
         activationEvidencePath=$null;activationEvidenceHash=$null
@@ -106,11 +107,42 @@ $subset=@{};foreach($k in $ctx.replayProfile.Keys){if($k -notin @('activationEvi
 Assert-Equal $hash (Get-VerificationCanonicalHash $subset) 'profile: 独立計算の profileHash と一致'
 Assert-Equal (Test-VerificationRuntimeProfile $ctx.replayProfile 'replay-after' $ctx.settings) $hash 'profile: replay-after も同じ replay profile を受ける'
 Assert-True ((Test-VerificationRuntimeProfile $ctx.proposalProfile 'proposal' $ctx.settings) -match '^[A-F0-9]{64}$') 'profile: proposal の正常 profile'
+$expectedProposalArgv=@('create','codex','--name','iv-12345678-proposal','--cpus','2','--memory','2g','--no-share-skills')
+foreach($hostName in $proposalDeniedHosts){$expectedProposalArgv+=@('--deny-network',$hostName)}
+$expectedProposalArgv+=@('--template',$digest)
+$proposalArgv=& $module {param($Agent,$Name,$Digest) Get-VerificationCreateArgv $Agent $Name $Digest} 'codex' 'iv-12345678-proposal' $digest
+Assert-Equal ($proposalArgv -join '|') ($expectedProposalArgv -join '|') 'proposal: 固定argvは残る11ホストだけを拒否'
+$networkChecks=@(@{host='auth.openai.com:443';allowed=$true},@{host='auth.openai.com:8443';allowed=$true},@{host='chatgpt.com:443';allowed=$true},@{host='chatgpt.com:8443';allowed=$true})
+foreach($hostName in $proposalDeniedHosts+@('example.com')){$networkChecks+=@{host=($hostName+$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){':80'}else{':443'}));allowed=$false}}
+Assert-True (& $module {param($Checks) Test-VerificationProposalPolicy $Checks} $networkChecks) 'proposal: 許可2件と拒否12件の対照'
+$wrongChecks=@(foreach($item in $networkChecks){@{host=$item.host;allowed=$item.allowed}})
+$wrongChecks[4].allowed=$true
+Assert-True (-not (& $module {param($Checks) Test-VerificationProposalPolicy $Checks} $wrongChecks)) 'proposal: 残る宣言先が許可なら拒否'
+$wrongChecks=@(foreach($item in $networkChecks){@{host=$item.host;allowed=$item.allowed}})
+$wrongChecks[2].allowed=$false
+Assert-True (-not (& $module {param($Checks) Test-VerificationProposalPolicy $Checks} $wrongChecks)) 'proposal: 承認2件の片方が拒否なら拒否'
+$kitAllow=@('api.openai.com','openai.com','auth.openai.com','chatgpt.com','files.openai.com','registry.npmjs.org','api.github.com','github.com','codeload.github.com','archive.ubuntu.com:80','security.ubuntu.com:80','ports.ubuntu.com:80','download.docker.com')
+$proposalRules=@()
+foreach($hostName in $kitAllow){$proposalRules+=@{scope='sandbox:iv-12345678-proposal';decision='allow';resources=@($hostName);status='active'}}
+foreach($hostName in $proposalDeniedHosts){$proposalRules+=@{scope='sandbox:iv-12345678-proposal';decision='deny';resources=@($hostName);status='active'}}
+Assert-True (& $module {param($Rules,$Name) Test-VerificationProposalRules $Rules $Name} $proposalRules 'iv-12345678-proposal') 'proposal: 13件のキット許可と11件の明示拒否'
+$unexpectedRule=@($proposalRules)+@(@{scope='sandbox:iv-12345678-proposal';decision='allow';resources=@('another.example:443');status='active'})
+Assert-True (-not (& $module {param($Rules,$Name) Test-VerificationProposalRules $Rules $Name} $unexpectedRule 'iv-12345678-proposal')) 'proposal: 想定外の追加allowを拒否'
+$wildcardRule=@($proposalRules)+@(@{scope='sandbox:iv-12345678-proposal';decision='allow';resources=@('*');status='active'})
+Assert-True (-not (& $module {param($Rules,$Name) Test-VerificationProposalRules $Rules $Name} $wildcardRule 'iv-12345678-proposal')) 'proposal: 広いallowを拒否'
+$missingDeny=@($proposalRules | Where-Object {-not($_.decision -ceq 'deny' -and @($_.resources) -ccontains 'github.com')})
+Assert-True (-not (& $module {param($Rules,$Name) Test-VerificationProposalRules $Rules $Name} $missingDeny 'iv-12345678-proposal')) 'proposal: 既知ホストのポートなしdeny漏れを拒否'
+$credentialCheck={param($role,$secrets) & $module {param($Role,$Secrets) Test-VerificationCredentialExposure $Role $Secrets} $role $secrets}
+Assert-True (& $credentialCheck 'proposal' @(@{name='mcpgateway'},@{name='openai'})) 'proposal: OAuthサービス名openaiだけを追加許容'
+Assert-True (-not (& $credentialCheck 'proposal' @(@{name='mcpgateway'},@{name='OPENAI_API_KEY'}))) 'proposal: その他の資格情報を拒否'
+Assert-True (-not (& $credentialCheck 'replay' @(@{name='mcpgateway'},@{name='openai'}))) 'replay: openaiサービスを拒否'
 $count++
 
 # 2. 実行設定検査の拒否: 役割不整合・model 不一致・必須条件名欠落・verdict 非 verified・daemonDisconnect の failed・evidence/stdlib/profileHash の不一致・未知キー・タグ指定・probe。
 Assert-Throws {Test-VerificationRuntimeProfile $ctx.replayProfile 'proposal' $ctx.settings} '*does not match requested role*'
 Assert-Throws {Test-VerificationRuntimeProfile $ctx.proposalProfile 'replay-before' $ctx.settings} '*does not match requested role*'
+Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'proposal' @{policyExpectation=@{networkPolicy='deny *'}}) 'proposal' $ctx.settings} '*networkPolicy*'
+Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{policyExpectation=@{networkPolicy='allow auth.openai.com chatgpt.com all ports only'}}) 'replay-before' $ctx.settings} '*networkPolicy*'
 $otherModel=@{};foreach($k in $ctx.settings.Keys){$otherModel[$k]=$ctx.settings[$k]};$otherModel.model='other-model'
 Assert-Throws {Test-VerificationRuntimeProfile $ctx.proposalProfile 'proposal' $otherModel} '*model does not match*'
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{model='unit-model'}) 'replay-before' $ctx.settings} '*must not name a model*'
@@ -321,6 +353,64 @@ function Test-ActivationFailureVariant([string]$Variant){
     Release-VerificationPilotLease $lease
 }
 foreach($variant in @('inspect-failed','policy-mismatch','ssh-forwarder')){Test-ActivationFailureVariant $variant}
+$count++
+
+# proposal の公開作成経路: 許可範囲が増えた規則、代表ポートの不一致、余分な秘密は作成後のactivationで検出し、記録済みVMを停止する。
+foreach($variant in @('extra-allow','allowed-port-denied','extra-secret','missing-deny')){
+    $ctx=New-Case;$vm=Add-Vm $ctx 'proposal' @() 'codex'
+    if($variant -eq 'extra-allow'){
+        $entry=@($ctx.case.entries | Where-Object {$_.argv[0] -eq 'policy' -and $_.argv[1] -eq 'ls' -and $_.argv[2] -eq [regex]::Escape($vm.name)})[0]
+        $policy=$entry.stdout | ConvertFrom-Json -AsHashtable
+        $policy.rules+=@{scope="sandbox:$($vm.name)";resource_type='network';decision='allow';resources=@('another.example');status='active'}
+        $entry.stdout=ConvertTo-Json -InputObject $policy -Depth 8;$entry.synthetic=$true
+    }elseif($variant -eq 'missing-deny'){
+        $entry=@($ctx.case.entries | Where-Object {$_.argv[0] -eq 'policy' -and $_.argv[1] -eq 'ls' -and $_.argv[2] -eq [regex]::Escape($vm.name)})[0]
+        $policy=$entry.stdout | ConvertFrom-Json -AsHashtable
+        $policy.rules=@($policy.rules | Where-Object {-not($_.decision -ceq 'deny' -and @($_.resources) -ccontains 'github.com')})
+        $entry.stdout=ConvertTo-Json -InputObject $policy -Depth 8;$entry.synthetic=$true
+    }elseif($variant -eq 'allowed-port-denied'){
+        Add-FakeSbxResponse $ctx.case @('policy','check','network','--sandbox',[regex]::Escape($vm.name),[regex]::Escape('https://chatgpt.com:8443'),'--json') -Stdout '{"allowed":false}' -Synthetic $true -First | Out-Null
+    }else{
+        $entry=@($ctx.case.entries | Where-Object {$_.argv[0] -eq 'inspect' -and $_.argv[1] -eq [regex]::Escape($vm.name)})[0]
+        $inspect=$entry.stdout | ConvertFrom-Json -AsHashtable
+        $inspect.secrets+=@{name='unapproved';source='host'}
+        $entry.stdout=ConvertTo-Json -InputObject $inspect -Depth 8;$entry.synthetic=$true
+    }
+    Write-FakeSbxScenario $ctx.case
+    $lease=Acquire-VerificationPilotLease $ctx.prepared
+    $failure=Get-RuntimeFailure {New-VerificationSandbox $ctx.prepared 'proposal' $ctx.proposalProfile $lease}
+    Assert-True ($failure.creationState -ceq 'created' -and $failure.stopState -ceq 'stopped' -and $failure.status -ceq 'blocked') "proposal ${variant}: 作成済みIDを停止してblocked"
+    if($variant -eq 'missing-deny'){Assert-Equal @((Get-Calls $ctx 'policy') | Where-Object {$_.argv[1] -ceq 'check'}).Count 16 'proposal missing-deny: 代表対照16件は元の期待どおり'}
+    Assert-Equal (@(Get-StopCalls $ctx) -join ',') $vm.name "proposal ${variant}: 当該VMだけにstop"
+    Assert-True ($failure.message -like $(if($variant -eq 'extra-secret'){'*credentialExposure*'}else{'*policy*'})) "proposal ${variant}: 不一致の条件を表示"
+    Release-VerificationPilotLease $lease
+}
+$count++
+$ctx=New-Case;$vm=Add-Vm $ctx 'proposal' @() 'codex';Write-FakeSbxScenario $ctx.case
+$lease=Acquire-VerificationPilotLease $ctx.prepared;$proposalHandle=$null
+try{
+    $proposalHandle=New-VerificationSandbox $ctx.prepared 'proposal' $ctx.proposalProfile $lease
+    $proposalActivation=Get-Content -LiteralPath $proposalHandle.activationRecordPath -Raw | ConvertFrom-Json -AsHashtable
+    Assert-Equal $proposalActivation.checks.policy.verdict 'verified' 'proposal: 全ポート通信規則のactivation'
+    Assert-Equal @($proposalActivation.checks.policy.observed.networkChecks).Count 16 'proposal: 2ホスト2ポートと拒否12件の対照'
+    Assert-Equal $proposalActivation.checks.credentialExposure.verdict 'verified' 'proposal: openaiサービスを許容'
+    $proposalStop=Stop-VerificationSandbox $proposalHandle (New-VerificationCleanupBudget $ctx.prepared 1)
+    Assert-Equal $proposalStop.stopState 'stopped' 'proposal: 正常作成後に当該VMを停止'
+}finally{
+    if($null -ne $proposalHandle -and @(Get-StopCalls $ctx).Count -eq 0){try{[void](Stop-VerificationSandbox $proposalHandle (New-VerificationCleanupBudget $ctx.prepared 1))}catch{}}
+    Release-VerificationPilotLease $lease
+}
+$count++
+
+# 同じ試験群でprobeの分岐・観測判定と、偽sbxによる起動直後の失敗時停止を継続検査する。
+function New-ProbeCaseContext([hashtable]$ProbeCase){
+    # allCases の後段は case と controlRoot を共通の文脈として読み、環境辞書・復旧stopを集計する。
+    $controlRoot=Join-Path $ProbeCase.root 'run/control'
+    if(-not(Test-Path -LiteralPath $controlRoot)){throw "probe control root missing: $controlRoot"}
+    @{case=$ProbeCase;controlRoot=$controlRoot}
+}
+$probeCases=@(& (Join-Path $PSScriptRoot 'fixtures/ProbeV3Assertions.ps1') -TestsRoot $PSScriptRoot -BaseRoot $base)
+foreach($probeCase in $probeCases){$allCases.Add((New-ProbeCaseContext $probeCase))}
 $count++
 
 # 9. 正常作成: handle の項目、作成記録、activationRecord（schema・全条件 verified/非該当）、保持セッションの生存、固定 argv と環境辞書（SSH_AUTH_SOCK なし）。停止で stopped、保持プロセス消失、当該名以外へ stop なし。

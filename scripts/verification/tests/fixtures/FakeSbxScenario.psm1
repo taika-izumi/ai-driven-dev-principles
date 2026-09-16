@@ -11,6 +11,8 @@ $script:KnownStoppedSandboxes=@(
     @{name='iv-sbx-smoke-20260909-01';id='de1ba0ac-ebb0-4cc4-a5f6-009dffd8baae';agent='shell'},
     @{name='iv-sbx-capability-20260914-01';id='0baac92d-251c-4f34-9d8f-6f14a9c238c6';agent='shell'})
 $script:TemplateDigest='docker.io/docker/sandbox-templates@sha256:16a88c7321c130de9aa8410ffd0865ea22dd051ebb7f58103fbf41ec50057476'
+$script:ProposalDeniedHosts=@('api.openai.com','openai.com','files.openai.com','registry.npmjs.org','api.github.com','github.com','codeload.github.com','archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com','download.docker.com')
+$script:ProposalAllowedHosts=@('auth.openai.com','chatgpt.com')
 
 function Get-FakeSbxTemplateDigest(){$script:TemplateDigest}
 function Expand-FakeTemplate([string]$Text,[hashtable]$Values){
@@ -74,15 +76,37 @@ function Add-FakeSbxSandboxScenario([hashtable]$Case,[string]$Name,[string]$Id,[
     $runtimePath=Join-Path $Case.runtimesDir ($Name+'.json')
     if($AlreadyPresent){[IO.File]::WriteAllText($runtimePath,(New-FakeRuntimeFileText $Name $Id $Agent $Digest),$script:Utf8)}
     $create=Get-FakeSbxResponse 'createSuccess' @{name=$Name;agent=$Agent;digest=$Digest}
-    Add-FakeSbxResponse $Case @('create',[regex]::Escape($Agent),'--name',[regex]::Escape($Name),'--cpus','2','--memory','2g','--no-share-skills','--deny-network','\*','--template',[regex]::Escape($Digest)) -Stdout $create.text -Synthetic ($create.synthetic -or $CreateDelaySeconds -gt 0) -Source ($create.source+' / 22-runtime-file.json / 20-daemonlog-new-runtime-network.txt') `
+    $createPattern=@('create',[regex]::Escape($Agent),'--name',[regex]::Escape($Name),'--cpus','2','--memory','2g','--no-share-skills')
+    if($Agent -ceq 'codex'){foreach($hostName in $script:ProposalDeniedHosts){$createPattern+=@('--deny-network',[regex]::Escape($hostName))}}
+    else{$createPattern+=@('--deny-network','\*')}
+    $createPattern+=@('--template',[regex]::Escape($Digest))
+    Add-FakeSbxResponse $Case $createPattern -Stdout $create.text -Synthetic ($create.synthetic -or $CreateDelaySeconds -gt 0) -Source ($create.source+' / 22-runtime-file.json / 20-daemonlog-new-runtime-network.txt') `
         -DelaySeconds $CreateDelaySeconds `
         -Sets @{"vm:$Name"='running';"present:$Name"='1'} `
         -WriteFile @(@{path=$runtimePath;text=(New-FakeRuntimeFileText $Name $Id $Agent $Digest)}) `
         -AppendFile @(@{path=$Case.logPath;text=(New-FakeSbxLogLine 'createdRuntime' $Name)}) | Out-Null
     $inspect=Get-FakeSbxResponse 'inspect' @{name=$Name;agent=$Agent;digest=$Digest;imageDigest=$Digest.Substring($Digest.IndexOf('@')+1)}
-    Add-FakeSbxResponse $Case @('inspect',[regex]::Escape($Name),'--json') -Stdout $inspect.text -Synthetic $inspect.synthetic -Source $inspect.source | Out-Null
+    $inspectText=$inspect.text
+    if($Agent -ceq 'codex'){$inspectText=$inspectText.Replace('"secrets": [','"secrets": [{"name":"openai","source":"host"},')}
+    Add-FakeSbxResponse $Case @('inspect',[regex]::Escape($Name),'--json') -Stdout $inspectText -Synthetic ($inspect.synthetic -or $Agent -ceq 'codex') -Source $inspect.source | Out-Null
     $policy=Get-FakeSbxResponse 'policyLs' @{name=$Name}
-    Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout $policy.text -Synthetic $policy.synthetic -Source $policy.source | Out-Null
+    if($Agent -ceq 'codex'){
+        $rules=@()
+        foreach($hostName in $script:ProposalAllowedHosts){$rules+=@{scope="sandbox:$Name";resource_type='network';decision='allow';resources=@($hostName);status='active'}}
+        foreach($hostName in $script:ProposalDeniedHosts){
+            $kitResource=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){"$($hostName):80"}else{$hostName})
+            $rules+=@{scope="sandbox:$Name";resource_type='network';decision='allow';resources=@($kitResource);status='active'}
+            $rules+=@{scope="sandbox:$Name";resource_type='network';decision='deny';resources=@($hostName);status='active'}
+        }
+        Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout (ConvertTo-Json -InputObject @{rules=$rules} -Depth 6) -Synthetic $true -Source 'ADR-0199 の未実測proposal規則を模した応答' | Out-Null
+        $checks=@()
+        foreach($hostName in $script:ProposalAllowedHosts){foreach($port in @(443,8443)){$checks+=@{host=$hostName;port=$port;allowed=$true}}}
+        foreach($hostName in $script:ProposalDeniedHosts+@('example.com')){$checks+=@{host=$hostName;port=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){80}else{443});allowed=$false}}
+        foreach($check in $checks){
+            $scheme=$(if($check.port -eq 80){'http'}else{'https'})
+            Add-FakeSbxResponse $Case @('policy','check','network','--sandbox',[regex]::Escape($Name),[regex]::Escape("$($scheme)://$($check.host):$($check.port)"),'--json') -Stdout (ConvertTo-Json -InputObject @{allowed=$check.allowed} -Compress) -Synthetic $true -Source 'ADR-0199 の未実測policy checkを模した応答' | Out-Null
+        }
+    }else{Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout $policy.text -Synthetic $policy.synthetic -Source $policy.source | Out-Null}
     $log=Get-FakeSbxResponse 'policyLog' @{name=$Name}
     Add-FakeSbxResponse $Case @('policy','log',[regex]::Escape($Name),'--json') -Stdout $log.text -Synthetic $log.synthetic -Source $log.source | Out-Null
     # 以下4種は実測原文が無い創作応答（保持 exec の無出力、cp・chown の無出力、Confirm の sha256sum 行）。タスク8a の実機対照で確かめる。

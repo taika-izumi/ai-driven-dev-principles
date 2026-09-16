@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-16 (Asia/Tokyo、タスク9(a) 確定とセッション区切り)
+- **Last Updated**: 2026-09-17 01:12 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: 新規開発/v3実装計画のタスク1〜8を完了。タスク9は (a) の読み取り調査と確定前レビューを終え、構成を ADR-0199（Proposed、コミット 0675154）へ確定。次は決定3・4に伴う実装変更、その後に承認区切りの提示と実機
+- **Current Phase**: 実機試験の操作承認待ち/タスク9(a-2)の実装・11群検証・独立レビュー・修正後の対象試験と差分再確認が完了。OAuth登録と提案用VM2台は未実施。
 
 ## 作業の目的・背景
 
@@ -12,6 +12,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 既存worktreeは`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。保存点はv3仕様確定`b7941f3`、試作条件改訂確定`5259d22`、SSH設定操作記録`cf853d2`、能力試験の取得元特定とADR-0192`e02c32c`。masterへ未統合。2026-09-14にユーザーが本作業の再開を選択し（masterのhandoffで「2で」）、残る能力試験を実施した。
 
 ## 関連ドキュメント
+
+- 最新の検証結果: docs/records/reviews/2026-09-17-task9a2-implementation-validation.md。レビュー送信の対象: docs/records/reviews/2026-09-16-task9a2-review-export-request.md。
+
+- 今回の採用判断: Issue-0150は選択肢2の明示承認によりclosed。ADR-0199は2ホスト・全ポートへ改訂済みで未コミット。最新状態は進行中タスクと検証記録を参照。
 
 - 能力試験の取得元・方式と実施結果: `docs/records/experiments/2026-09-14-v3-capability-test-methods.md`。試験A（SSH転送拒否）・B（CPU/メモリ実効値）・C（有限負荷中の外側停止）・D（起動世代）はすべて合格。原文は `.tmp/sbx-capability-20260914/`（番号付きファイル）。個別承認はADR-0192（Proposed）。
 - 継続調査・操作記録: `docs/records/experiments/2026-09-10-v3-capability-followup.md`。SSH設定false保存・停止・通常起動後の設定と既存VM照合まで完了。ADR-0162は次の全体整合チェックポイントで昇格するProposed。
@@ -32,6 +36,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 完了済みタスク
 
+- [x] タスク9(a-2)の選択肢2実装・11群検証・独立レビューと修正差分再確認（2026-09-17）。正本は同日のtask9a2-implementation-validation.mdとtask9a2-independent-review.md。
+
 - [x] タスク9(a) の読み取り調査（sbx 0.42.1 の資格情報の渡し方と通信許可の設定方法）。センチネル置換方式・グローバル既定は暗黙拒否・codexキット既定13ドメイン・`policy check network --sandbox --json` が読み取り専用で認可器を評価、を実測。構成の決定は ADR-0199（Proposed）。停滞検出の欠落は Issue-0148 へ起票（2026-09-16 完了）。
 - [x] v3全体の実装計画の草案作成（bd3beca）と第1回確定前レビュー反映。相談事項1〜3をADR-0193〜0195（Proposed）に記録（47109dc、2026-09-15 完了）。
 - [x] 実装計画の確定前レビュー反復（フル4回＋差分5回、いずれも新規 claude-opus-5）と相談事項4〜7の確定（ADR-0193改訂・0196・0197）。第9回反映後に「このまま確定」で plan 確定点を通過。不採用は第5回 m-F の1件（2026-09-15 完了）。
@@ -46,6 +52,11 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 進行中のタスク
 
+- [ ] **タスク9の実機確認**: 選択肢2（auth.openai.com/chatgpt.comの全ポート）は承認済み。タスク9(a-2)の実装とレビューは完了し、次は操作承認後のOAuth登録と提案用VM2台の証拠取得。
+  - 実装・検証: `docs/records/reviews/2026-09-17-task9a2-implementation-validation.md`。全11群合格後、レビュー修正3ファイルの対象試験も合格。実機での成立とは区別する。
+  - 独立レビュー: `docs/records/reviews/2026-09-17-task9a2-independent-review.md`。Readのみのclaude-sonnet-5、全体1回＋差分1回。F1/F2解消・新規指摘なし。レビューと試験の実行セッションはすべて終了。
+  - 次の操作案: `docs/working/plans/2026-09-17-task9-proposal-probe-approval.md`。CPU2/2GiB・各3600秒の足場、2ホスト全ポート許可、その他11ホスト拒否。設定は `.tmp/task9-probe-approval/proposal-probe-settings.json`。
+  - 読取り確認（2026-09-17）: daemonはrunning、既存5VMはstopped、secret登録0件。更新通知はあったがsbxは0.42.1のまま。設定変更・認証・新VM作成・モデル往復はまだ行っていない。
 - [ ] **現在の作業**: 実装計画のタスク1〜7は完了（2026-09-15〜16、`subagent-driven-development`。主担当は master 側の作業ディレクトリから絶対パスと `git -C` で本worktreeを扱った。利用者がスマホから Remote Control 中で承認プロンプトに応答できないため）。ブランチ全体の最終レビュー（3分割、いずれも With fixes・Critical なし）と最終修正（22件、7dc261f〜7450e74）も完了し、差分再確認は3分割とも解消。最終修正後の独立試験ランナーは11群合格・1577秒。
   - 記録の正本: `docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md`（結果・レビュー経過・主担当が下した判断のうち確認を勧めるもの・未対応で残したもの・タスク8a の確認事項）。計画の各タスク末尾の `逸脱記録:` 26行。台帳（未追跡）は `.superpowers/sdd/2026-09-14-isolated-verification-v3-implementation/progress.md`。
   - タスク8完了（2026-09-16、利用者が「1で」で個別承認、利用者がデーモンを起動）: 8a はVM `iv-48830e99-probe`（f0272f46-49bb-4d67-99ba-12468c153c6b）1台で証拠を取得（python3 3.14.4・標準ライブラリ297件、unittest 要約は stderr、対照5種、出力上限の打ち切り、1800秒の連続保持、probe 強制終了→約35秒で自動停止→復旧操作が停止済みを確認）。コミット d124a35・0bc5524・231fad6。8b はVM `iv-420e848c-before`（29d60f42-49e5-45e0-bbf2-8d1567401407）と `iv-420e848c-after`（70b37670-a291-4444-83d0-2012c9905e59）で公開操作を実証（before 終了1・after 終了0、transportVerified 両方 true、activationRecord 8条件、停止確認）。コミット dc8c847・2706cdb・825f991。記録は `docs/records/experiments/2026-09-16-v3-task8a-probe.md` と `…-task8b-public-operations.md`。作成した3台は stopped で保全、既存2台は不変。ランナーは 8a 後 1684秒・8b 後 1822秒でいずれも11群合格・件数不変。
@@ -71,6 +82,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 既知のブロッカー・懸念
 
+- Issue-0150は選択肢2の採用で解決済み。37ファイルの外部レビュー送信も利用者の明示承認後に実施・完了。次の個別承認対象はOAuth登録と新規proposal VM2台。
+
 - ADR-0199 の OAuth 保存はグローバル（全サンドボックス共有）で、単一VMへ限定できない。本サイクルで新規作成するのは提案用の証拠取得2台と往復用に限り、既存5台は停止したまま操作しない。保存した秘密の後片付けはサイクル終了時に扱う。許可2件で codex が起動できない場合は `sbx policy log` の拒否記録で不足ホストを特定し、利用者に諮ってから再実行する（AIの判断で許可を広げない）。
 - 実装中に起票した Issue-0146・0147 が課題索引 `docs/working/issues/README.md` に未追加だった（2026-09-16 に Issue-0148 の採番で検出し、3件分の行を補った）。Issue-0147 の Status は「open（本サイクルで統合採用・修正中）」のままで、タスク8a の観測を受けた更新が未反映の可能性がある。
 - sbx daemonは2026-09-16 08:59:47に利用者が通常PowerShellで起動した世代（PID 25888、v0.42.1 cc6e400）で、セッション終了時点も稼働中。次セッションでは `daemon status --json` で状態を再確認する。停止・再起動・resetはAIから行わない。利用者が止める場合は通常の端末から `& 'C:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe' daemon stop`（未確認の手順なので、止める必要が生じたときに改めて確認する）。
@@ -88,6 +101,16 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 - プラグイン導入版は0.1.29（本セッションのスキル一覧で確認）。仕様コミットをプラグインの更新・公開と扱わない。
 
 ## 節目ごとの確認記録
+
+- 2026-09-17 タスク9(a-2)完了・改訂ADR-0199のspec 確定点: ADR=0199 / worklog=棄却（既存の検証・修正・承認手順） / review=フル実施（claude-sonnet-5・1回）＋差分再確認（claude-sonnet-5・1回・実質的な収束）
+
+- 2026-09-17 タスク9(a-2)の実装・11群検証と送信承認待ち: ADR=0199（承認済み方針の実装、独立レビューは未実施） / worklog=棄却（既存の検証・修正・承認手順の範囲）
+
+- 2026-09-16 選択肢2の明示承認と実装再開: ADR=0199（利用者回答により2ホスト・全ポートへ改訂、Issue-0150 close） / worklog=棄却（既存の判断記録・再開手順の範囲）
+
+- 2026-09-16 タスク9(a-2)の前提不足検出と判断待ち: ADR=なし（実現方法は未決、Issue-0150へ分離） / worklog=MakeAiInstructions-2026-09-16-06
+
+- 2026-09-16 タスク9(a-2)の再開と計画への引き継ぎ反映: ADR=0199（確定済み決定に従う、追加決定なし） / worklog=棄却（既存の再開・引き継ぎ手順の範囲）
 
 - 2026-09-16 セッション区切りの引き継ぎ確定（タスク9(a) 確定・実装変更の着手前）: ADR=なし（利用者の区切り指示、方針変更なし） / worklog=`MakeAiInstructions-2026-09-16-05`
 - 2026-09-16 タスク9(a) の構成確定と ADR-0199 コミット・spec 確定点: ADR=0199（Proposed。昇格はサイクル全体整合検査で） / worklog=`MakeAiInstructions-2026-09-16-04` / review=フル実施（claude-sonnet-5・1 回）＋差分再確認（claude-sonnet-5・1 回・提示後確定（実質的な収束に至らず））
@@ -121,11 +144,9 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-1. **起動場所**: 利用者がリモート操作中は master の作業ディレクトリのまま進めてよい（worktree への切替えは承認プロンプトが利用者に届かないため使わない）。すべてのファイル操作を本worktreeの絶対パスで行い、git は `git -C "D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification"` を使う。2026-09-15〜16 のタスク1〜8はこの方法で実施した（実績あり）。利用者が手元の端末を使えるなら、本worktreeで新しいセッションを起動してもよい。
-2. **読むもの**: 本handoff、**`docs/records/decisions/0199-...md`（タスク9の構成の正本。決定1〜6）と `docs/records/reviews/2026-09-16-adr-0199-pre-finalization-review.md`（指摘の採否・未確認のまま残るもの）**、`docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md`（実装の結果・確認を勧める判断）、`docs/records/experiments/2026-09-16-v3-task8a-probe.md` と `…-task8b-public-operations.md`（実機の観測）、タスク9の要件 `.superpowers/sdd/2026-09-14-isolated-verification-v3-implementation/task-9-brief.md`、計画の「実行承認を求める具体的な区切り」表のタスク9の行。実装担当へ委譲する直前に `start-work` の `references/plan-deviation-defaults.md` を読み直す。
-3. **タスク9の進め方**: (a) 読み取り調査と確定前レビューは 2026-09-16 に完了し、構成は ADR-0199（0675154）で確定した（利用者が認証方式と送信範囲を判断済み。再調査・再レビューは不要）。(a-2) **次はこれから**: ADR-0199 の決定3・4に伴う実装変更。対象は `runtime-profile.schema.json` の `policyExpectation`、`SbxRuntime.psm1` の作成 argv・`New-VerificationActivationRecord` の `policy` と `credentialExposure` の両検査・`Test-VerificationRuntimeProfile` の役割整合検査、共有試験フィクスチャ3種（`tests/SbxRuntimeV3.Tests.ps1` の `New-Profile`、`tests/fixtures/V3TestContext.psm1` の `New-V3TestProfile`、`tests/fixtures/FakeSbxScenario.psm1` の作成argv照合）、`tests/Invoke-SbxPilotProbe.ps1` の proposal 対応、`tests/fixtures/proposal-probe-settings.json`。**着手時に `task-9-brief.md` と計画のタスク9行へ決定6(c) を反映する**（差分再確認の指摘#3、未反映）。試験追加・再レビュー・ランナー再実行（約30分）を見込む。委譲の直前に `start-work` の `references/plan-deviation-defaults.md` を読み直す。(b) 承認区切り（計画のタスク9行）を提示して個別承認を得る。利用者による `sbx secret set openai --oauth` の実行を含む。(c) 承認後に proposal 用の証拠取得VM 2台（`iv-<runId8>-proposal`。1台目は照会・対照・ゲスト側確認と外側停止、2台目は保持と強制終了後の自動停止・復旧）。(d) 承認後に `pilot-source` で Claude Code・Codex 双方の主担当から1往復。ここで初めて `Invoke-VerificationReplay` の統合が実機で成立する。(e) 記録をコミットし、サイクル全体整合検査（ADR-0162・0192〜0198 の昇格判定）へ進む。
-4. **留意点**: sbx操作は毎回 `daemon status --json` で running を確認してから行い、停止中はAIから起動しない（利用者が通常端末で `& 'C:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe' daemon start -d`）。既存の試験VM5台は削除・再作成しない（`ls --json` の読取りのみ）。新たな実機・設定・モデル操作は ADR-0162・0192 の範囲外なら個別に確認する。独立試験の実行時は PATH の先頭に代替 codex.cmd を置き OpenAI Codex の項目を外す（junction をツールのサンドボックスが拒否するため）。ランナーは約30分。masterのhandoffは本worktreeでの再開案内のままで有効。
-
+1. 本handoffと2026-09-17-task9a2-independent-review.mdを読む。選択肢2・外部レビューは承認/実施済みで再質問しない。コードと対象試験は完了。次の操作案は2026-09-17-task9-proposal-probe-approval.md。
+2. 操作の明示承認と利用者のOAuth登録後、proposal用probeをlimitsAndTransportとabnormalExitRecoveryで1台ずつ実施する。各操作前にdaemon状態を確認し、既存5台を保全。未承認なら作成・認証・モデル呼出しを行わない。
+3. 実機の規則書式・認証・初回agent状態が想定と違えば停止する。記録からproposal profileを作成し、その後の実モデル往復・全体整合検査・統合は別の残作業として進める。更新・削除・daemon再起動を自動で行わない。
 ## 重要な意思決定の履歴
 
 - ADR-0199: 提案用VMはOAuthのセンチネル方式で認証し、通信許可を `auth.openai.com:443`・`chatgpt.com:443` の2件に限る。2026-09-16 の利用者の個別回答、Proposed（昇格はサイクル全体整合検査で）。`policyExpectation.networkPolicy` の `"deny *"` 固定を役割別へ改める設計変更を含む。

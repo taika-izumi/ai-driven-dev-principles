@@ -17,6 +17,8 @@ $script:TransportContrastKeys=@('exit0','exit7','exit127','timeout','clientKille
 $script:AcceptedLimitations=@('clipboard-text-write-possible','pid-count-unbounded','daemon-disconnect-unverified')
 $script:RoleSuffix=@{proposal='proposal';'replay-before'='before';'replay-after'='after';probe='probe'}
 $script:CreatableRoles=@('proposal','replay-before','replay-after')
+$script:ProposalDeniedHosts=@('api.openai.com','openai.com','files.openai.com','registry.npmjs.org','api.github.com','github.com','codeload.github.com','archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com','download.docker.com')
+$script:ProposalAllowedHosts=@('auth.openai.com','chatgpt.com')
 
 # ---- 共通補助 ----
 function Throw-VerificationRuntimeFailure([string]$Message,[string]$Status='blocked',[string]$Reason='') {
@@ -73,6 +75,8 @@ function Test-VerificationRuntimeProfile([hashtable]$Profile,[string]$Role,[hash
     if($Profile.role -cne $profileRole){Throw-VerificationRuntimeFailure "profile role '$($Profile.role)' does not match requested role '$Role'"}
     $expectedAgent=$(if($profileRole -eq 'proposal'){'codex'}else{'shell'})
     if($Profile.agent -cne $expectedAgent){Throw-VerificationRuntimeFailure "profile agent must be $expectedAgent for $profileRole"}
+    $expectedPolicy=$(if($profileRole -eq 'proposal'){'allow auth.openai.com chatgpt.com all ports only'}else{'deny *'})
+    if($Profile.policyExpectation.networkPolicy -cne $expectedPolicy){Throw-VerificationRuntimeFailure "profile networkPolicy must be $expectedPolicy for $profileRole"}
     if($profileRole -eq 'proposal'){
         if($null -eq $Profile.model -or -not$Settings.ContainsKey('model') -or $null -eq $Settings.model -or $Profile.model -cne $Settings.model){Throw-VerificationRuntimeFailure 'profile model does not match settings model'}
     }elseif($null -ne $Profile.model){Throw-VerificationRuntimeFailure 'replay profile must not name a model'}
@@ -111,6 +115,26 @@ function Get-VerificationEffectiveSettingsHash([hashtable]$Profile,[hashtable]$S
     # 意図した実行条件のラベル（role を含めない。before/after で一致すべき値）。実効値の証拠は activationRecord の checks が担う。
     $limits=@{};foreach($key in $Settings.limits.Keys){$limits[$key]=$Settings.limits[$key]}
     Get-VerificationCanonicalHash @{agent=$Profile.agent;templateDigest=$Profile.templateDigest;cpus=$Settings.limits.cpus;memoryMiB=$Settings.limits.memoryMiB;networkPolicy=$Profile.policyExpectation.networkPolicy;shareSkills=$false;workspace='none';limits=$limits}
+}
+function Get-VerificationCreateArgv([string]$Agent,[string]$Name,[string]$Digest) {
+    $argv=@('create',$Agent,'--name',$Name,'--cpus','2','--memory','2g','--no-share-skills')
+    if($Agent -ceq 'codex'){
+        foreach($hostName in $script:ProposalDeniedHosts){$argv+=@('--deny-network',$hostName)}
+    }else{$argv+=@('--deny-network','*')}
+    $argv+=@('--template',$Digest)
+    ,$argv
+}
+function Get-VerificationProposalNetworkTargets() {
+    $targets=@()
+    foreach($hostName in $script:ProposalAllowedHosts){
+        foreach($port in @(443,8443)){$targets+=@{host=$hostName;port=$port;allowed=$true;target="https://$($hostName):$port"}}
+    }
+    foreach($hostName in $script:ProposalDeniedHosts+@('example.com')){
+        $port=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){80}else{443})
+        $scheme=$(if($port -eq 80){'http'}else{'https'})
+        $targets+=@{host=$hostName;port=$port;allowed=$false;target="$($scheme)://$($hostName):$port"}
+    }
+    $targets
 }
 # ---- sbx CLI の起動（固定 argv・最小環境辞書・上限付き） ----
 $script:PilotLeases=@{}      # leaseId -> @{mutex;runId;daemonKey}。Mutex ハンドルは外へ出さない。
@@ -373,6 +397,56 @@ function Get-VerificationNetworkRules([hashtable]$Policy) {
         @{scope=[string]$rule.scope;decision=[string]$rule.decision;resources=@(foreach($r in @($rule.resources)){[string]$r});status=$(if($rule.ContainsKey('status')){[string]$rule.status}else{$null})}
     })
 }
+function Test-VerificationProposalPolicy([object[]]$Checks) {
+    $expected=@{}
+    foreach($target in Get-VerificationProposalNetworkTargets){$expected["$($target.host):$($target.port)"]=$target.allowed}
+    if($Checks.Count -ne $expected.Count){return $false}
+    $seen=@{}
+    foreach($check in $Checks){
+        if($check -isnot [hashtable] -or -not$check.ContainsKey('host') -or -not$check.ContainsKey('allowed')){return $false}
+        $hostName=[string]$check.host
+        if(-not$expected.ContainsKey($hostName) -or $seen.ContainsKey($hostName) -or $check.allowed -isnot [bool] -or $check.allowed -ne $expected[$hostName]){return $false}
+        $seen[$hostName]=$true
+    }
+    $true
+}
+function Test-VerificationProposalRules([object[]]$Rules,[string]$Name) {
+    # policy ls は実効規則の全体を見る。既知の対照先だけが拒否でも、追加allowがあれば承認範囲外となる。
+    $kitHosts=@($script:ProposalAllowedHosts)+@(foreach($hostName in $script:ProposalDeniedHosts){if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){"$($hostName):80"}else{$hostName}})
+    $allowSeen=@{};$denySeen=@{}
+    foreach($rule in $Rules){
+        if($rule -isnot [hashtable] -or $rule.status -cne 'active'){continue}
+        foreach($resource in @($rule.resources)){
+            $hostName=[string]$resource
+            if($rule.decision -ceq 'allow'){
+                if($kitHosts -cnotcontains $hostName){return $false}
+                $allowSeen[$hostName]=$true
+            }elseif($rule.decision -ceq 'deny' -and $rule.scope -ceq "sandbox:$Name"){
+                if($resource -ceq '*'){return $false}
+                $denySeen[$hostName]=$true
+            }
+        }
+    }
+    foreach($hostName in $kitHosts){if(-not$allowSeen.ContainsKey($hostName)){return $false}}
+    foreach($hostName in $script:ProposalDeniedHosts){if(-not$denySeen.ContainsKey($hostName)){return $false}}
+    $true
+}
+function Get-VerificationProposalPolicyChecks([hashtable]$Client,[string]$Name,[hashtable]$RunBudget) {
+    $checks=@()
+    foreach($target in Get-VerificationProposalNetworkTargets){
+        $result=Invoke-VerificationSbxJson $Client @('policy','check','network','--sandbox',$Name,$target.target,'--json') $RunBudget 'policy-check'
+        if(-not$result.ContainsKey('allowed') -or $result.allowed -isnot [bool]){Throw-VerificationRuntimeFailure "policy check lacks boolean allowed for $($target.host):$($target.port)" 'blocked' 'query-failed'}
+        $checks+=@{host="$($target.host):$($target.port)";allowed=$result.allowed}
+    }
+    $checks
+}
+function Test-VerificationCredentialExposure([string]$Role,[object[]]$Secrets) {
+    $allowed=$(if($Role -ceq 'proposal'){@('mcpgateway','openai')}else{@('mcpgateway')})
+    foreach($secret in $Secrets){
+        if($secret -isnot [hashtable] -or -not$secret.ContainsKey('name') -or $allowed -cnotcontains [string]$secret.name){return $false}
+    }
+    $true
+}
 function Get-VerificationInspectSummary([hashtable]$Inspect) {
     foreach($key in @('state','image_digest','secrets','mcp_gateway','network_policy')){if(-not$Inspect.ContainsKey($key)){Throw-VerificationRuntimeFailure "inspect --json lacks $key" 'blocked' 'query-failed'}}
     @{state=[string]$Inspect.state;imageDigest=[string]$Inspect.image_digest;secrets=@(foreach($s in @($Inspect.secrets)){@{name=[string]$s.name;source=$(if($s.ContainsKey('source')){[string]$s.source}else{$null})}});mcpGateway=[bool]$Inspect.mcp_gateway;networkPolicy=$Inspect.network_policy}
@@ -398,14 +472,18 @@ function New-VerificationActivationRecord([hashtable]$Entry,[hashtable]$Profile,
     $logLines=Get-VerificationRuntimeLogLines $Entry.logPath $name
     $expectedDigest=$Profile.templateDigest.Substring($Profile.templateDigest.IndexOf('@')+1)
     $denyAll=@($rules | Where-Object {$_.decision -ceq 'deny' -and $_.scope -ceq "sandbox:$name" -and (@($_.resources) -ccontains '*')}).Count -gt 0
+    $proposal=($Profile.role -ceq 'proposal')
+    $networkChecks=$(if($proposal){@(Get-VerificationProposalPolicyChecks $client $name $RunBudget)}else{@()})
+    $policyVerified=$(if($proposal){(Test-VerificationProposalRules $rules $name) -and (Test-VerificationProposalPolicy $networkChecks) -and -not$denyAll}else{$denyAll})
     $forwarderLines=@($logLines | Where-Object {$_.msg -ceq 'started SSH agent forwarder'}).Count
-    $otherSecrets=@($inspect.secrets | Where-Object {$_.name -cne 'mcpgateway'} | ForEach-Object {$_.name})
+    $allowedSecrets=$(if($proposal){@('mcpgateway','openai')}else{@('mcpgateway')})
+    $secretsVerified=Test-VerificationCredentialExposure $Profile.role $inspect.secrets
     $otherRunning=@($List | Where-Object {$_.id -cne $id -and $_.status -cne 'stopped'} | ForEach-Object {$_.name})
     $checks=@{
-        policy=@{verdict=$(if($denyAll -and $inspect.networkPolicy -is [hashtable] -and $inspect.networkPolicy.scope -ceq 'sandbox'){'verified'}else{'failed'});expected=@{networkPolicy=$Profile.policyExpectation.networkPolicy;scope='sandbox'};observed=@{rules=$rules;networkPolicy=$inspect.networkPolicy};source='policy ls <name> --json / inspect --json'}
+        policy=@{verdict=$(if($policyVerified -and $inspect.networkPolicy -is [hashtable] -and $inspect.networkPolicy.scope -ceq 'sandbox'){'verified'}else{'failed'});expected=@{networkPolicy=$Profile.policyExpectation.networkPolicy;scope='sandbox'};observed=@{rules=$rules;networkPolicy=$inspect.networkPolicy;networkChecks=$networkChecks};source=$(if($proposal){'policy check network --sandbox <name> --json / policy ls <name> --json / inspect --json'}else{'policy ls <name> --json / inspect --json'})}
         mount=@{verdict=$(if([string]$spec.WorkspaceDir -eq '' -and $spec.ShareSkills -eq $false -and $inspect.imageDigest -ceq $expectedDigest -and $inspect.state -ceq 'running'){'verified'}else{'failed'});expected=@{workspaceDir='';shareSkills=$false;imageDigest=$expectedDigest;state='running'};observed=@{workspaceDir=[string]$spec.WorkspaceDir;shareSkills=$spec.ShareSkills;imageDigest=$inspect.imageDigest;state=$inspect.state};source='runtimes/<name>.json / inspect --json'}
         resource=@{verdict=$(if($spec.CPUs -eq 2 -and [string]$spec.Memory -ceq '2g'){'verified'}else{'failed'});expected=@{cpus=2;memory='2g'};observed=@{cpus=$spec.CPUs;memory=$spec.Memory};source='runtimes/<name>.json'}
-        credentialExposure=@{verdict=$(if($otherSecrets.Count -eq 0){'verified'}else{'failed'});expected=@{secretsOtherThanMcpGateway=@()};observed=@{secrets=$inspect.secrets};source='inspect --json secrets'}
+        credentialExposure=@{verdict=$(if($secretsVerified){'verified'}else{'failed'});expected=@{allowedServiceNames=$allowedSecrets};observed=@{secrets=$inspect.secrets};source='inspect --json secrets'}
         sshForwarding=@{verdict=$(if([string]$spec.SSHAgentSocketPath -eq '' -and $forwarderLines -eq 0){'verified'}else{'failed'});expected=@{sshAgentSocketPath='';forwarderLines=0};observed=@{sshAgentSocketPath=[string]$spec.SSHAgentSocketPath;forwarderLines=$forwarderLines};source='runtimes/<name>.json / daemon.log'}
         clipboardImagePaste=@{verdict=$(if(-not$ClipboardImagePaste){'verified'}else{'failed'});expected=@{value=$false};observed=@{value=$ClipboardImagePaste};source='settings get --json clipboard.imagePaste'}
         # ADR-0195: 登録0件で verified。製品が常設するゲートウェイと mcpgateway secret の存在は製品挙動として記録する。
@@ -562,7 +640,7 @@ function New-VerificationSandbox([hashtable]$PreparedRun,[string]$Role,[hashtabl
             if($vm.status -cne 'stopped'){Throw-VerificationRuntimeFailure "another sandbox is not stopped: $($vm.name) ($($vm.status))" 'blocked' 'other-sandbox-active'}
         }
         $stage='create'
-        $argv=@('create',$Profile.agent,'--name',$name,'--cpus','2','--memory','2g','--no-share-skills','--deny-network','*','--template',$Profile.templateDigest)
+        $argv=Get-VerificationCreateArgv $Profile.agent $name $Profile.templateDigest
         $createdAt=Get-VerificationUtcNow
         # 作成要求を送る直前から unknown/unverified とする（仕様02「作成要求送信後に作成成否を確認できない場合はunknown・unverifiedとし、未作成へ推定しない」）。
         # create の呼び出し中・戻り後の例外（出力ファイルの読取り失敗、Invoke-VerificationProcessV3 の例外など）も unknown のまま catch へ入る。
@@ -905,4 +983,4 @@ function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$Recover
     }
     $saved
 }
-Export-ModuleMember -Function Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Copy-VerificationSandboxInput,Confirm-VerificationSandboxInput,Invoke-VerificationSandboxCommand,Stop-VerificationSandbox,Stop-VerificationRecordedSandboxes,Write-VerificationSandboxRecord,New-VerificationCleanupBudget
+Export-ModuleMember -Function Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Get-VerificationCreateArgv,Get-VerificationProposalNetworkTargets,Get-VerificationNetworkRules,Test-VerificationProposalRules,Test-VerificationProposalPolicy,Test-VerificationCredentialExposure,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Copy-VerificationSandboxInput,Confirm-VerificationSandboxInput,Invoke-VerificationSandboxCommand,Stop-VerificationSandbox,Stop-VerificationRecordedSandboxes,Write-VerificationSandboxRecord,New-VerificationCleanupBudget

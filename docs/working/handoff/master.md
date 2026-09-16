@@ -94,8 +94,8 @@
 
 ## 次セッション開始時のアクション
 
-1. docs/overview/project-purpose.md、masterのhandoffを読む。あわせて `git worktree list` と `git branch --sort=-committerdate` で master より新しいコミットを持つ branch を確認し、あればその worktree の handoff を読んでから要約する（2026-09-16 時点の最新は codex/isolated-verification の c2c2656）。**隔離検証を再開する場合、利用者がリモート操作中なら worktree へ切り替えず、master の作業ディレクトリのまま `.worktrees/isolated-verification` の絶対パスと `git -C` で扱う**（切替えの承認プロンプトは利用者の画面に届かない。2026-09-15〜16 のタスク1〜8はこの方法で実施）。読むのは同worktreeの handoff（1fbd84d）で、そこにタスク9の進め方が書いてある。
-2. 次の利用者の依頼を確認する。候補は codex/isolated-verification のタスク9（専用 worktree 側。認証方式の実測から始め、送信範囲の判断と個別承認を経る）、worktree 使用を踏まえた作業フローの定義（課題起票から）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。sbx デーモンは 2026-09-16 に利用者が起動した世代（PID 25888）が稼働中の可能性があるため、隔離検証を再開するときは `daemon status --json` で確認する。
+1. docs/overview/project-purpose.md、masterのhandoffを読む。あわせて `git worktree list` と `git branch --sort=-committerdate` で master より新しいコミットを持つ branch を確認し、あればその worktree の handoff を読んでから要約する（2026-09-16 時点の最新は codex/isolated-verification の c2c2656）。**隔離検証を再開する場合、利用者がリモート操作中なら worktree へ切り替えず、master の作業ディレクトリのまま `.worktrees/isolated-verification` の絶対パスと `git -C` で扱う**（切替えの承認プロンプトは利用者の画面に届かない。2026-09-15〜16 のタスク1〜8はこの方法で実施）。読むのは `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`（c2c2656）で、そこにタスク9の進め方と次の着手点が書いてある。
+2. 次の利用者の依頼を確認する。候補は codex/isolated-verification のタスク9の残り（専用 worktree 側。認証方式と送信範囲は ADR-0199 で確定済みのため再調査せず、決定3・4の実装変更から始め、承認区切りの提示と個別承認を経る）、worktree 使用を踏まえた作業フローの定義（課題起票から）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。sbx デーモンは 2026-09-16 に利用者が起動した世代（PID 25888）が稼働中の可能性があるため、隔離検証を再開するときは `daemon status --json` で確認する。
 3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・隔離検証を自動再開しない。既存の証跡・stashを保全する。
 
 ## 重要な意思決定の履歴

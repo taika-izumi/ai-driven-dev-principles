@@ -21,6 +21,7 @@
 
 - VM に接続している全セッション（`exec`・`cp` などのクライアント接続）が切れると、デーモンは 30 秒の猶予後に VM を停止する。daemon.log の順序は `session disconnected, deferring auto-stop`（delay=30s）→ `auto-stop grace period expired, stopping runtime` → `auto-stopped runtime after last session disconnected`。
 - 停止してもディスクは残る。失われるのはメモリ上の状態と実行中のプロセス。
+- 外側から `stop` で停止したあとも、約30秒後に同じ VM の `auto-stopped runtime after last session disconnected` 行が出る（2026-09-16 のタスク8b で2台とも実測。停止でクライアント接続が切れ、遅延停止のタイマーが停止済みの VM に発火するため）。含意: 停止の証拠は「stop 発行時刻以後の `stopped runtime container` 行」で判定し、あとから出る自動停止行を停止失敗や再起動の痕跡と読まない。
 - 停止した VM は勝手には起動しない。次の `exec`・`cp` が「停止中なので先に起動する」と動く（出力に `Sandbox ... started successfully`）。停止完了と新セッションが重なった場合は `auto-stop complete, new session waiting` として停止完了後に起動し直す。
 - `exec` に「停止中なら起動しない」指定は無い。
 - 含意: エージェントを VM 内で走らせる間はクライアント接続を保持する。接続を切って 30 秒以上空けると次の操作は再起動を伴うため、背景プロセスに依存しない。停止確認では、自動停止と外側からの停止を daemon.log の行で区別する。30 秒が設定で変えられるかは未確認。

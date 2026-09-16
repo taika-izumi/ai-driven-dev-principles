@@ -1,9 +1,9 @@
 # Handoff: Issue-0136 残り実測と隔離系の整理
 
 - **Branch**: master
-- **Last Updated**: 2026-09-15 14:22 (Asia/Tokyo)
+- **Last Updated**: 2026-09-16 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: 調査・実測/Issue-0136 の残り実測と記録のコミット完了。隔離検証（codex/isolated-verification）は実装計画確定済み・実装未着手で、専用 worktree の新セッションで再開する
+- **Current Phase**: 調査・実測/Issue-0136 の残り実測と記録のコミット完了。隔離検証（codex/isolated-verification）はタスク1〜8を完了し、次はタスク9（実モデル往復、個別承認が前提）。作業は専用 worktree 側で続く
 
 ## 作業の目的・背景
 
@@ -11,7 +11,9 @@
 
 前サイクル（ADR-0190・0191 の統合、0.1.29 の公開・Codex 導入）は完了済み。目的参照の実運用評価は 2026-09-14 の開始が1件目、2026-09-15 の開始が2件目にあたる（いずれも正本の読取りと版照合が成立）。
 
-2026-09-15 の master セッションは開始処理のみで、master 側の成果物変更はない。直近の作業セッション（2026-09-15）は `.worktrees/isolated-verification` 側で行われ、v3 実装計画の確定（285f315）と引き継ぎ確定（2d0db67）まで済み、実装は未着手。master の handoff だけを読んで「進行中なし」と要約し、利用者の指摘で判明した（worklog `MakeAiInstructions-2026-09-15-03`）。
+2026-09-15 の master セッションは開始処理のみで、master 側の成果物変更はない。master の handoff だけを読んで「進行中なし」と要約し、利用者の指摘で判明した（worklog `MakeAiInstructions-2026-09-15-03`）。
+
+2026-09-15〜16 の作業は `.worktrees/isolated-verification` 側で行われた（利用者がリモート操作中で worktree へ切り替えられないため、master の作業ディレクトリから絶対パスと `git -C` で扱った）。v3 実装計画のタスク1〜7の実装とブランチ全体の最終レビュー・最終修正、タスク8の実VM実証（VM 3台を作成、いずれも stopped で保全）まで完了し、当該branchの最新は 1fbd84d。master 側の成果物は変更していない。詳細は `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md` と同worktreeの `docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md`。
 
 ## 関連ドキュメント
 
@@ -48,7 +50,8 @@
 ## 未着手のタスク
 
 - [ ] 目的参照の実運用評価（残り1件。1件目は 2026-09-14、2件目は 2026-09-15 の開始で成立）。
-- [ ] codex/isolated-verification の実装着手。正本は .worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md（2d0db67）、計画は同 worktree の docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md（plan 確定点通過・285f315）。利用者は 2026-09-15 に「専用 worktree で新セッションを起動して start-work する」経路を選択済み。専用 Issue は無く、Issue-0136 が再開経路。
+- [ ] codex/isolated-verification のタスク9（実モデル往復。認証方式と通信許可の実測、送信範囲の利用者判断、個別承認が前提）。その後にサイクル全体整合検査と ADR-0162・0192〜0198 の昇格判定、masterへの統合と振り返り。
+- [ ] （完了）codex/isolated-verification の実装着手。正本は .worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md（2d0db67）、計画は同 worktree の docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md（plan 確定点通過・285f315）。利用者は 2026-09-15 に「専用 worktree で新セッションを起動して start-work する」経路を選択済み。専用 Issue は無く、Issue-0136 が再開経路。
 - [ ] worktree 使用を踏まえた作業フローの定義（利用者の 2026-09-15 の示唆。「メモリに残すのではなく作業フローを定義したほうがよい」）。master で start-work すると他 worktree の新しい handoff を読まず最新状態を誤る問題が起点。課題起票・設計は未着手・未承認。worklog `MakeAiInstructions-2026-09-15-03` を参照。
 
 - [ ] Issue-0145の対策設計・着手は未承認。起票だけを実施した。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
@@ -85,12 +88,13 @@
 
 - 2026-09-14 Issue-0136 残り実測と記録更新の完了: ADR=なし（既存規範ADR-0143・0144の確認に留まり、試験手順・版更新・課題の追跡経路は既存規約に従う運用判断） / worklog=`MakeAiInstructions-2026-09-14-01`
 - 2026-09-14 セッション終了の引き継ぎ確定: ADR=なし（同日の運用判断のみ、方針変更なし） / worklog=棄却（同日01に記録済みの差分以外なし）
+- 2026-09-16 隔離検証のタスク1〜8を worktree 側で完了しセッション区切り（master 側の成果物変更なし）: ADR=なし（判断と決定はすべて worktree 側の計画・ADR-0198・レビュー記録に記録済み） / worklog=`MakeAiInstructions-2026-09-16-01`
 - 2026-09-15 開始処理のみでセッション区切り（隔離検証は worktree の新セッションへ）: ADR=なし（再開経路の選択は既存 handoff の案内どおりで方針変更なし。作業フロー定義は示唆のみで未決定） / worklog=`MakeAiInstructions-2026-09-15-03`
 
 ## 次セッション開始時のアクション
 
 1. docs/overview/project-purpose.md、masterのhandoffを読む。あわせて `git worktree list` と `git branch --sort=-committerdate` で master より新しいコミットを持つ branch を確認し、あればその worktree の handoff を読んでから要約する（2026-09-15 時点の最新は codex/isolated-verification の 2d0db67）。隔離検証を再開する場合は `.worktrees/isolated-verification` で新セッションを起動して start-work し、同 branch の handoff（2d0db67）の案内に従う。
-2. 次の利用者の依頼を確認する。候補は codex/isolated-verification の実装着手（専用 worktree の新セッションで行う）、worktree 使用を踏まえた作業フローの定義（課題起票から）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。
+2. 次の利用者の依頼を確認する。候補は codex/isolated-verification のタスク9（専用 worktree 側。認証方式の実測から始め、送信範囲の判断と個別承認を経る）、worktree 使用を踏まえた作業フローの定義（課題起票から）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。sbx デーモンは 2026-09-16 に利用者が起動した世代（PID 25888）が稼働中の可能性があるため、隔離検証を再開するときは `daemon status --json` で確認する。
 3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・隔離検証を自動再開しない。既存の証跡・stashを保全する。
 
 ## 重要な意思決定の履歴

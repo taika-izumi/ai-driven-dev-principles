@@ -376,9 +376,9 @@ $ctx=New-Case;$trusted=New-Input $ctx;$vm=Add-Vm $ctx -ConfirmFiles $trusted.man
 $unitOk=Get-FakeSbxResponse 'unittestOk';$unitFail=Get-FakeSbxResponse 'unittestFail'
 $unitArgv=@('exec','-w','/home/agent/workspace/source','-e','PYTHONDONTWRITEBYTECODE=1','-e','PYTHONHASHSEED=0',[regex]::Escape($vm.name),'python3','-m','unittest','discover','-s','\.verification-tests','-p','test_\*\.py','-v')
 Add-FakeSbxResponse $ctx.case $unitArgv -Stderr $unitFail.text -ExitCode 1 -Synthetic $unitFail.synthetic | Out-Null
-Add-FakeSbxResponse $ctx.case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($vm.name),'python3','--version') -Stdout "Python 3.12.3`n" -Synthetic $true -Source '版の出力は 8a で実測する（値は創作）' | Out-Null
+Add-FakeSbxResponse $ctx.case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($vm.name),'python3','--version') -Stdout "Python 3.14.4`n" -Synthetic $false -Source '2026-09-16 タスク8a の実測（固定テンプレートの python3 は stdout に "Python 3.14.4" を出す）' | Out-Null
 # transport 対照の応答（終了7・127・137、クライアント強制終了、proposal-export.py の JSON 1行）。exitCode は index.json の値。
-$transportResponses=[ordered]@{exec7=@('sh','-c','exit 7');exec127=@('sh','-c','no-such-command');exec137=@('sh','-c','bounded-load');execClientKilled=@('sh','-c','client-killed');proposalExportJson=@('python3','/home/agent/proposal-export.py')}
+$transportResponses=[ordered]@{exec7=@('sh','-c','exit 7');exec127=@('sh','-c','no-such-command-probe-8a');exec137=@('sh','-c','bounded-load');execClientKilled=@('sh','-c','client-killed');proposalExportJson=@('python3','/home/agent/proposal-export.py')}
 foreach($key in $transportResponses.Keys){
     $response=Get-FakeSbxResponse $key
     $patterns=@('exec','-w','/home/agent/workspace/source',[regex]::Escape($vm.name))+@($transportResponses[$key] | ForEach-Object {[regex]::Escape($_)})
@@ -432,10 +432,11 @@ $record=Invoke-VerificationSandboxCommand $handle @('python3','--version') $null
 Assert-True ($record.transportVerified -eq $true) 'Invoke: 取得系は期待形式の署名で true'
 $record=Invoke-VerificationSandboxCommand $handle @('codex','exec','--json') ([Text.Encoding]::UTF8.GetBytes('request')) '/home/agent/workspace/proposal' @{} (New-Budget $ctx -CommandSeconds 600) $null
 Assert-True ($null -eq $record.transportVerified -and $record.exitCode -eq 0 -and $record.stdoutPath -like '*quarantine\commands\*') 'Invoke: 署名なし（Codex 本体）は transportVerified=null で quarantine/ へ'
-# transport 対照: exitCode はそのまま記録し、打ち切りが無く署名が指定ストリームにあれば transportVerified=true。出力の無い終了（137・クライアント強制終了）は署名が現れず false。
-$record=Invoke-VerificationSandboxCommand $handle @('sh','-c','exit 7') $null $dest @{} $unitBudget @{pattern='command failed with status 7';stream='stderr'}
-Assert-True ($record.exitCode -eq 7 -and $record.transportVerified -eq $true) "transport: 終了7を記録し stderr の署名で true（exit=$($record.exitCode), tv=$($record.transportVerified)）"
-$record=Invoke-VerificationSandboxCommand $handle @('sh','-c','no-such-command') $null $dest @{} $unitBudget @{pattern='not found$';stream='stderr'}
+# transport 対照: exitCode はそのまま記録し、打ち切りが無く署名が指定ストリームにあれば transportVerified=true。出力の無い終了（7・137・クライアント強制終了）は署名が現れず false。
+# 終了7の stderr が0バイトであることは 2026-09-16 タスク8a の実機対照で確認した（それまでの創作の文言は削除した）。
+$record=Invoke-VerificationSandboxCommand $handle @('sh','-c','exit 7') $null $dest @{} $unitBudget @{pattern='\S';stream='stderr'}
+Assert-True ($record.exitCode -eq 7 -and $record.transportVerified -eq $false) "transport: 終了7（出力なし）を記録し、署名が現れないので false（exit=$($record.exitCode), tv=$($record.transportVerified)）"
+$record=Invoke-VerificationSandboxCommand $handle @('sh','-c','no-such-command-probe-8a') $null $dest @{} $unitBudget @{pattern='not found$';stream='stderr'}
 Assert-True ($record.exitCode -eq 127 -and $record.transportVerified -eq $true) "transport: 終了127を記録し stderr の署名で true（exit=$($record.exitCode), tv=$($record.transportVerified)）"
 $record=Invoke-VerificationSandboxCommand $handle @('sh','-c','bounded-load') $null $dest @{} $unitBudget @{pattern='\S';stream='stdout'}
 Assert-True ($record.exitCode -eq 137 -and $record.transportVerified -eq $false -and -not$record.timedOut) "transport: 終了137（出力なし）を記録し、署名が現れないので false（exit=$($record.exitCode), tv=$($record.transportVerified)）"

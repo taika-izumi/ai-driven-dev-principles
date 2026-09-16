@@ -111,7 +111,7 @@ function Add-RunScenario([hashtable]$Ctx,[string]$RunRoot){
         foreach($pair in @(@('before',$buggyText,$spec.before),@('after',$spec.replacement,$spec.after))){
             $name=$Ctx.names[$pair[0]]
             Add-FakeSbxSandboxScenario $case $name ([guid]::NewGuid().ToString()) -Agent 'shell' -ConfirmFiles (Get-InputEntries $pair[1])
-            Add-FakeSbxResponse $case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($name),'python3','-m','unittest','discover','-s','\.verification-tests','-p','test_\*\.py','-v') -Stderr $pair[2].text -ExitCode $(if($pair[2] -eq $unitOk){0}else{1}) -Synthetic $true -Source 'unittest の出力（ストリームと形式）は 8a で実測して差し替える' | Out-Null
+            Add-FakeSbxResponse $case @('exec','-w','/home/agent/workspace/source',[regex]::Escape($name),'python3','-m','unittest','discover','-s','\.verification-tests','-p','test_\*\.py','-v') -Stderr $pair[2].text -ExitCode $(if($pair[2] -eq $unitOk){0}else{1}) -Synthetic $pair[2].synthetic -Source $pair[2].source | Out-Null
         }
     }
     if($null -ne $spec.edit){& $spec.edit $Ctx}

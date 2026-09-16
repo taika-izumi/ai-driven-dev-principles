@@ -1,5 +1,5 @@
 {
-  "_comment": "偽sbxの応答テンプレート。synthetic=false は .tmp/sbx-capability-20260914/ の実測出力から利用者識別子・機種名をダミー値へ置き換えたもの。synthetic=true は実測が無い創作応答で、タスク8a の実機対照で差し替える（デーモン停止時の応答だけは恒久的に synthetic）。{{...}} は複製時に FakeSbxScenario.psm1 が置き換える。",
+  "_comment": "偽sbxの応答テンプレート。synthetic=false は実測出力（.tmp/sbx-capability-20260914/ の試験A〜D、および 2026-09-16 タスク8a の probe）から利用者識別子・機種名をダミー値へ置き換えたもの。synthetic=true は実測が無い創作応答（デーモン停止時の応答は恒久的に synthetic。残る creation 失敗・MCP 登録あり・clipboard true・未観測 status・proposal-export の出力はタスク9以降の課題）。{{...}} は複製時に FakeSbxScenario.psm1 が置き換える。",
   "daemonStatusRunning": {"file": "daemon-status-running.json", "synthetic": false, "source": "00-daemon-status.json"},
   "daemonStatusStopped": {"file": "daemon-status-stopped.json", "synthetic": true, "source": "停止中の応答形式は未記録（daemon status が停止中でも自動起動しないことだけ実測済み）"},
   "createSuccess": {"file": "create-success.txt", "synthetic": false, "source": "10-create.stdout.txt"},
@@ -12,12 +12,12 @@
   "settingsClipboardFalse": {"file": "settings-clipboard-false.json", "synthetic": false, "source": "51-settings-get-clipboard.json"},
   "settingsClipboardTrue": {"file": "settings-clipboard-true.json", "synthetic": true, "source": "value=true の応答は未観測（形式は 51 に合わせた）"},
   "stop": {"file": "stop.txt", "synthetic": false, "source": "41-stop.txt"},
-  "exec7": {"file": "exec-7.txt", "synthetic": true, "exitCode": 7, "source": "終了7の応答は未観測（stderr の文言は創作。8a の transport 対照で差し替える）"},
-  "exec127": {"file": "exec-127.txt", "synthetic": true, "exitCode": 127, "source": "コマンド不在の応答は未観測（8a の transport 対照で差し替える）"},
+  "exec7": {"file": "exec-7.txt", "synthetic": false, "exitCode": 7, "source": "2026-09-16 タスク8a の transport 対照（sh -c 'exit 7'）。終了7・stderr は0バイト"},
+  "exec127": {"file": "exec-127.txt", "synthetic": false, "exitCode": 127, "source": "2026-09-16 タスク8a の transport 対照（sh -c 'no-such-command-probe-8a'）。終了127・stderr は sh の not found 行"},
   "exec137": {"file": "exec-137.txt", "synthetic": false, "exitCode": 137, "source": "43-load-exec-job.txt（負荷中の外側 stop で exec が終了137・出力なし）"},
-  "execClientKilled": {"file": "exec-client-killed.txt", "synthetic": true, "exitCode": -1, "source": "sbx クライアントを外側から強制終了した応答は未観測（TerminateProcess の終了コード -1・出力なしを想定。8a の clientKilled 対照で差し替える）"},
+  "execClientKilled": {"file": "exec-client-killed.txt", "synthetic": true, "exitCode": -1, "source": "出力が無いことは 2026-09-16 タスク8a で実測（stdout・stderr とも0バイト。外側の観測は exitCode=null・timedOut 相当・processTreeStopped=true）。偽sbx は『外側からのクライアント強制終了』そのものを再現できないため、終了コード -1 は偽sbx を終わらせるための創作値のまま残す"},
   "proposalExportJson": {"file": "proposal-export.json", "synthetic": true, "exitCode": 0, "source": "proposal-export.py の出力は未実装・未観測（stdout に JSON 1行。形式はタスク4で確定）"},
   "lsUnobservedStatus": {"file": "ls-unobserved-status.json", "synthetic": true, "exitCode": 0, "source": "11-vms-after-create.json の形式に、未観測の status 値（{{status}}）を入れた創作"},
-  "unittestOk": {"file": "unittest-ok.txt", "synthetic": true, "source": "unittest の要約ストリームと形式は 8a で実測して差し替える（TextTestRunner の既定は stderr）"},
-  "unittestFail": {"file": "unittest-fail.txt", "synthetic": true, "source": "同上"}
+  "unittestOk": {"file": "unittest-ok.txt", "synthetic": true, "source": "要約行 'Ran N tests in' が stderr に出ること・出力の枠組みは 2026-09-16 タスク8a で実測したが、成功時の出力そのものは未観測（8a の承認範囲は unittest 1本で、その1本は合成題材の欠陥で失敗した）。形式を実測の失敗時出力に合わせた創作"},
+  "unittestFail": {"file": "unittest-fail.txt", "synthetic": false, "source": "2026-09-16 タスク8a の unittest 1本（python3 -m unittest discover -s .verification-tests -p test_*.py -v、Python 3.14.4）の stderr 原文。stdout は0バイト"}
 }

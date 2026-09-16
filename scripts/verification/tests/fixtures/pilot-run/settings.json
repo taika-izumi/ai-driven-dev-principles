@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 3,
+  "sbxPath": "{{sbxPath}}",
+  "pwshPath": "{{pwshPath}}",
+  "runsRoot": "{{runsRoot}}",
+  "model": "task8b-no-model-used",
+  "proposalProfilePath": "{{proposalProfilePath}}",
+  "replayProfilePath": "{{replayProfilePath}}",
+  "pilotInputPath": "{{pilotInputPath}}",
+  "limits": {
+    "totalSeconds": 1800,
+    "proposalSeconds": 600,
+    "replaySeconds": 120,
+    "cleanupSeconds": 30,
+    "cpus": 2,
+    "memoryMiB": 2048,
+    "maxProposalFiles": 100,
+    "maxFileBytes": 1048576,
+    "maxProposalBytes": 8388608,
+    "maxWireBytes": 16777216,
+    "maxOutputBytes": 16777216
+  }
+}

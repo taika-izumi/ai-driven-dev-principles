@@ -110,9 +110,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-1. 本worktreeでstart-work。本handoff、`docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md`（実装の結果・確認を勧める判断・残件・タスク8a の確認事項）、実装計画のタスク8・9と「実行承認を求める具体的な区切り」表を読む。
-2. 利用者に次を求める: タスク8の承認区切り表の内容（VM名・固定argv・搬入題材と hash・対照・約30分の保持・probe 強制終了と復旧・所要見込み）を提示して個別承認を得る。デーモンが停止中なら利用者の通常端末での起動を先に依頼する。実行直前に `start-work` の `references/plan-deviation-defaults.md` を読み直す。
-3. 留意点: sbx操作は`daemon status`でrunningを確認してから行い、停止中はAIから起動しない。試験VM2台は削除しない。新たな実機・設定・モデル操作はADR-0162・0192の範囲外なら個別に確認する。独立試験の実行時は PATH に代替 codex.cmd を前置し（Codex の junction をツールのサンドボックスが拒否する）、ランナーは約26分かかる。利用者がスマホから Remote Control 中は承認プロンプトに応答できないため、worktree の切替えや未許可コマンドを伴う手順は避ける。masterのhandoffは本worktreeでの再開案内のままで有効。
+1. **起動場所**: 利用者がリモート操作中は master の作業ディレクトリのまま進めてよい（worktree への切替えは承認プロンプトが利用者に届かないため使わない）。すべてのファイル操作を本worktreeの絶対パスで行い、git は `git -C "D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification"` を使う。2026-09-15〜16 のタスク1〜8はこの方法で実施した（実績あり）。利用者が手元の端末を使えるなら、本worktreeで新しいセッションを起動してもよい。
+2. **読むもの**: 本handoff、`docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md`（実装の結果・確認を勧める判断・タスク8/9 の確認事項）、`docs/records/experiments/2026-09-16-v3-task8a-probe.md` と `…-task8b-public-operations.md`（実機の観測）、タスク9の要件 `.superpowers/sdd/2026-09-14-isolated-verification-v3-implementation/task-9-brief.md`（計画から抜き出し済み）、計画の「実行承認を求める具体的な区切り」表のタスク9の行。実装担当へ委譲する直前に `start-work` の `references/plan-deviation-defaults.md` を読み直す。
+3. **タスク9の進め方**: (a) まず読み取りだけの調査（sbx の資格情報の渡し方〈プロキシのヘッダー注入・`sbx secret`〉と、承認された接続先だけを許す通信設定の方法。実機のヘルプと実行ファイル内の文字列、`settings list --all --json` を使い、秘密値は読まない）。(b) 調査結果と、raw の認証値を VM へ渡さない構成・提案用の固定argv と `networkPolicy` の案を利用者へ提示する。**どのホストへ送信を許すかは送信範囲の決定なので利用者が判断する**（ADR-0158 の相談事項）。(c) 承認後に proposal 用の証拠取得VM 2台（`iv-<runId8>-proposal`。1台目は照会・対照・ゲスト側確認と外側停止、2台目は保持と強制終了後の自動停止・復旧）。(d) 承認後に `pilot-source` で Claude Code・Codex 双方の主担当から1往復。ここで初めて `Invoke-VerificationReplay` の統合が実機で成立する。(e) 記録をコミットし、サイクル全体整合検査（ADR-0162・0192〜0198 の昇格判定）へ進む。
+4. **留意点**: sbx操作は毎回 `daemon status --json` で running を確認してから行い、停止中はAIから起動しない（利用者が通常端末で `& 'C:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe' daemon start -d`）。既存の試験VM5台は削除・再作成しない（`ls --json` の読取りのみ）。新たな実機・設定・モデル操作は ADR-0162・0192 の範囲外なら個別に確認する。独立試験の実行時は PATH の先頭に代替 codex.cmd を置き OpenAI Codex の項目を外す（junction をツールのサンドボックスが拒否するため）。ランナーは約30分。masterのhandoffは本worktreeでの再開案内のままで有効。
 
 ## 重要な意思決定の履歴
 

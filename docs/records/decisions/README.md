@@ -175,3 +175,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0196](0196-accept-daemon-disconnect-unverified-for-synthetic-pilot.md) | 試作の間はデーモン切断の検知を未確認の制限として認め、検証済みの条件から外す | Proposed | 2026-09-15 |
 | [0197](0197-reuse-load-stop-record-for-proposal-profile-evidence.md) | 提案用実行設定の証拠は提案用VMで取り直し、負荷中の外側停止だけ再実行用の既存記録を使う | Proposed | 2026-09-15 |
 | [0198](0198-route-deadline-reached-runs-through-collation-without-lease.md) | 全体期限の後に pilot 排他を取得できない場合も、CLI は VM を作らない型付き結果を照合へ渡す | Proposed | 2026-09-16 |
+| [0199](0199-authenticate-proposal-vm-by-oauth-sentinel-and-allow-two-model-hosts.md) | 提案用VMはOAuthのセンチネル方式で認証し、通信許可をモデル接続先2件に限る | Proposed | 2026-09-16 |

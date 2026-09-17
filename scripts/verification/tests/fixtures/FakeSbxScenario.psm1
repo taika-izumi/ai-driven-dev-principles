@@ -92,19 +92,19 @@ function Add-FakeSbxSandboxScenario([hashtable]$Case,[string]$Name,[string]$Id,[
     $policy=Get-FakeSbxResponse 'policyLs' @{name=$Name}
     if($Agent -ceq 'codex'){
         $rules=@()
-        foreach($hostName in $script:ProposalAllowedHosts){$rules+=@{scope="sandbox:$Name";resource_type='network';decision='allow';resources=@($hostName);status='active'}}
+        foreach($hostName in $script:ProposalAllowedHosts){$rules+=@{scope="sandbox:$Name";resource_type='network';decision='allow';resources=@("$($hostName):443");status='active'}}
         foreach($hostName in $script:ProposalDeniedHosts){
-            $kitResource=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){"$($hostName):80"}else{$hostName})
+            $kitResource=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){"$($hostName):80"}else{"$($hostName):443"})
             $rules+=@{scope="sandbox:$Name";resource_type='network';decision='allow';resources=@($kitResource);status='active'}
             $rules+=@{scope="sandbox:$Name";resource_type='network';decision='deny';resources=@($hostName);status='active'}
         }
-        Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout (ConvertTo-Json -InputObject @{rules=$rules} -Depth 6) -Synthetic $true -Source 'ADR-0199 の未実測proposal規則を模した応答' | Out-Null
+        Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout (ConvertTo-Json -InputObject @{rules=$rules} -Depth 6) -Synthetic $true -Source '2026-09-17 proposal-policy-real.json の実測規則をVM名に合わせて構成' | Out-Null
         $checks=@()
-        foreach($hostName in $script:ProposalAllowedHosts){foreach($port in @(443,8443)){$checks+=@{host=$hostName;port=$port;allowed=$true}}}
+        foreach($hostName in $script:ProposalAllowedHosts){foreach($port in @(443,8443)){$checks+=@{host=$hostName;port=$port;allowed=($port -eq 443)}}}
         foreach($hostName in $script:ProposalDeniedHosts+@('example.com')){$checks+=@{host=$hostName;port=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){80}else{443});allowed=$false}}
         foreach($check in $checks){
             $scheme=$(if($check.port -eq 80){'http'}else{'https'})
-            Add-FakeSbxResponse $Case @('policy','check','network','--sandbox',[regex]::Escape($Name),[regex]::Escape("$($scheme)://$($check.host):$($check.port)"),'--json') -Stdout (ConvertTo-Json -InputObject @{allowed=$check.allowed} -Compress) -Synthetic $true -Source 'ADR-0199 の未実測policy checkを模した応答' | Out-Null
+            Add-FakeSbxResponse $Case @('policy','check','network','--sandbox',[regex]::Escape($Name),[regex]::Escape("$($scheme)://$($check.host):$($check.port)"),'--json') -Stdout (ConvertTo-Json -InputObject @{allowed=$check.allowed;action='net:connect:tcp';context="sandbox:$Name";resource_type='net:domain';resource_value="$($check.host):$($check.port)";target="$($check.host):$($check.port)";type='network'} -Compress) -ExitCode $(if($check.allowed){0}else{1}) -Synthetic $true -Source '2026-09-17 proposal-policy-allowed/denied-real.json の実測形式と終了値から構成' | Out-Null
         }
     }else{Add-FakeSbxResponse $Case @('policy','ls',[regex]::Escape($Name),'--json') -Stdout $policy.text -Synthetic $policy.synthetic -Source $policy.source | Out-Null}
     $log=Get-FakeSbxResponse 'policyLog' @{name=$Name}

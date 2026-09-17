@@ -75,7 +75,7 @@ function Test-VerificationRuntimeProfile([hashtable]$Profile,[string]$Role,[hash
     if($Profile.role -cne $profileRole){Throw-VerificationRuntimeFailure "profile role '$($Profile.role)' does not match requested role '$Role'"}
     $expectedAgent=$(if($profileRole -eq 'proposal'){'codex'}else{'shell'})
     if($Profile.agent -cne $expectedAgent){Throw-VerificationRuntimeFailure "profile agent must be $expectedAgent for $profileRole"}
-    $expectedPolicy=$(if($profileRole -eq 'proposal'){'allow auth.openai.com chatgpt.com all ports only'}else{'deny *'})
+    $expectedPolicy=$(if($profileRole -eq 'proposal'){'allow auth.openai.com:443 chatgpt.com:443 only'}else{'deny *'})
     if($Profile.policyExpectation.networkPolicy -cne $expectedPolicy){Throw-VerificationRuntimeFailure "profile networkPolicy must be $expectedPolicy for $profileRole"}
     if($profileRole -eq 'proposal'){
         if($null -eq $Profile.model -or -not$Settings.ContainsKey('model') -or $null -eq $Settings.model -or $Profile.model -cne $Settings.model){Throw-VerificationRuntimeFailure 'profile model does not match settings model'}
@@ -127,7 +127,7 @@ function Get-VerificationCreateArgv([string]$Agent,[string]$Name,[string]$Digest
 function Get-VerificationProposalNetworkTargets() {
     $targets=@()
     foreach($hostName in $script:ProposalAllowedHosts){
-        foreach($port in @(443,8443)){$targets+=@{host=$hostName;port=$port;allowed=$true;target="https://$($hostName):$port"}}
+        foreach($port in @(443,8443)){$targets+=@{host=$hostName;port=$port;allowed=($port -eq 443);target="https://$($hostName):$port"}}
     }
     foreach($hostName in $script:ProposalDeniedHosts+@('example.com')){
         $port=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){80}else{443})
@@ -412,13 +412,15 @@ function Test-VerificationProposalPolicy([object[]]$Checks) {
 }
 function Test-VerificationProposalRules([object[]]$Rules,[string]$Name) {
     # policy ls は実効規則の全体を見る。既知の対照先だけが拒否でも、追加allowがあれば承認範囲外となる。
-    $kitHosts=@($script:ProposalAllowedHosts)+@(foreach($hostName in $script:ProposalDeniedHosts){if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){"$($hostName):80"}else{$hostName}})
+    # 0.42.1の実VMではキット宣言がポート付き規則になる（2026-09-17実測）。宣言の裸ホストを実効allowと混同しない。
+    $kitHosts=@(foreach($hostName in @($script:ProposalAllowedHosts)+@($script:ProposalDeniedHosts)){if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){"$($hostName):80"}else{"$($hostName):443"}})
     $allowSeen=@{};$denySeen=@{}
     foreach($rule in $Rules){
         if($rule -isnot [hashtable] -or $rule.status -cne 'active'){continue}
         foreach($resource in @($rule.resources)){
             $hostName=[string]$resource
             if($rule.decision -ceq 'allow'){
+                if($rule.scope -cne "sandbox:$Name"){return $false}
                 if($kitHosts -cnotcontains $hostName){return $false}
                 $allowSeen[$hostName]=$true
             }elseif($rule.decision -ceq 'deny' -and $rule.scope -ceq "sandbox:$Name"){
@@ -431,10 +433,33 @@ function Test-VerificationProposalRules([object[]]$Rules,[string]$Name) {
     foreach($hostName in $script:ProposalDeniedHosts){if(-not$denySeen.ContainsKey($hostName)){return $false}}
     $true
 }
+function ConvertFrom-VerificationNetworkPolicyCheck([hashtable]$Result,[string]$Json,[string]$Name,[string]$Target) {
+    # policy checkは正常な拒否でも終了1を返す。一般の照会の終了0要件は緩めず、この応答だけを実測形式で検査する。
+    if(-not$Result.started){Throw-VerificationRuntimeFailure 'sbx policy check did not start' $(if($Result.refusedReason -eq 'deadline-reached'){'timed_out'}else{'blocked'}) $(if($Result.refusedReason -eq 'deadline-reached'){'deadline-reached'}else{'query-failed'})}
+    if($Result.timedOut){Throw-VerificationRuntimeFailure 'sbx policy check timed out' 'blocked' 'query-timed-out'}
+    if($null -ne $Result.refusedReason -or $Result.outputExceeded -or $null -eq $Result.exitCode -or $Result.exitCode -notin @(0,1)){
+        Throw-VerificationRuntimeFailure 'sbx policy check did not complete normally' 'blocked' 'query-failed'
+    }
+    try{
+        if(Test-VerificationJsonDuplicateKeys $Json){throw 'duplicate keys'}
+        $value=ConvertFrom-Json -InputObject $Json -AsHashtable -Depth 20 -ErrorAction Stop
+        $uri=[uri]$Target
+        $hostPort="$($uri.DnsSafeHost):$($uri.Port)"
+        if($value -isnot [hashtable] -or -not$value.ContainsKey('allowed') -or $value.allowed -isnot [bool]){throw 'missing boolean'}
+        if(($value.allowed -and $Result.exitCode -ne 0) -or (-not$value.allowed -and $Result.exitCode -ne 1)){throw 'exit/decision mismatch'}
+        $expected=@{type='network';action='net:connect:tcp';context="sandbox:$Name";resource_type='net:domain';resource_value=$hostPort;target=$hostPort}
+        foreach($key in $expected.Keys){if(-not$value.ContainsKey($key) -or $value[$key] -isnot [string] -or $value[$key] -cne $expected[$key]){throw "wrong $key"}}
+    }catch{Throw-VerificationRuntimeFailure "sbx policy check returned an invalid or mismatched response: $($_.Exception.Message)" 'blocked' 'query-failed'}
+    $value
+}
+function Invoke-VerificationNetworkPolicyCheck([hashtable]$Client,[string]$Name,[string]$Target,[hashtable]$RunBudget) {
+    $call=Invoke-VerificationSbx $Client @('policy','check','network','--sandbox',$Name,$Target,'--json') (New-VerificationSbxBudget $RunBudget $script:QuerySeconds $Client.maxOutputBytes) 'policy-check'
+    ConvertFrom-VerificationNetworkPolicyCheck $call.result $call.stdout $Name $Target
+}
 function Get-VerificationProposalPolicyChecks([hashtable]$Client,[string]$Name,[hashtable]$RunBudget) {
     $checks=@()
     foreach($target in Get-VerificationProposalNetworkTargets){
-        $result=Invoke-VerificationSbxJson $Client @('policy','check','network','--sandbox',$Name,$target.target,'--json') $RunBudget 'policy-check'
+        $result=Invoke-VerificationNetworkPolicyCheck $Client $Name $target.target $RunBudget
         if(-not$result.ContainsKey('allowed') -or $result.allowed -isnot [bool]){Throw-VerificationRuntimeFailure "policy check lacks boolean allowed for $($target.host):$($target.port)" 'blocked' 'query-failed'}
         $checks+=@{host="$($target.host):$($target.port)";allowed=$result.allowed}
     }
@@ -983,4 +1008,4 @@ function Stop-VerificationRecordedSandboxes([string]$RunRoot,[hashtable]$Recover
     }
     $saved
 }
-Export-ModuleMember -Function Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Get-VerificationCreateArgv,Get-VerificationProposalNetworkTargets,Get-VerificationNetworkRules,Test-VerificationProposalRules,Test-VerificationProposalPolicy,Test-VerificationCredentialExposure,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Copy-VerificationSandboxInput,Confirm-VerificationSandboxInput,Invoke-VerificationSandboxCommand,Stop-VerificationSandbox,Stop-VerificationRecordedSandboxes,Write-VerificationSandboxRecord,New-VerificationCleanupBudget
+Export-ModuleMember -Function ConvertFrom-VerificationNetworkPolicyCheck,Test-VerificationRuntimeProfile,Get-VerificationEffectiveSettingsHash,Get-VerificationCreateArgv,Get-VerificationProposalNetworkTargets,Get-VerificationNetworkRules,Test-VerificationProposalRules,Test-VerificationProposalPolicy,Test-VerificationCredentialExposure,Acquire-VerificationPilotLease,Release-VerificationPilotLease,New-VerificationSandbox,Copy-VerificationSandboxInput,Confirm-VerificationSandboxInput,Invoke-VerificationSandboxCommand,Stop-VerificationSandbox,Stop-VerificationRecordedSandboxes,Write-VerificationSandboxRecord,New-VerificationCleanupBudget

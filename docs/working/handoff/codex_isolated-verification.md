@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-17 01:12 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: 実機試験の操作承認待ち/タスク9(a-2)の実装・11群検証・独立レビュー・修正後の対象試験と差分再確認が完了。OAuth登録と提案用VM2台は未実施。
+- **Last Updated**: 2026-09-17 10:13 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 443番限定への訂正・新規2台再試験と、18資料のOpenAI宛レビュー送信は利用者の各「1で」により承認済み。修正・対象試験・独立レビューと差分再確認が完了し、両指摘解消・新規指摘なし。既存11群も全群成功。既存6台は停止保全。次は承認済み新規2台の実機再試験。
 
 ## 作業の目的・背景
 
@@ -12,6 +12,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 既存worktreeは`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。保存点はv3仕様確定`b7941f3`、試作条件改訂確定`5259d22`、SSH設定操作記録`cf853d2`、能力試験の取得元特定とADR-0192`e02c32c`。masterへ未統合。2026-09-14にユーザーが本作業の再開を選択し（masterのhandoffで「2で」）、残る能力試験を実施した。
 
 ## 関連ドキュメント
+
+- 訂正実装の検証状況: `docs/records/reviews/2026-09-17-task9-443-validation.md`。独立レビューの具体的送信対象: `docs/records/reviews/2026-09-17-task9-443-review-export-request.md`。11群はセッション52556で実行継続中、再実行せず結果を回収する。
+
+- **最新の実測と訂正**: `docs/records/experiments/2026-09-17-v3-task9-proposal-probe-first-attempt.md`。下記の過去記載にあるIssue-0150解決済み・全ポート許可成立・OAuth未登録・既存VM5台は現在地ではない。実測でIssueを再開した。コードは5fc8a80のままで、実機に適合する修正は未着手。
 
 - 最新の検証結果: docs/records/reviews/2026-09-17-task9a2-implementation-validation.md。レビュー送信の対象: docs/records/reviews/2026-09-16-task9a2-review-export-request.md。
 
@@ -52,6 +56,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 進行中のタスク
 
+- [ ] **443番限定への訂正作業**: コード修正・実測3ファイルのRED/GREEN・実測16対照の照合・独立レビューと差分再確認まで完了。残りは既存11群の完了確認と承認済み新規2台再試験。正本は`docs/records/reviews/2026-09-17-task9-443-validation.md`と`2026-09-17-task9-443-independent-review.md`。送信承認は利用者の追加の「1で」により解消済み。
+
+- [ ] **2026-09-17の停止点**: proposal probeの1台目を実施し、実効allowが`:443`であることと、policy checkの正常拒否が終了1を返すことを確認。旧実装は両方に非対応。2台目・モデル往復・profile生成は未実施。修正案は最新実験記録の末尾。追加allow・専用キットは不要という提案であり、方針再確定前にコードを変更しない。既存6台を起動・削除しない。
+
 - [ ] **タスク9の実機確認**: 選択肢2（auth.openai.com/chatgpt.comの全ポート）は承認済み。タスク9(a-2)の実装とレビューは完了し、次は操作承認後のOAuth登録と提案用VM2台の証拠取得。
   - 実装・検証: `docs/records/reviews/2026-09-17-task9a2-implementation-validation.md`。全11群合格後、レビュー修正3ファイルの対象試験も合格。実機での成立とは区別する。
   - 独立レビュー: `docs/records/reviews/2026-09-17-task9a2-independent-review.md`。Readのみのclaude-sonnet-5、全体1回＋差分1回。F1/F2解消・新規指摘なし。レビューと試験の実行セッションはすべて終了。
@@ -82,6 +90,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 既知のブロッカー・懸念
 
+- **解消した停止理由**: 初回の規則不一致は443番限定への訂正承認・実装・対象試験で解消した。具体的なレビュー送信承認も取得し、独立レビュー完了。失敗run f107bb84は停止保全してResumeしない。検証完了後に、再承認済みの新規2台を別runIdで順次実行する。
+
 - Issue-0150は選択肢2の採用で解決済み。37ファイルの外部レビュー送信も利用者の明示承認後に実施・完了。次の個別承認対象はOAuth登録と新規proposal VM2台。
 
 - ADR-0199 の OAuth 保存はグローバル（全サンドボックス共有）で、単一VMへ限定できない。本サイクルで新規作成するのは提案用の証拠取得2台と往復用に限り、既存5台は停止したまま操作しない。保存した秘密の後片付けはサイクル終了時に扱う。許可2件で codex が起動できない場合は `sbx policy log` の拒否記録で不足ホストを特定し、利用者に諮ってから再実行する（AIの判断で許可を広げない）。
@@ -101,6 +111,12 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 - プラグイン導入版は0.1.29（本セッションのスキル一覧で確認）。仕様コミットをプラグインの更新・公開と扱わない。
 
 ## 節目ごとの確認記録
+
+- 2026-09-17 443番限定の訂正 spec 確定点・修正検証: ADR=0199 / worklog=棄却（既存手順内） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・1回・実質的な収束）
+
+- 2026-09-17 443番限定への訂正承認・実装と回帰試験: ADR=0199（利用者の「1で」を記録） / worklog=棄却（既存の不一致訂正・検証・送信承認手順の範囲）
+
+- 2026-09-17 タスク9の初回proposal試験中断・実効通信規則の訂正: ADR=0199（事実の訂正注記のみ、方針変更は未承認） / worklog=棄却（未実測前提の不一致は既存の実機停止・診断手順で捕捉）
 
 - 2026-09-17 タスク9(a-2)完了・改訂ADR-0199のspec 確定点: ADR=0199 / worklog=棄却（既存の検証・修正・承認手順） / review=フル実施（claude-sonnet-5・1回）＋差分再確認（claude-sonnet-5・1回・実質的な収束）
 
@@ -144,8 +160,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-1. 本handoffと2026-09-17-task9a2-independent-review.mdを読む。選択肢2・外部レビューは承認/実施済みで再質問しない。コードと対象試験は完了。次の操作案は2026-09-17-task9-proposal-probe-approval.md。
-2. 操作の明示承認と利用者のOAuth登録後、proposal用probeをlimitsAndTransportとabnormalExitRecoveryで1台ずつ実施する。各操作前にdaemon状態を確認し、既存5台を保全。未承認なら作成・認証・モデル呼出しを行わない。
+**最新の承認と残件**: 初回失敗後の443番限定訂正・新規2台再試験と、具体的な18資料のOpenAI宛送信はそれぞれ利用者の「1で」で承認済み。独立レビューも完了しており再質問しない。実行中の既存11群（セッション52556）の結果を回収後、承認済み2台を実施する。
+
+1. 本handoff、2026-09-17-task9-443-validation.md、2026-09-17-task9-443-independent-review.mdを読む。旧全ポート案は443番限定へ訂正済み。コード・対象試験・独立レビューは完了。実行中の11群を重複起動しない。
+2. 11群の結果確認後、2026-09-17-task9-proposal-probe-approval.mdの再承認範囲で、proposal用probeをlimitsAndTransportとabnormalExitRecoveryの新規2台で順次実施する。各操作前にdaemon状態を確認し、既存6台を保全。OAuth再登録や同じ操作承認の質問は不要。
 3. 実機の規則書式・認証・初回agent状態が想定と違えば停止する。記録からproposal profileを作成し、その後の実モデル往復・全体整合検査・統合は別の残作業として進める。更新・削除・daemon再起動を自動で行わない。
 ## 重要な意思決定の履歴
 

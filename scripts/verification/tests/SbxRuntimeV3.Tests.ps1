@@ -1,4 +1,5 @@
 $ErrorActionPreference='Stop'
+& (Join-Path $PSScriptRoot 'fixtures/NetworkPolicyAssertions.ps1') -TestsRoot $PSScriptRoot
 Import-Module (Join-Path $PSScriptRoot 'TestSupport.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'fixtures/FakeSbxScenario.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot '../RequestCopy.psm1') -Force
@@ -25,7 +26,7 @@ function New-Profile([hashtable]$Ctx,[string]$Role,[hashtable]$Overrides=@{},[sc
     $profile=@{
         schemaVersion=3;role=$Role;sbxVersion='v0.42.1';templateDigest=$digest;agent=$(if($Role -eq 'proposal'){'codex'}else{'shell'});model=$(if($Role -eq 'proposal'){'unit-model'}else{$null})
         startupArgv=[string[]]$(if($Role -eq 'proposal'){@('codex','exec','--json')}else{@('sh')});executableInVm=$(if($Role -eq 'proposal'){'/usr/local/bin/codex'}else{'/usr/bin/python3'})
-        policyExpectation=@{networkPolicy=$(if($Role -eq 'proposal'){'allow auth.openai.com chatgpt.com all ports only'}else{'deny *'})};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
+        policyExpectation=@{networkPolicy=$(if($Role -eq 'proposal'){'allow auth.openai.com:443 chatgpt.com:443 only'}else{'deny *'})};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
         scope='synthetic-pilot';acceptedLimitations=$limitations
         stdlibModulesPath='stdlib-modules.txt';stdlibModulesHash=(Get-Hash (Join-Path $Ctx.prof 'stdlib-modules.txt'))
         activationEvidencePath=$null;activationEvidenceHash=$null
@@ -112,7 +113,7 @@ foreach($hostName in $proposalDeniedHosts){$expectedProposalArgv+=@('--deny-netw
 $expectedProposalArgv+=@('--template',$digest)
 $proposalArgv=& $module {param($Agent,$Name,$Digest) Get-VerificationCreateArgv $Agent $Name $Digest} 'codex' 'iv-12345678-proposal' $digest
 Assert-Equal ($proposalArgv -join '|') ($expectedProposalArgv -join '|') 'proposal: 固定argvは残る11ホストだけを拒否'
-$networkChecks=@(@{host='auth.openai.com:443';allowed=$true},@{host='auth.openai.com:8443';allowed=$true},@{host='chatgpt.com:443';allowed=$true},@{host='chatgpt.com:8443';allowed=$true})
+$networkChecks=@(@{host='auth.openai.com:443';allowed=$true},@{host='auth.openai.com:8443';allowed=$false},@{host='chatgpt.com:443';allowed=$true},@{host='chatgpt.com:8443';allowed=$false})
 foreach($hostName in $proposalDeniedHosts+@('example.com')){$networkChecks+=@{host=($hostName+$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){':80'}else{':443'}));allowed=$false}}
 Assert-True (& $module {param($Checks) Test-VerificationProposalPolicy $Checks} $networkChecks) 'proposal: 許可2件と拒否12件の対照'
 $wrongChecks=@(foreach($item in $networkChecks){@{host=$item.host;allowed=$item.allowed}})
@@ -121,7 +122,7 @@ Assert-True (-not (& $module {param($Checks) Test-VerificationProposalPolicy $Ch
 $wrongChecks=@(foreach($item in $networkChecks){@{host=$item.host;allowed=$item.allowed}})
 $wrongChecks[2].allowed=$false
 Assert-True (-not (& $module {param($Checks) Test-VerificationProposalPolicy $Checks} $wrongChecks)) 'proposal: 承認2件の片方が拒否なら拒否'
-$kitAllow=@('api.openai.com','openai.com','auth.openai.com','chatgpt.com','files.openai.com','registry.npmjs.org','api.github.com','github.com','codeload.github.com','archive.ubuntu.com:80','security.ubuntu.com:80','ports.ubuntu.com:80','download.docker.com')
+$kitAllow=@('api.openai.com:443','openai.com:443','auth.openai.com:443','chatgpt.com:443','files.openai.com:443','registry.npmjs.org:443','api.github.com:443','github.com:443','codeload.github.com:443','archive.ubuntu.com:80','security.ubuntu.com:80','ports.ubuntu.com:80','download.docker.com:443')
 $proposalRules=@()
 foreach($hostName in $kitAllow){$proposalRules+=@{scope='sandbox:iv-12345678-proposal';decision='allow';resources=@($hostName);status='active'}}
 foreach($hostName in $proposalDeniedHosts){$proposalRules+=@{scope='sandbox:iv-12345678-proposal';decision='deny';resources=@($hostName);status='active'}}
@@ -142,7 +143,7 @@ $count++
 Assert-Throws {Test-VerificationRuntimeProfile $ctx.replayProfile 'proposal' $ctx.settings} '*does not match requested role*'
 Assert-Throws {Test-VerificationRuntimeProfile $ctx.proposalProfile 'replay-before' $ctx.settings} '*does not match requested role*'
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'proposal' @{policyExpectation=@{networkPolicy='deny *'}}) 'proposal' $ctx.settings} '*networkPolicy*'
-Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{policyExpectation=@{networkPolicy='allow auth.openai.com chatgpt.com all ports only'}}) 'replay-before' $ctx.settings} '*networkPolicy*'
+Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{policyExpectation=@{networkPolicy='allow auth.openai.com:443 chatgpt.com:443 only'}}) 'replay-before' $ctx.settings} '*networkPolicy*'
 $otherModel=@{};foreach($k in $ctx.settings.Keys){$otherModel[$k]=$ctx.settings[$k]};$otherModel.model='other-model'
 Assert-Throws {Test-VerificationRuntimeProfile $ctx.proposalProfile 'proposal' $otherModel} '*model does not match*'
 Assert-Throws {Test-VerificationRuntimeProfile (New-Profile $ctx 'replay' @{model='unit-model'}) 'replay-before' $ctx.settings} '*must not name a model*'
@@ -369,7 +370,11 @@ foreach($variant in @('extra-allow','allowed-port-denied','extra-secret','missin
         $policy.rules=@($policy.rules | Where-Object {-not($_.decision -ceq 'deny' -and @($_.resources) -ccontains 'github.com')})
         $entry.stdout=ConvertTo-Json -InputObject $policy -Depth 8;$entry.synthetic=$true
     }elseif($variant -eq 'allowed-port-denied'){
-        Add-FakeSbxResponse $ctx.case @('policy','check','network','--sandbox',[regex]::Escape($vm.name),[regex]::Escape('https://chatgpt.com:8443'),'--json') -Stdout '{"allowed":false}' -Synthetic $true -First | Out-Null
+        $entry=@($ctx.case.entries | Where-Object {$_.argv[0] -ceq 'policy' -and $_.argv[1] -ceq 'check' -and $_.argv[5] -ceq [regex]::Escape('https://chatgpt.com:443')})[0]
+        $response=$entry.stdout | ConvertFrom-Json -AsHashtable
+        $response.allowed=$false
+        $entry.stdout=ConvertTo-Json -InputObject $response -Depth 8
+        $entry.exitCode=1;$entry.synthetic=$true
     }else{
         $entry=@($ctx.case.entries | Where-Object {$_.argv[0] -eq 'inspect' -and $_.argv[1] -eq [regex]::Escape($vm.name)})[0]
         $inspect=$entry.stdout | ConvertFrom-Json -AsHashtable
@@ -391,7 +396,7 @@ $lease=Acquire-VerificationPilotLease $ctx.prepared;$proposalHandle=$null
 try{
     $proposalHandle=New-VerificationSandbox $ctx.prepared 'proposal' $ctx.proposalProfile $lease
     $proposalActivation=Get-Content -LiteralPath $proposalHandle.activationRecordPath -Raw | ConvertFrom-Json -AsHashtable
-    Assert-Equal $proposalActivation.checks.policy.verdict 'verified' 'proposal: 全ポート通信規則のactivation'
+    Assert-Equal $proposalActivation.checks.policy.verdict 'verified' 'proposal: 443番限定の通信規則のactivation'
     Assert-Equal @($proposalActivation.checks.policy.observed.networkChecks).Count 16 'proposal: 2ホスト2ポートと拒否12件の対照'
     Assert-Equal $proposalActivation.checks.credentialExposure.verdict 'verified' 'proposal: openaiサービスを許容'
     $proposalStop=Stop-VerificationSandbox $proposalHandle (New-VerificationCleanupBudget $ctx.prepared 1)

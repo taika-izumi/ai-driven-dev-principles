@@ -1,12 +1,14 @@
-# 提案用VMの既定通信許可を他ドメインの拒否だけでは443番ポートへ限定できない
+# 提案用VMの通信規則に関する前提と判定処理の訂正
 
-- **Status**: closed
+- **Status**: open（2026-09-17の実測で再開）
 - **Closed**: 2026-09-16
 - **Created**: 2026-09-16
 - **起票元**: タスク9(a-2)の実装中の照合（基点c2c2656）。ADR-0199決定2〜4の成立条件を確認した際に検出。
 - **関連**: ADR-0199、`docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md` のタスク9、`scripts/verification/SbxRuntime.psm1`、`scripts/verification/profiles/evidence-checks.md`
 
 ## 課題内容
+
+**2026-09-17訂正**: 下記の当初説明は、静的なキット宣言を実効規則と同一視した誤りを含む。実VMのallowは明示的な`:443`/`:80`で、2接続先の8443番は拒否された。専用キットが必要という説明を撤回し、実効規則とコードの期待値の不一致、およびpolicy checkの正常拒否（終了1）を失敗にする不備への対応を再開する。実測・未確認範囲・未承認の修正案は`docs/records/experiments/2026-09-17-v3-task9-proposal-probe-first-attempt.md`を正とする。以下は当初の検討経緯として残す。
 
 ADR-0199は、提案用VMの通信を `auth.openai.com:443` と `chatgpt.com:443` の2件に限り、codexキットが宣言する残る11ドメインを作成時に拒否する構成を確定した。しかし、キットの2接続先はポート番号なしで宣言されている。ポート番号なしのホスト規則はそのホストの全ポートに一致するため、他のドメインを拒否しても、承認した2ホストの443番以外の許可が残る。
 

@@ -161,6 +161,10 @@ function Invoke-ProbeVmExec([string[]]$Argv,[int]$Seconds,[string]$Tag,[long]$Ma
     # 実コマンドは exec -w <作業ディレクトリ> <VM名> <argv…> に固定する（SbxRuntime の Invoke-VerificationSandboxCommand と同じ形）。
     Invoke-ProbeSbx (@('exec','-w',$script:SourceDestination,$script:State.name)+$Argv) $Seconds $Tag $MaxOutputBytes
 }
+function Invoke-ProbeNetworkPolicyCheck([string]$Target,[string]$Tag) {
+    $call=Invoke-ProbeSbx @('policy','check','network','--sandbox',$script:State.name,$Target,'--json') $script:QuerySeconds $Tag
+    ConvertFrom-VerificationNetworkPolicyCheck $call $call.stdout $script:State.name $Target
+}
 
 # ---- daemon.log と状態ディレクトリ ----
 function Get-ProbeRuntimeLogLines([string]$Contains) {
@@ -482,9 +486,8 @@ function Invoke-ProbeQueries() {
     $policyLog=$null
     if($script:State.role -ceq 'proposal'){
         foreach($target in Get-VerificationProposalNetworkTargets){
-            $checked=Invoke-ProbeSbxJson @('policy','check','network','--sandbox',$script:State.name,$target.target,'--json') ('network-'+$modelNetworkChecks.Count)
-            if(-not$checked.value.ContainsKey('allowed') -or $checked.value.allowed -isnot [bool]){throw "policy check lacks boolean allowed: $($target.host):$($target.port)"}
-            $modelNetworkChecks+=@{host=$target.host;port=$target.port;allowed=$checked.value.allowed;expectedAllowed=$target.allowed}
+            $checked=Invoke-ProbeNetworkPolicyCheck $target.target ('network-'+$modelNetworkChecks.Count)
+            $modelNetworkChecks+=@{host=$target.host;port=$target.port;allowed=$checked.allowed;expectedAllowed=$target.allowed}
         }
         # 値そのものは出力・記録しない。キット宣言のセンチネルとOAuthモードへの一致だけを記録する。
         $credentialProgram='import json,os,pathlib,tomllib; c=tomllib.loads(pathlib.Path("/home/agent/.codex/config.toml").read_text()); p=c["model_providers"]["sandboxd"]; a=json.loads(pathlib.Path("/home/agent/.codex/auth.json").read_text()); print(json.dumps({"oauthMode":os.getenv("SBX_CRED_OPENAI_MODE")=="oauth","accessSentinel":p.get("experimental_bearer_token")=="oai-oat01-proxy-managed","modelEndpoint":p.get("base_url")=="https://chatgpt.com/backend-api/codex","requiresOpenaiAuthDisabled":p.get("requires_openai_auth") is False,"authPlaceholder":a.get("OPENAI_API_KEY")=="proxy-managed"}))'

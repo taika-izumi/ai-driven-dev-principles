@@ -44,7 +44,7 @@ activationEvidenceはcheckedAt、binaries、profileHash、checksを持つ。chec
 - workspaceなし、no-share-skills、MCP登録なし、ホスト原本/home/control/Dockerへの接続なし。
 - SSHエージェント転送等、例外以外の追加ホスト経路の拒否。実体設定と無害な否定試験を対応付ける。方法が特定できなければblocked。clipboard画像読取は無効、文字列書込はscopeで許容された例外として記録し、拒否成功の証拠を作らない。
 - 外側で設定したCPU/メモリ割当と当該VMの実効値、同時稼働1VM、時間・出力上限、有限の負荷中の外側停止。厳密なpids上限は確認対象にせずpid-count-unboundedを明示する。資源枯渇時のVM内応答性やホスト全体の無影響を保証しない。負荷試験は具体的な上限・中止条件と操作承認を先に固定する。
-- proposalは承認されたモデル接続先だけの許可、raw認証値を子へ渡さない認証方式。認証・モデルの実試験は個別承認後。
+- proposalは `auth.openai.com:443`・`chatgpt.com:443` だけの実効許可（改訂ADR-0199）。既定キットのポート付きallowと他11ホストの全ポートdenyを照合し、正常な拒否応答（policy checkの終了1）を照会失敗と区別する。raw認証値を子へ渡さない認証方式。認証・モデルの実試験は個別承認後。
 - replayは外向き通信・hostへの通信・他VM通信を拒否し、モデル認証を一切供給しない。
 - time/output上限、外側CLI異常、デーモン切断、対象VMの停止と他VMの非停止、停止中の自動再起動防止。デーモン切断はsynthetic-pilotではdaemon-disconnect-unverifiedとして未確認のまま認め、各実コマンド直前の世代確認と自動停止痕跡の検知を補償にする（ADR-0196）。
 

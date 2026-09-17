@@ -45,12 +45,12 @@ if(-not(Test-ProbeStartupObservation $startup)){throw 'startup observation rejec
 $startup.codexProcessCount=1
 if(Test-ProbeStartupObservation $startup){throw 'active codex process accepted'}
 $name='iv-12345678-proposal'
-$allowed=@('api.openai.com','openai.com','auth.openai.com','chatgpt.com','files.openai.com','registry.npmjs.org','api.github.com','github.com','codeload.github.com','archive.ubuntu.com:80','security.ubuntu.com:80','ports.ubuntu.com:80','download.docker.com')
+$allowed=@('api.openai.com:443','openai.com:443','auth.openai.com:443','chatgpt.com:443','files.openai.com:443','registry.npmjs.org:443','api.github.com:443','github.com:443','codeload.github.com:443','archive.ubuntu.com:80','security.ubuntu.com:80','ports.ubuntu.com:80','download.docker.com:443')
 $denied=@('api.openai.com','openai.com','files.openai.com','registry.npmjs.org','api.github.com','github.com','codeload.github.com','archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com','download.docker.com')
 $rules=@()
 foreach($hostName in $allowed){$rules+=@{scope="sandbox:$name";decision='allow';resource_type='network';resources=@($hostName);status='active'}}
 foreach($hostName in $denied){$rules+=@{scope="sandbox:$name";decision='deny';resource_type='network';resources=@($hostName);status='active'}}
-$checks=@(@{host='auth.openai.com';port=443;allowed=$true},@{host='auth.openai.com';port=8443;allowed=$true},@{host='chatgpt.com';port=443;allowed=$true},@{host='chatgpt.com';port=8443;allowed=$true})
+$checks=@(@{host='auth.openai.com';port=443;allowed=$true},@{host='auth.openai.com';port=8443;allowed=$false},@{host='chatgpt.com';port=443;allowed=$true},@{host='chatgpt.com';port=8443;allowed=$false})
 foreach($hostName in $denied+@('example.com')){$checks+=@{host=$hostName;port=$(if($hostName -in @('archive.ubuntu.com','security.ubuntu.com','ports.ubuntu.com')){80}else{443});allowed=$false}}
 $policy=@{rules=$rules};$inspect=@{secrets=@(@{name='mcpgateway'},@{name='openai'})}
 $credentials=@{oauthMode=$true;accessSentinel=$true;modelEndpoint=$true;requiresOpenaiAuthDisabled=$true;authPlaceholder=$true}

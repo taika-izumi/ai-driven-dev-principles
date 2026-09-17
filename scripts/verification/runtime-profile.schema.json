@@ -14,7 +14,7 @@
     "policyExpectation": {
       "type": "object", "additionalProperties": false,
       "required": ["networkPolicy"],
-      "properties": {"networkPolicy": {"type": "string", "enum": ["deny *", "allow auth.openai.com chatgpt.com all ports only"]}}
+      "properties": {"networkPolicy": {"type": "string", "enum": ["deny *", "allow auth.openai.com:443 chatgpt.com:443 only"]}}
     },
     "mountExpectation": {
       "type": "object", "additionalProperties": false,

@@ -23,7 +23,7 @@ function New-ProposalProfile([hashtable]$Ctx){
     $profile=@{
         schemaVersion=3;role='proposal';sbxVersion='v0.42.1';templateDigest=$digest;agent='codex';model='unit-model'
         startupArgv=[string[]]@('codex','exec','--json');executableInVm='/usr/local/bin/codex'
-        policyExpectation=@{networkPolicy='allow auth.openai.com chatgpt.com all ports only'};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
+        policyExpectation=@{networkPolicy='allow auth.openai.com:443 chatgpt.com:443 only'};mountExpectation=@{workspace='none';shareSkills=$false;sshAgentForwarding=$false}
         scope='synthetic-pilot';acceptedLimitations=@('clipboard-text-write-possible','pid-count-unbounded','daemon-disconnect-unverified')
         stdlibModulesPath='stdlib-modules.txt';stdlibModulesHash=(Get-Hash (Join-Path $Ctx.prof 'stdlib-modules.txt'))
         activationEvidencePath=$null;activationEvidenceHash=$null

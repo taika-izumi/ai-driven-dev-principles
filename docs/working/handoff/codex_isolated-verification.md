@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-17 10:13 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: 443番限定への訂正・新規2台再試験と、18資料のOpenAI宛レビュー送信は利用者の各「1で」により承認済み。修正・対象試験・独立レビューと差分再確認が完了し、両指摘解消・新規指摘なし。既存11群も全群成功。既存6台は停止保全。次は承認済み新規2台の実機再試験。
+- **Last Updated**: 2026-09-17 10:23 (Asia/Tokyo)
+- **Status**: paused
+- **Current Phase**: 443番限定の修正352499c、既存11群・対象試験・独立レビュー/差分再確認、新規2台の実機確認が完了。Issue-0150 closed。全8台stopped、既存6台不変。次はモデル・起動argv・実行ファイル絶対パスを確定してproposal profile生成とモデル往復の個別承認。Task9全体は未完了。
 
 ## 作業の目的・背景
 
@@ -40,6 +40,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 完了済みタスク
 
+- [x] 2026-09-17 443番限定への訂正と提案用VM2台の証拠取得。正本: docs/records/experiments/2026-09-17-v3-task9-proposal-probes.md。af00b8c5は通信・認証・資源・外側停止、7b8f20ebは異常終了・自動停止・復旧を確認。全8台stopped。
+
 - [x] タスク9(a-2)の選択肢2実装・11群検証・独立レビューと修正差分再確認（2026-09-17）。正本は同日のtask9a2-implementation-validation.mdとtask9a2-independent-review.md。
 
 - [x] タスク9(a) の読み取り調査（sbx 0.42.1 の資格情報の渡し方と通信許可の設定方法）。センチネル置換方式・グローバル既定は暗黙拒否・codexキット既定13ドメイン・`policy check network --sandbox --json` が読み取り専用で認可器を評価、を実測。構成の決定は ADR-0199（Proposed）。停滞検出の欠落は Issue-0148 へ起票（2026-09-16 完了）。
@@ -56,7 +58,7 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 進行中のタスク
 
-- [ ] **443番限定への訂正作業**: コード修正・実測3ファイルのRED/GREEN・実測16対照の照合・独立レビューと差分再確認まで完了。残りは既存11群の完了確認と承認済み新規2台再試験。正本は`docs/records/reviews/2026-09-17-task9-443-validation.md`と`2026-09-17-task9-443-independent-review.md`。送信承認は利用者の追加の「1で」により解消済み。
+- [ ] **Task9の残作業**: 訂正実装・11群・独立レビュー・実機2台は完了。model、startupArgv、executableInVmの確定とproposal profile生成、Claude Code/Codex双方の最小モデル往復・recheckが残る。モデル往復・追加VMの操作案はまだ未承認。
 
 - [ ] **2026-09-17の停止点**: proposal probeの1台目を実施し、実効allowが`:443`であることと、policy checkの正常拒否が終了1を返すことを確認。旧実装は両方に非対応。2台目・モデル往復・profile生成は未実施。修正案は最新実験記録の末尾。追加allow・専用キットは不要という提案であり、方針再確定前にコードを変更しない。既存6台を起動・削除しない。
 
@@ -112,6 +114,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 節目ごとの確認記録
 
+- 2026-09-17 proposal新規2台の再試験完了・Issue-0150 close: ADR=0199（承認済み条件の成立確認） / worklog=棄却（既存の修正・検証・承認手順内）
+
 - 2026-09-17 443番限定の訂正 spec 確定点・修正検証: ADR=0199 / worklog=棄却（既存手順内） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・1回・実質的な収束）
 
 - 2026-09-17 443番限定への訂正承認・実装と回帰試験: ADR=0199（利用者の「1で」を記録） / worklog=棄却（既存の不一致訂正・検証・送信承認手順の範囲）
@@ -160,11 +164,9 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-**最新の承認と残件**: 初回失敗後の443番限定訂正・新規2台再試験と、具体的な18資料のOpenAI宛送信はそれぞれ利用者の「1で」で承認済み。独立レビューも完了しており再質問しない。実行中の既存11群（セッション52556）の結果を回収後、承認済み2台を実施する。
-
-1. 本handoff、2026-09-17-task9-443-validation.md、2026-09-17-task9-443-independent-review.mdを読む。旧全ポート案は443番限定へ訂正済み。コード・対象試験・独立レビューは完了。実行中の11群を重複起動しない。
-2. 11群の結果確認後、2026-09-17-task9-proposal-probe-approval.mdの再承認範囲で、proposal用probeをlimitsAndTransportとabnormalExitRecoveryの新規2台で順次実施する。各操作前にdaemon状態を確認し、既存6台を保全。OAuth再登録や同じ操作承認の質問は不要。
-3. 実機の規則書式・認証・初回agent状態が想定と違えば停止する。記録からproposal profileを作成し、その後の実モデル往復・全体整合検査・統合は別の残作業として進める。更新・削除・daemon再起動を自動で行わない。
+1. 最新実験記録`docs/records/experiments/2026-09-17-v3-task9-proposal-probes.md`、443-validationと443-independent-reviewを読む。11群とレビュー・2台再試験はすべて完了。実行中のテスト/レビュー/probeはない。OAuth再登録や同じ2台試験・送信承認を求めない。
+2. `profiles/proposal/`に必要なmodel・startupArgv・executableInVmの残件と、Task9の最小モデル往復の操作範囲を具体化する。今回の証拠記録をハッシュ固定し、未取得の値を推測でverifiedにしない。モデル往復の送信・操作は別承認を得る。
+3. sbx照会前にdaemon statusを確認。既存8台はすべてstoppedで保全し、起動/削除しない。失敗run f107bb84はResumeしない。モデル往復・全体整合検査・統合は未実施。OAuthの後片付けはサイクル終了時の残作業。
 ## 重要な意思決定の履歴
 
 - ADR-0199: 提案用VMはOAuthのセンチネル方式で認証し、通信許可を `auth.openai.com:443`・`chatgpt.com:443` の2件に限る。2026-09-16 の利用者の個別回答、Proposed（昇格はサイクル全体整合検査で）。`policyExpectation.networkPolicy` の `"deny *"` 固定を役割別へ改める設計変更を含む。

@@ -1,7 +1,7 @@
 # 提案用VMの通信規則に関する前提と判定処理の訂正
 
-- **Status**: open（2026-09-17の実測で再開）
-- **Closed**: 2026-09-16
+- **Status**: closed（再開後の訂正・再試験完了）
+- **Closed**: 2026-09-17
 - **Created**: 2026-09-16
 - **起票元**: タスク9(a-2)の実装中の照合（基点c2c2656）。ADR-0199決定2〜4の成立条件を確認した際に検出。
 - **関連**: ADR-0199、`docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md` のタスク9、`scripts/verification/SbxRuntime.psm1`、`scripts/verification/profiles/evidence-checks.md`
@@ -38,5 +38,7 @@ VM作成後に規則を差し替える方法は、キット由来規則の変更
 - 認証のダミー値を確かめる場所も具体化した。キット宣言では `SBX_CRED_OPENAI_MODE` が方式を表し、OAuthのダミー値はVM内 `/home/agent/.codex/config.toml` の `model_providers.sandboxd.experimental_bearer_token`、`auth.json` の `OPENAI_API_KEY` に置かれる。ADR-0199決定4の「該当環境変数の値」だけでは観測先を表せないため、方式修正時に説明を整合させる。真の認証値や設定全文を出力する確認方法は採らない。
 
 ## 結論
+
+2026-09-17の再開後の結論: 利用者の「1で」により既定キットを維持して443番限定へ設計と判定処理を訂正。修正352499c、既存11群と対象試験、独立レビューと差分再確認を完了し、新規2台で通信・認証・停止/復旧を実測して成立を確認した。前提訂正と実装不備の課題として再closeする。実験の正本は`docs/records/experiments/2026-09-17-v3-task9-proposal-probes.md`。モデル往復は別の未完了作業であり、本課題のcloseをTask9全体の完了と扱わない。
 
 2026-09-16、利用者が「分かりました。一旦選択肢2で進めましょう。」と回答し、本サイクルは2ホストの全ポートを許可する方式を採用した。ADR-0199の決定2〜4と改訂記録へ反映し、設計判断の課題としてcloseする。実装への反映・検証・実機承認はタスク9の残作業として継続する。

@@ -39,7 +39,7 @@
 | [0147](system/0147-process-job-misses-unpackaged-children-under-msix-pwsh.md) | MSIX 版 pwsh の ProcessHost で非パッケージの子がジョブに入らず、停止が対象プロセスへ届かない | open | 2026-09-15 |
 | [0148](system/0148-no-idle-timeout-delays-stall-detection.md) | 子プロセスの打ち切り条件が全体期限と出力量上限だけで、出力が止まっても全体期限まで停滞を検出できない | open | 2026-09-16 |
 | [0149](system/0149-proposal-envelope-has-no-channel-for-questions.md) | 提案の受け渡し契約に未解決の前提・質問を表す欄が無く、隔離環境の中の担当が主担当へ問い返せない | open | 2026-09-16 |
-| [0150](system/0150-proposal-network-policy-does-not-enforce-port-443.md) | 提案用VMの通信規則に関する前提と判定処理の訂正 | open | 2026-09-16 |
+| [0150](system/0150-proposal-network-policy-does-not-enforce-port-443.md) | 提案用VMの通信規則に関する前提と判定処理の訂正 | closed | 2026-09-16 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

@@ -1,0 +1,71 @@
+[
+  {
+    "reference": "sha256:16a88c7321c130de9aa8410ffd0865ea22dd051ebb7f58103fbf41ec50057476",
+    "indexOrManifestDigest": "sha256:16a88c7321c130de9aa8410ffd0865ea22dd051ebb7f58103fbf41ec50057476",
+    "linuxAmd64ManifestDigest": "sha256:16a88c7321c130de9aa8410ffd0865ea22dd051ebb7f58103fbf41ec50057476",
+    "configDigest": "sha256:dd4dd63eeb4709a7fec5e43ef4df72852cd9c27dca1115c57b089f34abd2053b",
+    "created": "2026-08-26T12:55:59.412230169Z",
+    "architecture": "amd64",
+    "os": "linux",
+    "compressedLayerBytes": 537366041,
+    "labels": {
+      "com.docker.sandboxes": "templates",
+      "com.docker.sandboxes.base": "ubuntu:questing",
+      "com.docker.sandboxes.flavor": "shell",
+      "org.opencontainers.image.created": "2026-08-17T09:02:45.677319+00:00",
+      "org.opencontainers.image.description": "The Ubuntu container image maintained by Canonical\n\nUbuntu is a Debian-based Linux operating system that runs from the desktop to the cloud, to all your internet connected things.\nIt is the world's most popular operating system across public clouds and OpenStack clouds.\nIt is the number one platform for containers; from Docker to Kubernetes to LXD, Ubuntu can run your containers at scale.\nFast, secure and simple, Ubuntu powers millions of PCs worldwide.\n",
+      "org.opencontainers.image.title": "ubuntu",
+      "org.opencontainers.image.version": "26.04"
+    },
+    "path": [
+      "PATH=/home/agent/.local/bin:/usr/local/share/npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    ],
+    "entrypoint": [
+      "tini",
+      "--"
+    ],
+    "cmd": [
+      "bash"
+    ],
+    "relevantBuildSteps": [
+      "umoci config --image /home/buildd/rockcraft-ubuntu-a6225d8d49f545f312e4b2d59bc5cd53/images/ubuntu:26.04 --clear=config.entrypoint --clear=config.cmd",
+      "ENTRYPOINT [\"tini\" \"--\"]"
+    ]
+  },
+  {
+    "reference": "codex",
+    "indexOrManifestDigest": "sha256:a68b972a59148c6359ade441387159033f6d196d48aef9dda06d2d4bb26eb41e",
+    "linuxAmd64ManifestDigest": "sha256:b387e913db629ca4370970076162d5bc06d1073059940f2f6326448c47143183",
+    "configDigest": "sha256:4fa9c42daaa4904966228dac0930c4a16f89deaa14f442f3cb0637ce2eb433b8",
+    "created": "2026-08-26T12:57:16.955382003Z",
+    "architecture": "amd64",
+    "os": "linux",
+    "compressedLayerBytes": 795079331,
+    "labels": {
+      "com.docker.sandboxes": "templates",
+      "com.docker.sandboxes.base": "ubuntu:questing",
+      "com.docker.sandboxes.flavor": "codex",
+      "org.opencontainers.image.created": "2026-08-17T09:02:45.677319+00:00",
+      "org.opencontainers.image.description": "The Ubuntu container image maintained by Canonical\n\nUbuntu is a Debian-based Linux operating system that runs from the desktop to the cloud, to all your internet connected things.\nIt is the world's most popular operating system across public clouds and OpenStack clouds.\nIt is the number one platform for containers; from Docker to Kubernetes to LXD, Ubuntu can run your containers at scale.\nFast, secure and simple, Ubuntu powers millions of PCs worldwide.\n",
+      "org.opencontainers.image.title": "ubuntu",
+      "org.opencontainers.image.version": "26.04"
+    },
+    "path": [
+      "PATH=/home/agent/.local/bin:/usr/local/share/npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    ],
+    "entrypoint": [
+      "tini",
+      "--"
+    ],
+    "cmd": [
+      "codex"
+    ],
+    "relevantBuildSteps": [
+      "umoci config --image /home/buildd/rockcraft-ubuntu-a6225d8d49f545f312e4b2d59bc5cd53/images/ubuntu:26.04 --clear=config.entrypoint --clear=config.cmd",
+      "ENTRYPOINT [\"tini\" \"--\"]",
+      "RUN |3 TARGETPLATFORM=linux/amd64 TARGETARCH=amd64 CLIPBOARD_BRIDGE_VERSION=v0.1.0 /bin/sh -c mkdir -p /home/agent/.codex # buildkit",
+      "RUN |3 TARGETPLATFORM=linux/amd64 TARGETARCH=amd64 CLIPBOARD_BRIDGE_VERSION=v0.1.0 /bin/sh -c corepack npm install -g @openai/codex@latest     --include=optional     --fetch-timeout=300000     --fetch-retries=3     --fetch-retry-mintimeout=60000     && (corepack disable npm 2>&1 || echo \"corepack disable npm not needed\") # buildkit",
+      "CMD [\"codex\"]"
+    ]
+  }
+]

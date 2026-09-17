@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-17 10:23 (Asia/Tokyo)
+- **Last Updated**: 2026-09-17 11:04 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: 443番限定の修正352499c、既存11群・対象試験・独立レビュー/差分再確認、新規2台の実機確認が完了。Issue-0150 closed。全8台stopped、既存6台不変。次はモデル・起動argv・実行ファイル絶対パスを確定してproposal profile生成とモデル往復の個別承認。Task9全体は未完了。
+- **Current Phase**: ADR-0200の最大5VM・モデル往復案へ「1で」を得て、新規ab0a2b42で起動前確認を実施。固定画像がshell版でCodex未収録と判明し停止。モデル送信0、全9台stopped、元の8台不変。Issue-0151 open。公式codexの固定digest b387e913...と、これから最大6VMの再開案を具体化し、画像取得・台数変更の承認待ち。
 
 ## 作業の目的・背景
 
@@ -12,6 +12,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 既存worktreeは`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。保存点はv3仕様確定`b7941f3`、試作条件改訂確定`5259d22`、SSH設定操作記録`cf853d2`、能力試験の取得元特定とADR-0192`e02c32c`。masterへ未統合。2026-09-14にユーザーが本作業の再開を選択し（masterのhandoffで「2で」）、残る能力試験を実施した。
 
 ## 関連ドキュメント
+
+- **最新の停止理由と変更案**: docs/records/experiments/2026-09-17-task9-startup-image-mismatch.md、Issue-0151、docs/working/plans/2026-09-17-task9-codex-template-amendment.md。画像metadataは同日のtask9-image-metadata.json。旧最大5台の承認は取得済みだが、新しい画像/最大6台は未承認。
+
+- **次の操作案**: `docs/working/plans/2026-09-17-task9-model-roundtrip-approval.md`。ADR-0200 Proposed。利用者の「進めてください」で準備を開始したが、モデル/送信範囲/新規最大5VMの具体的な承認は未取得。sourceは`.tmp/m9/source`、準備物は`.tmp/m9/cfg`。
 
 - 訂正実装の検証状況: `docs/records/reviews/2026-09-17-task9-443-validation.md`。独立レビューの具体的送信対象: `docs/records/reviews/2026-09-17-task9-443-review-export-request.md`。11群はセッション52556で実行継続中、再実行せず結果を回収する。
 
@@ -114,6 +118,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 節目ごとの確認記録
 
+- 2026-09-17 起動前確認でshell画像の流用を検出・停止: ADR=0200（元の操作承認記録。変更案は未承認） / worklog=棄却（既存の実機停止・診断手順で捕捉）
+
+- 2026-09-17 最小モデル往復の準備: ADR=0200（操作案・個別承認待ち） / worklog=棄却（既存の承認前準備とスキーマ検査の範囲）
+
 - 2026-09-17 proposal新規2台の再試験完了・Issue-0150 close: ADR=0199（承認済み条件の成立確認） / worklog=棄却（既存の修正・検証・承認手順内）
 
 - 2026-09-17 443番限定の訂正 spec 確定点・修正検証: ADR=0199 / worklog=棄却（既存手順内） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・1回・実質的な収束）
@@ -164,9 +172,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-1. 最新実験記録`docs/records/experiments/2026-09-17-v3-task9-proposal-probes.md`、443-validationと443-independent-reviewを読む。11群とレビュー・2台再試験はすべて完了。実行中のテスト/レビュー/probeはない。OAuth再登録や同じ2台試験・送信承認を求めない。
-2. `profiles/proposal/`に必要なmodel・startupArgv・executableInVmの残件と、Task9の最小モデル往復の操作範囲を具体化する。今回の証拠記録をハッシュ固定し、未取得の値を推測でverifiedにしない。モデル往復の送信・操作は別承認を得る。
-3. sbx照会前にdaemon statusを確認。既存8台はすべてstoppedで保全し、起動/削除しない。失敗run f107bb84はResumeしない。モデル往復・全体整合検査・統合は未実施。OAuthの後片付けはサイクル終了時の残作業。
+1. 最新実験記録2026-09-17-task9-startup-image-mismatch.mdとIssue-0151を読む。最大5台のモデル往復は承認済みだったが、1台目でCodex未収録を検出して中断。Codexモデル送信は0。実行中のprobe/モデル/試験はない。
+2. 2026-09-17-task9-codex-template-amendment.mdへの利用者回答を確認する。提案側だけ公式codex版の固定digest b387e913db629ca4370970076162d5bc06d1073059940f2f6326448c47143183へ変更し、条件取り直しと起動を合わせた1台＋異常終了1台＋候補比較3台＋recheck1台の最大6台を提案中。旧画像での証拠を新画像へ流用しない。
+3. 既存9台はstoppedで保全。ab0a2b42とf107bb84を再起動/Resumeせず、新画像の取得・新VMは変更案承認後に行う。sbx更新・daemon再起動・画像/VM削除・通信先拡大はしない。.tmp/m9/sourceの固定題材/依頼/設定は準備済み。bootstrap-run.jsonは失敗試行の記録なので消さず、新試行は別の足場にする。
+4. Codex側モデル往復、profile生成、Claude Code主担当からの往復、全体整合検査と統合は未完了。
 ## 重要な意思決定の履歴
 
 - ADR-0199: 提案用VMはOAuthのセンチネル方式で認証し、通信許可を `auth.openai.com:443`・`chatgpt.com:443` の2件に限る。2026-09-16 の利用者の個別回答、Proposed（昇格はサイクル全体整合検査で）。`policyExpectation.networkPolicy` の `"deny *"` 固定を役割別へ改める設計変更を含む。

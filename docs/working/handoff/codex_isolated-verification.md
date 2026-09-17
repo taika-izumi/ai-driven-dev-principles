@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-17 11:04 (Asia/Tokyo)
+- **Last Updated**: 2026-09-17 11:47 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: ADR-0200の最大5VM・モデル往復案へ「1で」を得て、新規ab0a2b42で起動前確認を実施。固定画像がshell版でCodex未収録と判明し停止。モデル送信0、全9台stopped、元の8台不変。Issue-0151 open。公式codexの固定digest b387e913...と、これから最大6VMの再開案を具体化し、画像取得・台数変更の承認待ち。
+- **Current Phase**: ADR-0201のCodex収録済み固定テンプレートで、能力/起動/復旧の再確認とproposal profile生成、Codex主担当の候補比較・修正反映・recheckが完了。candidate-supported/current-pass。Issue-0151 closed、全15台stopped、元の9台不変。Task9はClaude Code主担当の往復と全体整合検査・最終レビューを残す。
 
 ## 作業の目的・背景
 
@@ -12,6 +12,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 既存worktreeは`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`。保存点はv3仕様確定`b7941f3`、試作条件改訂確定`5259d22`、SSH設定操作記録`cf853d2`、能力試験の取得元特定とADR-0192`e02c32c`。masterへ未統合。2026-09-14にユーザーが本作業の再開を選択し（masterのhandoffで「2で」）、残る能力試験を実施した。
 
 ## 関連ドキュメント
+
+- **最新の完了記録**: docs/records/experiments/2026-09-17-task9-codex-roundtrip.mdと同名ディレクトリの結果JSON。能力証拠は2026-09-17-task9-codex-template-evidence.md（profileからハッシュ固定、追記禁止）、設定はscripts/verification/profiles/proposal/。過去の「Codex未収録で停止」「新画像/6台は未承認」は解消済み。
 
 - **最新の停止理由と変更案**: docs/records/experiments/2026-09-17-task9-startup-image-mismatch.md、Issue-0151、docs/working/plans/2026-09-17-task9-codex-template-amendment.md。画像metadataは同日のtask9-image-metadata.json。旧最大5台の承認は取得済みだが、新しい画像/最大6台は未承認。
 
@@ -44,6 +46,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 完了済みタスク
 
+- [x] 2026-09-17 新Codex固定テンプレートでの能力/起動/復旧、proposal profile生成、Codex主担当からの候補比較・合成原本への採用・同一テストrecheck。6台すべて停止。結果はcandidate-supported/current-pass。Issue-0151 closed。
+
 - [x] 2026-09-17 443番限定への訂正と提案用VM2台の証拠取得。正本: docs/records/experiments/2026-09-17-v3-task9-proposal-probes.md。af00b8c5は通信・認証・資源・外側停止、7b8f20ebは異常終了・自動停止・復旧を確認。全8台stopped。
 
 - [x] タスク9(a-2)の選択肢2実装・11群検証・独立レビューと修正差分再確認（2026-09-17）。正本は同日のtask9a2-implementation-validation.mdとtask9a2-independent-review.md。
@@ -61,6 +65,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 - [x] 資源条件とclipboard例外を試作限定で承認・反映し、差分レビュー2回で確定。ADR-0159〜0161をAccepted。保存点5259d22。
 
 ## 進行中のタスク
+
+- [ ] **最新の残作業**: Task9のClaude Code主担当からの同じ往復（実際に共通CLIを起動させる。caller値の変更で代用しない）、サイクル全体整合検査・最終レビュー。Anthropic送信/追加VMは前回承認の対象外なので、具体的な送信内容・起動経路と台数を用意して個別承認を得る。Codex側の試験やOAuth登録を繰り返す必要はない。
 
 - [ ] **Task9の残作業**: 訂正実装・11群・独立レビュー・実機2台は完了。model、startupArgv、executableInVmの確定とproposal profile生成、Claude Code/Codex双方の最小モデル往復・recheckが残る。モデル往復・追加VMの操作案はまだ未承認。
 
@@ -118,6 +124,8 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 節目ごとの確認記録
 
+- 2026-09-17 Codex側モデル往復完了・Issue-0151 close: ADR=0201（利用者の「1で」による固定テンプレート変更） / worklog=棄却（既存の承認・実機検証手順内）
+
 - 2026-09-17 起動前確認でshell画像の流用を検出・停止: ADR=0200（元の操作承認記録。変更案は未承認） / worklog=棄却（既存の実機停止・診断手順で捕捉）
 
 - 2026-09-17 最小モデル往復の準備: ADR=0200（操作案・個別承認待ち） / worklog=棄却（既存の承認前準備とスキーマ検査の範囲）
@@ -172,10 +180,10 @@ Claude CodeまたはCodexの主担当から共通CLIで検証を依頼する。�
 
 ## 次セッション開始時のアクション
 
-1. 最新実験記録2026-09-17-task9-startup-image-mismatch.mdとIssue-0151を読む。最大5台のモデル往復は承認済みだったが、1台目でCodex未収録を検出して中断。Codexモデル送信は0。実行中のprobe/モデル/試験はない。
-2. 2026-09-17-task9-codex-template-amendment.mdへの利用者回答を確認する。提案側だけ公式codex版の固定digest b387e913db629ca4370970076162d5bc06d1073059940f2f6326448c47143183へ変更し、条件取り直しと起動を合わせた1台＋異常終了1台＋候補比較3台＋recheck1台の最大6台を提案中。旧画像での証拠を新画像へ流用しない。
-3. 既存9台はstoppedで保全。ab0a2b42とf107bb84を再起動/Resumeせず、新画像の取得・新VMは変更案承認後に行う。sbx更新・daemon再起動・画像/VM削除・通信先拡大はしない。.tmp/m9/sourceの固定題材/依頼/設定は準備済み。bootstrap-run.jsonは失敗試行の記録なので消さず、新試行は別の足場にする。
-4. Codex側モデル往復、profile生成、Claude Code主担当からの往復、全体整合検査と統合は未完了。
+1. 最新実験記録2026-09-17-task9-codex-roundtrip.mdを読む。Codex側の公開CLI実行・採用・recheckは成功、profileも生成済み。実行中のVM/モデル/レビュー/テストはない。旧shell画像の流用問題とその承認待ちは解消済み。
+2. Claude Code主担当からの同じ往復の実行方法を具体化する。ホスト側Claudeに無制限の実行権限を渡さず、既存のsubagent-dispatchの実行経路保護を満たす方法を確認する。必要な合成題材・依頼・結果のAnthropic送信と新規VMを具体化して個別承認を得る。現在の.tmp/m9/sourceは採用後の正しい加算に変わっているので、バグ再現用に流用せず、元fixtureから別の合成原本を作る。
+3. 全15台はstoppedで保全し、起動/削除しない。sbx照会前にdaemon statusを確認。OAuthの後片付けはサイクル終了時に別扱い。profileの証拠ファイルはハッシュ固定されているので追記しない。
+4. 両主担当の実証後、全体整合検査・ADR昇格判定・最終レビューと統合工程へ進む。Task9全体とmaster統合は未完了。
 ## 重要な意思決定の履歴
 
 - ADR-0199: 提案用VMはOAuthのセンチネル方式で認証し、通信許可を `auth.openai.com:443`・`chatgpt.com:443` の2件に限る。2026-09-16 の利用者の個別回答、Proposed（昇格はサイクル全体整合検査で）。`policyExpectation.networkPolicy` の `"deny *"` 固定を役割別へ改める設計変更を含む。

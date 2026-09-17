@@ -2,7 +2,7 @@
 
 原本の Git 作業ツリーから独立したコピーを作り、sbx の VM 内の Codex に再現テストと修正候補を提案させ、別の通信なしの VM で修正前後のテストを取り直し、外側の記録で照合した結果を返す共通CLIです（schemaVersion=3、以下 v3）。Claude Code と Codex のどちらの主担当からも同じコマンドで使います。
 
-現在使える範囲は、名指しで承認した小さな合成題材による試作（`scope=synthetic-pilot`）だけです。実プロジェクト・普段使いへの拡張、原本への自動適用、導入や公開は行いません。実VMでの証拠取得（計画のタスク8）と実モデルでの往復（タスク9）は個別承認の後に行うため、それまでは実行設定の証拠（`profiles/replay/`・`profiles/proposal/`）が無く、実際の run は実行設定の検査で blocked になります。Claude Code・Codex 双方の主担当からの往復の実証もタスク9で行います（依頼元を示す `caller` の文字列だけでは実証になりません）。
+現在使える範囲は、名指しで承認した小さな合成題材による試作（`scope=synthetic-pilot`）だけです。実プロジェクト・普段使いへの拡張、原本への自動適用、導入や公開は行いません。再実行用・提案用の実行設定と証拠（`profiles/replay/`・`profiles/proposal/`）を作成し、2026-09-17にCodex主担当からの候補比較とrecheckを実証しました。結果は `docs/records/experiments/2026-09-17-task9-codex-roundtrip.md`。Claude Code主担当からの往復は未実証です（`caller`の文字列変更だけでは実証に数えません）。能力証拠の存在は実行許可の代わりではなく、VM作成・モデル送信は個別承認の範囲で行います。
 
 仕様は `docs/current/specs/2026-09-09-isolated-verification/` を参照してください。
 
@@ -14,6 +14,7 @@
 - sbx のデーモンは利用者が通常の端末で起動しておきます。CLI はデーモンの起動・再起動・reset・設定変更を行いません。停止中なら、利用者の通常起動が必要という理由つきで blocked を返します。
 - 名指しで承認した合成題材ごとに、外側の主担当が固定入力記録（`pilot-input.schema.json`）を用意し、`settings.pilotInputPath` に指定します。CLI は依頼からこの記録を作りません。
 - 実行設定（`runtime-profile.schema.json`）と、その成立を示す証拠（`activation-evidence.schema.json`）を `settings.replayProfilePath`・`settings.proposalProfilePath` に指定します。`verified` の意味は `profiles/evidence-checks.md`（条件名と観測の対応表）が正本です。再実行用の一式は `profiles/replay/`、提案用は `profiles/proposal/` に置きます（どちらも実VM・実モデルでの証拠取得後に作成）。
+- 提案用はCodex収録済みの公式codex版、再実行用はshell版の固定digestを使います（ADR-0201）。`--template`へshell版を明示すると、agentをcodexにしてもCodex本体は追加されません。画像内の版・絶対パス・非対話起動の実測を、ホストCLIの情報で代用しないでください。
 
 ### 通常の実行
 

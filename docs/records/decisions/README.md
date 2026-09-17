@@ -177,3 +177,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0198](0198-route-deadline-reached-runs-through-collation-without-lease.md) | 全体期限の後に pilot 排他を取得できない場合も、CLI は VM を作らない型付き結果を照合へ渡す | Proposed | 2026-09-16 |
 | [0199](0199-authenticate-proposal-vm-by-oauth-sentinel-and-allow-two-model-hosts.md) | 提案用VMはOAuthのセンチネル方式で認証し、通信許可をモデル接続先2件に限る | Proposed | 2026-09-16 |
 | [0200](0200-bootstrap-codex-startup-before-the-synthetic-model-roundtrip.md) | 最小のCodex起動確認を先に行い、同じ条件で合成題材を往復させる | Proposed | 2026-09-17 |
+| [0201](0201-use-agent-specific-pinned-template-for-proposal.md) | 提案用にはCodex収録済みの固定テンプレートを使う | Proposed | 2026-09-17 |

@@ -1,0 +1,51 @@
+{
+  "newVms": [
+    {
+      "name": "iv-0fa7ef20-proposal",
+      "id": "c0e1648d-0dc5-4ba4-9651-71074e5229c2",
+      "agent": "codex",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-7768af9c-after",
+      "id": "9798a385-c170-4bf2-abbd-605f129b4c15",
+      "agent": "shell",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-7768af9c-before",
+      "id": "19a0a832-6b2d-4b65-9826-139ed5c9524d",
+      "agent": "shell",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-7768af9c-proposal",
+      "id": "4367f48f-ce38-449e-a238-02ed8c41093c",
+      "agent": "codex",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-9c48b237-after",
+      "id": "43096de5-f5b3-4a69-8ae7-42f5b984440f",
+      "agent": "shell",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-da12b0e8-proposal",
+      "id": "29fd1a6e-4430-4c91-8dc9-3ac72d6b197c",
+      "agent": "codex",
+      "status": "stopped"
+    }
+  ],
+  "template": "sha256:b387e913db629ca4370970076162d5bc06d1073059940f2f6326448c47143183",
+  "allFifteenStopped": true,
+  "recheckRunId": "9c48b237-75d1-4dc6-872f-828e2503da3f",
+  "originalNineUnchanged": true,
+  "recheckDidNotCreateProposal": true,
+  "recheckVerdict": "current-pass",
+  "recheckUsesSameTestHash": "31E03B3A6A311A84529EA4948DDA70909D0B21F53D1135E2E861B5672DBB18CD",
+  "candidateRunId": "7768af9c-73f3-4e79-a1c4-c032c243c64c",
+  "modelSessions": 2,
+  "candidateVerdict": "candidate-supported",
+  "proposalProfileHash": "D25BFBB4C2BCAA3BFCAFD1927610A50CF310BE5FA392AB7847FB5F6595129F38"
+}

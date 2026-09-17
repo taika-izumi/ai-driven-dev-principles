@@ -1,9 +1,9 @@
 # Handoff: Issue-0136 残り実測と隔離系の整理
 
 - **Branch**: master
-- **Last Updated**: 2026-09-16 (Asia/Tokyo)
+- **Last Updated**: 2026-09-17 12:22 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: 調査・実測/Issue-0136 の残り実測と記録のコミット完了。隔離検証（codex/isolated-verification）はタスク1〜8とタスク9(a)（認証方式・通信許可の調査と ADR-0199 の確定）を完了し、次は ADR-0199 決定3・4の実装変更。作業は専用 worktree 側で続く
+- **Current Phase**: 利用者の指示で本セッションを終了しClaude Codeへ引き継ぐ。隔離検証は専用worktreeでCodex側往復まで完了（539e100）。次はClaude Code主担当の実証。master上でstart-workしても、まず下記worktreeのhandoffを読み、未着手へ巻き戻さない。
 
 ## 作業の目的・背景
 
@@ -13,13 +13,15 @@
 
 2026-09-15 の master セッションは開始処理のみで、master 側の成果物変更はない。master の handoff だけを読んで「進行中なし」と要約し、利用者の指摘で判明した（worklog `MakeAiInstructions-2026-09-15-03`）。
 
-2026-09-15〜16 の作業は `.worktrees/isolated-verification` 側で行われた（利用者がリモート操作中で worktree へ切り替えられないため、master の作業ディレクトリから絶対パスと `git -C` で扱った）。v3 実装計画のタスク1〜7の実装とブランチ全体の最終レビュー・最終修正、タスク8の実VM実証（VM 3台を作成、いずれも stopped で保全）まで完了した。2026-09-16 の後半セッションではタスク9(a)（sbx の認証の渡し方と通信許可の読み取り調査、確定前レビュー、ADR-0199 の確定、Issue-0148・0149 の起票）を行い、当該branchの最新は c2c2656。master 側の成果物は変更していない（課題索引の欠落補完も worktree 側で実施）。詳細は `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md` と同worktreeの `docs/records/reviews/2026-09-16-v3-implementation-tasks1-7.md`。
-
 ## 関連ドキュメント
+
+- **最初に読む引き継ぎ**: `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`。作業ディレクトリは`D:/Dev/002_AiDev/MakeAiInstructions/.worktrees/isolated-verification`、branchは`codex/isolated-verification`。
+- **最新の結果**: 同worktreeの`docs/records/experiments/2026-09-17-task9-codex-roundtrip.md`。candidate-supported/current-pass、profile生成済み、全15VM停止。Issue-0150/0151はclosed。
+- `539e100`が作業成果の保存点。続く引き継ぎ確定コミットは下記「進行中のタスク」に記録する。成果物はmasterへ未統合。
 
 - 今回の実測: docs/records/experiments/2026-09-14-claude-native-subagent-interactive-fixed-inspection.json。退避・照合・子の報告は .tmp/issue-0136-interactive-20260914/records/。Issue-0136 本文「現在地の要約」「結論」と 0136-log.md の 2026-09-14 行、docs/reference/inspection-isolation-costs.md 第10節「固定検査の対話セッション実行（2026-09-14）」へ反映済み。
 
-- 公開・導入確認: docs/records/experiments/2026-09-13-codex-plugin-0.1.29-installation.json。配布コミット004f87c、導入先0.1.29の全42ファイルがdistとSHA256一致。CLI表示はinstalled, enabled。この会話の開始時スキル一覧は0.1.28のため、実行中セッションへの再読み込みは未確認。
+- 公開・導入確認: docs/records/experiments/2026-09-13-codex-plugin-0.1.29-installation.json。配布コミット004f87c、導入先0.1.29の全42ファイルがdistとSHA256一致。CLI表示はinstalled, enabled。本セッションのCodex側スキル実体は0.1.29。次回はClaude Code側の一覧と実体の版を確認する。
 - 後処理の正本: docs/records/retrospectives/system/2026-09-13-project-purpose-context.md。Issue-0118はdocs/working/issues/flow/0118-information-reachability-mechanism-undesigned/0118-information-reachability-mechanism-undesigned.md（open）。
 
 - 目的・方針の正本: docs/overview/project-purpose.md。対象ルートD:/Dev/002_AiDev/MakeAiInstructions、参照内容は5350b9fの同パス。判断根拠はADR-0130・0183。
@@ -45,13 +47,15 @@
 
 ## 進行中のタスク
 
-なし。今回の範囲（Issue-0136 の残り実測・記録・コミット）は完了。
+- 隔離検証をClaude Code主担当へ引き継ぐ。Codex側は完了し、残りはClaude Code自身から同じ公開CLIの候補比較・採用・recheckを通すこと。VM内の担当はCodexのまま。
+- masterのIssue-0136実測/記録は完了。本件の再開経路はIssue-0136と上記worktreeのhandoff。過去の「Issue-0150判断待ち」「OAuth未登録」「実装未着手」へ戻さない。
+- worktreeの引き継ぎ確定コミット: 84bbd66e75d0c60d7f6f59ec9b64b9e0c66106e2（このmasterの案内だけを更新し、featureのマージは行っていない）。
 
 ## 未着手のタスク
 
 - [ ] 目的参照の実運用評価（残り1件。1件目は 2026-09-14、2件目は 2026-09-15 の開始で成立）。
-- [ ] codex/isolated-verification のタスク9の残り（認証方式と通信許可は ADR-0199 で確定済み。次は決定3・4の実装変更 → 承認区切りの提示と個別承認〈利用者による `sbx secret set openai --oauth` を含む〉→ 証拠取得VM 2台 → 実モデル往復）。その後にサイクル全体整合検査と ADR-0162・0192〜0199 の昇格判定、masterへの統合と振り返り。
-- [ ] （完了）codex/isolated-verification の実装着手。正本は .worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md（2d0db67）、計画は同 worktree の docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md（plan 確定点通過・285f315）。利用者は 2026-09-15 に「専用 worktree で新セッションを起動して start-work する」経路を選択済み。専用 Issue は無く、Issue-0136 が再開経路。
+- [ ] 隔離検証のTask9残り: Claude Code主担当の往復、全体整合検査、ADR-0162・0192〜0201の状態判定、最終レビューと統合。OAuth登録・Codex側の実機/モデル往復は完了済み。専用worktreeの最新handoffを正本とする。
+
 - [ ] worktree 使用を踏まえた作業フローの定義（利用者の 2026-09-15 の示唆。「メモリに残すのではなく作業フローを定義したほうがよい」）。master で start-work すると他 worktree の新しい handoff を読まず最新状態を誤る問題が起点。課題起票・設計は未着手・未承認。worklog `MakeAiInstructions-2026-09-15-03` を参照。
 
 - [ ] Issue-0145の対策設計・着手は未承認。起票だけを実施した。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
@@ -61,7 +65,7 @@
 
 - .worktrees/issue-0143-review-questionsと同branchは未追跡証跡のため保全。主担当の正本はmaster側。本件の旧・新15題と実装レビューは3実行とも完了済み。各.tmp/issue-0143-*の資材を再起動・削除しない。
 - 今回のHypervisorPlatform=2と、9月9日のWHvGetCapability成功・実VM起動成功がある。有効化・再起動必須という先の提案は撤回。現在の利用可否を先に照合し、観測差だけでWindows設定を変えない。
-- sbxデーモンは通常PowerShell起動で内部socket障害を回避した記録がある。AIからstart/restart/resetしない。停止中のsettings/ls/exec自動起動にも注意。SSH転送false・global deny-all・既存停止VMと退避領域を保全。詳細は専用worktreeの最新handoff。
+- sbxデーモンは通常PowerShell起動で内部socket障害を回避した記録がある。AIからstart/restart/resetしない。停止中のsettings/ls/exec自動起動にも注意。SSH転送false・グローバルの暗黙拒否・既存停止VMと退避領域を保全。詳細は専用worktreeの最新handoff。
 
 - ADR-0179の通常起動で.claude.jsonの9項目が変化し、指定session-envが作成された。値の転記・自動復元なし。詳細は事前確認結果の最終節。通常領域全体の不変や本比較の保護成立とは扱わない。
 
@@ -72,7 +76,7 @@
 
 - 隔離検証の既存資料照合・Git対照試験を、通信拒否や実環境の保護成立へ読み替えない。再開時は専用worktreeの再利用検討ノートを読む。
 - Claude標準の子の制限・検索範囲の実測は `docs/records/retrospectives/system/2026-09-09-claude-native-subagent-interactive.md` とIssue-0136を参照。過去のレビュー経路は同記録を参照。
-- 開始時スキル一覧は0.1.24の旧パスだったが、ディスクの0.1.26を発見して読み込み使用した。開始時の一覧だけで導入版を推定しない。
+- 過去の比較では開始時一覧が0.1.24でもディスクの0.1.26を読み込んだ例がある。開始時の一覧だけで導入版を推定しない。
 - `.tmp/`、`.claude/agents/`の試験定義、`docs/conversation_log.md`、inbox3件を保全。一括ステージ・削除しない。inboxは手動整理待ち（2026-09-14 も後回し、3件滞留）。
 - 2026-09-14 の実測で `.tmp/issue-0136-claude-native-20260908/run/attempt-c14f2654b5e4499084717101f2974138/` が追加され、同 controller/last-result.json は上書き（実行前の複製は `.tmp/issue-0136-interactive-20260914/records/last-result-before-20260914.json`）。いずれも削除・復元していない。今回の記録領域 `.tmp/issue-0136-interactive-20260914/` も保全。
 - Bash ツールの引用ヒアドキュメントで Windows パスのバックスラッシュが欠落した（JSON 記録が2回パース失敗）。バックスラッシュを含む本文は専用 Write ツールで書く。
@@ -86,17 +90,15 @@
 
 ## 節目ごとの確認記録
 
-- 2026-09-14 Issue-0136 残り実測と記録更新の完了: ADR=なし（既存規範ADR-0143・0144の確認に留まり、試験手順・版更新・課題の追跡経路は既存規約に従う運用判断） / worklog=`MakeAiInstructions-2026-09-14-01`
-- 2026-09-14 セッション終了の引き継ぎ確定: ADR=なし（同日の運用判断のみ、方針変更なし） / worklog=棄却（同日01に記録済みの差分以外なし）
-- 2026-09-16 隔離検証のタスク9(a) 確定を worktree 側で完了しセッション区切り（master 側の成果物変更なし）: ADR=0199（判断と決定は worktree 側の ADR-0199 とレビュー記録に記録済み） / worklog=`MakeAiInstructions-2026-09-16-05`
-- 2026-09-16 隔離検証のタスク1〜8を worktree 側で完了しセッション区切り（master 側の成果物変更なし）: ADR=なし（判断と決定はすべて worktree 側の計画・ADR-0198・レビュー記録に記録済み） / worklog=`MakeAiInstructions-2026-09-16-01`
-- 2026-09-15 開始処理のみでセッション区切り（隔離検証は worktree の新セッションへ）: ADR=なし（再開経路の選択は既存 handoff の案内どおりで方針変更なし。作業フロー定義は示唆のみで未決定） / worklog=`MakeAiInstructions-2026-09-15-03`
+- 2026-09-17 セッション終了・masterからClaude Codeへの再開経路確定: ADR=なし（既存Task9の引き継ぎ） / worklog=棄却（既存の終了手順、先行記録MakeAiInstructions-2026-09-15-03）
+- 2026-09-14 Issue-0136残り実測と記録更新: ADR=なし（既存規範の確認） / worklog=MakeAiInstructions-2026-09-14-01
+- 隔離検証の本サイクルのreview/cyclecheck記録は専用worktreeのhandoffへ保持している。
 
 ## 次セッション開始時のアクション
 
-1. docs/overview/project-purpose.md、masterのhandoffを読む。あわせて `git worktree list` と `git branch --sort=-committerdate` で master より新しいコミットを持つ branch を確認し、あればその worktree の handoff を読んでから要約する（2026-09-16 時点の最新は codex/isolated-verification の c2c2656）。**隔離検証を再開する場合、利用者がリモート操作中なら worktree へ切り替えず、master の作業ディレクトリのまま `.worktrees/isolated-verification` の絶対パスと `git -C` で扱う**（切替えの承認プロンプトは利用者の画面に届かない。2026-09-15〜16 のタスク1〜8はこの方法で実施）。読むのは `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`（c2c2656）で、そこにタスク9の進め方と次の着手点が書いてある。
-2. 次の利用者の依頼を確認する。候補は codex/isolated-verification のタスク9の残り（専用 worktree 側。認証方式と送信範囲は ADR-0199 で確定済みのため再調査せず、決定3・4の実装変更から始め、承認区切りの提示と個別承認を経る）、worktree 使用を踏まえた作業フローの定義（課題起票から）、ADR-0184に関連する継続判断の規範検討、Issue-0118・0145。新セッションではスキル一覧・実体の版を確認する。sbx デーモンは 2026-09-16 に利用者が起動した世代（PID 25888）が稼働中の可能性があるため、隔離検証を再開するときは `daemon status --json` で確認する。
-3. 完了作業の許可を次作業へ流用せず、初期比較・Claude/sbx・隔離検証を自動再開しない。既存の証跡・stashを保全する。
+1. Claude Codeでこのmasterからstart-workを実行する。`docs/overview/project-purpose.md`と本ファイルを読み、`git worktree list`で専用worktreeを確認して、そのhandoffを先に読む。
+2. `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`の「次セッション開始時のアクション」に従う。Claude Code主担当の残試験から再開し、Codex側の完了作業は繰り返さない。
+3. 作業先は既存の専用worktree。必要なら絶対パスとgit -Cで扱い、masterのブランチ切替えや成果物のコピーをしない。新しい実機/送信の操作範囲を具体化し、既存VM・証跡・stashを保全する。
 
 ## 重要な意思決定の履歴
 

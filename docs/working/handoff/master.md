@@ -1,9 +1,9 @@
 # Handoff: worktree使用を踏まえた開始時の検出（ADR-0202）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-18 23:55 (Asia/Tokyo)
+- **Last Updated**: 2026-09-19 01:10 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 改修/spec確定点通過（ADR-0202 設計確定 fd29346）→ 次は実装計画（writing-plans）
+- **Current Phase**: 改修/plan確定点通過（`docs/working/plans/2026-09-19-worktree-start-detection.md`）→ 次は実装（Task 1〜6）
 
 ## 作業の目的・背景
 
@@ -25,8 +25,8 @@
 
 - [ ] **現在の作業**: worktree使用を踏まえた開始時の検出（ADR-0202、Proposed。設計はfd29346で確定）
   - 状態: brainstormingで範囲・方針を合意し、ADR-0202が設計文書を兼ねる（仕様書ファイルなし、feature-block-designは非適用）。確定前レビューはフル2回・差分再確認1回・機械検証で実質的な収束。レビュー対応の退避は `~/.ai-dev-review-snapshots/2026-09-18-adr-0202-r0`〜`r3`。
-  - 残り: 実装計画の作成（writing-plans、plan確定点で確定前レビューを提示）→ `skills/session-handoff/references/op-read.md` への検出の追記と `skills/start-work/SKILL.md` Phase 0への1句 → 配布更新（CONTRIBUTING.md「配布プラグインの版更新」「執行点」）→ 本リポジトリでstart-workを実行して検出を確認 → ADR-0202のAccepted昇格 → メモリ `check-worktree-handoffs-at-start` の扱いを利用者と決める。
-  - 計画に書く事項: 確定前レビューは1体4観点兼務だった（spec確定点。記録先をplanとする）。隔離検証の今後の方針（次セッション開始時のアクション4）は本作業の中で1問決める予定だったが未着手。
+  - 残り: 実装計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` を確定済み。Task 1（文面の追記・生成・検査）→ Task 2（scratchpadで7場面の写経試験と実環境）→ Task 3（整合検査）→ Task 4（版0.1.30）→ Task 5（ADR-0202 Accepted）→ Task 6（メモリ `check-worktree-handoffs-at-start` の扱い）。masterで直接実施し、using-git-worktreesの同意確認では「作らない」を選ぶ。
+  - 未着手の宿題: 隔離検証の今後の方針（次セッション開始時のアクション4）を1問決める。
 
 ## 未着手のタスク
 
@@ -61,6 +61,7 @@
 - 2026-09-18 inbox整理（organize-inbox完了）: ADR=なし（配置と起票の判断で、方針の選択ではない） / worklog=MakeAiInstructions-2026-09-18-04
 - 2026-09-18 worklog形式の解説メモ削除とIssue-0157の現状確認: ADR=なし（配置の訂正とOAuth保留の判断。方針の選択ではない） / worklog=MakeAiInstructions-2026-09-18-05
 - 2026-09-18 ADR-0202 spec 確定点（worktree検出の設計、fd29346）: ADR=0202 / worklog=MakeAiInstructions-2026-09-18-06 / review=フル実施（claude-opus-5・2 回）＋差分再確認（claude-opus-5・1 回）＋機械検証（1 回・実質的な収束）
+- 2026-09-19 worktree検出 plan 確定点（実装計画の確定）: ADR=なし（ADR-0202の実装計画で新たな決定なし） / worklog=MakeAiInstructions-2026-09-19-01 / review=フル実施（claude-opus-5・1 回）＋機械検証（2 回・提示後確定（実質的な収束に至らず））
 
 ## 次セッション開始時のアクション
 

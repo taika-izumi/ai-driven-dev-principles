@@ -170,3 +170,4 @@
 | [0144](flow/0144-reviewer-cannot-discover-omitted-evidence.md) | 独立レビュアーが委譲元の選んだ資料の不足を自力で補えない | open | 2026-09-11 |
 | [0145](flow/0145-redesign-history-investigation-sufficiency-unverified.md) | 再設計時に一部の履歴参照だけで調査十分と判断し、過去の有用な知見の引継ぎがユーザー介入に依存する | open | 2026-09-12 |
 | [0158](flow/0158-session-continue-or-switch-criteria-undefined.md) | 同じセッションで作業を続けるか新しいセッションへ切り替えるかの判断基準がガイドラインに無く、利用者が毎回迷う | open | 2026-09-18 |
+| [0159](flow/0159-initial-recommendations-overturned-by-user-questions.md) | AIの最初の推奨・採否が前提確認を欠き、利用者の問い直しで覆る | open | 2026-09-19 |

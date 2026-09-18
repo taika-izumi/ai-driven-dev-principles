@@ -253,6 +253,8 @@
 
 ## タスク9: 最小モデル往復（個別承認、認証方式の実測が前提）
 
+**2026-09-18 Claude Code側往復完了**: 操作案2026-09-18-task9-claude-code-roundtrip.mdの承認に基づき、Claude Code主担当が公開CLIを自身で実行。新規4台・Codex 1セッションでcandidate-supported、採用後のrecheckでcurrent-pass。全19台stopped。証拠は2026-09-18-task9-claude-code-roundtrip.md。双方の主担当の往復が揃ったので、残りは記録のコミット後のサイクル全体整合検査・最終レビュー。
+
 **2026-09-17 Codex側往復完了**: ADR-0201の新codexテンプレートで能力/起動/復旧を取り直してproposal profileを生成。公開CLIでcandidate-supported、合成原本への採用後に同じ3テストでcurrent-passを確認。新規6台・元の9台を含む全15台stopped。証拠は2026-09-17-task9-codex-template-evidence.mdと2026-09-17-task9-codex-roundtrip.md。Claude Code主担当の往復は未実施なのでTask9全体は未完了。
 
 **2026-09-17の再試験完了**: 修正352499c、11群と対象試験、独立レビュー/差分再確認後、af00b8c5と7b8f20ebの2台で証拠取得を完了。全8台stopped、既存6台不変。実測は2026-09-17-v3-task9-proposal-probes.md。profile生成はmodel・起動argv・実行ファイル絶対パスの確定と合わせて次段階で行うため、証拠取得とprofile生成を含むチェック項目は未完のまま。
@@ -269,7 +271,7 @@
 - [x] **ADR-0199 の実装反映（実機操作前）**: 決定3・4に従い、`SbxRuntime.psm1` の固定作成argv、`New-VerificationActivationRecord` の `policy`・`credentialExposure` 検査、`Test-VerificationRuntimeProfile` の役割整合検査、`runtime-profile.schema.json` を役割別に更新する。提案用は `auth.openai.com:443`・`chatgpt.com:443` の2件だけを実効許可とし、キット宣言の残る11ホストはポートなしの拒否規則で全ポートを拒否する。規則一覧全体と、許可先の443番、拒否対照の8443番およびその他拒否先の対照を照合し、未知の追加allow・ワイルドカード・拒否漏れを受理しない。再実行用は `deny *` を維持する。試験側4か所（`SbxRuntimeV3.Tests.ps1` の `New-Profile`、`V3TestContext.psm1` の `New-V3TestProfile`、`ProposalV3.Tests.ps1` の提案用profile生成、`FakeSbxScenario.psm1` の作成argv照合）、提案用probe・縮約設定と `profiles/evidence-checks.md` の観測対応を合わせ、追加試験・実装レビュー・独立試験11群を実施する。当初の構成確定は ADR-0199（0675154）、全ポートへの改訂は同日の利用者の選択肢2の回答、レビュー記録は `docs/records/reviews/2026-09-16-adr-0199-pre-finalization-review.md`。 2026-09-17の実測訂正により443番限定へ再改訂し、policy checkの正常拒否終了1と対象VM/接続先の照合を追加した。
 - [x] **最初の提案用VMでの前提確認（個別承認後）**: ADR-0199 決定6(a)(b)の実効許可・secretsに加え、決定6(c)の「`sbx create` の時点でエージェント本体が起動するか、それが仕様02の搬入→標準入力で依頼→作業の順序と両立するか」を確認する。想定と異なれば停止して利用者に諮る。決定6(c)の明記は確定前レビュー差分再確認の指摘#3の反映である。
 - [x] 承認後、proposal 用 profile の証拠を取る: 確定した proposal 用固定argv で VM 1台を作り、タスク8a と同じ手順（版・照会・transport 対照・出力洪水）に加えて、ゲスト側の否定確認（SSHエージェントのソケット不在・透過プロキシの中継ポートへの応答・policy log。試験Aの方式）とゲスト側の実効値（`nproc`・メモリ量。試験Bの方式）を取り、`credentialMethod`・`modelEndpointAllowOnly` の観測を加え、最後に外側から `stop` → `ls` で停止確認を取る（1台目。`limitsAndTransport` の停止確認）。続けて proposal 用 VM をもう1台（別の足場 runId、名前は `iv-<runId8>-proposal`）作り、8a の (1) の保持開始と (6)(7)（probe プロセスの強制終了後の自動停止・復旧操作・他VM不変・停止後の未発行）だけを取る（2台目。`abnormalExitRecovery`。自動停止で終わる VM では外側 stop を観測できないため台を分ける。約30分の連続保持はタスク8で1回のみで、ここでは行わない〈ADR-0193〉）。これらから `profiles/proposal/` を生成する。この2台の名前はタスク9の承認区切りの「使うVM名」に含める（ADR-0197 の改訂記録参照）。既存記録の流用は負荷中の外側停止（試験C）だけで、replay 側の 8a の記録も流用しない（ADR-0197）。
-- [ ] 承認後、`pilot-source` で Claude Code・Codex 双方の主担当から1往復（依頼→提案→再実行→結果→主担当の修正→recheck）を行い、記録する。ここで `Invoke-VerificationReplay` の統合（candidate-comparison と recheck の両 mode）が初めて実機で成立する。送信範囲・最大時間・モデルは承認どおり（profile.model と Settings.model の一致を含む）。
+- [x] 承認後、`pilot-source` で Claude Code・Codex 双方の主担当から1往復（依頼→提案→再実行→結果→主担当の修正→recheck）を行い、記録する。ここで `Invoke-VerificationReplay` の統合（candidate-comparison と recheck の両 mode）が初めて実機で成立する。送信範囲・最大時間・モデルは承認どおり（profile.model と Settings.model の一致を含む）。
 - [ ] 記録をコミットし、サイクル全体整合検査と最終レビューへ進む（ADR-0162・0192〜0195 の昇格を含む）。
 
 逸脱記録: 設計の変更 / 採用 / ADR-0199の改訂、Issue-0150、2026-09-16の利用者の選択肢2の回答により提案用通信を2ホストの全ポートへ変更。認証観測先を実体に合わせて補足し、規則一覧による追加allow拒否を具体化する。

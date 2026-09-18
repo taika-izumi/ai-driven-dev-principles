@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-17 12:22 (Asia/Tokyo)
-- **Status**: paused
-- **Current Phase**: Codex側の実証を539e100へ保存済み。利用者の指示により、このセッションを終了してClaude Code主担当へ引き継ぐ。残りはClaude Code側の往復、全体整合検査・最終レビュー・統合。Task9全体は未完了。
+- **Last Updated**: 2026-09-18 13:34 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: Codex側（2026-09-17）とClaude Code側（2026-09-18）の両主担当の往復が完了。次はTask9の記録コミット後、サイクル全体整合検査・最終レビュー・ADR-0162・0192〜0201の状態判定・統合。
 
 ## 作業の目的・背景
 
@@ -15,7 +15,7 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 関連ドキュメント
 
-- 最新の実証: `docs/records/experiments/2026-09-17-task9-codex-roundtrip.md`と同名ディレクトリの結果JSON。候補比較・採用理由・recheck・全15台停止の正本。
+- 最新の実証: `docs/records/experiments/2026-09-18-task9-claude-code-roundtrip.md`（Claude Code主担当、操作案 `docs/working/plans/2026-09-18-task9-claude-code-roundtrip.md`、生データ `.tmp/c9/`）と `2026-09-17-task9-codex-roundtrip.md`（Codex主担当、生データ `.tmp/m9/`）。各同名ディレクトリの結果JSONが候補比較・採用理由・recheck・停止の正本。
 - 能力証拠: `docs/records/experiments/2026-09-17-task9-codex-template-evidence.md`。profileからハッシュ固定しているため追記しない。設定は`scripts/verification/profiles/proposal/`と`profiles/replay/`。
 - 仕様: `docs/current/specs/2026-09-09-isolated-verification/00-overview.md`〜04。実装計画: `docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md`のTask9。
 - 操作と承認: `docs/working/plans/2026-09-17-task9-codex-template-amendment.md`。承認済み6台/2モデルセッションはすべて実施済み。Claude Code側の追加実機操作へ自動で流用しない。
@@ -32,16 +32,14 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 - [x] Task1〜7の実装・全体レビュー・修正、Task8の実機検証。詳細は上記の実装レビューとTask8実験記録。
 - [x] 443番限定とpolicy check正常拒否の修正、既存11群と対象試験、独立レビュー/差分再確認。保存点352499c、実測修正の正本は443-validation/independent-review。
 - [x] 新Codex固定テンプレートで能力・最小起動・異常終了後復旧を確認し、proposal profileを生成。Codex CLI 0.149.1、gpt-5.6-sol/medium。保存点539e100。
-- [x] Codex主担当の公開CLIでcandidate-supported。合成原本への採用後、同じ3テストでcurrent-pass。新規6台と元9台、全15台stopped。Issue-0151 closed。最新実験記録が正本。
+- [x] Codex主担当の公開CLIでcandidate-supported。合成原本への採用後、同じ3テストでcurrent-pass。新規6台と元9台、全15台stopped。Issue-0151 closed（2026-09-17）。
+- [x] Claude Code主担当の往復（2026-09-18）: 利用者承認の操作案どおり新規4台・Codex 1セッション。candidate-supported→Claude Codeが全文確認して`.tmp/c9/source/calc.py`へ採用→recheck current-pass。全19台stopped、daemon同世代。生成物は前回とSHA256一致。v3計画Task9の往復項目を完了に更新。
 
 ## 進行中のタスク
 
-- [ ] **Claude Code主担当の往復実証**: 利用者は次セッションをClaude Codeで行う方針。Claude Code自身が主担当として公開CLIを実行する。CodexからClaudeを子として起動する補助基盤を新設する必要はない。
-- [ ] 候補比較→生成テスト/候補の確認→合成原本への採用→同一テストrecheckまで行う。caller値を変えるだけで実証にしない。新しい合成Gitと具体的な実行・送信範囲を準備し、必要な個別承認を得る。
-- 実行設定と起動argvは生成/検証済み。モデル/認証/テンプレートを再設計せず、同じ条件を使えるか読み取りで確認する。新規実行許可と、既に確定した条件への承認は区別する。
-- `.tmp/m9/source/calc.py`は修正後（加算）の状態。次の再現用には`tests/fixtures/pilot-source/source/calc.py`から別の独立Gitを作る。既存の試験原本・結果は書き換えない。
-- 参照用設定は`.tmp/m9/cfg/`、生データは`.tmp/m9/c/`と`runs/`。以前のrequest/pilot-inputには当時の原本ハッシュがあるため、そのまま再実行しない。
-- [ ] 両主担当の実証後にサイクル全体整合検査、最終レビュー、ADR-0162・0192〜0201の状態判定を行う。masterへの統合、retrospective、停止VM/OAuthの後片付けはまだ行っていない。
+- [ ] Task9の記録（2026-09-18実験記録・要約JSON・操作案・README・v3計画・本handoff）をコミットする。
+- [ ] 続いてサイクル全体整合検査、最終レビュー、ADR-0162・0192〜0201の状態判定を行う。masterへの統合、retrospective、停止VM（19台）/OAuthの後片付けはまだ行っていない。
+- `.tmp/m9/source`と`.tmp/c9/source`はいずれも修正後（加算）の状態。再現が必要なら`tests/fixtures/pilot-source/source/calc.py`から別の独立Gitを作る。既存の試験原本・結果は書き換えない。
 
 ## 未着手のタスク
 
@@ -53,8 +51,8 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 既知のブロッカー・懸念
 
-- 終了時は実行中の試験/モデル/レビューなし。全15VMはstopped。一覧は`.tmp/m9/final-vms.json`と最新実験記録。停止済みVMのexec/cpは再起動を伴うため発行しない。
-- sbxは`C:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe`。最終確認は0.42.1、daemon PID25888、2026-09-16通常端末起動の世代。次回はdaemon statusから確認し、停止中にls等で自動起動しない。
+- 実行中の試験/モデル/レビューなし。全19VMはstopped。一覧は`.tmp/c9/vms-final.txt`と2026-09-18実験記録。停止済みVMのexec/cpは再起動を伴うため発行しない。
+- sbxは`C:/Users/d12an/AppData/Local/DockerSandboxes/bin/sbx.exe`。最終確認は2026-09-18に0.42.1（v0.43.0の更新通知は適用しない）、daemon PID25888、2026-09-16通常端末起動の世代。次回はdaemon statusから確認し、停止中にls等で自動起動しない。
 - daemonのstart/restart/reset、sbx/画像の更新、既存VM/画像の削除はAIから行わない。利用者がリモート操作中の場合も、この制約を迂回しない。
 - OAuthは登録済み・同一daemonの全sandbox共有（ADR-0199）。再登録を求めず、必要ならsecret lsのメタデータだけ確認する。ホスト認証ファイルや秘密値を出力しない。
 - 提案はcodex固定digest b387e913...、replayはshell固定digest16a88c...。shell画像を提案へ戻さない。具体値はprofilesとADR-0201を参照。
@@ -66,6 +64,7 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 節目ごとの確認記録
 
+- 2026-09-18 Claude Code主担当の往復完了: ADR=なし（承認済み操作案の実行、設計変更なし） / worklog=MakeAiInstructions-2026-09-18-01
 - 2026-09-17 セッション終了・Claude Codeへの引き継ぎ確定: ADR=なし（既存Task9の残試験への主担当切替と中断） / worklog=棄却（既存の終了・再開経路確認手順、先行記録2026-09-15-03）
 - 2026-09-17 Codex側往復完了・Issue-0151 close: ADR=0201 / worklog=棄却（既存の承認・実機検証手順内、539e100）
 - 2026-09-17 443番限定の訂正 spec 確定点・修正検証: ADR=0199 / worklog=棄却（既存手順内） / review=フル実施（gpt-5.6-sol・1回）＋差分再確認（gpt-5.6-sol・1回・実質的な収束）
@@ -85,9 +84,9 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 次セッション開始時のアクション
 
-1. Claude Codeでmasterからstart-workを実行したら、先に本worktreeのこのhandoffと`docs/records/experiments/2026-09-17-task9-codex-roundtrip.md`を読む。成果物は539e100、再検証成功済み。
-2. Claude Codeを主担当にしてTask9の残りを具体化する。VM内はCodexのまま。既存profileとfixtureを使い、新しい合成Git・候補比較・採用・recheckの操作案を用意する。詳細は進行中のタスク。
-3. 作業はこのworktreeで行う。移動できなければ絶対パスとgit -Cを使い、masterへ成果物をコピーしない。既存15台と証拠を保全し、実機前にdaemon状態と必要な操作承認を確認する。
+1. masterからstart-workした場合も、先に本worktreeのこのhandoffと`docs/records/experiments/2026-09-18-task9-claude-code-roundtrip.md`を読む。両主担当の往復は完了済みで、繰り返さない。
+2. Task9の記録が未コミットならコミットし、サイクル全体整合検査（decision-logの`references/cycle-consistency-check.md`）→最終レビュー→ADR-0162・0192〜0201の状態判定へ進む。
+3. 作業はこのworktreeで行う。移動できなければ絶対パスとgit -Cを使い、masterへ成果物をコピーしない。既存19台と証拠を保全する。
 
 ## 重要な意思決定の履歴
 

@@ -1,6 +1,6 @@
 # Issue-0136: 検査・監査の委譲で委譲先が変異実験を行うと `subagent-dispatch` の「破壊的検証」行が発火せず、リポジトリ外の破壊が `git status` で検出できない — 発火条件の重なりと展開項目の射程を広げる
 
-- **Status**: open
+- **Status**: closed
 - **Opened**: 2026-09-08
 - **起票元**: LoopForAlpha#Issue-0172 の申し送り（配布先で 2026-09-05 に実発生で起票・同日に 2 度目の実発生・2026-09-06 フォルダ昇格。以後の正本は本フォルダ）
 - **関連**: `skills/subagent-dispatch/SKILL.md` 条件発火の判定表（「検査・監査・走査を委譲するとき」「ミューテーション検査を委譲するとき」「破壊的検証を委譲するとき」の 3 行と、破壊的検証行の展開項目）/ 同スキル手順 5（受け取り時の自前の状態比較）/ 常時適用の 2「既存のファイル・ディレクトリの削除は事前承認を要する」/ Issue-0076（複製での検証を報告しながら実リポジトリが破壊された先例。破壊的検証行の根拠）/ Issue-0123（躓き型チェックリストの委譲制約ブロックへの注入。**同じ判定表を触るので同じ機会に束ねる**）/ ADR-0073（判定表の行は根拠と世代・退役経路を持つ）/ LoopForAlpha#Issue-0125（実証つき指摘の前提検査）
@@ -82,6 +82,8 @@
 - 配布先側の一次記録（コピーしない。LoopForAlpha リポジトリで参照）: `docs/records/retrospectives/system/2026-09-06-issue-0135-0167-launch-resilience.md` §3 / `docs/reference/implementation-lessons/issue-0135-0167-launch-resilience-checks.md` 項番 17（隔離プロトコルの手順）
 
 ## 結論
+
+2026-09-18 クローズ（利用者判断）: open維持の唯一の理由だった隔離検証の再開経路は、masterへの統合（f8bce07）で役目を終えた。別OSと外向きツールの実効性は測らない方針のまま未確認として残す。隔離検証の今後の方針はmasterの引き継ぎ、後片付け・試験の課題はIssue-0152〜0157で追跡する。
 
 規範に関する実測は 2026-09-14 で完了した。open を維持する理由は、本 Issue から派生した「Claude Code と Codex から利用する隔離検証の共通起動処理」（仕様 `docs/current/specs/2026-09-09-isolated-verification/`、ハンドオフ `.worktrees/isolated-verification/docs/working/handoff/codex_isolated-verification.md`、ADR-0150〜0153・0157・0159〜0162）がユーザー指示で中断中であり、専用の Issue を持たないため、本 Issue がその再開経路を担うことにある（2026-09-14 のユーザー判断）。残る未確認は別OS と外向きツール（Artifact・SendMessage）の実効性で、この環境では測らない。
 

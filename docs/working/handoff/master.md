@@ -1,13 +1,13 @@
 # Handoff: 次サイクル待ち（隔離検証の統合後）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-18 17:10 (Asia/Tokyo)
+- **Last Updated**: 2026-09-18 17:25 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: 隔離検証v3をmasterへ統合（f8bce07）し、振り返りまで完了。次サイクルの作業は利用者の判断待ち。
 
 ## 作業の目的・背景
 
-直近サイクルでは、隔離検証の共通起動処理（v3、synthetic-pilot）を実装・実機検証し、Codex主担当（2026-09-17）とClaude Code主担当（2026-09-18）の両方から、候補比較→採用→recheckの往復を実証した。サイクル全体整合検査（1a0c4f5）のうえでADR-0162・0192〜0201をAcceptedへ昇格し、`codex/isolated-verification` を `--no-ff` でmasterへ統合した（f8bce07）。振り返りは `docs/records/retrospectives/system/2026-09-18-isolated-verification.md`。masterはoriginより先行しており、pushしていない。次サイクルの作業は未決定。
+直近サイクルでは、隔離検証の共通起動処理（v3、synthetic-pilot）を実装・実機検証し、Codex主担当（2026-09-17）とClaude Code主担当（2026-09-18）の両方から、候補比較→採用→recheckの往復を実証した。サイクル全体整合検査（1a0c4f5）のうえでADR-0162・0192〜0201をAcceptedへ昇格し、`codex/isolated-verification` を `--no-ff` でmasterへ統合した（f8bce07）。振り返りは `docs/records/retrospectives/system/2026-09-18-isolated-verification.md`。masterは2026-09-18にoriginへpush済み。次サイクルの作業は未決定。
 
 ## 関連ドキュメント
 
@@ -28,7 +28,6 @@
 ## 未着手のタスク
 
 - [ ] 隔離検証の後片付け（Issue-0157）、独立試験の環境差（Issue-0155）・所要時間（Issue-0156）、繰り延べ指摘（Issue-0152〜0154）。着手は利用者判断。
-- [ ] Issue-0136のクローズ判断（再開経路としての役目は終了。ログに2026-09-18追記済み）。
 - [ ] worktree使用を踏まえた作業フローの定義（利用者の2026-09-15の示唆「メモリに残すのではなく作業フローを定義したほうがよい」、worklog `MakeAiInstructions-2026-09-15-03`）。課題起票・設計は未着手・未承認。
 - [ ] Issue-0145の対策設計・着手は未承認。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
 - [ ] Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
@@ -55,6 +54,7 @@
 - 2026-09-18 セッション終了・次サイクルの進め方の合意: ADR=なし（次セッションの作業順の合意で、決定は次セッションで行う） / worklog=MakeAiInstructions-2026-09-18-03
 - 2026-09-18 masterのpush（6ce0db0..39f7ed5、利用者承認）: ADR=なし（承認済み操作の実行） / worklog=棄却（delta なし）
 - 2026-09-18 ADR-0153〜0156 Accepted 昇格（利用者「1で」）: ADR=0153・0154・0155・0156 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
+- 2026-09-18 Issue-0136クローズ（利用者「1で」）: ADR=なし（課題の状態判断で、方針の選択ではない） / worklog=棄却（delta なし）
 
 ## 次セッション開始時のアクション
 

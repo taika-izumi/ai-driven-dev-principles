@@ -1,6 +1,6 @@
 # ADR-0192: 残るsbx能力試験を新規VM1台で順に実施する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-14
 
 ## Context

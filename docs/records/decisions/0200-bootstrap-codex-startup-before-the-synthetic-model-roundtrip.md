@@ -1,6 +1,6 @@
 # ADR-0200: 最小のCodex起動確認を先に行い、同じ条件で合成題材を往復させる
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-17
 
 ## Context

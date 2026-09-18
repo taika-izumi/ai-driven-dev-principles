@@ -1,6 +1,6 @@
 # ADR-0193: 隔離検証の実行中はセッションを保持してsbxの自動停止を避ける
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-15
 
 ## Context

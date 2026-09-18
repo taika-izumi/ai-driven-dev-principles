@@ -1,6 +1,6 @@
 # ADR-0162: ローカルsbxのSSHエージェント転送を無効化する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-10
 
 ## Context

@@ -1,6 +1,6 @@
 # ADR-0201: 提案用にはCodex収録済みの固定テンプレートを使う
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-17
 
 ## Context

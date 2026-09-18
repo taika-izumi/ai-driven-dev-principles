@@ -1,6 +1,6 @@
 # ADR-0197: 提案用実行設定の証拠は提案用VMで取り直し、負荷中の外側停止だけ再実行用の既存記録を使う
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-15
 
 ## Context

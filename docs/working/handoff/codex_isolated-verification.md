@@ -38,7 +38,8 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 ## 進行中のタスク
 
 - Task9の記録は54566c8でコミット済み。サイクル全体整合検査は2026-09-18に実施済み（修正1a0c4f5、記録 `docs/records/reviews/2026-09-18-cycle-consistency-check.md`。粒度点検でADRの分割は不要と判断）。
-- [ ] 次に最終レビューとADR-0162・0192〜0201のAccepted昇格を行う（順序は利用者の判断待ち）。masterへの統合、retrospective、停止VM（19台）/OAuthの後片付けはまだ行っていない。
+- ADR-0162・0192〜0201は2026-09-18にAccepted（利用者の「１で」。ブランチ全体の再レビューは行わず、タスク1〜7の最終レビューと443番修正の独立レビューを根拠とする）。
+- [ ] 次にブランチの完了処理（finishing-a-development-branch、merge-practice確認）。繰り延べMinor（`.superpowers/sdd/2026-09-14-isolated-verification-v3-implementation/final-review-deferred.md`）の扱いを利用者に確認する。masterへの統合、retrospective、停止VM（19台）/OAuthの後片付けはまだ行っていない。
 - `.tmp/m9/source`と`.tmp/c9/source`はいずれも修正後（加算）の状態。再現が必要なら`tests/fixtures/pilot-source/source/calc.py`から別の独立Gitを作る。既存の試験原本・結果は書き換えない。
 
 ## 未着手のタスク
@@ -64,6 +65,7 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 節目ごとの確認記録
 
+- 2026-09-18 ADR-0162・0192〜0201 Accepted 昇格: ADR=0162・0192〜0201 / worklog=棄却（既存の昇格手順内） / cyclecheck=実施（修正: 1a0c4f5。昇格時にADR-0194 Consequencesの同種引用も訂正）
 - 2026-09-18 サイクル全体整合検査: ADR=なし（既存ADRの仕様への書き戻しと引用元の訂正） / worklog=棄却（既存の検査手順内） / cyclecheck=実施（修正: 1a0c4f5）
 - 2026-09-18 Claude Code主担当の往復完了: ADR=なし（承認済み操作案の実行、設計変更なし） / worklog=MakeAiInstructions-2026-09-18-01
 - 2026-09-17 セッション終了・Claude Codeへの引き継ぎ確定: ADR=なし（既存Task9の残試験への主担当切替と中断） / worklog=棄却（既存の終了・再開経路確認手順、先行記録2026-09-15-03）
@@ -95,3 +97,4 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 - ADR-0160/0161、0193〜0198: VM資源/外側停止・clipboard例外・保持/復旧・MCP登録0・未実証制限・負荷停止の限定流用・期限後照合。各正本と実装計画を参照。
 - ADR-0199: OAuthセンチネル、モデル通信は2ホスト443番。全ポートという過去説明は訂正済み（Issue-0150 closed）。
 - ADR-0200/0201: 最小起動確認を先に行い、提案だけCodex収録済み固定テンプレートを使用。画像変更案への利用者承認と実証は完了。
+- 2026-09-18: ADR-0162・0192〜0201をAccepted昇格（全体整合検査1a0c4f5の後）。

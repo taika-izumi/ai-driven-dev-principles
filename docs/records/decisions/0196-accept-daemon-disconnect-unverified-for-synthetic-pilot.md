@@ -1,6 +1,6 @@
 # ADR-0196: 試作の間はデーモン切断の検知を未確認の制限として認め、検証済みの条件から外す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-15
 
 ## Context

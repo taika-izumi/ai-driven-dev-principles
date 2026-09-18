@@ -1,6 +1,6 @@
 # ADR-0198: 全体期限の後に pilot 排他を取得できない場合も、CLI は VM を作らない型付き結果を照合へ渡す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-16
 
 ## Context

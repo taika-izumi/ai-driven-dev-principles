@@ -1,6 +1,6 @@
 # ADR-0195: 「MCP登録なし」は登録済みMCPサーバー0件で判定し、常設ゲートウェイは製品挙動として記録する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-15
 
 ## Context

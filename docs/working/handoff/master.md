@@ -1,9 +1,9 @@
 # Handoff: Issue-0136 残り実測と隔離系の整理
 
 - **Branch**: master
-- **Last Updated**: 2026-09-17 12:22 (Asia/Tokyo)
+- **Last Updated**: 2026-09-18 13:34 (Asia/Tokyo)
 - **Status**: paused
-- **Current Phase**: 利用者の指示で本セッションを終了しClaude Codeへ引き継ぐ。隔離検証は専用worktreeでCodex側往復まで完了（539e100）。次はClaude Code主担当の実証。master上でstart-workしても、まず下記worktreeのhandoffを読み、未着手へ巻き戻さない。
+- **Current Phase**: 隔離検証は専用worktreeで両主担当の往復まで完了（54566c8）。次は整合検査・最終レビュー。master上でstart-workしても、まず下記worktreeのhandoffを読み、未着手へ巻き戻さない。
 
 ## 作業の目的・背景
 
@@ -47,14 +47,13 @@
 
 ## 進行中のタスク
 
-- 隔離検証をClaude Code主担当へ引き継ぐ。Codex側は完了し、残りはClaude Code自身から同じ公開CLIの候補比較・採用・recheckを通すこと。VM内の担当はCodexのまま。
-- masterのIssue-0136実測/記録は完了。本件の再開経路はIssue-0136と上記worktreeのhandoff。過去の「Issue-0150判断待ち」「OAuth未登録」「実装未着手」へ戻さない。
-- worktreeの引き継ぎ確定コミット: 84bbd66e75d0c60d7f6f59ec9b64b9e0c66106e2（このmasterの案内だけを更新し、featureのマージは行っていない）。
+- 隔離検証のTask9は両主担当の往復が完了（Codex 2026-09-17、Claude Code 2026-09-18。worktreeの54566c8）。残りはサイクル全体整合検査・最終レビュー・ADR状態判定・統合で、正本はworktreeのhandoff。
+- masterのIssue-0136実測/記録は完了。本件の再開経路はIssue-0136と上記worktreeのhandoff。過去の「Issue-0150判断待ち」「OAuth未登録」「実装未着手」「Claude Code側の往復未実施」へ戻さない。
 
 ## 未着手のタスク
 
 - [ ] 目的参照の実運用評価（残り1件。1件目は 2026-09-14、2件目は 2026-09-15 の開始で成立）。
-- [ ] 隔離検証のTask9残り: Claude Code主担当の往復、全体整合検査、ADR-0162・0192〜0201の状態判定、最終レビューと統合。OAuth登録・Codex側の実機/モデル往復は完了済み。専用worktreeの最新handoffを正本とする。
+- [ ] 隔離検証のTask9残り: 全体整合検査、ADR-0162・0192〜0201の状態判定、最終レビューと統合。両主担当の往復は完了済み。専用worktreeの最新handoffを正本とする。
 
 - [ ] worktree 使用を踏まえた作業フローの定義（利用者の 2026-09-15 の示唆。「メモリに残すのではなく作業フローを定義したほうがよい」）。master で start-work すると他 worktree の新しい handoff を読まず最新状態を誤る問題が起点。課題起票・設計は未着手・未承認。worklog `MakeAiInstructions-2026-09-15-03` を参照。
 
@@ -90,6 +89,7 @@
 
 ## 節目ごとの確認記録
 
+- 2026-09-18 隔離検証のClaude Code主担当往復完了の反映: ADR=なし（承認済み操作案の実行） / worklog=MakeAiInstructions-2026-09-18-01
 - 2026-09-17 セッション終了・masterからClaude Codeへの再開経路確定: ADR=なし（既存Task9の引き継ぎ） / worklog=棄却（既存の終了手順、先行記録MakeAiInstructions-2026-09-15-03）
 - 2026-09-14 Issue-0136残り実測と記録更新: ADR=なし（既存規範の確認） / worklog=MakeAiInstructions-2026-09-14-01
 - 隔離検証の本サイクルのreview/cyclecheck記録は専用worktreeのhandoffへ保持している。

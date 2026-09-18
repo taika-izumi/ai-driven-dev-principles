@@ -1,6 +1,6 @@
 # ADR-0203: start-workのインラインフォールバックの内容をreferencesへ移す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-19
 
 ## Context

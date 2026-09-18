@@ -1,6 +1,6 @@
 # ADR-0202: worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに任せ、開始時に読む側で検出する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-18
 
 ## Context

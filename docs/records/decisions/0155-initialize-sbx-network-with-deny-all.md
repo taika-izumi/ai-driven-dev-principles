@@ -1,6 +1,6 @@
 # ADR-0155: Docker Sandboxesの全体ネットワーク初期方針をdeny-allにする
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-09
 
 ## Context

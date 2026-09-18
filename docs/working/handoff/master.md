@@ -1,7 +1,7 @@
 # Handoff: 次サイクル待ち（隔離検証の統合後）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-18 15:56 (Asia/Tokyo)
+- **Last Updated**: 2026-09-18 17:10 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: 隔離検証v3をmasterへ統合（f8bce07）し、振り返りまで完了。次サイクルの作業は利用者の判断待ち。
 
@@ -27,9 +27,7 @@
 
 ## 未着手のタスク
 
-- [ ] masterのpush（originより先行。外部への書き込みのため利用者の承認が必要）。
 - [ ] 隔離検証の後片付け（Issue-0157）、独立試験の環境差（Issue-0155）・所要時間（Issue-0156）、繰り延べ指摘（Issue-0152〜0154）。着手は利用者判断。
-- [ ] ADR-0153〜0156がProposedのまま（隔離検証サイクル中の決定）。状態の判定が必要。
 - [ ] Issue-0136のクローズ判断（再開経路としての役目は終了。ログに2026-09-18追記済み）。
 - [ ] worktree使用を踏まえた作業フローの定義（利用者の2026-09-15の示唆「メモリに残すのではなく作業フローを定義したほうがよい」、worklog `MakeAiInstructions-2026-09-15-03`）。課題起票・設計は未着手・未承認。
 - [ ] Issue-0145の対策設計・着手は未承認。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
@@ -55,6 +53,8 @@
 ## 節目ごとの確認記録
 
 - 2026-09-18 セッション終了・次サイクルの進め方の合意: ADR=なし（次セッションの作業順の合意で、決定は次セッションで行う） / worklog=MakeAiInstructions-2026-09-18-03
+- 2026-09-18 masterのpush（6ce0db0..39f7ed5、利用者承認）: ADR=なし（承認済み操作の実行） / worklog=棄却（delta なし）
+- 2026-09-18 ADR-0153〜0156 Accepted 昇格（利用者「1で」）: ADR=0153・0154・0155・0156 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
 
 ## 次セッション開始時のアクション
 
@@ -69,6 +69,7 @@
 ## 重要な意思決定の履歴
 
 - ADR-0162・0192〜0201: 隔離検証の試作条件と実現手段。2026-09-18 Accepted、f8bce07で統合。
+- ADR-0153〜0156: 隔離検証の再検討方向・既存基盤比較・sbx通信deny-all初期化・sbx状態退避。2026-09-18 Accepted。
 - ADR-0190: 目的の正本を開始・再開・委譲へ届ける。Accepted。
 - ADR-0189: レビュー観点再編。正本: docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md。
 - ADR-0183: 初期比較と終了判断。正本: docs/records/decisions/0183-place-targeted-evaluation-before-stage-three-adoption.md。

@@ -1,6 +1,6 @@
 # ADR-0156: sbxの旧状態領域を退避して起動復旧を試す
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-09
 
 ## Context

@@ -1,6 +1,6 @@
 # ADR-0153: 検証担当Codex本体も隔離する構成の再検討へ進む
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-09
 
 ## Context

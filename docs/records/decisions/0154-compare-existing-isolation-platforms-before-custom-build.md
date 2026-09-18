@@ -1,6 +1,6 @@
 # ADR-0154: 独自の隔離基盤を作り込む前に既存基盤を比較する
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-09-09
 
 ## Context

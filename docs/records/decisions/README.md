@@ -158,10 +158,10 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0150](0150-provide-repository-history-to-verification-agents.md) | 検証担当へリポジトリのファイルとGit履歴をスクリプトで渡す | Accepted | 2026-09-09 |
 | [0151](0151-design-linux-python-verification-pilot-first.md) | 隔離検証はLinux・Python対象の小さな試作設計を先行する | Accepted | 2026-09-09 |
 | [0152](0152-route-verification-operations-through-container-mcp.md) | ホスト上の検証担当の操作を専用MCP接続でコンテナへ限定する | Superseded by ADR-0157 | 2026-09-09 |
-| [0153](0153-reconsider-isolating-verification-agent-itself.md) | 検証担当Codex本体も隔離する構成の再検討へ進む | Proposed | 2026-09-09 |
-| [0154](0154-compare-existing-isolation-platforms-before-custom-build.md) | 独自の隔離基盤を作り込む前に既存基盤を比較する | Proposed | 2026-09-09 |
-| [0155](0155-initialize-sbx-network-with-deny-all.md) | Docker Sandboxesの全体ネットワーク初期方針をdeny-allにする | Proposed | 2026-09-09 |
-| [0156](0156-preserve-sbx-state-before-recovery.md) | sbxの旧状態領域を退避して起動復旧を試す | Proposed | 2026-09-09 |
+| [0153](0153-reconsider-isolating-verification-agent-itself.md) | 検証担当Codex本体も隔離する構成の再検討へ進む | Accepted | 2026-09-09 |
+| [0154](0154-compare-existing-isolation-platforms-before-custom-build.md) | 独自の隔離基盤を作り込む前に既存基盤を比較する | Accepted | 2026-09-09 |
+| [0155](0155-initialize-sbx-network-with-deny-all.md) | Docker Sandboxesの全体ネットワーク初期方針をdeny-allにする | Accepted | 2026-09-09 |
+| [0156](0156-preserve-sbx-state-before-recovery.md) | sbxの旧状態領域を退避して起動復旧を試す | Accepted | 2026-09-09 |
 | [0157](0157-separate-agent-proposals-from-authoritative-replay.md) | Codexの提案作成と採否用の再実行を分離する | Accepted | 2026-09-09 |
 | [0158](0158-divide-proposal-replay-verification-into-four-blocks.md) | 提案と再実行の検証を4つの責務に分割する | Accepted | 2026-09-09 |
 | [0159](0159-reassess-sbx-resource-and-clipboard-protection.md) | sbxの資源保護とクリップボード条件を目的から再検討する | Accepted | 2026-09-09 |

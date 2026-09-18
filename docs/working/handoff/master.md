@@ -1,7 +1,7 @@
 # Handoff: worktree使用を踏まえた開始時の検出（ADR-0202）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-19 02:10 (Asia/Tokyo)
+- **Last Updated**: 2026-09-19 02:25 (Asia/Tokyo)
 - **Status**: in_progress
 - **Current Phase**: 改修/実装 Task 1〜5 完了（ADR-0202・0203 Accepted、0.1.30 生成済み・未push）→ Task 6（メモリの扱い）と公開の判断
 
@@ -26,7 +26,7 @@
 - [ ] **現在の作業**: worktree使用を踏まえた開始時の検出（ADR-0202、Proposed。設計はfd29346で確定）
   - 状態: brainstormingで範囲・方針を合意し、ADR-0202が設計文書を兼ねる（仕様書ファイルなし、feature-block-designは非適用）。確定前レビューはフル2回・差分再確認1回・機械検証で実質的な収束。レビュー対応の退避は `~/.ai-dev-review-snapshots/2026-09-18-adr-0202-r0`〜`r3`。
   - 状態: 計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` の Task 1〜5 を完了。検出の追記とサイズ警告への対応（1447345、ADR-0203でインラインフォールバックの内容を `skills/start-work/references/inline-fallbacks.md` へ移動）、7場面と実環境の写経試験・整合検査（6564c49、いずれも期待どおり・指摘なし）、版0.1.30（7d86b81）、ADR-0202・0203 Accepted（4e3a9f7）。
-  - 残り: Task 6（メモリ `check-worktree-handoffs-at-start` の扱いを利用者と決める）。0.1.30の公開（masterのpush）は利用者の承認が必要。公開後に利用者が `/plugin marketplace update ai-driven-dev-principles` で導入し、次回のstart-workで検出が働くことを確かめる。
+  - 残り: 0.1.30は公開済み（5adfecc、利用者承認）。Task 6は「導入して検出が働くのを確かめてから削除」と決定（2026-09-19）。次セッションで、利用者が `/plugin marketplace update ai-driven-dev-principles` を実行した後にstart-workを行い、read操作の「他の worktree の検出」が働く（取り込み済み5件が除外され候補0件になる）ことを確かめ、メモリ `check-worktree-handoffs-at-start` とMEMORY.mdの索引行を削除する。
   - 未着手の宿題: 隔離検証の今後の方針（次セッション開始時のアクション4）を1問決める。
 
 ## 未着手のタスク
@@ -68,13 +68,10 @@
 
 ## 次セッション開始時のアクション
 
-2026-09-18に利用者と合意した進め方（利用者の「1で」）:
-
-1. start-workを実行し、`docs/overview/project-purpose.md` と本ファイルを読む。`git worktree list` で他worktreeに新しいhandoffがないか確認する。
-2. 冒頭で整理作業を片づける: (a) masterのpush（外部書き込みのため承認を得る）、(b) ADR-0153〜0156の状態判定、(c) Issue-0136のクローズ判断、(d) inbox3件（organize-inbox）、(e) Issue-0157の後片付け（OAuth削除・停止VM/通信規則の扱い。利用者の操作と承認が前提。証跡として残すVMを先に区別する）。
-3. 主題は「worktree使用を踏まえた作業フローの定義」（利用者の2026-09-15の示唆。masterでのstart-workが他worktreeの新しいhandoffを読まない問題）。start-work→brainstormingで進める。
-4. 主題の中で「隔離検証の今後の方針」を1問決める。選択肢は、(i) レビュー用へ広げる（子を VM で動かし Issue-0136 の破壊を構造的に防ぐ本来の解決）、(ii) 開発用にも広げる、(iii) 試作で止め、標準サブエージェントのツール制限（ADR-0143・0144）で足りるとする。広げる場合は Issue-0156（試験時間）→0152〜0155 を先に片づける。現状の制約（子はCodexのみ、返せるのはテストと既存.pyの置換、合成題材のみ、Python標準ライブラリのみ、CLIの手動実行）は振り返り記録と仕様00を参照。
-5. 留意点: 独立試験をClaude Codeから回すときはIssue-0155の回避（PATHの先頭に実体パス）が必要。sbxの停止VMへexec/cpしない。
+1. 利用者に `/plugin marketplace update ai-driven-dev-principles` の実行（0.1.30の導入）を確認してから、start-workを実行する。read操作の「他の worktree の検出」が働くこと（`git worktree list` を1回実行し、取り込み済みの5件を除外して候補0件）を確かめる。導入版はディスク上の版で確かめる（開始時の一覧だけで判断しない）。
+2. 確かめられたら、メモリ `check-worktree-handoffs-at-start` とMEMORY.mdの索引行を削除し、計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` のTask 6に記録する。働かなければ原因を調べ、メモリは残す。
+3. 残る宿題: 隔離検証の今後の方針（(i) レビュー用へ広げる、(ii) 開発用にも広げる、(iii) 試作で止め標準サブエージェントのツール制限で足りるとする）を1問決める。Issue-0157（停止VM・OAuth・通信規則）はこの方針決定まで保留。Issue-0158（セッション継続/切替の判断基準）は未着手。
+4. 留意点: 独立試験をClaude Codeから回すときはIssue-0155の回避（PATHの先頭に実体パス）が必要。sbxの停止VMへexec/cpしない。Git Bashでは `git show <ref>:<.で始まるパス>` が失敗するためPowerShellで実行する。
 
 ## 重要な意思決定の履歴
 

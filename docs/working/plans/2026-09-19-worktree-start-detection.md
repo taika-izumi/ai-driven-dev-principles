@@ -301,6 +301,8 @@ git commit -m "docs: ADR-0202をAcceptedへ昇格する"
 
 - [ ] **Step 2: 決めた扱いを実行し、handoff に記録する**
 
+決定（2026-09-19、利用者「1で」）: 0.1.30 を導入し、次回の開始時に検出が働くのを確かめてから削除する。0.1.30 は 5adfecc で公開済み。導入（`/plugin marketplace update ai-driven-dev-principles`）は利用者の操作。確認と削除は次セッションで行い、handoff「次セッション開始時のアクション」に記録した。
+
 ---
 
 ## 完了条件

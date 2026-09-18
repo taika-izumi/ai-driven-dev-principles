@@ -10,3 +10,5 @@
 | [ai-team-tooling.md](ai-team-tooling.md) | AI組織による開発に使う公式機能、独自に整備する範囲、導入前の確認事項（2026-09-08調査） |
 | [codex-collaboration-mode-question-format.md](codex-collaboration-mode-question-format.md) | Codexのモード指示と選択肢提示が競合する場合の設定・確認・復元手順（Issue-0127） |
 | [powershell-pitfalls.md](powershell-pitfalls.md) | シェル・PowerShell / .NET API の実測済みの落とし穴集（検索・集計・追記・作業ディレクトリ。`grep` の否定先読みと計数方式を含む。出所: Issue-0119） |
+| [worklog-entry-format-rationale.md](worklog-entry-format-rationale.md) | 作業ログ（worklog）のエントリ形式の設計意図と不採用案の理由。形式の正は `skills/worklog-record/references/store-format.md`（2026-07-17作成、ADR-0044・0045・0049） |
+| [session-continuation-criteria.md](session-continuation-criteria.md) | セッションを続けるか切り替えるかの判断基準と切替前の点検（2026-07-11、LoopForAlphaでの回答の記録。ガイドライン化の検討はIssue-0158） |

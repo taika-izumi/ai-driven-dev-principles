@@ -1,7 +1,7 @@
 # Handoff: 次サイクル待ち（隔離検証の統合後）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-18 17:25 (Asia/Tokyo)
+- **Last Updated**: 2026-09-18 17:50 (Asia/Tokyo)
 - **Status**: ready-for-next-cycle
 - **Current Phase**: 隔離検証v3をmasterへ統合（f8bce07）し、振り返りまで完了。次サイクルの作業は利用者の判断待ち。
 
@@ -29,6 +29,7 @@
 
 - [ ] 隔離検証の後片付け（Issue-0157）、独立試験の環境差（Issue-0155）・所要時間（Issue-0156）、繰り延べ指摘（Issue-0152〜0154）。着手は利用者判断。
 - [ ] worktree使用を踏まえた作業フローの定義（利用者の2026-09-15の示唆「メモリに残すのではなく作業フローを定義したほうがよい」、worklog `MakeAiInstructions-2026-09-15-03`）。課題起票・設計は未着手・未承認。
+- [ ] Issue-0158（セッション継続/切替の判断基準）の対策設計・着手は未承認。
 - [ ] Issue-0145の対策設計・着手は未承認。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
 - [ ] Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
 - 目的参照の実運用評価は、2026-09-14・09-15・09-18の開始で3件とも正本の読取りと版照合が成立した（予定件数に到達）。評価のまとめ方は未定。
@@ -47,7 +48,7 @@
 - Issue-0135の起動・操作承認の制約を確認してから実機検証を組む。子の書き込みで承認プロンプトが出ない場合があり、許可を保護成立の証拠にしない。
 - 過去の比較では開始時一覧が0.1.24でもディスクの0.1.26を読み込んだ例がある。開始時の一覧だけで導入版を推定しない。
 - ADR-0139・0140・0163はProposed、0166は比較先行の方針としてAccepted。ロードマップ全体の実装・公開は未承認。保留事項はADR-0135／Issue-0131、ADR-0138／Issue-0132を参照。旧編集前コピー `.tmp/model-discretion-roadmap/development-roadmap.before.md` は保全する。
-- `.tmp/`（issue-0136-interactive-20260914、issue-0136-claude-native-20260908 等を含む）、`.claude/agents/`の試験定義、`docs/conversation_log.md`、inbox3件を保全。一括ステージ・削除しない。inboxは手動整理待ち（2026-09-14・09-18も後回し、3件滞留）。
+- `.tmp/`（issue-0136-interactive-20260914、issue-0136-claude-native-20260908 等を含む）、`.claude/agents/`の試験定義、`docs/conversation_log.md`を保全。一括ステージ・削除しない。
 
 ## 節目ごとの確認記録
 
@@ -55,6 +56,7 @@
 - 2026-09-18 masterのpush（6ce0db0..39f7ed5、利用者承認）: ADR=なし（承認済み操作の実行） / worklog=棄却（delta なし）
 - 2026-09-18 ADR-0153〜0156 Accepted 昇格（利用者「1で」）: ADR=0153・0154・0155・0156 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-18 Issue-0136クローズ（利用者「1で」）: ADR=なし（課題の状態判断で、方針の選択ではない） / worklog=棄却（delta なし）
+- 2026-09-18 inbox整理（organize-inbox完了）: ADR=なし（配置と起票の判断で、方針の選択ではない） / worklog=MakeAiInstructions-2026-09-18-04
 
 ## 次セッション開始時のアクション
 

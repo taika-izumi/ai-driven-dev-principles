@@ -5,7 +5,7 @@
 
 ## Context
 
-仕様 `docs/current/specs/2026-09-09-isolated-verification/00-overview.md` の成功基準V5は「出力超過・時間超過・CLI切断時の停止、対象外VMの継続、停止未確認時の失敗扱い」を求め、04は「CLI異常終了時は外側停止担当が記録済みIDだけを処理する」「CLIを終了させるだけでVM停止扱いしない」と定める。実装計画 `docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md` の草案はこの2要素をどのタスクにも割り当てず、実VM試験からも除外していた。初回確定前レビュー（2026-09-14、claude-opus-5）はこれを根拠のない範囲の縮小と指摘した（M4）。
+仕様 `docs/current/specs/2026-09-09-isolated-verification/00-overview.md` の成功基準V5は「出力超過・時間超過・CLI切断時の停止、対象外VMの継続、停止未確認時の失敗扱い」を求め、04は「CLIを終了させるだけでVM停止扱いしない」と定める。能力試験の検討記録 `docs/records/experiments/2026-09-10-v3-capability-followup.md` の試験表は「CLI異常終了時は外側停止担当が記録済みIDだけを処理する」とした（2026-09-18のサイクル全体整合検査で、この文の出所を仕様04から同記録へ訂正）。実装計画 `docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md` の草案はこの2要素をどのタスクにも割り当てず、実VM試験からも除外していた。初回確定前レビュー（2026-09-14、claude-opus-5）はこれを根拠のない範囲の縮小と指摘した（M4）。
 
 実測（`docs/reference/sbx-sandbox-runtime-facts.md`）では、CLIが落ちるとセッション保持のプロセス（ADR-0193）もジョブごと止まり、30秒後に製品の自動停止が働く。したがってVM自体は最悪でも止まるが、止まった事実と経緯が道具の記録に残らず、次のrunは「動いているVMがあれば新規作成を拒否する」設計のため、停止が働かなかった場合に全runがblockedになる。
 

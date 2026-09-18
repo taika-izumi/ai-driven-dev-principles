@@ -2,8 +2,9 @@
 
 - 状態: schemaVersion=3の詳細仕様を確定。基本方針・4責務の承認後、静的フルレビュー1回・差分再確認2回で残指摘0件。確定記録はdocs/records/reviews/2026-09-09-proposal-replay-spec-r3.md。実装・動的実証は未完。
 - 2026-09-10の確定した試作条件: ADR-0160/0161により、合成題材に限りVM資源割当・外側停止を基準とし、clipboard文字列書込を例外受容。条件改訂の差分再確認2回で残指摘0件。記録はdocs/records/reviews/2026-09-10-synthetic-pilot-scope-r2.md。動的実証は後続。
-- 実装済み: v1の独立ファイル・Git履歴コピー、Windowsプロセス管理、v1結果照合。
-- 実証済み: sbx 0.42.1の通常ターミナル起動、固定shellイメージでの合成搬入・回収・終了コード・停止。実Codex、敵対的な回収物、通信の全経路、強制停止は未実証。
+- 実装済み: v1部品に加え、v3の4責務・共通CLI・復旧操作（計画docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md のタスク1〜9）。偽sbxによる独立試験11群。
+- 実証済み（2026-09-18時点、sbx 0.42.1、synthetic-pilot）: replay/proposal両profileの能力証拠（タスク8a・8b・9）、CLI強制終了後の自動停止と記録済みIDだけの復旧、Codex主担当（2026-09-17）とClaude Code主担当（2026-09-18）からの候補比較→採用→recheckの往復（V7）。記録はdocs/records/experiments/2026-09-18-task9-claude-code-roundtrip.md ほか。
+- 未実証・受容済みの制限: デーモン切断時の挙動（ADR-0196）、厳密なプロセス数上限、clipboard文字列書込（ADR-0161）、稼働中の他VMの非停止、敵対的な回収物の実機試験、任意プロジェクト・通常運用への適用。
 
 ## この文書の読み方
 
@@ -61,7 +62,9 @@ flowchart LR
 
 途中失敗で後段を実行できない場合も、CLIはnot_runの型付き結果を作って照合へ渡す。未実行を成功や停止成功と記録しない。01の全体開始時刻・deadline・manifest期待hashを同じPreparedRunV3として全段へ渡し、段階ごとに制限時間をリセットしない。
 
-準備後、CLIは02のAcquire-VerificationPilotLeaseでpilot共通の起動排他を取得する。通常提案とrecheckの両経路を覆い、全停止処理後のfinallyでRelease-VerificationPilotLeaseを呼ぶ。競合時はVMを作らずblocked。入力の試作限定性は01の固定入力記録と現物hashで照合し、scopeのラベルだけに依存しない。
+準備後、CLIは02のAcquire-VerificationPilotLeaseでpilot共通の起動排他を取得する。通常提案とrecheckの両経路を覆い、全停止処理後のfinallyでRelease-VerificationPilotLeaseを呼ぶ。競合時はVMを作らずblocked。全体期限への到達でLeaseを取得できなかった場合に限り、Leaseを持たずに提案（VMを作らずtimed_out）→未実行の再実行結果→照合へ進む。Leaseを持たないVM作成は02が拒否するため、同時1VMの保護は緩めない（ADR-0198）。入力の試作限定性は01の固定入力記録と現物hashで照合し、scopeのラベルだけに依存しない。
+
+CLIが強制終了などで停止確認まで進めなかった場合は、stderr先頭に出したrunRootを指定する復旧操作（-StopRecorded -RunRoot）で、control/runtimeに記録済みのVMのIDだけを停止・確認し、recovery-<時刻>.jsonへ残す。記録にないVMには触れない（ADR-0194）。
 
 ## 実行基盤の成立条件
 
@@ -97,4 +100,4 @@ flowchart LR
 
 基本方針はADR-0157、4責務・補助設計の委任はADR-0158。ユーザーの「１で」は分割と補助設計を承認した回答。保護の追加緩和、新たな必須基盤・利用者作業、認証・利用費・送信範囲、削除・公開は相談する。詳細仕様は提示後に確定し、独立レビューの送信承認は別に扱う。
 
-関連: ADR-0145〜0150、0157、0158。実機根拠はdocs/records/experiments/2026-09-09-sbx-smoke.md。旧ホスト上Codex構成はADR-0152の過去記録と旧計画を参照し、現行実装指示にはしない。
+関連: ADR-0145〜0150、0157、0158。試作条件・実現手段はADR-0159〜0162、0192〜0201。実機根拠はdocs/records/experiments/2026-09-09-sbx-smoke.md と、タスク8・9の実験記録（2026-09-16〜18）。旧ホスト上Codex構成はADR-0152の過去記録と旧計画を参照し、現行実装指示にはしない。

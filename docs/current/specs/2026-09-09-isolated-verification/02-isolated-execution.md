@@ -18,7 +18,7 @@ Copyは外側で検査済みの通常ファイルだけを固定Destinationへ�
 
 ## 実行設定と起動前確認
 
-runtime-profile.schema.jsonはschemaVersion=3、role（proposal/replay）、sbxVersion、templateDigest、agent、startupArgv、executableInVm、policyExpectation、mountExpectation、activationEvidencePath、activationEvidenceHashを必須とする。proposalのagentはcodex、replayはshell。タグの自動追随・実行時のイメージ更新はしない。digestと実体の対応を確認し、不明ならblocked。
+runtime-profile.schema.jsonはschemaVersion=3、role（proposal/replay）、sbxVersion、templateDigest、agent、startupArgv、executableInVm、policyExpectation、mountExpectation、activationEvidencePath、activationEvidenceHashを必須とする。proposalのagentはcodex、replayはshell。templateDigestは役割別に固定し、proposalはCodex収録済みの公式codex版、replayはshell版を使う（ADR-0201）。shell版にagent=codexを指定してもCodex本体は入らない。タグの自動追随・実行時のイメージ更新はしない。digestと実体の対応を確認し、不明ならblocked。
 
 scope=synthetic-pilotとacceptedLimitations=["clipboard-text-write-possible","pid-count-unbounded","daemon-disconnect-unverified"]も必須とする（3件目はADR-0196）。現在の仕様ではこれ以外のscopeや例外を受理しない。実行前に固定した合成題材の対象・送信範囲を照合し、例外への一般的な同意で実プロジェクトを解放しない。これらもprofileHashの対象とし、通常用途のprofileとして流用しない。
 
@@ -32,7 +32,7 @@ VM作成前にPreparedRunV3のpilotInputId/Path/Hash、固定入力記録のsour
 
 profileHashはactivationEvidencePath/activationEvidenceHashを除いた設定値を、キーの辞書順・UTF-8・空白なしJSONで正規化したSHA256。証拠への相互参照でハッシュが循環しないようにする。templateDigest、資源上限等の実行条件を含めた実効設定hashを別に記録し、異なるlimitsへ証拠を流用しない。Roleのreplay-before/replay-afterは検査時だけprofile.role=replayへ対応付け、記録上の役割は統合しない。
 
-実行設定は外側で作成・確認する。任意フラグや認証値を子から受け取らない。startupArgvは対象テンプレートで非対話のstdin入力・終了・出力を実証したargv配列を固定し、モデル指定をSettingsV3と照合する。画像内Codexの版と実行ファイルを確認する。未実証のホストCLIのargvを画像内CLIへ流用しない。
+実行設定は外側で作成・確認する。任意フラグや認証値を子から受け取らない。startupArgvは対象テンプレートで非対話のstdin入力・終了・出力を実証したargv配列を固定し、モデル指定をSettingsV3と照合する。画像内Codexの版と実行ファイルを確認する。未実証のホストCLIのargvを画像内CLIへ流用しない。proposal profileは、画像内の版・パス・ヘルプと、固定stdin・指定ファイル生成・終了0・応答を最小の起動確認で実測してから生成する（ADR-0200）。
 
 activationEvidenceはcheckedAt、binaries、profileHash、checksを持つ。checksは各条件のverdictと外側の証拠パス/ハッシュを持つ。次をすべて確認した設定だけをverifiedとする。
 
@@ -41,12 +41,13 @@ activationEvidenceはcheckedAt、binaries、profileHash、checksを持つ。chec
 各実コマンド直前にも、同じVM id・デーモン起動世代・実効設定が維持されているか確認する。変化・取得不能・保護状態を検知できない競合があれば作業を解放せず停止する。古いcheckedAtや同じ製品版だけで現在VMの許可を証明しない。実行中の保護変更は外側で検知して停止することを能力試験に含め、監視不能な経路がある場合はverifiedにしない。固定の有効日数を増設する代わりに、実体と起動世代への対応で失効させる。
 
 - 通常起動済みデーモンの健康、内部イメージ照会、版・テンプレート一致。
-- workspaceなし、no-share-skills、MCP登録なし、ホスト原本/home/control/Dockerへの接続なし。
-- SSHエージェント転送等、例外以外の追加ホスト経路の拒否。実体設定と無害な否定試験を対応付ける。方法が特定できなければblocked。clipboard画像読取は無効、文字列書込はscopeで許容された例外として記録し、拒否成功の証拠を作らない。
+- workspaceなし、no-share-skills、MCP登録なし、ホスト原本/home/control/Dockerへの接続なし。「MCP登録なし」は当該デーモンに登録済みのMCPサーバーが0件であることで判定し、1件でもあればblocked。製品が常設するMCPゲートウェイとmcpgateway secretは製品挙動として記録し、表示から省略しない（ADR-0195）。
+- SSHエージェント転送等、例外以外の追加ホスト経路の拒否（デーモン設定のssh.agentForwardingEnabled=falseを前提とする。ADR-0162）。実体設定と無害な否定試験を対応付ける。方法が特定できなければblocked。clipboard画像読取は無効、文字列書込はscopeで許容された例外として記録し、拒否成功の証拠を作らない。
 - 外側で設定したCPU/メモリ割当と当該VMの実効値、同時稼働1VM、時間・出力上限、有限の負荷中の外側停止。厳密なpids上限は確認対象にせずpid-count-unboundedを明示する。資源枯渇時のVM内応答性やホスト全体の無影響を保証しない。負荷試験は具体的な上限・中止条件と操作承認を先に固定する。
 - proposalは `auth.openai.com:443`・`chatgpt.com:443` だけの実効許可（改訂ADR-0199）。既定キットのポート付きallowと他11ホストの全ポートdenyを照合し、正常な拒否応答（policy checkの終了1）を照会失敗と区別する。raw認証値を子へ渡さない認証方式。認証・モデルの実試験は個別承認後。
 - replayは外向き通信・hostへの通信・他VM通信を拒否し、モデル認証を一切供給しない。
-- time/output上限、外側CLI異常、デーモン切断、対象VMの停止と他VMの非停止、停止中の自動再起動防止。デーモン切断はsynthetic-pilotではdaemon-disconnect-unverifiedとして未確認のまま認め、各実コマンド直前の世代確認と自動停止痕跡の検知を補償にする（ADR-0196）。
+- time/output上限、外側CLI異常、デーモン切断、対象VMの停止と他VMの非停止、停止中の自動再起動防止。デーモン切断はsynthetic-pilotではdaemon-disconnect-unverifiedとして未確認のまま認め、各実コマンド直前の世代確認と自動停止痕跡の検知を補償にする（ADR-0196）。停止中の自動再起動の防止は、VM作成確認後から停止確認までセッション保持用のexecを1本保つことで行う。停止は保持を生かしたままstopを発行し、停止確認後に保持を止める。run途中に自動停止の痕跡があれば当該runを失敗にする（ADR-0193）。
+- 能力試験の実施方法（新規VM1台での試験A〜D）はADR-0192、提案用profileの証拠を提案用VMで取り直し、負荷中の外側停止だけ再実行用の記録を使う範囲はADR-0197に従う。
 
 初回はAIなし保護検証の後、別承認の認証・最小モデル試験でproposal設定を完成させる。実モデル検証が必要な項目を未実施のままverifiedにしない。設定hash、実体、証拠が不一致なら作業解放前にblocked。ホスト資格情報を読む検査はしない。否定試験は固定の代用品を使用する。
 
@@ -92,4 +93,4 @@ recheckでは子の提案を受信せず、testsは前回選択した集合と�
 
 V2/V3/V5を担当。架空runId、リンク相当の提案、パス逸脱、重複、予約名、過大wire、復号後超過、途中切断、提案なし、停止未確認を拒否する。VMなしの受信fixtureと、別承認の実VM試験を分ける。正常提案・不正提案・出力洪水・デーモン停止競合を含む。
 
-関連ADR: 0157、0158。準備は01、照合は03、再実行は04。
+関連ADR: 0157、0158、0160〜0162、0192〜0197、0199〜0201。準備は01、照合は03、再実行は04。

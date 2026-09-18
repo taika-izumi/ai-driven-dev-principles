@@ -1,9 +1,9 @@
 # Handoff: worktree使用を踏まえた開始時の検出（ADR-0202）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-19 01:10 (Asia/Tokyo)
+- **Last Updated**: 2026-09-19 02:10 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: 改修/plan確定点通過（`docs/working/plans/2026-09-19-worktree-start-detection.md`）→ 次は実装（Task 1〜6）
+- **Current Phase**: 改修/実装 Task 1〜5 完了（ADR-0202・0203 Accepted、0.1.30 生成済み・未push）→ Task 6（メモリの扱い）と公開の判断
 
 ## 作業の目的・背景
 
@@ -25,7 +25,8 @@
 
 - [ ] **現在の作業**: worktree使用を踏まえた開始時の検出（ADR-0202、Proposed。設計はfd29346で確定）
   - 状態: brainstormingで範囲・方針を合意し、ADR-0202が設計文書を兼ねる（仕様書ファイルなし、feature-block-designは非適用）。確定前レビューはフル2回・差分再確認1回・機械検証で実質的な収束。レビュー対応の退避は `~/.ai-dev-review-snapshots/2026-09-18-adr-0202-r0`〜`r3`。
-  - 残り: 実装計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` を確定済み。Task 1（文面の追記・生成・検査）→ Task 2（scratchpadで7場面の写経試験と実環境）→ Task 3（整合検査）→ Task 4（版0.1.30）→ Task 5（ADR-0202 Accepted）→ Task 6（メモリ `check-worktree-handoffs-at-start` の扱い）。masterで直接実施し、using-git-worktreesの同意確認では「作らない」を選ぶ。
+  - 状態: 計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` の Task 1〜5 を完了。検出の追記とサイズ警告への対応（1447345、ADR-0203でインラインフォールバックの内容を `skills/start-work/references/inline-fallbacks.md` へ移動）、7場面と実環境の写経試験・整合検査（6564c49、いずれも期待どおり・指摘なし）、版0.1.30（7d86b81）、ADR-0202・0203 Accepted（4e3a9f7）。
+  - 残り: Task 6（メモリ `check-worktree-handoffs-at-start` の扱いを利用者と決める）。0.1.30の公開（masterのpush）は利用者の承認が必要。公開後に利用者が `/plugin marketplace update ai-driven-dev-principles` で導入し、次回のstart-workで検出が働くことを確かめる。
   - 未着手の宿題: 隔離検証の今後の方針（次セッション開始時のアクション4）を1問決める。
 
 ## 未着手のタスク
@@ -62,6 +63,8 @@
 - 2026-09-18 worklog形式の解説メモ削除とIssue-0157の現状確認: ADR=なし（配置の訂正とOAuth保留の判断。方針の選択ではない） / worklog=MakeAiInstructions-2026-09-18-05
 - 2026-09-18 ADR-0202 spec 確定点（worktree検出の設計、fd29346）: ADR=0202 / worklog=MakeAiInstructions-2026-09-18-06 / review=フル実施（claude-opus-5・2 回）＋差分再確認（claude-opus-5・1 回）＋機械検証（1 回・実質的な収束）
 - 2026-09-19 worktree検出 plan 確定点（実装計画の確定）: ADR=なし（ADR-0202の実装計画で新たな決定なし） / worklog=MakeAiInstructions-2026-09-19-01 / review=フル実施（claude-opus-5・1 回）＋機械検証（2 回・提示後確定（実質的な収束に至らず））
+- 2026-09-19 worktree検出の実装 Task 1〜4（サイズ警告への対応を含む）: ADR=0203 / worklog=MakeAiInstructions-2026-09-19-02
+- 2026-09-19 ADR-0202・0203 Accepted 昇格: ADR=0202・0203 / worklog=棄却（delta なし） / cyclecheck=実施（指摘なし）
 
 ## 次セッション開始時のアクション
 
@@ -76,7 +79,8 @@
 ## 重要な意思決定の履歴
 
 - ADR-0162・0192〜0201: 隔離検証の試作条件と実現手段。2026-09-18 Accepted、f8bce07で統合。
-- ADR-0202: worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに任せ、開始時に読む側で検出する。2026-09-18 Proposed（設計確定fd29346、実装後に昇格）。
+- ADR-0202: worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに任せ、開始時に読む側で検出する。2026-09-19 Accepted（4e3a9f7）。
+- ADR-0203: start-workのインラインフォールバックの内容をreferencesへ移す（サイズ警告への対応）。2026-09-19 Accepted。
 - ADR-0153〜0156: 隔離検証の再検討方向・既存基盤比較・sbx通信deny-all初期化・sbx状態退避。2026-09-18 Accepted。
 - ADR-0190: 目的の正本を開始・再開・委譲へ届ける。Accepted。
 - ADR-0189: レビュー観点再編。正本: docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md。

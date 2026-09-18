@@ -208,3 +208,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0200](0200-bootstrap-codex-startup-before-the-synthetic-model-roundtrip.md) | 最小のCodex起動確認を先に行い、同じ条件で合成題材を往復させる | Accepted | 2026-09-17 |
 | [0201](0201-use-agent-specific-pinned-template-for-proposal.md) | 提案用にはCodex収録済みの固定テンプレートを使う | Accepted | 2026-09-17 |
 | [0202](0202-handle-worktrees-by-agreement-and-start-time-detection.md) | worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに任せ、開始時に読む側で検出する | Proposed | 2026-09-18 |
+| [0203](0203-move-start-work-inline-fallbacks-to-references.md) | start-workのインラインフォールバックの内容をreferencesへ移す | Proposed | 2026-09-19 |

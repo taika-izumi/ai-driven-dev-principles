@@ -152,6 +152,8 @@ git add skills/session-handoff/references/op-read.md skills/session-handoff/SKIL
 git commit -m "feat(skills): 開始時に他のworktreeの進行中handoffを検出する（ADR-0202）"
 ```
 
+逸脱記録: 設計の変更 / 採用 / ADR-0203、自分で持ち込んだ後退の基準（Step 9 でstart-work SKILL.md のサイズ警告が発火しインラインフォールバックの内容をreferencesへ移した。利用者承認 2026-09-19）
+
 ### Task 2: 検出の文面を写経し、場面ごとに動作を確かめる
 
 **Files:**

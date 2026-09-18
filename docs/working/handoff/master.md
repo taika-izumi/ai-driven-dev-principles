@@ -1,9 +1,9 @@
-# Handoff: 次サイクル待ち（隔離検証の統合後）
+# Handoff: worktree使用を踏まえた開始時の検出（ADR-0202）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-18 18:10 (Asia/Tokyo)
-- **Status**: ready-for-next-cycle
-- **Current Phase**: 隔離検証v3をmasterへ統合（f8bce07）し、振り返りまで完了。次サイクルの作業は利用者の判断待ち。
+- **Last Updated**: 2026-09-18 23:55 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 改修/spec確定点通過（ADR-0202 設計確定 fd29346）→ 次は実装計画（writing-plans）
 
 ## 作業の目的・背景
 
@@ -23,12 +23,14 @@
 
 ## 進行中のタスク
 
-（なし。次サイクルの選定待ち）
+- [ ] **現在の作業**: worktree使用を踏まえた開始時の検出（ADR-0202、Proposed。設計はfd29346で確定）
+  - 状態: brainstormingで範囲・方針を合意し、ADR-0202が設計文書を兼ねる（仕様書ファイルなし、feature-block-designは非適用）。確定前レビューはフル2回・差分再確認1回・機械検証で実質的な収束。レビュー対応の退避は `~/.ai-dev-review-snapshots/2026-09-18-adr-0202-r0`〜`r3`。
+  - 残り: 実装計画の作成（writing-plans、plan確定点で確定前レビューを提示）→ `skills/session-handoff/references/op-read.md` への検出の追記と `skills/start-work/SKILL.md` Phase 0への1句 → 配布更新（CONTRIBUTING.md「配布プラグインの版更新」「執行点」）→ 本リポジトリでstart-workを実行して検出を確認 → ADR-0202のAccepted昇格 → メモリ `check-worktree-handoffs-at-start` の扱いを利用者と決める。
+  - 計画に書く事項: 確定前レビューは1体4観点兼務だった（spec確定点。記録先をplanとする）。隔離検証の今後の方針（次セッション開始時のアクション4）は本作業の中で1問決める予定だったが未着手。
 
 ## 未着手のタスク
 
 - [ ] 隔離検証の後片付け（Issue-0157）、独立試験の環境差（Issue-0155）・所要時間（Issue-0156）、繰り延べ指摘（Issue-0152〜0154）。着手は利用者判断。
-- [ ] worktree使用を踏まえた作業フローの定義（利用者の2026-09-15の示唆「メモリに残すのではなく作業フローを定義したほうがよい」、worklog `MakeAiInstructions-2026-09-15-03`）。課題起票・設計は未着手・未承認。
 - [ ] Issue-0158（セッション継続/切替の判断基準）の対策設計・着手は未承認。
 - [ ] Issue-0145の対策設計・着手は未承認。正本: docs/working/issues/flow/0145-redesign-history-investigation-sufficiency-unverified.md。
 - [ ] Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
@@ -58,6 +60,7 @@
 - 2026-09-18 Issue-0136クローズ（利用者「1で」）: ADR=なし（課題の状態判断で、方針の選択ではない） / worklog=棄却（delta なし）
 - 2026-09-18 inbox整理（organize-inbox完了）: ADR=なし（配置と起票の判断で、方針の選択ではない） / worklog=MakeAiInstructions-2026-09-18-04
 - 2026-09-18 worklog形式の解説メモ削除とIssue-0157の現状確認: ADR=なし（配置の訂正とOAuth保留の判断。方針の選択ではない） / worklog=MakeAiInstructions-2026-09-18-05
+- 2026-09-18 ADR-0202 spec 確定点（worktree検出の設計、fd29346）: ADR=0202 / worklog=MakeAiInstructions-2026-09-18-06 / review=フル実施（claude-opus-5・2 回）＋差分再確認（claude-opus-5・1 回）＋機械検証（1 回・実質的な収束）
 
 ## 次セッション開始時のアクション
 
@@ -72,6 +75,7 @@
 ## 重要な意思決定の履歴
 
 - ADR-0162・0192〜0201: 隔離検証の試作条件と実現手段。2026-09-18 Accepted、f8bce07で統合。
+- ADR-0202: worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに任せ、開始時に読む側で検出する。2026-09-18 Proposed（設計確定fd29346、実装後に昇格）。
 - ADR-0153〜0156: 隔離検証の再検討方向・既存基盤比較・sbx通信deny-all初期化・sbx状態退避。2026-09-18 Accepted。
 - ADR-0190: 目的の正本を開始・再開・委譲へ届ける。Accepted。
 - ADR-0189: レビュー観点再編。正本: docs/records/decisions/0189-organize-review-questions-and-independent-challenge.md。

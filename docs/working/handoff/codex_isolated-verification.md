@@ -1,9 +1,9 @@
 # Handoff: 隔離検証の共通起動処理
 
 - **Branch**: codex/isolated-verification
-- **Last Updated**: 2026-09-18 13:34 (Asia/Tokyo)
-- **Status**: in_progress
-- **Current Phase**: Codex側（2026-09-17）とClaude Code側（2026-09-18）の両主担当の往復が完了。次はTask9の記録コミット後、サイクル全体整合検査・最終レビュー・ADR-0162・0192〜0201の状態判定・統合。
+- **Last Updated**: 2026-09-18 15:32 (Asia/Tokyo)
+- **Status**: completed
+- **Current Phase**: masterへ `--no-ff` で統合済み（f8bce07）。振り返り `docs/records/retrospectives/system/2026-09-18-isolated-verification.md` まで完了。以後の引き継ぎは `docs/working/handoff/master.md` を正とする。worktreeとブランチは未追跡の証跡保全のため残す。
 
 ## 作業の目的・背景
 

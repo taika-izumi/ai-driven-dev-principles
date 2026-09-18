@@ -37,8 +37,8 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 進行中のタスク
 
-- Task9の記録は54566c8でコミット済み。
-- [ ] 次にサイクル全体整合検査、最終レビュー、ADR-0162・0192〜0201の状態判定を行う。masterへの統合、retrospective、停止VM（19台）/OAuthの後片付けはまだ行っていない。
+- Task9の記録は54566c8でコミット済み。サイクル全体整合検査は2026-09-18に実施済み（修正1a0c4f5、記録 `docs/records/reviews/2026-09-18-cycle-consistency-check.md`。粒度点検でADRの分割は不要と判断）。
+- [ ] 次に最終レビューとADR-0162・0192〜0201のAccepted昇格を行う（順序は利用者の判断待ち）。masterへの統合、retrospective、停止VM（19台）/OAuthの後片付けはまだ行っていない。
 - `.tmp/m9/source`と`.tmp/c9/source`はいずれも修正後（加算）の状態。再現が必要なら`tests/fixtures/pilot-source/source/calc.py`から別の独立Gitを作る。既存の試験原本・結果は書き換えない。
 
 ## 未着手のタスク
@@ -64,6 +64,7 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 節目ごとの確認記録
 
+- 2026-09-18 サイクル全体整合検査: ADR=なし（既存ADRの仕様への書き戻しと引用元の訂正） / worklog=棄却（既存の検査手順内） / cyclecheck=実施（修正: 1a0c4f5）
 - 2026-09-18 Claude Code主担当の往復完了: ADR=なし（承認済み操作案の実行、設計変更なし） / worklog=MakeAiInstructions-2026-09-18-01
 - 2026-09-17 セッション終了・Claude Codeへの引き継ぎ確定: ADR=なし（既存Task9の残試験への主担当切替と中断） / worklog=棄却（既存の終了・再開経路確認手順、先行記録2026-09-15-03）
 - 2026-09-17 Codex側往復完了・Issue-0151 close: ADR=0201 / worklog=棄却（既存の承認・実機検証手順内、539e100）

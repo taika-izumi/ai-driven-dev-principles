@@ -1,0 +1,19 @@
+── RESOLVE SETUP
+   resolving configuration…
+     sandbox    {{name}}
+     agent      {{agent}}
+     workspace  none · no workspace bind mount
+     image      {{digest}}
+     cpu        2
+     memory     2g
+   ✓ configuration resolved
+── PREPARE IMAGE
+   → pull {{digest}}
+     16a88c7321c1 already present
+     dd4dd63eeb47 already present
+   ✓ image ready
+── CREATE SANDBOX
+   ✓ Created sandbox {{name}}
+
+To connect to this sandbox, run:
+  sbx run --name {{name}}

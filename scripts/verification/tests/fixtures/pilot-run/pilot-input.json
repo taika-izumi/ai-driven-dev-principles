@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 3,
+  "inputId": "task8b-pilot-source",
+  "scope": "synthetic-pilot",
+  "sourceRoot": "{{sourceRoot}}",
+  "sourceManifestHash": "{{sourceManifestHash}}",
+  "approvalReference": {
+    "path": "docs/working/plans/2026-09-14-isolated-verification-v3-implementation.md",
+    "version": "タスク8の実VM試験の個別承認（2026-09-16、8a と同時）"
+  }
+}

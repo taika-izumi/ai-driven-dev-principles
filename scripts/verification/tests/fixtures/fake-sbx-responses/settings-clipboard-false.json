@@ -1,0 +1,9 @@
+{
+  "default": false,
+  "description": "Allow sandboxed agents to read the host clipboard for image paste (Ctrl+V).",
+  "env_var": "DOCKER_SANDBOXES_CLIPBOARD_IMAGE_PASTE",
+  "key": "clipboard.imagePaste",
+  "source": "default",
+  "type": "bool",
+  "value": false
+}

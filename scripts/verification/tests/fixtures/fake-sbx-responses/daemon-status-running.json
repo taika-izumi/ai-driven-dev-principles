@@ -1,0 +1,5 @@
+{
+  "status": "running",
+  "socket": "\\\\.\\pipe\\docker_fake_sandboxd",
+  "logs": "{{logs}}"
+}

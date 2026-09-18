@@ -154,6 +154,20 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0146](0146-delegate-verification-from-claude-to-codex.md) | 開発の主担当を維持し、Claude CodeとCodexから共通の検証担当を呼ぶ | Accepted | 2026-09-09 |
 | [0147](0147-use-common-cli-for-isolated-verification.md) | 検証の共通入口をCLIに置き、準備・実行・回収の責務を分ける | Accepted | 2026-09-09 |
 | [0148](0148-initialize-independent-git-metadata-for-verification.md) | 検証用コピーに独立したGit管理領域を作る | Accepted | 2026-09-09 |
+| [0149](0149-advance-independent-verification-while-assessing-network-risk.md) | 通信リスクを評価しながら独立した検証を先に進める | Accepted | 2026-09-09 |
+| [0150](0150-provide-repository-history-to-verification-agents.md) | 検証担当へリポジトリのファイルとGit履歴をスクリプトで渡す | Accepted | 2026-09-09 |
+| [0151](0151-design-linux-python-verification-pilot-first.md) | 隔離検証はLinux・Python対象の小さな試作設計を先行する | Accepted | 2026-09-09 |
+| [0152](0152-route-verification-operations-through-container-mcp.md) | ホスト上の検証担当の操作を専用MCP接続でコンテナへ限定する | Superseded by ADR-0157 | 2026-09-09 |
+| [0153](0153-reconsider-isolating-verification-agent-itself.md) | 検証担当Codex本体も隔離する構成の再検討へ進む | Proposed | 2026-09-09 |
+| [0154](0154-compare-existing-isolation-platforms-before-custom-build.md) | 独自の隔離基盤を作り込む前に既存基盤を比較する | Proposed | 2026-09-09 |
+| [0155](0155-initialize-sbx-network-with-deny-all.md) | Docker Sandboxesの全体ネットワーク初期方針をdeny-allにする | Proposed | 2026-09-09 |
+| [0156](0156-preserve-sbx-state-before-recovery.md) | sbxの旧状態領域を退避して起動復旧を試す | Proposed | 2026-09-09 |
+| [0157](0157-separate-agent-proposals-from-authoritative-replay.md) | Codexの提案作成と採否用の再実行を分離する | Accepted | 2026-09-09 |
+| [0158](0158-divide-proposal-replay-verification-into-four-blocks.md) | 提案と再実行の検証を4つの責務に分割する | Accepted | 2026-09-09 |
+| [0159](0159-reassess-sbx-resource-and-clipboard-protection.md) | sbxの資源保護とクリップボード条件を目的から再検討する | Accepted | 2026-09-09 |
+| [0160](0160-use-vm-resource-bounds-for-synthetic-pilot.md) | 合成題材の試作ではVM資源割当と外側停止を資源保護の基準にする | Accepted | 2026-09-10 |
+| [0161](0161-accept-clipboard-text-write-for-synthetic-pilot.md) | 合成題材の試作中はクリップボード文字列書込を例外として受容する | Accepted | 2026-09-10 |
+| [0162](0162-disable-sbx-ssh-agent-forwarding.md) | ローカルsbxのSSHエージェント転送を無効化する | Accepted | 2026-09-10 |
 | [0163](0163-prioritize-guideline-operating-cost-improvements.md) | ロードマップでは確認工程の費用と判断の適用不全への対処を先行する | Proposed | 2026-09-10 |
 | [0164](0164-exclude-behavior-preserving-observations-from-full-review-default.md) | 利用条件を変えない実測結果の追記を初回フルレビューの強い推奨から除外する | Accepted | 2026-09-10 |
 | [0165](0165-apply-cost-comparison-before-review-disposition.md) | レビュー指摘の費用比較は既存の採否手順と対応表に組み込み、自動検査は最終手段とする | Accepted | 2026-09-10 |
@@ -183,3 +197,13 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0189](0189-organize-review-questions-and-independent-challenge.md) | レビューを3つの確認領域と独立した反証に整理し、品質項目の担当を明示する | Accepted | 2026-09-12 |
 | [0190](0190-read-project-purpose-at-start-resume-and-delegation.md) | プロジェクトの目的・方針の正本を開始・再開・委譲で参照する | Accepted | 2026-09-12 |
 | [0191](0191-offer-purpose-document-maintenance-at-start.md) | 正本を確認できない開始・再開では目的整備を作業候補に含める | Accepted | 2026-09-13 |
+| [0192](0192-run-sbx-capability-tests-on-one-synthetic-vm.md) | 残るsbx能力試験を新規VM1台で順に実施する | Accepted | 2026-09-14 |
+| [0193](0193-hold-a-session-to-prevent-sbx-auto-stop-during-a-run.md) | 隔離検証の実行中はセッションを保持してsbxの自動停止を避ける | Accepted | 2026-09-15 |
+| [0194](0194-stop-recorded-sandboxes-after-cli-abnormal-exit.md) | CLI異常終了後は記録済みIDだけを止める復旧操作で停止を確認する | Accepted | 2026-09-15 |
+| [0195](0195-treat-registered-mcp-servers-zero-as-the-no-mcp-condition.md) | 「MCP登録なし」は登録済みMCPサーバー0件で判定し、常設ゲートウェイは製品挙動として記録する | Accepted | 2026-09-15 |
+| [0196](0196-accept-daemon-disconnect-unverified-for-synthetic-pilot.md) | 試作の間はデーモン切断の検知を未確認の制限として認め、検証済みの条件から外す | Accepted | 2026-09-15 |
+| [0197](0197-reuse-load-stop-record-for-proposal-profile-evidence.md) | 提案用実行設定の証拠は提案用VMで取り直し、負荷中の外側停止だけ再実行用の既存記録を使う | Accepted | 2026-09-15 |
+| [0198](0198-route-deadline-reached-runs-through-collation-without-lease.md) | 全体期限の後に pilot 排他を取得できない場合も、CLI は VM を作らない型付き結果を照合へ渡す | Accepted | 2026-09-16 |
+| [0199](0199-authenticate-proposal-vm-by-oauth-sentinel-and-allow-two-model-hosts.md) | 提案用VMはOAuthのセンチネル方式で認証し、通信許可をモデル接続先2件に限る | Accepted | 2026-09-16 |
+| [0200](0200-bootstrap-codex-startup-before-the-synthetic-model-roundtrip.md) | 最小のCodex起動確認を先に行い、同じ条件で合成題材を往復させる | Accepted | 2026-09-17 |
+| [0201](0201-use-agent-specific-pinned-template-for-proposal.md) | 提案用にはCodex収録済みの固定テンプレートを使う | Accepted | 2026-09-17 |

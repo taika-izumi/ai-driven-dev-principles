@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProposalEnvelopeV3",
+  "description": "提案用VM内の固定エクスポーター（proposal-export.py）が stdout へ1行で出す未信頼の提案書式。Proposal.psm1 の Test-VerificationProposalEnvelope が型の段でこの schema を使う（wire容量・重複キー・深さ・未知キーはその前、runId・件数・path・kind・base64・復号後サイズ・UTF-8 はその後に外側のコードで検査する）。truncated はエクスポーターが上限超過・リンク等でファイルを含めなかった印で、true は拒否する。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "summary", "findings", "files"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 3},
+    "runId": {"type": "string", "minLength": 1},
+    "summary": {"type": "string"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "sourcePaths"],
+        "properties": {
+          "description": {"type": "string"},
+          "sourcePaths": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "path", "contentBase64"],
+        "properties": {
+          "kind": {"type": "string", "enum": ["test", "replacement"]},
+          "path": {"type": "string"},
+          "contentBase64": {"type": "string"}
+        }
+      }
+    },
+    "truncated": {"type": "boolean"}
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "action": "net:connect:tcp",
+  "allowed": false,
+  "context": "sandbox:iv-f107bb84-proposal",
+  "deny_kind": "implicit",
+  "governance": {
+    "active": false
+  },
+  "reason": "No matching allow rule (default deny)",
+  "resource_type": "net:domain",
+  "resource_value": "auth.openai.com:8443",
+  "target": "auth.openai.com:8443",
+  "type": "network"
+}

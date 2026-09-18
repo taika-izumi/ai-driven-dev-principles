@@ -1,0 +1,24 @@
+{
+  "blocked_hosts": [
+    {
+      "host": "example.com:80",
+      "vm_name": "{{name}}",
+      "proxy_type": "forward",
+      "rule": "denied: rule \"local:9f6d1593-ca11-4878-a393-06dbddd9ec26\" matched op(action=net:connect:tcp, resource=net:domain:example.com:80)",
+      "last_seen": "2026-09-14T23:02:46.466037+09:00",
+      "since": "2026-09-14T23:02:46.4543715+09:00",
+      "count_since": 2,
+      "reason": "Denied by local rule"
+    },
+    {
+      "host": "[fd2b:85ec:a0b0::2]:22",
+      "vm_name": "{{name}}",
+      "proxy_type": "transparent",
+      "rule": "denied: rule \"local:9f6d1593-ca11-4878-a393-06dbddd9ec26\" matched op(action=net:connect:tcp, resource=net:domain:fd2b:85ec:a0b0::2:22)",
+      "last_seen": "2026-09-14T23:02:46.4643846+09:00",
+      "since": "2026-09-14T23:02:46.4643846+09:00",
+      "count_since": 1,
+      "reason": "Denied by local rule"
+    }
+  ]
+}

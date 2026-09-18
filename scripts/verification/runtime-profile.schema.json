@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "role", "sbxVersion", "templateDigest", "agent", "model", "startupArgv", "executableInVm", "policyExpectation", "mountExpectation", "scope", "acceptedLimitations", "stdlibModulesPath", "stdlibModulesHash", "activationEvidencePath", "activationEvidenceHash"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 3},
+    "role": {"type": "string", "enum": ["proposal", "replay"]},
+    "sbxVersion": {"type": "string", "minLength": 1},
+    "templateDigest": {"type": "string", "pattern": "^[a-z0-9./_-]+@sha256:[0-9a-f]{64}$"},
+    "agent": {"type": "string", "enum": ["codex", "shell"]},
+    "model": {"type": ["string", "null"], "pattern": "\\S"},
+    "startupArgv": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "executableInVm": {"type": "string", "pattern": "^/"},
+    "policyExpectation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["networkPolicy"],
+      "properties": {"networkPolicy": {"type": "string", "enum": ["deny *", "allow auth.openai.com:443 chatgpt.com:443 only"]}}
+    },
+    "mountExpectation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["workspace", "shareSkills", "sshAgentForwarding"],
+      "properties": {
+        "workspace": {"type": "string", "const": "none"},
+        "shareSkills": {"type": "boolean", "const": false},
+        "sshAgentForwarding": {"type": "boolean", "const": false}
+      }
+    },
+    "scope": {"type": "string", "const": "synthetic-pilot"},
+    "acceptedLimitations": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"type": "string", "enum": ["clipboard-text-write-possible", "pid-count-unbounded", "daemon-disconnect-unverified"]}
+    },
+    "stdlibModulesPath": {"type": "string", "minLength": 1},
+    "stdlibModulesHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "activationEvidencePath": {"type": "string", "minLength": 1},
+    "activationEvidenceHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}
+  }
+}

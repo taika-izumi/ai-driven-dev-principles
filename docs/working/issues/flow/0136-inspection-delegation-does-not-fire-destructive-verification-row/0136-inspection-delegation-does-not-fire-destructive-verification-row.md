@@ -30,6 +30,15 @@
 
 ## 現在地の要約
 
+- 2026-09-09: Linux仕様はフル1回・差分再確認1回・機械検証16項目を経て確定。ADR-0151・0152をAcceptedへ昇格。v2実装計画は未作成、実効保護は未実証。`docs/records/reviews/2026-09-09-linux-pilot-spec-final.md`を参照。
+
+- 2026-09-09: Git履歴の独立コピーをレビューし、HEADのブランチ名保持を修正。全4テスト群が成功しADR-0150を確定。実エージェント経路・隔離方式は未完了。`0136-note-history-transfer.md`と`docs/records/reviews/2026-09-09-history-copy.md`を参照。
+- 2026-09-09: 再利用差分と役割間連携を調査。既存CLIの直接利用には原本位置・回収・権限・停止の差分がある。Linux試作先行かWindows対応維持かは未決定。`0136-note-loopforalpha-sandbox-reuse.md`を参照。
+
+- 2026-09-09: リスク評価とAIなし部品の先行検証を承認（ADR-0149）。外部直接接続1件は拒否、ローカルのデータ往復とコピー外の合成データ読取は成功。コピー・プロセス管理・結果照合の3テスト群は成功。通常利用・実エージェント起動は未承認。`0136-note-network-risk-assessment.md`を参照。
+
+- 2026-09-09: 共通CLIの計画を確定し主担当実装を開始。タスク0で親子の書き込み保護・新規junctionの拒否を確認したが、通信禁止指定でもループバックTCPが成功。後続を止め、通信制御の起動経路の判断待ち。`0136-note-common-cli-runtime.md`を参照。
+
 - 2026-09-08: 共通改定と限定構成の実証は完了。ユーザーはClaude Codeの新規セッションで標準サブエージェントの追加検証を依頼したため、Issueをopenへ戻して継続。別プロセスClaude＋固定MCPの成功と標準サブエージェントの制限継承を区別する。入口は0136-note-claude-native-followup.md。
 - 2026-09-08: Claude Codeの新規セッションで標準のサブエージェント機能を実測し、ツール制限・実行を伴う検査・再委譲の成立と、権限モードが保護の代わりにならないことを確認（ADR-0143、`docs/records/experiments/2026-09-08-claude-native-subagent.json`、`docs/reference/inspection-isolation-costs.md` 第10節）。規範は `skills/subagent-dispatch/references/inspection-isolation.md` のツール別の表へ反映済み。定義ファイルのfrontmatterによる拒否リストと接続の限定公開も同日に実測し、成立条件（`--strict-mcp-config` とは併用不可）まで確認した。親の権限チェックを無効にした起動でも実測し、この起動では作業ディレクトリの境界も保護にならないことを確認した。対話セッションでの実挙動、別OS・別版は未確認のため open を継続する。
 - 2026-09-09: 対話セッション（autoモード）での実挙動を実測し、この未確認を解消。許可リスト方式の子は書き込み系ツールを持たず後から取得もできない一方、拒否リスト方式の子には列挙外の書き込み可能ツールが残り NotebookEdit が保護対象を承認要求なしで上書きした。保護は許可リスト方式に限ると決定し規範へ反映（ADR-0144、`docs/records/experiments/2026-09-09-claude-native-subagent-interactive.json`、`docs/reference/inspection-isolation-costs.md` 第10節の追加実測）。残る未確認は別OS・別版、外向きツール（Artifact・SendMessage）と状態変更系ツールの実効性、固定検査の対話セッション実行のため open を継続する。検査で派生した論点は Issue-0141、フロー課題は Issue-0142 として起票済み。
@@ -38,6 +47,17 @@
 ## 関連資料
 
 - docs/records/experiments/2026-09-14-claude-native-subagent-interactive-fixed-inspection.json — 固定検査の対話セッション実行（2.1.270）の実行記録と委譲元の照合。
+- `docs/records/experiments/2026-09-10-v3-capability-followup.md`: SSH転送設定の継続照会、未実施の設定操作案、残る能力試験の方法・判定・未特定事項。
+- `0136-note-linux-python-pilot.md` — Linux試作の構成候補、実機・公式資料の確認、利用者の準備と判断の分担案。
+- `0136-note-history-transfer.md` — Git履歴付きコピーの要求・実装・検証と残る確認。
+- `0136-note-loopforalpha-sandbox-reuse.md` — 既存Docker基盤との重複、再利用候補、Windows・成果物回収・エージェント権限の差分。
+
+- `0136-note-network-risk-assessment.md` — 通信・読み取りリスクの実測と限定利用の条件案。
+
+- `0136-note-wfp-loopback-diagnostic.md` — 接続直前のWindowsフィルターと制限付きトークンの診断。
+
+- `0136-note-common-cli-runtime.md` — 共通CLIのタスク0実測、通信拒否不成立と次の判断。
+
 - 0136-note-claude-native-followup.md — Claude Code新規セッションでの追加検証の入口・確認済み範囲・制約。
 
 - 0136-note-implementation-verification.md — 共通改定、実行環境の確認結果と残る判断。

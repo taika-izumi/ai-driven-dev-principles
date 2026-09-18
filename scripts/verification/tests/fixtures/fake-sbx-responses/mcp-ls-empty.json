@@ -1,0 +1,10 @@
+{
+  "gateway": {
+    "name": "LOCAL",
+    "local": true,
+    "operator": "managed by you",
+    "decision": "local",
+    "signed_in_as": "fake-user"
+  },
+  "servers": []
+}

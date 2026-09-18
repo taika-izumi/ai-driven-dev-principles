@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 3,
+  "caller": "claude-code",
+  "sourceRoot": "{{sourceRoot}}",
+  "objective": "タスク8bの公開操作の実証。合成題材 pilot-source の既知の欠陥を、修正前後で別々の通信なしVMで再実行して外側の記録に残す。",
+  "acceptanceCriteria": [
+    "修正前の入力では unittest が非0で終了する",
+    "修正後の入力では unittest が0で終了する"
+  ],
+  "extraInputPaths": []
+}

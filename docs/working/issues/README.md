@@ -35,6 +35,15 @@
 | [0111](system/0111-merge-practice-duplicate-intro.md) | merge-practice.md 冒頭の導入文が移設条文の書き出しと重複している | closed | 2026-08-29 |
 | [0117](system/0117-split-completion-criteria-lacks-reachability-check.md) | references 型分割の完了基準に参照表の到達元の実在確認が無い | open | 2026-09-03 |
 | [0139](system/0139-tool-condition-matrix-grows-per-version-without-pruning-rule.md) | 検査委譲の保護規範の「ツール別に確認する条件」の表が、ツール・版・起動方式ごとに行を増やす一方で古い行を落とす基準が無い | open | 2026-09-08 |
+| [0146](system/0146-history-unbundle-fails-on-long-pack-path.md) | 独立履歴の復元が run 配下のパックファイルパス 260 文字で失敗し、runsRoot の深さの制約が明文化されていない | open | 2026-09-15 |
+| [0147](system/0147-process-job-misses-unpackaged-children-under-msix-pwsh.md) | MSIX 版 pwsh の ProcessHost で非パッケージの子がジョブに入らず、停止が対象プロセスへ届かない | open | 2026-09-15 |
+| [0148](system/0148-no-idle-timeout-delays-stall-detection.md) | 子プロセスの打ち切り条件が全体期限と出力量上限だけで、出力が止まっても全体期限まで停滞を検出できない | open | 2026-09-16 |
+| [0149](system/0149-proposal-envelope-has-no-channel-for-questions.md) | 提案の受け渡し契約に未解決の前提・質問を表す欄が無く、隔離環境の中の担当が主担当へ問い返せない | open | 2026-09-16 |
+| [0150](system/0150-proposal-network-policy-does-not-enforce-port-443.md) | 提案用VMの通信規則に関する前提と判定処理の訂正 | closed | 2026-09-16 |
+| [0151](system/0151-proposal-template-has-no-codex-binary.md) | 提案側へshell画像を流用し、Codex起動が成立しない | closed | 2026-09-17 |
+| [0152](system/0152-profile-rejection-result-bypasses-collation.md) | 実行設定（profile）の拒否が照合を通らない失敗結果になり、仕様03と食い違う | open | 2026-09-18 |
+| [0153](system/0153-stop-and-precommand-checks-have-small-gaps.md) | 停止確認と実行直前の検査に細かな抜けが残る | open | 2026-09-18 |
+| [0154](system/0154-duplicated-conventions-and-weak-test-helpers.md) | 同じ約束事の写しと試験補助の重複・弱い assert が残る | open | 2026-09-18 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

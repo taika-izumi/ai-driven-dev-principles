@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "sandboxId", "sandboxName", "role", "daemonInstance", "profileHash", "effectiveSettingsHash", "checkedAt", "checks"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "const": 3},
+    "runId": {"type": "string", "minLength": 1},
+    "sandboxId": {"type": "string", "minLength": 1},
+    "sandboxName": {"type": "string", "minLength": 1},
+    "role": {"type": "string", "enum": ["proposal", "replay-before", "replay-after"]},
+    "daemonInstance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pid", "startedAt", "version", "socket"],
+      "properties": {
+        "pid": {"type": "integer", "minimum": 1},
+        "startedAt": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "socket": {"type": "string", "minLength": 1}
+      }
+    },
+    "profileHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "effectiveSettingsHash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+    "checkedAt": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?Z$"},
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["policy", "mount", "resource", "credentialExposure", "sshForwarding", "clipboardImagePaste", "mcpServers", "otherVmTraffic"],
+      "properties": {
+        "policy": {"$ref": "#/$defs/check"},
+        "mount": {"$ref": "#/$defs/check"},
+        "resource": {"$ref": "#/$defs/check"},
+        "credentialExposure": {"$ref": "#/$defs/check"},
+        "sshForwarding": {"$ref": "#/$defs/check"},
+        "clipboardImagePaste": {"$ref": "#/$defs/check"},
+        "mcpServers": {"$ref": "#/$defs/check"},
+        "otherVmTraffic": {"$ref": "#/$defs/check"}
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["verdict", "expected", "observed", "source"],
+      "properties": {
+        "verdict": {"type": "string", "enum": ["verified", "not-applicable", "failed"]},
+        "expected": {},
+        "observed": {},
+        "source": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

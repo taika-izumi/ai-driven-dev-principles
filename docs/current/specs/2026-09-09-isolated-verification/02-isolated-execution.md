@@ -1,41 +1,96 @@
-# Codexの制限付き実行
+# sbx内Codexの提案作成と安全なファイル回収
 
-## 対象ファイル
+## 対象と責務
 
-- `scripts/verification/Execution.psm1`: 引数生成、Codex起動、出力取得、終了管理。
-- `scripts/verification/agent-result.schema.json`: 検証担当が返す応答の書式。
+scripts/verification/Proposal.psm1、SbxRuntime.psm1、proposal.schema.json、runtime-profile.schema.json、proposal-export.py、およびExecution.psm1/ProcessHost.ps1のv3用拡張を所有する。ProposalはInvoke-VerificationProposal(PreparedRunV3) -> ProposalResultV3を提供する。SbxRuntimeはこのブロックが所有し、04は公開操作を利用する。既存プロセス管理には対象stdin転送・合算出力上限がまだないため、後述の拡張が必要。時間制限とWindowsジョブ管理を再利用し、VM停止の代わりにはしない。
 
-## 責務とインターフェース
+SbxRuntimeの公開操作はTest-VerificationRuntimeProfile(Profile, Role)、New-VerificationSandbox(PreparedRunV3, Role, Profile)、Copy-VerificationSandboxInput(SandboxHandle, TrustedInputRoot, Destination, ExpectedManifest, RunBudget)、Confirm-VerificationSandboxInput(SandboxHandle, Destination, ExpectedManifest, RunBudget)、Invoke-VerificationSandboxCommand(SandboxHandle, Argv, StdinBytes, WorkingDirectory, Environment, RunBudget)、Stop-VerificationSandbox(SandboxHandle, CleanupSeconds)。Roleはproposal/replay-before/replay-after。SandboxHandleはrunId、role、name、id、createdAt、profileHash、activationRecordPath、activationRecordHash。子が返した名前や接頭辞一致だけで停止対象を選ばない。
 
-`Start-VerificationExecution(PreparedRun) -> ExecutionResult`。実行ブロックはコピー準備を行わず、受け取った絶対パスと入力の保護状態を確認して実行する。
+New-VerificationSandboxの正常返却は成立確認済みSandboxHandle。失敗時は標準例外のData['runtimeFailure']へ、schemaVersion=3、runId、role、stage、reason、creationState、handle、stopStateを持つJSONを格納して投げる。creationStateはnot-created/created/unknown、stopStateはnot-created/stopped/unverified。作成前の拒否はhandle=null・not-created。作成要求送信後に作成成否を確認できない場合はunknown・unverifiedとし、未作成へ推定しない。
 
-`ExecutionResult`は `runId, started, exitCode, timedOut, processTreeStopped, eventsPath, stderrPath, agentResultPath, effectiveConfigPath` を持つ。未起動時の終了コードはnull。実際に起動できたか、検証が完了したかを別々に記録する。`eventsPath`には開始・途中の操作・終了を含む標準出力のJSONL全体を保存し、終了イベントだけを抜き出して保存しない。
+ID確定後はactivation確認より先に、そのIDを持つhandleを外側の呼出し状態とcontrol/runtimeの作成記録へ保存する。activation未完の部分handleではactivationRecordPath/Hashをnull可とする。以後のactivation生成・記録保存・実効値照会が失敗しても、SbxRuntimeは確定済みhandleを保持し、当該IDの停止をcleanupSeconds内で試み、その結果をruntimeFailureへ載せる。作成記録の保存に失敗しても、メモリ上のIDを捨てず停止を試みる。部分handleは停止にのみ使い、搬入・execには渡さない。
 
-## 起動条件
+Proposal/ReplayはruntimeFailureを捕捉し、createdの場合はhandleを結果のsandbox/sandboxesへ必ず残す。stopState=stoppedでも元の起動失敗を成功にしない。unknownまたは停止未確認はincomplete（時間超過ならtimed_outを優先）へ返す。runtimeFailureの欠落・不正を作成済みの可能性がある呼出しで検出した場合も、creation-unresolvedを含むincompleteにして未作成へ戻さない。
 
-- 絶対パスで指定したCodex CLIの`exec`へ依頼を標準入力から渡す。`ProcessStartInfo.ArgumentList`で引数を個別に設定し、`cmd /c`や文字列生成したシェル経由で起動しない。ウィンドウは表示しない。
-- 使用する公式機能は`exec -`、`-C workRoot`、`--json`、`--output-schema`、`--output-last-message`、`--ignore-user-config`、`-c`、親オプションの`--ask-for-approval never`。これらの引数の存在はCLI 0.153.4の実機ヘルプで確認済みであり、組合せ全体の動作を確認済みという意味ではない。
-- `-c`で指定する権限プロファイルは`permissions.inspection`とし、`extends=":read-only"`、`filesystem`で解決済み`workRoot`と`tempRoot`を`write`、`workRoot/.git`と`controlRoot`を`read`、`network.enabled=false`を明示する。選択には`default_permissions="inspection"`を指定する。共有一時領域やrunRoot全体へ書き込みを許可しない。TEMP・TMPは当該実行のtempRootへ向ける。設定値は構造化したTOMLとして生成し、依頼文から権限の値を受け取らない。既存の固定検査接続と同じプロファイル機構を用いるが、このexec構成の実効適用は起動試験で確認する。
-- `work/`と`temp/`だけを検証操作の書き込み先とし、`control/`、原本、共有ツール、既存記録は書き込み不可。出力イベントと最終結果の保存は信頼する起動側が行う。Codex自身の認証・セッション保存に必要な書き込みは検証操作の許可と混同せず、実効動作を確認して導入時の説明へ記載する。
-- ユーザーの広い権限設定を無条件で引き継がない。必要なモデル・Windowsサンドボックス設定・狭い権限プロファイルは明示する。ユーザー設定を読み込まない機能だけで、プロジェクト設定やプラグインまで無効になったとは扱わない。
-- コピー内の設定からMCP・フック・外部操作・広い権限が有効にならない構成を起動前に準備する。起動用の作業領域で自動読込設定を除外する場合は、対象と理由を`control/`に記録し、その設定自体が検証対象なら保護された入力として別に保持する。一般のソースファイルを黙って除外しない。
-- テストコマンドの通信は禁止。Web検索・アプリ・MCPなど別経路を検証担当へ公開しない。子の再委譲を抑制する指定だけを隔離成功の根拠にせず、利用可能な操作と実効制限を照合する。
-- 通信や追加権限が必要になっても、承認を省略した無制限実行へ自動で切り替えない。初回設定の成立を確認できなければ起動を止める。
+Copyは外側で検査済みの通常ファイルだけを固定Destinationへ搬入する操作で、未信頼VMからの回収には使わない。Confirmは入力一覧・所有者調整後のハッシュを固定コマンドで照会し、外側のExpectedManifestと比較した証拠参照を返す。WorkingDirectoryは固定VM内絶対パス、Environmentは外側で定めた明示変数だけの辞書。子の任意ホストパス・環境設定・CLIフラグを受理しない。RunBudgetはPreparedRunV3のstartedAt/deadlineAtとlimitsを持ち、各呼出しが残時間と出力上限を適用する。
 
-設定キーやCLIフラグの受理は必要条件であって保護成功ではない。V4の許可・拒否の実測を経て初めて、その版・設定・起動方法を対応済みにする。実装計画の冒頭でAIを呼ばない試験によりプロファイル適用と設定読込範囲を確認し、成立しない形をそのまま実装しない。
+プロセス拡張はInvoke-VerificationProcessV3(StartInfo, StdinBytes, OutputPaths, RunBudget)として追加し、v1の既存呼出しを維持する。ProcessHostの制御要求を版で区別して対象stdinへバイト列を転送し、送信後にEOFを渡す。制御JSONを対象stdinへ混ぜない。外側でstdout/stderrの合計を監視する上限付きコピーへ変更し、超過時はoutputExceeded=trueでプロセスを止め、SbxRuntimeが当該VMを停止する。無制限CopyToAsyncを容量制限済みと扱わない。stdin詰まり・出力洪水・非0終了・時間超過をAIなしで検証する。
 
-## 検証担当への依頼
+## 実行設定と起動前確認
 
-依頼目的・成功条件・入力対象版、作業コピーの場所、保護する場所を渡す。検証に必要な追加テストを作成・実行し、再現手順と実出力を返す。元の実装を変更する実験はコピー内に限り、変更箇所と復元状態を報告する。元の成功条件を変更して合格を作らない。保存した応答の文字列を別のコマンドとして実行しない。
+runtime-profile.schema.jsonはschemaVersion=3、role（proposal/replay）、sbxVersion、templateDigest、agent、startupArgv、executableInVm、policyExpectation、mountExpectation、activationEvidencePath、activationEvidenceHashを必須とする。proposalのagentはcodex、replayはshell。templateDigestは役割別に固定し、proposalはCodex収録済みの公式codex版、replayはshell版を使う（ADR-0201）。shell版にagent=codexを指定してもCodex本体は入らない。タグの自動追随・実行時のイメージ更新はしない。digestと実体の対応を確認し、不明ならblocked。
 
-最終応答は `runId, verdict, summary, checks, findings, artifacts, unverified`。`verdict`は`pass / fail / incomplete`。`checks`の各要素は`command, exitCode, evidencePath`を持つ。`findings`は指摘文の配列。`artifacts`と`evidencePath`は当該実行領域内の相対パスに限る。`unverified`が残る場合は`pass`を返さない。自己申告は回収側の実記録と照合する。イベント番号は検証担当へ自己申告させず、回収側が保存したコマンド実行イベントから対応付ける。
+scope=synthetic-pilotとacceptedLimitations=["clipboard-text-write-possible","pid-count-unbounded","daemon-disconnect-unverified"]も必須とする（3件目はADR-0196）。現在の仕様ではこれ以外のscopeや例外を受理しない。実行前に固定した合成題材の対象・送信範囲を照合し、例外への一般的な同意で実プロジェクトを解放しない。これらもprofileHashの対象とし、通常用途のprofileとして流用しない。
 
-## 終了と失敗
+VM作成前にPreparedRunV3のpilotInputId/Path/Hash、固定入力記録のsourceRoot/sourceManifestHashと当該入力を照合する。scopeの文字列だけでは受理しない。CPU2・memoryMiB2048以外を再検査して拒否し、作成後の実効値もこの固定値へ照合する。
 
-標準出力・標準エラーを並行して読み、パイプ詰まりを避ける。実行時間上限を超えた場合は当該実行で起動したプロセス群を終了し、停止を確認する。外部セッションや共有プロセスを名前だけで終了しない。実装時は無害な長時間子プロセスで終了管理を確認し、停止確認が取れなければ`processTreeStopped=false`として当該CLI呼び出しでの自動再起動を行わず、残るプロセスの情報を主担当へ返す。別の実行を一律に停止する常設の制御は設けない。主担当は停止状態を確認してから再依頼を判断する。
+同時1VMは当該CLIの全pilot呼出し間で守る。SbxRuntimeはユーザーとローカルdaemon接続先をキーにしたOSのプロセス間排他を、最初のcreate前から最後の停止確認まで保持する。runIdやrunsRootを排他キーに含めない。既存Windowsの名前付きMutexを使用し、別サービスや利用者によるロック管理を増やさない。取得競合は待ち行列にせずblocked。
 
-CLI起動失敗、モデル利用の上限、認証失敗、環境不一致、依頼元による起動拒否は完了に数えない。実行中に発生した状態を記録し、必要な利用者の操作と再試行対象を限定して返す。
+公開操作Acquire-VerificationPilotLease(PreparedRunV3)とRelease-VerificationPilotLease(Lease)を追加する。LeaseはrunId/daemonKey/leaseIdだけのJSON化可能な識別情報で、MutexハンドルはSbxRuntime内部で保持する。CLIは準備後・提案またはrecheck実行前に1回取得し、終了・失敗の停止処理を終えたfinallyで解放する。各New-VerificationSandboxは当該runの有効なLeaseがあることを検査する。before/after間や提案後に解放して別runを割り込ませない。取得失敗はVM未作成のblockedとして03へ渡す。
 
-## 関連ADRと検証
+排他内で当該daemonのVM一覧を確認し、running/starting/停止未確認のVMがある場合は新規作成せずblocked。既存VMは名指し承認なしに停止しない。放棄されたロックを取得した場合も一覧確認を省略しない。停止未確認なら後続VMを作らずincomplete。VMの状態を確認できない場合も停止済みと推定しない。これは共通CLI同士の排他であり、利用者が別のsbx操作で並行作成することまで禁止できる保証ではない。試作中に別のsbxを手動起動しない前提を開始時に伝え、検知した競合では後続を中止する。
 
-ADR-0141・0145・0146・0147。V3・V4・V5・V6の実行側を担当する。初回はAI呼び出しを伴わない引数・プロセス管理の検査と、実モデルを使う経路検証を分け、重い実行は1件ずつ行う。
+profileHashはactivationEvidencePath/activationEvidenceHashを除いた設定値を、キーの辞書順・UTF-8・空白なしJSONで正規化したSHA256。証拠への相互参照でハッシュが循環しないようにする。templateDigest、資源上限等の実行条件を含めた実効設定hashを別に記録し、異なるlimitsへ証拠を流用しない。Roleのreplay-before/replay-afterは検査時だけprofile.role=replayへ対応付け、記録上の役割は統合しない。
+
+実行設定は外側で作成・確認する。任意フラグや認証値を子から受け取らない。startupArgvは対象テンプレートで非対話のstdin入力・終了・出力を実証したargv配列を固定し、モデル指定をSettingsV3と照合する。画像内Codexの版と実行ファイルを確認する。未実証のホストCLIのargvを画像内CLIへ流用しない。proposal profileは、画像内の版・パス・ヘルプと、固定stdin・指定ファイル生成・終了0・応答を最小の起動確認で実測してから生成する（ADR-0200）。
+
+activationEvidenceはcheckedAt、binaries、profileHash、checksを持つ。checksは各条件のverdictと外側の証拠パス/ハッシュを持つ。次をすべて確認した設定だけをverifiedとする。
+
+再利用可能なactivationEvidenceは、固定版・固定設定に対する能力試験の記録に限定する。実行時の許可そのものには使わない。New-VerificationSandboxはVM作成後・資料搬入前に、runId、sandboxId、role、daemonInstance、profileHash、effectiveSettingsHash、checkedAt、policy/mount/resource/credentialExposureの実効値と証拠hashを持つactivationRecordを外側で生成する。daemonInstanceは起動識別情報と接続先を対応付けた値。起動世代を特定できなければblocked。
+
+各実コマンド直前にも、同じVM id・デーモン起動世代・実効設定が維持されているか確認する。変化・取得不能・保護状態を検知できない競合があれば作業を解放せず停止する。古いcheckedAtや同じ製品版だけで現在VMの許可を証明しない。実行中の保護変更は外側で検知して停止することを能力試験に含め、監視不能な経路がある場合はverifiedにしない。固定の有効日数を増設する代わりに、実体と起動世代への対応で失効させる。
+
+- 通常起動済みデーモンの健康、内部イメージ照会、版・テンプレート一致。
+- workspaceなし、no-share-skills、MCP登録なし、ホスト原本/home/control/Dockerへの接続なし。「MCP登録なし」は当該デーモンに登録済みのMCPサーバーが0件であることで判定し、1件でもあればblocked。製品が常設するMCPゲートウェイとmcpgateway secretは製品挙動として記録し、表示から省略しない（ADR-0195）。
+- SSHエージェント転送等、例外以外の追加ホスト経路の拒否（デーモン設定のssh.agentForwardingEnabled=falseを前提とする。ADR-0162）。実体設定と無害な否定試験を対応付ける。方法が特定できなければblocked。clipboard画像読取は無効、文字列書込はscopeで許容された例外として記録し、拒否成功の証拠を作らない。
+- 外側で設定したCPU/メモリ割当と当該VMの実効値、同時稼働1VM、時間・出力上限、有限の負荷中の外側停止。厳密なpids上限は確認対象にせずpid-count-unboundedを明示する。資源枯渇時のVM内応答性やホスト全体の無影響を保証しない。負荷試験は具体的な上限・中止条件と操作承認を先に固定する。
+- proposalは `auth.openai.com:443`・`chatgpt.com:443` だけの実効許可（改訂ADR-0199）。既定キットのポート付きallowと他11ホストの全ポートdenyを照合し、正常な拒否応答（policy checkの終了1）を照会失敗と区別する。raw認証値を子へ渡さない認証方式。認証・モデルの実試験は個別承認後。
+- replayは外向き通信・hostへの通信・他VM通信を拒否し、モデル認証を一切供給しない。
+- time/output上限、外側CLI異常、デーモン切断、対象VMの停止と他VMの非停止、停止中の自動再起動防止。デーモン切断はsynthetic-pilotではdaemon-disconnect-unverifiedとして未確認のまま認め、各実コマンド直前の世代確認と自動停止痕跡の検知を補償にする（ADR-0196）。停止中の自動再起動の防止は、VM作成確認後から停止確認までセッション保持用のexecを1本保つことで行う。停止は保持を生かしたままstopを発行し、停止確認後に保持を止める。run途中に自動停止の痕跡があれば当該runを失敗にする（ADR-0193）。
+- 能力試験の実施方法（新規VM1台での試験A〜D）はADR-0192、提案用profileの証拠を提案用VMで取り直し、負荷中の外側停止だけ再実行用の記録を使う範囲はADR-0197に従う。
+
+初回はAIなし保護検証の後、別承認の認証・最小モデル試験でproposal設定を完成させる。実モデル検証が必要な項目を未実施のままverifiedにしない。設定hash、実体、証拠が不一致なら作業解放前にblocked。ホスト資格情報を読む検査はしない。否定試験は固定の代用品を使用する。
+
+作成直前の一覧に同名があれば停止。createの応答と一覧からidを確定し、control/runtimeへ記録する。照会や停止で自動起動するCLI挙動は実証対象とし、外側が制御できなければ当該アダプターは不適合とする。デーモンの起動・退避・resetはランナーの責務に含めない。
+
+## 提案作成
+
+recheckなら本節のモデル実行を省略する。Invoke-VerificationProposalはPreparedRunV3.recheckArtifactsとmanifest期待hashを読み直し、前回の固定テストだけからreadyの結果を外側で作る。origin=reused-tests、sandbox=null、stopState=not-createdとし、生成した提案や停止成功を装わない。モデル設定・認証の成立確認は不要で、再実行側の成立確認は省略しない。
+
+1. proposalInputRootだけを当該VMへ搬入する。宛先は/home/agent/workspace/source。baseline/controlはマウントしない。
+2. cp後に所有者を照会し、搬入した独立コピーだけagent所有へ調整する。ホストの所有者やglobal Git設定を変えない。
+3. 目的・合格条件・作業先・提案書式を短い依頼として標準入力へ渡す。本文資料はコピーから子が探索する。ホストのユーザー設定・プラグイン・フック・MCPを自動継承しない。コピー内の設定除外は01に従う。
+4. 子の作業は提案用VM内で行う。子が編集したGit・実行ログ・コマンド履歴は証拠にしない。実行イベントや最終応答は診断用の未信頼データとして保管する。
+5. 子プロセス終了、または時間超過時に外側が受信処理へ進む。失敗・時間超過で正常提案を確定しない。回収中も全体時間・転送容量を制限する。
+
+## 提案書式と回収
+
+ProposalEnvelopeV3はschemaVersion=3、runId、summary、findings、files。findingsはdescriptionとsourcePathsの配列で、自己申告として扱う。filesの各項目はkind、path、contentBase64。kind=test/replacement。削除・rename・実行コマンドの提案は初回は受理しない。replacementは既存の基準版にある.py通常ファイルだけ、testはtest_*.pyと__init__.pyだけ。少なくともtest1件を必須とする。replacement0件は再現のみとして扱う。
+
+提案ファイルは子の作業先から外側の固定エクスポーターでデータ列へ変換する。sbx cpで未信頼のディレクトリやtarをホストに展開してから検査する方式は禁止。エクスポーター自体も子に改変されうるため、その出力は全面的に検査する。出力上限は外側で強制し、base64復号前にもwire容量を確認する。子のハッシュ・ファイル種別・サイズ申告は信用しない。
+
+外側で次を検査してからacceptedへFileMode.CreateNewで通常ファイルを生成する。
+
+- JSONの深さ/重複キー/未知キー/型/runId/件数/総wireバイト。上限超過時は切詰めて成功にせず拒否。
+- pathはUTF-8のPOSIX相対表記。絶対、ドライブ、UNC、空成分、.、..、バックスラッシュ、コロン、NUL、末尾空白/ドット、Windows予約名を拒否。大文字小文字を無視した重複、親子ファイル衝突も拒否。
+- .git、.codex、.claude、.agents、.mcp.json、予約制御パスへ書かない。replacementはbaselineに存在し、削除済みや非.pyなら拒否。testの入力pathはtests/を先頭に持たず、accepted/tests配下の相対名とする。
+- base64の正規性、復号後1ファイル/総量上限、UTF-8のPythonテキスト。内容が無害である保証はしない。ホストでimport/実行しない。
+- accepted自身と祖先を外側で作り、リンク・再解析ポイント・既存ファイルがあれば拒否。子にacceptedへの接続を渡さない。
+
+accepted/tests/<path>とaccepted/replacements/<path>へ格納し、外側がサイズとSHA256を計算する。符号化データだけで通常ファイルを作るため、子のシンボリックリンクや実行属性をホストへ再現しない。回収物は子VMの一貫した全状態スナップショットとは主張せず、受信した提案の固定版として扱う。
+
+最後に子VMを停止し、一覧の同一id/statusで確認する。VM停止後にexecで確認しない。停止未確認なら受信できていても提案はreadyにしない。既存VMや試験VMを自動削除しない。
+
+## ProposalResultV3
+
+schemaVersion=3、runId、status、origin、sandbox、summary、findings、artifacts、manifestPath、manifestHash、stopState、failureを持つ。statusはready/blocked/failed/timed_out/incomplete/not_run。originはgenerated/reused-tests/none、stopStateはstopped/unverified/not-created。sandboxはSandboxHandleまたは未作成時null、manifestは未確定時null。artifactsはkind、path（acceptedからの相対）、size、sha256。failureはstage/reasonまたはnull。外側が生成し、子のJSONをそのまま返さない。
+
+ready条件は有効なtest、外側の検査済みmanifest、時間/出力超過なしに加え、generatedではsandbox実在とstopState=stopped、reused-testsではsandbox=nullかつstopState=not-created。summary/findingsの参考情報とartifactsの機械検査結果を区別する。recheck時の既採用テストは前回ハッシュを維持する。
+
+recheckでは子の提案を受信せず、testsは前回選択した集合とパス・バイトが完全一致することを要求する。追加・欠落・改変は拒否し、今回は主担当が修正した現在版だけを再実行する。testsManifestHashはtestの相対パス・サイズ・SHA256をパス順で正規化した値であり、ホストの絶対パスや保存日時を含めない。準備段階失敗時のnot_runはorigin=none、sandbox=null、stopState=not-createdとし、failureに省略理由を残す。
+
+## 検証
+
+V2/V3/V5を担当。架空runId、リンク相当の提案、パス逸脱、重複、予約名、過大wire、復号後超過、途中切断、提案なし、停止未確認を拒否する。VMなしの受信fixtureと、別承認の実VM試験を分ける。正常提案・不正提案・出力洪水・デーモン停止競合を含む。
+
+関連ADR: 0157、0158、0160〜0162、0192〜0197、0199〜0201。準備は01、照合は03、再実行は04。

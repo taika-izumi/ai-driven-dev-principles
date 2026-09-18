@@ -1,0 +1,50 @@
+{
+  "caller": "claude-code",
+  "candidateRunId": "e43e9aed-4926-4b3b-8022-ed0e7c7a09d7",
+  "candidateVerdict": "candidate-supported",
+  "recheckRunId": "26f90cbd-dcfd-4bfd-b1a7-906c1ab6809d",
+  "recheckVerdict": "current-pass",
+  "recheckDidNotCreateProposal": true,
+  "recheckUsesSameTestHash": "31E03B3A6A311A84529EA4948DDA70909D0B21F53D1135E2E861B5672DBB18CD",
+  "modelSessions": 1,
+  "proposalProfileHash": "D25BFBB4C2BCAA3BFCAFD1927610A50CF310BE5FA392AB7847FB5F6595129F38",
+  "replayProfileHash": "66A6A4B01BA9456AC4472BA813681FE1D3760D00EECF4F2E352E2C73E3740DD9",
+  "daemonPid": 25888,
+  "daemonGeneration": "2026-09-16T08:59:47+09:00",
+  "newVms": [
+    {
+      "name": "iv-e43e9aed-proposal",
+      "id": "84007ba7-56bc-4911-b5f8-e4d4b990e64b",
+      "role": "proposal",
+      "runId": "e43e9aed-4926-4b3b-8022-ed0e7c7a09d7",
+      "agent": "codex",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-e43e9aed-before",
+      "id": "c23ae0ad-2397-462e-a8a0-09fcb5bb9b09",
+      "role": "replay-before",
+      "runId": "e43e9aed-4926-4b3b-8022-ed0e7c7a09d7",
+      "agent": "shell",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-e43e9aed-after",
+      "id": "44b1a258-52bc-4af2-9048-4407e851cad0",
+      "role": "replay-after",
+      "runId": "e43e9aed-4926-4b3b-8022-ed0e7c7a09d7",
+      "agent": "shell",
+      "status": "stopped"
+    },
+    {
+      "name": "iv-26f90cbd-after",
+      "id": "f073fe05-c841-4f9f-9df6-8159ee5a72b4",
+      "role": "replay-after",
+      "runId": "26f90cbd-dcfd-4bfd-b1a7-906c1ab6809d",
+      "agent": "shell",
+      "status": "stopped"
+    }
+  ],
+  "allNineteenStopped": true,
+  "previousFifteenUnchanged": true
+}

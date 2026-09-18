@@ -1,0 +1,9 @@
+{
+  "_comment": "偽の状態ディレクトリ用 daemon.log の行テンプレート。実測原文（.tmp/sbx-capability-20260914/24-daemonlog-autostop.txt・44-daemonlog-stop.txt・20-daemonlog-new-runtime-network.txt）の該当行から時刻とVM名を {{time}}・{{name}} に置き換えた。synthetic=true の行は実測原文が手元に無い創作行（形式は他の行に合わせた）。",
+  "starting": {"synthetic": false, "source": "01-generation-before.json startLine", "text": "{\"time\":\"{{time}}\",\"level\":\"INFO\",\"msg\":\"starting sandboxd\",\"version\":\"v0.42.1 cc6e400a4a3ce3ce5e0b2b77b8ee352aac854c64\"}"},
+  "createdRuntime": {"synthetic": false, "source": "20-daemonlog-new-runtime-network.txt", "text": "{\"time\":\"{{time}}\",\"level\":\"INFO\",\"msg\":\"created runtime\",\"runtime\":\"{{name}}\"}"},
+  "sessionDisconnected": {"synthetic": false, "source": "24-daemonlog-autostop.txt", "text": "{\"time\":\"{{time}}\",\"level\":\"INFO\",\"msg\":\"session disconnected, deferring auto-stop\",\"runtime\":\"{{name}}\",\"delay\":30000000000,\"gen\":1}"},
+  "autoStopped": {"synthetic": false, "source": "24-daemonlog-autostop.txt", "text": "{\"time\":\"{{time}}\",\"level\":\"INFO\",\"msg\":\"auto-stopped runtime after last session disconnected\",\"runtime\":\"{{name}}\"}"},
+  "stoppedContainer": {"synthetic": false, "source": "44-daemonlog-stop.txt", "text": "{\"time\":\"{{time}}\",\"level\":\"INFO\",\"msg\":\"stopped runtime container\",\"runtime\":\"{{name}}\"}"},
+  "sshForwarder": {"synthetic": true, "source": "2026-09-09 の旧VMで観測された msg（原文は手元に無い）", "text": "{\"time\":\"{{time}}\",\"level\":\"INFO\",\"msg\":\"started SSH agent forwarder\",\"runtime\":\"{{name}}\",\"addr\":{\"IP\":\"172.17.0.2\",\"Port\":3129,\"Zone\":\"\"}}"}
+}

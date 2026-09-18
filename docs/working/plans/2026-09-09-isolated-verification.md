@@ -1,5 +1,7 @@
 # 隔離検証の共通起動処理の実装計画
 
+**現在の扱い（2026-09-09）:** 本ファイルはWindows上のv1先行実装の計画・実施記録。ADR-0151・0152に基づくLinux試作v2の仕様確定後は、以下の未完了タスクをそのまま再開しない。v2用実装計画は未作成で、最初に全ホスト操作経路の取得・制限・検証方法を扱う。v1の実装・仕様の保存点は`049d2eb`。以下の旧指示と期待値は経緯として保持する。
+
 > 実装担当への指示: `superpowers:executing-plans` または `superpowers:subagent-driven-development` を用いてタスク順に実装する。実装方式は計画確認後に選択する。サブエージェントを使う場合は各回の `subagent-dispatch` を適用する。
 
 **目的:** Claude CodeとCodexの両主担当から、検証用コピー内で追加テストを作成・実行するCodexを呼び、結果を回収する。
@@ -12,11 +14,15 @@
 
 **仕様確定コミット:** `1e63e8a`。実装開始時は、この仕様と確定した本計画が実装用worktreeに揃っていることを確認する。
 
-**状態:** 計画の確定前確認待ち。実装未着手。2026-09-09のユーザーの「1で」は仕様確定と本計画の作成への承認であり、実環境への導入・公開の承認ではない。
+**状態:** 2026-09-09、再開後の選択肢「計画を確定し、私がタスク0から順次実装」へのユーザー回答「１で」により確定。主担当が`executing-plans`で順次実装する。実環境への導入・公開の承認は含まない。
 
 **中断記録:** 2026-09-09、ユーザーがコンテキスト増大を理由にセッションの区切りを希望したため、草案のまま保存する。実装方式と計画の独立レビューの要否は未選択。この保存は計画の確定・レビュー見送り・実装着手の承認を意味しない。
 
 ## 全体の制約
+
+**2026-09-09の進行順序変更（ADR-0149）:** ユーザーは「リスク評価＋独立した検証を進める」を「1で」で承認。通信条件の未達を維持したまま、タスク1、タスク2のAIなしプロセス管理、タスク3の結果照合を先行する。起動設定の確定・実エージェント起動・両依頼元の実証・導入は保留。既存の完了基準を下げず、通信許容も未承認。
+
+先行範囲の完了条件はコピー検査、プロセス管理の単体試験、結果照合の単体試験、通信リスクの評価資料が揃うこと。実行ブロックの権限プロファイル生成と共通CLIの実エージェント結合は、この範囲の成功に含めない。
 
 - 初回対象: Windows 11、PowerShell 7、Codex CLI 0.153.4。別の版は対応確認の対象とし、自動で確認済みにしない。
 - 共通入口は `scripts/verification/Invoke-IsolatedVerification.ps1`。MCPサーバーや常駐サービスを初回の必須条件にしない。
@@ -102,6 +108,10 @@ $settings = @{
 
 ## タスク0: 起動と保護の前提を先に確認する
 
+**進捗（2026-09-09）:** 試験3ファイルを作成しAIなしで実行。通常ユーザー側では親子の書き込み保護と新規junctionの拒否を確認したが、`network.enabled=false`でもループバックTCP接続が成功した。タスク0未完了として後続を停止。execのAI試験は未実装・未実行。実測と証拠は`0136-note-common-cli-runtime.md`を参照。途中成果のため、以下の完了チェックは一括で付けない。
+
+**追加調査:** ユーザーの「１で」で通信経路の比較を実施。試験専用に`-WindowsSandbox`、`-ExecutionPath`と`fixtures/AppServerBoundary.ps1`を追加。elevated明示とcommand/exec APIの双方で通信拒否は未成立。調査用APIを共通CLI本体へ採用した決定ではない。実行ユーザー・既存規則の照合結果はruntimeノート「追加調査」を参照。
+
 **作成するファイル:**
 
 - `scripts/verification/tests/TestSupport.psm1`
@@ -111,7 +121,7 @@ $settings = @{
 
 **入力:** `-CodexPath`、`-PwshPath`、`-ProbeRoot`（存在しない絶対パス）。AIを呼ぶ試験は別の明示スイッチ`-IncludeAgentProbe`と実在モデルの`-Model`を要する。単にこのスクリプトを実行しただけではAIを起動しない。
 
-**出力:** 試験ごとの許可・拒否・未実行、実行ファイルの版、実効指定、作成物を`ProbeRoot/control/environment-result.json`へ保存する。失敗・未確認なら後続タスクへ進まない。
+**出力:** 試験ごとの許可・拒否・未実行、実行ファイルの版、実効指定、作成物を`ProbeRoot/control/environment-result.json`へ保存する。失敗・未確認なら実エージェントの起動へ進まない。AIなしの先行範囲は冒頭のADR-0149による変更に従う。
 
 - [ ] 試験領域を新規作成し、work・temp・control・原本代用品・共有ツール代用品・既存記録代用品を別々に配置する。各保護代用品の内容とSHA256を先に保存する。
 - [ ] `codex --version`、`codex exec --help`、`codex sandbox --help`の現在の出力を保存する。版が0.153.4でない場合はその版の確認として分離する。
@@ -164,6 +174,10 @@ if ($LASTEXITCODE -ne 0) { throw '事前試験が成立していない' }
 
 ## タスク1: 依頼の検査とコピー準備
 
+**先行実装結果:** `RequestCopy.psm1`、requestスキーマ、単体試験を作成。26件の検査が成功。JSONファイルを受け取る共通CLI、導入設定ファイルの除外条件の最終確認、全体のV1〜V2認定は後続の結合時に行う。
+
+**履歴提供の追加（ADR-0150）:** ユーザーの個別要求により、全参照・HEADの履歴をbundle経由で独立コピーへ渡す。`History.Tests.ps1`で23項目とfsckを検査する。HEADのブランチ名・detached状態・コミット前の状態を保持し、同じコミットへのブランチ切り替えも対象版変更として扱う。レビューと採否の正本は`docs/records/reviews/2026-09-09-history-copy.md`。
+
 **作成:** `scripts/verification/RequestCopy.psm1`、`scripts/verification/request.schema.json`、`scripts/verification/tests/RequestCopy.Tests.ps1`。
 
 **公開インターフェース:** `New-VerificationRun -Request <hashtable> -Settings <hashtable> -> PreparedRun`。型と全キーは仕様01をそのまま使う。失敗は例外の`Data['status']`に`blocked`または`source_changed`、作成後なら`Data['runRoot']`に絶対パスを保持し、タスク3のCLIで結果へ変換する。
@@ -214,7 +228,17 @@ if ($LASTEXITCODE -ne 0) { throw 'RequestCopy tests failed' }
 
 **コミット:** このタスクの3ファイルと必要なTestSupport更新だけをステージし、`feat: 検証依頼を検査して独立したコピーを作成`。
 
+逸脱記録: 実体に合わせる調整 / 採用 / RequestCopy内の列挙・パス・manifest照合をResultから共有する補助関数として公開、コピーの契約は維持
+
+逸脱記録: 対象外 / 対象外 / ADR-0150、ユーザーのGit履歴提供の追加要求に基づくスコープ更新
+
+逸脱記録: 昇格に至らない訂正 / 採用 / 履歴レビューF1、元ブランチの参照情報を失う実装を訂正、独立コピーと検証範囲は維持
+
+逸脱記録: 対象外 / 不採用 / 履歴レビューF2、指定された空junction試験は実機で拒否、別の空参照もコピーへ持ち込まれず保護境界の欠陥は未確認
+
 ## タスク2: 制限付き実行とプロセス終了管理
+
+**先行実装結果:** `Invoke-VerificationProcess`と信頼側の補助`ProcessHost.ps1`を実装。Windowsジョブへ登録後に対象を起動し、出力回収役を残して子を停止する。正常・異常・大量出力・時間超過・起動失敗・親の先行終了・引用符等の引数の7ケースが成功。`Start-VerificationExecution`と権限設定生成は未実装。
 
 **作成:** `scripts/verification/Execution.psm1`、`scripts/verification/agent-result.schema.json`、`scripts/verification/tests/Execution.Tests.ps1`、`scripts/verification/tests/fixtures/ProcessFixture.ps1`。
 
@@ -271,7 +295,13 @@ if ($LASTEXITCODE -ne 0) { throw 'Execution tests failed' }
 
 **コミット:** タスクの4ファイルをステージし、`feat: 制限付きCodexの起動と結果保存を実装`。
 
+逸脱記録: 実体に合わせる調整 / 採用 / ProcessHost.ps1を内部補助として追加、ジョブへの登録前に対象が子を作る競合と、子がパイプを保持する待ちを回避、外部インターフェースは維持
+
 ## タスク3: 結果の照合と共通CLIの結合
+
+**先行実装結果:** `Result.psm1`、agent-result/resultスキーマと単体試験を作成。応答欠落・不正JSON・別runId・終了コード不一致・重複イベント・範囲外成果物・原本変更・既存結果保全等の15ケースが成功。実エージェントによる出力の照合、成功条件の意味の判断、CLIの終了コードは結合時の残作業。
+
+先行範囲専用の`Run-IndependentTests.ps1`はコピー・履歴・プロセス・結果の4テスト群を実行する。元計画のCLI試験を含む4群の`Run-UnitTests.ps1`とは構成が異なり、現時点で共通CLIが通ったとは扱わない。READMEも先行部品だけを説明する。
 
 **作成:** `scripts/verification/Result.psm1`、`scripts/verification/result.schema.json`、`scripts/verification/Invoke-IsolatedVerification.ps1`、`scripts/verification/README.md`、`scripts/verification/tests/Result.Tests.ps1`、`scripts/verification/tests/Cli.Tests.ps1`、`scripts/verification/tests/Run-UnitTests.ps1`。
 
@@ -332,7 +362,7 @@ Assert-Equal $result.checks[0].eventId 'item_1' '実イベントを対応付け�
 
 - [ ] CLIでJSON解析・タスク1〜3の呼出と例外変換を行う。受付前の不正JSONではrunを作らず、runId/runRootはnull、status=blocked、agentVerdict=null、sourceState=unreadableとして全キーを持つJSONを返す。作成後の失敗では例外DataのrunRootを返し、作成物の所在を失わない。
 - [ ] CLIのstdoutが結果JSON1件だけであることを、stderrに説明があるケースでも検査する。completed/pass→0、completed/fail→1、それ以外→2の終了コードを実プロセスから読む。
-- [ ] READMEに依存、導入設定の5キー、両主担当で同じ呼出を使うこと、起動拒否時の扱い、モデル利用の費用、保存物と名指し削除、未対応のGit履歴依存検査を説明する。常時読み込むAGENTS.mdや配布スキルを変更しない。
+- [ ] READMEに依存、導入設定の5キー、両主担当で同じ呼出を使うこと、起動拒否時の扱い、モデル利用の費用、保存物と名指し削除、Git履歴の提供範囲と不完全な履歴の停止を説明する。常時読み込むAGENTS.mdや配布スキルを変更しない。
 
 ```powershell
 # READMEに載せる共通呼び出しの形。各パスは主担当が作成・確認した絶対パスを使う。
@@ -397,8 +427,20 @@ if ($LASTEXITCODE -ne 0) { throw 'sync-template check failed' }
 
 ## 計画の確定前レビュー
 
-未実施。上流仕様は静的4観点確認と差分再確認を経て確定したが、本計画の順序、試験コード、前提試験から後続タスクへの接続はまだ独立に確認していない。計画の選択時に実施の要否と方式を確認する。
+見送り。2026-09-09の再開後、3択の先頭「計画を確定し、私がタスク0から順次実装」へのユーザー回答「１で」に基づく。上流仕様は静的4観点確認と差分再確認を経て確定したが、本計画の順序、試験コード、前提試験から後続タスクへの接続は独立に確認していない。タスク0の動的検証と実装完了時の最終レビューを維持する。
 
 成果物の型は通常型。READMEの運用範囲は承認済み仕様を写すもので、未レビューの新規な共通規範を加えていない。計画自身の試験手順は規範改定型の判定に含めない。ここまでに実施した自己確認は、V1〜V7のタスク対応、参照先、掲載PowerShell16ブロックの構文解析のみであり、実行テストの成功ではない。
 
 推奨する次手は、計画確定後にこのセッションでタスク0から順に実装すること。主な不確実性は実機の保護条件にあり、追加の静的レビューより先に正負対照を取れるためである。独立レビューを選ぶ場合は新規1担当で4観点を確認する。費用は未実測だが、計画約34KBと仕様等を読む1担当1回分を見込む。動的な実証は保護の成立を確認した範囲に限り、未実装のコードを実行済みと扱わない。
+
+## 先行範囲の整合確認（2026-09-09、ADR-0149）
+
+| 観点 | 確認した実体・結果 |
+|---|---|
+| 仕様のスナップショット性 | 仕様00〜03を全体で読み直した。概要の「実装前」をAIなし部品の先行実装へ更新し、未実装の共通CLI・起動関数と区別した |
+| 規範の書き戻し | 進行順序変更は本計画とADR-0149に記載。共有ガイドライン・配布スキルの変更なし。READMEは先行部品の利用だけを説明 |
+| 数値・完了基準 | コピー26件、プロセス7ケース、結果15ケースの3群が成功。全体のCLI試験を含む4群・V1〜V7は未完了として維持 |
+| 経路の閉じ | AIなし部品の成功→その範囲だけ記録。失敗→修正・再検証。通信未達→評価資料を提示し実エージェント起動を保留。限定利用・別方式の選択→ユーザー判断。進行承認を通信受容・導入承認に流用しない |
+| 引用の整合 | ADR-0149の比較と結論は、ユーザーの「リスク評価＋独立した検証」の選択に一致。外部接続拒否はexample.com:443の1件、外側読取は合成マーカーに限定して報告。ADR-0145〜0148の保護・役割・コピーの契約は変更しない |
+
+独立コードレビューは未実施。利用可能な副担当へ書き込み可能な操作を残したまま委譲しない規定（`skills/subagent-dispatch/references/inspection-isolation.md`）を維持し、未確認の新実行機構を自身のレビューの安全性の根拠にしない。全体完了時のレビューとADR-0145〜0148の後追い整合検査は残す。

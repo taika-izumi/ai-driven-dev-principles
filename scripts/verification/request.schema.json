@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion"],
+  "properties": {"schemaVersion": {"type": "integer", "enum": [1, 3]}},
+  "if": {"required": ["schemaVersion"], "properties": {"schemaVersion": {"const": 1}}},
+  "then": {
+    "type": "object", "additionalProperties": false,
+    "required": ["schemaVersion", "caller", "sourceRoot", "objective", "acceptanceCriteria", "extraInputPaths"],
+    "properties": {
+      "schemaVersion": {"type": "integer", "const": 1},
+      "caller": {"type": "string", "enum": ["claude-code", "codex"]},
+      "sourceRoot": {"type": "string", "minLength": 1},
+      "objective": {"type": "string", "pattern": "\\S"},
+      "acceptanceCriteria": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "\\S"}},
+      "extraInputPaths": {"type": "array", "items": {"type": "string", "minLength": 1}}
+    }
+  },
+  "else": {
+    "type": "object", "additionalProperties": false,
+    "required": ["schemaVersion", "caller", "sourceRoot", "objective", "acceptanceCriteria", "extraInputPaths"],
+    "properties": {
+      "schemaVersion": {"type": "integer", "const": 3},
+      "caller": {"type": "string", "enum": ["claude-code", "codex"]},
+      "sourceRoot": {"type": "string", "minLength": 1},
+      "objective": {"type": "string", "pattern": "\\S"},
+      "acceptanceCriteria": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "\\S"}},
+      "extraInputPaths": {"type": "array", "items": {"type": "string", "minLength": 1}},
+      "recheck": {
+        "type": "object", "additionalProperties": false,
+        "required": ["previousResultPath", "testPaths"],
+        "properties": {
+          "previousResultPath": {"type": "string", "minLength": 1},
+          "testPaths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  }
+}

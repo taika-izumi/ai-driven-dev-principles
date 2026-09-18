@@ -1,0 +1,53 @@
+{
+  "rules": [
+    {
+      "id": "default-fs-read-allow-all",
+      "name": "default-fs-read-allow-all",
+      "policy_id": "local-policy",
+      "scope": "global",
+      "applies_to": "all",
+      "resource_type": "filesystem:read",
+      "decision": "allow",
+      "resources": [
+        "**"
+      ],
+      "origin": "local",
+      "layer": "local",
+      "status": "active",
+      "editable": false
+    },
+    {
+      "id": "default-fs-write-allow-all",
+      "name": "default-fs-write-allow-all",
+      "policy_id": "local-policy",
+      "scope": "global",
+      "applies_to": "all",
+      "resource_type": "filesystem:write",
+      "decision": "allow",
+      "resources": [
+        "**"
+      ],
+      "origin": "local",
+      "layer": "local",
+      "status": "active",
+      "editable": false
+    },
+    {
+      "id": "9f6d1593-ca11-4878-a393-06dbddd9ec26",
+      "name": "9f6d1593-ca11-4878-a393-06dbddd9ec26",
+      "policy_id": "080b3946-842c-48b7-bfd4-de224f78553d",
+      "scope": "sandbox:{{name}}",
+      "applies_to": "sandbox:{{name}}",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "*"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "{{name}}"
+    }
+  ]
+}

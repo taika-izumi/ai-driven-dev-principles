@@ -1,0 +1,252 @@
+{
+  "rules": [
+    {
+      "id": "default-fs-read-allow-all",
+      "name": "default-fs-read-allow-all",
+      "policy_id": "local-policy",
+      "scope": "global",
+      "applies_to": "all",
+      "resource_type": "filesystem:read",
+      "decision": "allow",
+      "resources": [
+        "**"
+      ],
+      "origin": "local",
+      "layer": "local",
+      "status": "active",
+      "editable": false
+    },
+    {
+      "id": "default-fs-write-allow-all",
+      "name": "default-fs-write-allow-all",
+      "policy_id": "local-policy",
+      "scope": "global",
+      "applies_to": "all",
+      "resource_type": "filesystem:write",
+      "decision": "allow",
+      "resources": [
+        "**"
+      ],
+      "origin": "local",
+      "layer": "local",
+      "status": "active",
+      "editable": false
+    },
+    {
+      "id": "53ab6b70-7af2-4996-b7dc-9ef9613c37f6",
+      "name": "kit:iv-f107bb84-proposal",
+      "policy_id": "6886ad89-f2b6-492a-ab9a-53c413a17bbf",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "allow",
+      "resources": [
+        "api.openai.com:443",
+        "openai.com:443",
+        "auth.openai.com:443",
+        "chatgpt.com:443",
+        "files.openai.com:443",
+        "registry.npmjs.org:443",
+        "api.github.com:443",
+        "github.com:443",
+        "codeload.github.com:443",
+        "archive.ubuntu.com:80",
+        "security.ubuntu.com:80",
+        "ports.ubuntu.com:80",
+        "download.docker.com:443"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": false,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "c64ee5a4-29fe-4352-a7e8-5bbe295a9d7e",
+      "name": "c64ee5a4-29fe-4352-a7e8-5bbe295a9d7e",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "api.openai.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "d5fb7d2f-eb03-456e-82eb-b3f64168439c",
+      "name": "d5fb7d2f-eb03-456e-82eb-b3f64168439c",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "openai.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "2b0e3c75-f26b-4294-92dc-91836468e4f5",
+      "name": "2b0e3c75-f26b-4294-92dc-91836468e4f5",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "files.openai.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "9b156142-c82d-4da5-aff3-f2a45ed2c3bb",
+      "name": "9b156142-c82d-4da5-aff3-f2a45ed2c3bb",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "registry.npmjs.org"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "a00c2d6b-6af2-4b93-aab9-52684fc3944f",
+      "name": "a00c2d6b-6af2-4b93-aab9-52684fc3944f",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "api.github.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "5b60de5b-bfb7-4b85-b514-07112fbc28b9",
+      "name": "5b60de5b-bfb7-4b85-b514-07112fbc28b9",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "github.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "d531baa3-fac2-4788-b0c4-631e5b0fdd6d",
+      "name": "d531baa3-fac2-4788-b0c4-631e5b0fdd6d",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "codeload.github.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "5f1baaa0-63ab-4357-acf5-5a93e482e8e9",
+      "name": "5f1baaa0-63ab-4357-acf5-5a93e482e8e9",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "archive.ubuntu.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "b2effdf2-923f-419c-8cd6-9e7251778f2b",
+      "name": "b2effdf2-923f-419c-8cd6-9e7251778f2b",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "security.ubuntu.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "66022309-6344-4074-b305-eec73838d17c",
+      "name": "66022309-6344-4074-b305-eec73838d17c",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "ports.ubuntu.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    },
+    {
+      "id": "ede27f01-0f5c-4fe5-8639-48f0810df93f",
+      "name": "ede27f01-0f5c-4fe5-8639-48f0810df93f",
+      "policy_id": "bbc57b57-41c7-4f80-b116-6f64612e8988",
+      "scope": "sandbox:iv-f107bb84-proposal",
+      "applies_to": "sandbox:iv-f107bb84-proposal",
+      "resource_type": "network",
+      "decision": "deny",
+      "resources": [
+        "download.docker.com"
+      ],
+      "origin": "scoped",
+      "layer": "local",
+      "status": "active",
+      "editable": true,
+      "sandbox_id": "iv-f107bb84-proposal"
+    }
+  ]
+}

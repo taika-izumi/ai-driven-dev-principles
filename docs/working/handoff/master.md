@@ -37,7 +37,7 @@
 ## 既知のブロッカー・懸念
 
 - `.worktrees/isolated-verification` とブランチ `codex/isolated-verification` は統合済みだが、未追跡の試験証跡（`.tmp/m9/`・`.tmp/c9/`・`.superpowers/sdd/` 等）を保持するため残している。削除しない。
-- sbx: 停止中のVM19台・全体保存のOAuth・VMごとの通信規則27件が残存（Issue-0157、2026-09-18に読取りで再確認）。OAuthは利用者判断で隔離検証の今後の方針（次セッション開始時のアクション4）を決めるまで残す。VM・通信規則の扱いは未判断。daemonのstart/restart/reset、sbx・画像の更新、VM/画像の削除はAIから行わない。停止中のdaemonへls等を打たず、`daemon status` から確認する。停止VMへのexec/cpは再起動を伴うため発行しない。詳細は `docs/reference/sbx-sandbox-runtime-facts.md`。
+- sbx: 停止中のVM19台・全体保存のOAuth・VMごとの通信規則27件が残存（Issue-0157、2026-09-18に読取りで再確認）。OAuthは利用者判断で隔離検証の今後の方針（次セッション開始時のアクション4）を決めるまで残す。VM・通信規則も同じく方針決定まで保留（利用者判断）。daemonのstart/restart/reset、sbx・画像の更新、VM/画像の削除はAIから行わない。停止中のdaemonへls等を打たず、`daemon status` から確認する。停止VMへのexec/cpは再起動を伴うため発行しない。詳細は `docs/reference/sbx-sandbox-runtime-facts.md`。
 - 今回のHypervisorPlatform=2と、9月9日のWHvGetCapability成功・実VM起動成功がある。現在の利用可否を先に照合し、観測差だけでWindows設定を変えない。
 - 独立試験をClaude Codeから回すときは、PATH上のcodexがジャンクションで失敗する（Issue-0155）。実体パス `C:\Users\d12an\.codex\packages\standalone\releases\0.153.4-x86_64-pc-windows-msvc\bin` をPATHの先頭に足すと通る。
 - .worktrees/issue-0143-review-questions・issue-0140-review-cost・issue-0124-cost-comparison と各ブランチは統合済みだが、未追跡のレビュー証跡のため保全する。各.tmp/issue-0143-*の資材を再起動・削除しない。

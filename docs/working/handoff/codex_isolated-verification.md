@@ -37,8 +37,8 @@ Claude CodeとCodexのどちらの主担当からも、共通CLIで独立コピ�
 
 ## 進行中のタスク
 
-- [ ] Task9の記録（2026-09-18実験記録・要約JSON・操作案・README・v3計画・本handoff）をコミットする。
-- [ ] 続いてサイクル全体整合検査、最終レビュー、ADR-0162・0192〜0201の状態判定を行う。masterへの統合、retrospective、停止VM（19台）/OAuthの後片付けはまだ行っていない。
+- Task9の記録は54566c8でコミット済み。
+- [ ] 次にサイクル全体整合検査、最終レビュー、ADR-0162・0192〜0201の状態判定を行う。masterへの統合、retrospective、停止VM（19台）/OAuthの後片付けはまだ行っていない。
 - `.tmp/m9/source`と`.tmp/c9/source`はいずれも修正後（加算）の状態。再現が必要なら`tests/fixtures/pilot-source/source/calc.py`から別の独立Gitを作る。既存の試験原本・結果は書き換えない。
 
 ## 未着手のタスク

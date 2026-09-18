@@ -41,6 +41,9 @@
 | [0149](system/0149-proposal-envelope-has-no-channel-for-questions.md) | 提案の受け渡し契約に未解決の前提・質問を表す欄が無く、隔離環境の中の担当が主担当へ問い返せない | open | 2026-09-16 |
 | [0150](system/0150-proposal-network-policy-does-not-enforce-port-443.md) | 提案用VMの通信規則に関する前提と判定処理の訂正 | closed | 2026-09-16 |
 | [0151](system/0151-proposal-template-has-no-codex-binary.md) | 提案側へshell画像を流用し、Codex起動が成立しない | closed | 2026-09-17 |
+| [0152](system/0152-profile-rejection-result-bypasses-collation.md) | 実行設定（profile）の拒否が照合を通らない失敗結果になり、仕様03と食い違う | open | 2026-09-18 |
+| [0153](system/0153-stop-and-precommand-checks-have-small-gaps.md) | 停止確認と実行直前の検査に細かな抜けが残る | open | 2026-09-18 |
+| [0154](system/0154-duplicated-conventions-and-weak-test-helpers.md) | 同じ約束事の写しと試験補助の重複・弱い assert が残る | open | 2026-09-18 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

@@ -1,7 +1,7 @@
 # Handoff: 不在中の判断要請を減らす（隔離検証は終了・後片付け完了）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-20 13:52 (Asia/Tokyo)
+- **Last Updated**: 2026-09-20 13:54 (Asia/Tokyo)
 - **Status**: paused
 - **Current Phase**: AI組織は今は導入しない（ADR-0205）、隔離検証は試作で止める（ADR-0206）と決定し、後片付け（Issue-0157）も完了。次の主題「不在中の判断要請を減らす」は未着手。
 
@@ -70,7 +70,7 @@
 
 1. 最初に確認すべきファイル: ADR-0205・ADR-0206（`docs/records/decisions/`）、Issue-0157（`docs/working/issues/system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md`）。
 2. 最初に実行すべきスキル: 次の主題「不在中の判断要請を減らす」の設計へ進む。設計はbrainstormingから入り、規範・スキルの変更を伴うなら `extend-guidelines` を通す。材料は上記「関連ドキュメント」の次の主題の材料。
-3. 未pushのコミットが7件ある（`git log origin/master..HEAD`）。pushは外部への書き込みのため、利用者の承認を得てから行う。
+3. 前セッションの成果は2026-09-20にpush済み（`5adfecc..754dc87`）。origin/masterと一致している。以後のpushも利用者の承認を得てから行う。
 4. 留意点: 利用者は仕事中にリモートコントロールで応答していることがある。承認プロンプトを伴う操作を避け、判断要請はまとめて少なくする（この不満自体が次の主題）。Git Bashの `TZ=Asia/Tokyo date` はUTCを返すため、時刻はPowerShellの `Get-Date` で取る。Git Bashでは `git show <ref>:<.で始まるパス>` が失敗するためPowerShellで実行する。
 
 ## 重要な意思決定の履歴

@@ -1,13 +1,13 @@
-# Handoff: 次サイクル待ち（worktree開始時検出の公開後）
+# Handoff: AI組織の必要性の検討（隔離検証の方針は保留中）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-19 02:50 (Asia/Tokyo)
-- **Status**: ready-for-next-cycle
-- **Current Phase**: 整理作業とworktree開始時検出（ADR-0202・0203、0.1.30公開）を完了し、振り返りまで済み。次サイクルの主題は隔離検証の今後の方針決定（利用者と合意済み）。
+- **Last Updated**: 2026-09-20 12:26 (Asia/Tokyo)
+- **Status**: in_progress
+- **Current Phase**: 整理作業とworktree開始時検出（ADR-0202・0203、0.1.30公開）を完了し、振り返りまで済み。0.1.30の導入確認とメモリ削除（計画Task 6）も完了。隔離検証の方針は保留し、「AI組織が本当に必要か」の検討を先に行う（ADR-0204）。検討の進め方を利用者と決める段階。
 
 ## 作業の目的・背景
 
-直近サイクルでは、隔離検証統合後の整理作業（push、ADR-0153〜0156のAccepted昇格、Issue-0136のクローズ、inbox 3件の整理とIssue-0158の起票）を行ったうえで、worktree使用を踏まえた開始時の検出を設計・実装した。worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに委ね、session-handoffのread操作で他のworktreeの進行中・中断中のhandoffを検出する（ADR-0202）。追記でstart-workのSKILL.mdがサイズ目安を超えたため、インラインフォールバックの内容をreferencesへ移した（ADR-0203）。配布0.1.30として公開済み（5adfecc）。振り返りは `docs/records/retrospectives/system/2026-09-19-worktree-start-detection.md`・`flow/` 同名（Issue-0159を起票）。次サイクルは、0.1.30の導入確認のあと、隔離検証の今後の方針を決める。
+直近サイクルでは、隔離検証統合後の整理作業（push、ADR-0153〜0156のAccepted昇格、Issue-0136のクローズ、inbox 3件の整理とIssue-0158の起票）を行ったうえで、worktree使用を踏まえた開始時の検出を設計・実装した。worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに委ね、session-handoffのread操作で他のworktreeの進行中・中断中のhandoffを検出する（ADR-0202）。追記でstart-workのSKILL.mdがサイズ目安を超えたため、インラインフォールバックの内容をreferencesへ移した（ADR-0203）。配布0.1.30として公開済み（5adfecc）。振り返りは `docs/records/retrospectives/system/2026-09-19-worktree-start-detection.md`・`flow/` 同名（Issue-0159を起票）。0.1.30の導入確認は2026-09-19に完了。2026-09-20、隔離検証の方針は保留し、AI組織の必要性の検討を先に行うと決めた（ADR-0204）。
 
 ## 関連ドキュメント
 
@@ -22,14 +22,17 @@
 
 過去サイクルは docs/records/retrospectives/ と git 履歴を参照。
 
+- [x] 0.1.30の導入確認とメモリ `check-worktree-handoffs-at-start` の削除（2026-09-19 完了。結果は計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` Task 6）
+
 ## 進行中のタスク
 
-（なし。次サイクル待ち）
+- [ ] **現在の作業**: 「AI組織（役割を分けた複数のAIエージェントで自律的に開発を進める体制）が本当に必要か」の検討（ADR-0204）
+  - 状態: 主題を合意しADR-0204をAccepted。検討の進め方・範囲は未決定。
+  - 残り: 検討の進め方を利用者と決め、検討し、結論に応じて隔離検証の方針（広げる／止める）を決める。
 
 ## 未着手のタスク
 
-- [ ] 0.1.30の導入確認とメモリ `check-worktree-handoffs-at-start` の削除（計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` Task 6。手順は次セッション開始時のアクション1・2）。
-- [ ] 隔離検証の今後の方針決定（次サイクルの主題。利用者と合意済み）。方針に応じて、後片付け（Issue-0157）、独立試験の環境差（Issue-0155）・所要時間（Issue-0156）、繰り延べ指摘（Issue-0152〜0154）の扱いが決まる。
+- [ ] 隔離検証の今後の方針決定（ADR-0204により、AI組織の必要性の検討の結論まで保留。追加投資もしない）。方針に応じて、後片付け（Issue-0157）、独立試験の環境差（Issue-0155）・所要時間（Issue-0156）、繰り延べ指摘（Issue-0152〜0154）の扱いが決まる。
 - [ ] Issue-0159（最初の推奨・採否が前提確認を欠き問い直しで覆る）、Issue-0158（セッション継続/切替の判断基準）、Issue-0145の対策設計・着手は未承認。
 - [ ] Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
 - 目的参照の実運用評価は、2026-09-14・09-15・09-18の開始で3件とも正本の読取りと版照合が成立した（予定件数に到達）。評価のまとめ方は未定。
@@ -52,18 +55,19 @@
 ## 節目ごとの確認記録
 
 - 2026-09-19 セッション終了・次サイクルの主題の合意（振り返り完了後）: ADR=なし（次サイクルの作業順の合意で、方針の決定は次セッションで行う） / worklog=棄却（delta なし）
+- 2026-09-19 0.1.30導入確認とメモリ削除（計画Task 6完了）: ADR=なし（合意済み手順の実行） / worklog=棄却（delta なし）
+- 2026-09-20 主題をAI組織の必要性の検討へ変更・ADR-0204 Accepted 昇格: ADR=0204 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
 
 ## 次セッション開始時のアクション
 
-2026-09-19に利用者と合意した進め方（利用者の「1で」）:
-
-1. 最初に利用者へ、`/plugin marketplace update ai-driven-dev-principles` で0.1.30を導入したかを確認する。導入済みならstart-workを実行し、read操作の「他の worktree の検出」が働くこと（`git worktree list --porcelain` を1回実行し、取り込み済みの5件を除外して候補0件）を確かめる。導入版はディスク上の版（プラグインのキャッシュのフォルダ名）で確かめ、開始時の一覧だけで判断しない。
-2. 確かめられたら、メモリ `check-worktree-handoffs-at-start` とMEMORY.mdの索引行を削除し、計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` のTask 6に結果を記録する。働かなければ原因を調べ、メモリは残す。
-3. 主題: 隔離検証の今後の方針を1問決める。選択肢は、(i) レビュー用へ広げる（子をVMで動かし検査の書き込みを構造的に防ぐ）、(ii) 開発用にも広げる、(iii) 試作で止め、標準サブエージェントのツール制限（ADR-0143・0144）で足りるとする。広げる場合はIssue-0156（試験時間）→0152〜0155を先に片づける。止める場合はIssue-0157の後片付け（OAuth削除・停止VM・通信規則。利用者の操作と承認が前提で、証跡として残すVMを先に区別する）へ進む。現状の制約（子はCodexのみ、返せるのはテストと既存.pyの置換、合成題材のみ、Python標準ライブラリのみ、CLIの手動実行）は振り返り `docs/records/retrospectives/system/2026-09-18-isolated-verification.md` と仕様00を参照。
-4. 留意点: 独立試験をClaude Codeから回すときはIssue-0155の回避（PATHの先頭に実体パス）が必要。sbxの停止VMへexec/cpしない。Git Bashでは `git show <ref>:<.で始まるパス>` が引数の書き換えで失敗するためPowerShellで実行する。
+1. 最初に確認すべきファイル: ADR-0204（`docs/records/decisions/0204-examine-need-for-ai-organization-before-deciding-isolated-verification-direction.md`）と目的・方針の正本 `docs/overview/project-purpose.md`。
+2. 主題: 「AI組織が本当に必要か」の検討。進め方・範囲が未決定なら、まず利用者と1問で決める（利用者の現状認識: AI組織なしでも開発はそれなりに回っている。必要性も導入先プロジェクトも未検討）。
+3. 検討の結論が出たら、隔離検証の方針を決める。選択肢は (i) レビュー用へ広げる、(ii) 開発用にも広げる、(iii) 試作で止める。広げる場合はIssue-0156→0152〜0155を先に片づけ、止める場合はIssue-0157の後片付け（利用者の操作と承認が前提。証跡として残すVMを先に区別する）へ進む。現状の制約は振り返り `docs/records/retrospectives/system/2026-09-18-isolated-verification.md` と仕様 `docs/current/specs/2026-09-09-isolated-verification/00-overview.md` を参照。
+4. 留意点: Issue-0157の扱い（とくに全体保存のOAuth）はADR-0204に含めておらず、利用者へ別に確認する。独立試験をClaude Codeから回すときはIssue-0155の回避（PATHの先頭に実体パス）が必要。sbxの停止VMへexec/cpしない。Git Bashでは `git show <ref>:<.で始まるパス>` が失敗するためPowerShellで実行する。Git Bashの `TZ=Asia/Tokyo date` はUTCを返すため、時刻はPowerShellの `Get-Date` で取る。
 
 ## 重要な意思決定の履歴
 
+- ADR-0204: 隔離検証の今後の方針は、AI組織の必要性の検討を先に行い、その結論まで保留する。2026-09-20 Accepted。
 - ADR-0202: worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに任せ、開始時に読む側で検出する。2026-09-19 Accepted（4e3a9f7）。
 - ADR-0203: start-workのインラインフォールバックの内容をreferencesへ移す（サイズ警告への対応）。2026-09-19 Accepted。
 - ADR-0153〜0156: 隔離検証の再検討方向・既存基盤比較・sbx通信deny-all初期化・sbx状態退避。2026-09-18 Accepted。

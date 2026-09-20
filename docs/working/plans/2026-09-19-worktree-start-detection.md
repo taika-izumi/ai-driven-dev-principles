@@ -295,13 +295,15 @@ git commit -m "docs: ADR-0202をAcceptedへ昇格する"
 **Files:**
 - 対象（リポジトリ外）: Claude Code のメモリ `check-worktree-handoffs-at-start`（MEMORY.md の索引行を含む）
 
-- [ ] **Step 1: 扱いを利用者に確認する**
+- [x] **Step 1: 扱いを利用者に確認する**
 
 選択肢を示して決める: (1) 0.1.30 を導入して検出が働くのを確かめた後に削除する、(2) 今すぐ削除する、(3) 残す。導入（`/plugin marketplace update` など）は利用者の操作であり、push による公開が前提になる。
 
-- [ ] **Step 2: 決めた扱いを実行し、handoff に記録する**
+- [x] **Step 2: 決めた扱いを実行し、handoff に記録する**
 
 決定（2026-09-19、利用者「1で」）: 0.1.30 を導入し、次回の開始時に検出が働くのを確かめてから削除する。0.1.30 は 5adfecc で公開済み。導入（`/plugin marketplace update ai-driven-dev-principles`）は利用者の操作。確認と削除は次セッションで行い、handoff「次セッション開始時のアクション」に記録した。
+
+結果（2026-09-19、次セッションの開始時）: ディスク上の導入版が 0.1.30 であることを、プラグインのキャッシュのフォルダ名と `installed_plugins.json` の installPath・version で確かめた。start-work の read 操作で `git worktree list --porcelain` を1回実行し、他の worktree 5件（issue-0122・isolated-verification・issue-0124・issue-0140・issue-0143）はいずれも master 側の同名 handoff が completed かつ同時刻以降のため取り込み済みとして除外され、候補0件となった（期待どおり）。利用者の「1で」を受けてメモリ `check-worktree-handoffs-at-start` と MEMORY.md の索引行を削除した。
 
 ---
 

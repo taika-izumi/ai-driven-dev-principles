@@ -1,9 +1,9 @@
-# Handoff: 隔離検証の後片付けと、不在中の判断要請を減らす取り組み
+# Handoff: 不在中の判断要請を減らす（隔離検証は終了・後片付け完了）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-20 13:19 (Asia/Tokyo)
+- **Last Updated**: 2026-09-20 13:45 (Asia/Tokyo)
 - **Status**: in_progress
-- **Current Phase**: AI組織は今は導入しない（ADR-0205）、隔離検証は試作で止める（ADR-0206）と決定。次は後片付け（Issue-0157）の範囲の決定と、次の主題「不在中の判断要請を減らす」の設計。
+- **Current Phase**: AI組織は今は導入しない（ADR-0205）、隔離検証は試作で止める（ADR-0206）と決定し、後片付け（Issue-0157）も完了。次の主題「不在中の判断要請を減らす」は未着手。
 
 ## 作業の目的・背景
 
@@ -26,9 +26,9 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 隔離検証の後片付け（Issue-0157）
-  - 状態: 利用者が「3種類とも削除する」を選択（2026-09-20）。手順を `docs/working/issues/system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md`「削除の手順」に作成済み。削除は未実施。
-  - 残り: 利用者が帰宅後に通常の端末で手順を実行し、結果をAIへ伝える。AIがIssue-0157へ記録し、クローズを提案する。
+- [ ] **現在の作業**: 次の主題「不在中の判断要請を減らす」の設計（ADR-0205）
+  - 状態: 未着手。隔離検証の後片付け（Issue-0157）は2026-09-20に完了・クローズ済み。
+  - 残り: 設計の進め方を利用者と決める。規範・スキルの変更を伴うなら `extend-guidelines` から入る。
 
 ## 未着手のタスク
 
@@ -41,7 +41,7 @@
 ## 既知のブロッカー・懸念
 
 - `.worktrees/isolated-verification` とブランチ `codex/isolated-verification` は統合済みだが、未追跡の試験証跡（`.tmp/m9/`・`.tmp/c9/`・`.superpowers/sdd/` 等）を保持するため残している。削除しない。
-- sbx: 停止中のVM19台・全体保存のOAuth・VMごとの通信規則27件が残存（Issue-0157、2026-09-18に読取りで再確認）。いずれも隔離検証の今後の方針を決めるまで保留（利用者判断）。daemonのstart/restart/reset、sbx・画像の更新、VM/画像の削除はAIから行わない。停止中のdaemonへls等を打たず、`daemon status` から確認する。停止VMへのexec/cpは再起動を伴うため発行しない。詳細は `docs/reference/sbx-sandbox-runtime-facts.md`。
+- sbx: 後片付けは2026-09-20に完了（Issue-0157 closed）。VM 0台・秘密0件・全体規則3件（filesystem read/write allow、network default-deny-all）を削除後の読取りで確認。daemonのstart/restart/reset、sbx・画像の更新はAIから行わない。詳細は `docs/reference/sbx-sandbox-runtime-facts.md`。
 - 今回のHypervisorPlatform=2と、9月9日のWHvGetCapability成功・実VM起動成功がある。現在の利用可否を先に照合し、観測差だけでWindows設定を変えない。
 - .worktrees/issue-0143-review-questions・issue-0140-review-cost・issue-0124-cost-comparison と各ブランチは統合済みだが、未追跡のレビュー証跡のため保全する。各.tmp/issue-0143-*の資材を再起動・削除しない。
 - 他のissue-0122 worktreeとstash `6e959892b6e00600006456172237f27d7957fa01`、stash `0253b7cd8367fc09782674fdbe130102f0677eba`（Issue-0124統合前の草稿、退避コピーは `.tmp/issue-0124-merge/manifest.json`）は操作しない。古い草案を一括適用しない。
@@ -61,11 +61,12 @@
 - 2026-09-20 AI組織の必要性の検討の結論・ADR-0205 Accepted 昇格: ADR=0205 / worklog=`MakeAiInstructions-2026-09-20-01` / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-20 隔離検証の方針決定・ADR-0206 Accepted 昇格: ADR=0206 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-20 後片付けの範囲の決定（3種類とも削除・手順作成）: ADR=なし（ADR-0206の帰結の実行範囲。Issue-0157に記録） / worklog=棄却（delta なし）
+- 2026-09-20 後片付けの実行完了・Issue-0157 クローズ: ADR=なし（合意済み範囲の実行） / worklog=棄却（delta なし）
 
 ## 次セッション開始時のアクション
 
 1. 最初に確認すべきファイル: ADR-0205・ADR-0206（`docs/records/decisions/`）、Issue-0157（`docs/working/issues/system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md`）。
-2. 後片付け（Issue-0157「削除の手順」）を利用者が実行済みか確認し、結果をIssue-0157へ記録する。未実行なら催促せず、次の主題を先に進めてよい。削除（`sbx secret`・`sbx rm`・通信規則）は利用者の操作と個別承認が前提で、AIからdaemonの起動・再起動やVM/画像の削除を行わない。証跡として残すVMを先に区別する。
+2. 後片付け（Issue-0157）は完了・クローズ済み。再確認は不要。削除（`sbx secret`・`sbx rm`・通信規則）は利用者の操作と個別承認が前提で、AIからdaemonの起動・再起動やVM/画像の削除を行わない。証跡として残すVMを先に区別する。
 3. 次の主題「不在中の判断要請を減らす」の設計へ進む（規範の変更を伴うなら `extend-guidelines` から）。材料: ADR-0205、`skills/start-work/references/decision-delegation.md`、Issue-0159・0158。
 4. 留意点: 利用者は仕事中にリモートコントロールで応答していることがある。承認プロンプトを伴う操作を避け、判断要請はまとめて少なくする。Git Bashの `TZ=Asia/Tokyo date` はUTCを返すため、時刻はPowerShellの `Get-Date` で取る。Git Bashでは `git show <ref>:<.で始まるパス>` が失敗するためPowerShellで実行する。
 

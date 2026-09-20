@@ -46,7 +46,7 @@
 | [0154](system/0154-duplicated-conventions-and-weak-test-helpers.md) | 同じ約束事の写しと試験補助の重複・弱い assert が残る | open | 2026-09-18 |
 | [0155](system/0155-independent-tests-fail-when-path-codex-is-a-junction.md) | PATH上のcodexがジャンクション経由だと、独立試験のv1起動検査が失敗する | open | 2026-09-18 |
 | [0156](system/0156-sbxruntimev3-suite-runtime-grew-sevenfold.md) | 独立試験のSbxRuntimeV3群の所要時間が約11分から約77分に延びた | open | 2026-09-18 |
-| [0157](system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md) | 試作で作った停止VM・全体保存のOAuth・VMごとの通信規則の後片付けが未実施 | open | 2026-09-18 |
+| [0157](system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md) | 試作で作った停止VM・全体保存のOAuth・VMごとの通信規則の後片付けが未実施 | closed | 2026-09-18 |
 
 ## 開発フロー/ガイドライン課題（flow/）
 

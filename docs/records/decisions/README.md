@@ -211,3 +211,4 @@ ADRの判断基準: 「迷って選んだもの」はすべてADR候補。迷わ
 | [0203](0203-move-start-work-inline-fallbacks-to-references.md) | start-workのインラインフォールバックの内容をreferencesへ移す | Accepted | 2026-09-19 |
 | [0204](0204-examine-need-for-ai-organization-before-deciding-isolated-verification-direction.md) | 隔離検証の今後の方針は、AI組織の必要性の検討を先に行い、その結論まで保留する | Accepted | 2026-09-20 |
 | [0205](0205-defer-ai-organization-and-first-reduce-judgment-requests-during-absence.md) | AI組織は今は導入せず、先に不在中の判断要請を減らす | Accepted | 2026-09-20 |
+| [0206](0206-stop-isolated-verification-at-the-prototype.md) | 隔離検証は試作で止め、追加投資をしない | Accepted | 2026-09-20 |

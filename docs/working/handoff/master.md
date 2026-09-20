@@ -1,7 +1,7 @@
 # Handoff: 隔離検証の後片付けと、不在中の判断要請を減らす取り組み
 
 - **Branch**: master
-- **Last Updated**: 2026-09-20 13:16 (Asia/Tokyo)
+- **Last Updated**: 2026-09-20 13:19 (Asia/Tokyo)
 - **Status**: in_progress
 - **Current Phase**: AI組織は今は導入しない（ADR-0205）、隔離検証は試作で止める（ADR-0206）と決定。次は後片付け（Issue-0157）の範囲の決定と、次の主題「不在中の判断要請を減らす」の設計。
 
@@ -26,9 +26,9 @@
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 隔離検証の後片付け（Issue-0157）の範囲の決定
-  - 状態: ADR-0206で試作で止めると決定。削除の対象と時期は未決定。
-  - 残り: 全体保存のOAuth・停止中のVM19台・通信規則27件のうち、証跡として残すものと削除するものを利用者と決める。削除は利用者の操作と承認が前提（リモートコントロール中は実行しない）。
+- [ ] **現在の作業**: 隔離検証の後片付け（Issue-0157）
+  - 状態: 利用者が「3種類とも削除する」を選択（2026-09-20）。手順を `docs/working/issues/system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md`「削除の手順」に作成済み。削除は未実施。
+  - 残り: 利用者が帰宅後に通常の端末で手順を実行し、結果をAIへ伝える。AIがIssue-0157へ記録し、クローズを提案する。
 
 ## 未着手のタスク
 
@@ -60,11 +60,12 @@
 - 2026-09-20 主題をAI組織の必要性の検討へ変更・ADR-0204 Accepted 昇格: ADR=0204 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-20 AI組織の必要性の検討の結論・ADR-0205 Accepted 昇格: ADR=0205 / worklog=`MakeAiInstructions-2026-09-20-01` / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-20 隔離検証の方針決定・ADR-0206 Accepted 昇格: ADR=0206 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
+- 2026-09-20 後片付けの範囲の決定（3種類とも削除・手順作成）: ADR=なし（ADR-0206の帰結の実行範囲。Issue-0157に記録） / worklog=棄却（delta なし）
 
 ## 次セッション開始時のアクション
 
 1. 最初に確認すべきファイル: ADR-0205・ADR-0206（`docs/records/decisions/`）、Issue-0157（`docs/working/issues/system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md`）。
-2. 後片付けの範囲が未決定なら利用者と決める。削除（`sbx secret`・`sbx rm`・通信規則）は利用者の操作と個別承認が前提で、AIからdaemonの起動・再起動やVM/画像の削除を行わない。証跡として残すVMを先に区別する。
+2. 後片付け（Issue-0157「削除の手順」）を利用者が実行済みか確認し、結果をIssue-0157へ記録する。未実行なら催促せず、次の主題を先に進めてよい。削除（`sbx secret`・`sbx rm`・通信規則）は利用者の操作と個別承認が前提で、AIからdaemonの起動・再起動やVM/画像の削除を行わない。証跡として残すVMを先に区別する。
 3. 次の主題「不在中の判断要請を減らす」の設計へ進む（規範の変更を伴うなら `extend-guidelines` から）。材料: ADR-0205、`skills/start-work/references/decision-delegation.md`、Issue-0159・0158。
 4. 留意点: 利用者は仕事中にリモートコントロールで応答していることがある。承認プロンプトを伴う操作を避け、判断要請はまとめて少なくする。Git Bashの `TZ=Asia/Tokyo date` はUTCを返すため、時刻はPowerShellの `Get-Date` で取る。Git Bashでは `git show <ref>:<.で始まるパス>` が失敗するためPowerShellで実行する。
 

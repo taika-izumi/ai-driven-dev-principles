@@ -1,19 +1,22 @@
 # Handoff: 不在中の判断要請を減らす（隔離検証は終了・後片付け完了）
 
 - **Branch**: master
-- **Last Updated**: 2026-09-20 13:45 (Asia/Tokyo)
-- **Status**: in_progress
+- **Last Updated**: 2026-09-20 13:52 (Asia/Tokyo)
+- **Status**: paused
 - **Current Phase**: AI組織は今は導入しない（ADR-0205）、隔離検証は試作で止める（ADR-0206）と決定し、後片付け（Issue-0157）も完了。次の主題「不在中の判断要請を減らす」は未着手。
 
 ## 作業の目的・背景
 
-直近サイクルでは、隔離検証統合後の整理作業（push、ADR-0153〜0156のAccepted昇格、Issue-0136のクローズ、inbox 3件の整理とIssue-0158の起票）を行ったうえで、worktree使用を踏まえた開始時の検出を設計・実装した。worktreeは禁止も全面標準化もせず、作成の合意はsuperpowersに委ね、session-handoffのread操作で他のworktreeの進行中・中断中のhandoffを検出する（ADR-0202）。追記でstart-workのSKILL.mdがサイズ目安を超えたため、インラインフォールバックの内容をreferencesへ移した（ADR-0203）。配布0.1.30として公開済み（5adfecc）。振り返りは `docs/records/retrospectives/system/2026-09-19-worktree-start-detection.md`・`flow/` 同名（Issue-0159を起票）。0.1.30の導入確認は2026-09-19に完了。2026-09-20、隔離検証の方針は保留し、AI組織の必要性の検討を先に行うと決めた（ADR-0204）。
+前サイクルでworktree開始時検出を設計・実装し、0.1.30として公開した（ADR-0202・0203、5adfecc）。導入確認は2026-09-20に完了し、応急処置のメモリも削除した（計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` Task 6）。
+
+2026-09-20、隔離検証の今後の方針を決める前提として、AI組織（役割を分けた複数のAIエージェントで自律的に開発を進める体制）の必要性を検討した（ADR-0204）。結論として、AI組織は今は導入せず、利用者の不満（仕事中にリモートコントロールで判断要請へ応じており、生活の質が下がり開発も遅れる）へ、判断の分担の事前合意・範囲外の判断を保留して別の作業を進める動き・不在時間帯への作業の割り当て・ガイドラインの確認点の見直しで先に取り組むと決めた（ADR-0205。再検討条件つき）。これを受けて隔離検証は試作で止め（ADR-0206）、後片付け（Issue-0157）も完了した。次の主題はADR-0205の設計で、未着手。
 
 ## 関連ドキュメント
 
 - 目的・方針の正本: docs/overview/project-purpose.md。対象ルートD:/Dev/002_AiDev/MakeAiInstructions、参照内容は5350b9fの同パス（2026-09-18の開始時に読取りと版照合が成立）。判断根拠はADR-0130・0183・0190。
-- 直近サイクル: 振り返り `docs/records/retrospectives/system/2026-09-19-worktree-start-detection.md`、設計 ADR-0202（`docs/records/decisions/0202-handle-worktrees-by-agreement-and-start-time-detection.md`）、実装計画 `docs/working/plans/2026-09-19-worktree-start-detection.md`（Task 6の確認と削除が次セッションに残る）。
-- 隔離検証の方針決定の材料: 振り返り `docs/records/retrospectives/system/2026-09-18-isolated-verification.md`、仕様 `docs/current/specs/2026-09-09-isolated-verification/`（00に現状の制約）、課題 Issue-0152〜0157。
+- 次の主題の材料: ADR-0205、`skills/start-work/references/decision-delegation.md`（判断の分担の正本）、ADR-0133、Issue-0159・0158。
+- 前サイクル: ADR-0202・0203、計画 `docs/working/plans/2026-09-19-worktree-start-detection.md`、振り返り `docs/records/retrospectives/system/2026-09-19-worktree-start-detection.md`。
+- 隔離検証（ADR-0206で終了）: 仕様 `docs/current/specs/2026-09-09-isolated-verification/`、振り返り `docs/records/retrospectives/system/2026-09-18-isolated-verification.md`、保留課題 Issue-0152〜0156。再開はADR-0205の再検討条件に当たり利用者が指示した時点。
 - 課題の一覧: docs/working/issues/README.md。
 - 継続判断の検討材料: docs/reference/stage-three-preparation-and-delegation.md「2026-09-12の再照合」。ADR-0184の旧案は中断・未採用。原因切り分けの過去承認は新しい検討・実装の許可へ流用しない。
 - 初期比較と終了判断: docs/current/development-roadmap.md、ADR-0183、docs/records/experiments/2026-09-10-model-discretion-comparison.md。長期保守・ADRの便益は未評価。追加比較は自動再開しない。
@@ -22,18 +25,18 @@
 
 過去サイクルは docs/records/retrospectives/ と git 履歴を参照。
 
-- [x] 0.1.30の導入確認とメモリ `check-worktree-handoffs-at-start` の削除（2026-09-19 完了。結果は計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` Task 6）
+- [x] 0.1.30の導入確認とメモリ `check-worktree-handoffs-at-start` の削除（2026-09-20。結果は計画 `docs/working/plans/2026-09-19-worktree-start-detection.md` Task 6）
+- [x] AI組織の必要性の検討と隔離検証の方針決定（2026-09-20。ADR-0204・0205・0206）
+- [x] 隔離検証の後片付け（2026-09-20。Issue-0157 closed）
 
 ## 進行中のタスク
 
-- [ ] **現在の作業**: 次の主題「不在中の判断要請を減らす」の設計（ADR-0205）
-  - 状態: 未着手。隔離検証の後片付け（Issue-0157）は2026-09-20に完了・クローズ済み。
-  - 残り: 設計の進め方を利用者と決める。規範・スキルの変更を伴うなら `extend-guidelines` から入る。
+（なし。次の主題は未着手）
 
 ## 未着手のタスク
 
 - [ ] 次の主題「不在中の判断要請を減らす」の設計（ADR-0205。判断の分担の事前合意、範囲外の判断を保留して別の作業を進める動き、不在時間帯への作業の割り当て、ガイドラインの確認点の見直し）。未着手。
-- [ ] 隔離検証は試作で止めた（ADR-0206）。Issue-0152〜0156は再開時まで保留。以下は旧記載: 方針に応じて、後片付け（Issue-0157）、独立試験の環境差（Issue-0155）・所要時間（Issue-0156）、繰り延べ指摘（Issue-0152〜0154）の扱いが決まる。
+- [ ] Issue-0152〜0156（隔離検証の残課題）は、ADR-0206により再開時まで保留。
 - [ ] Issue-0159（最初の推奨・採否が前提確認を欠き問い直しで覆る）、Issue-0158（セッション継続/切替の判断基準）、Issue-0145の対策設計・着手は未承認。
 - [ ] Issue-0075は実際の初見利用、0144は履歴アクセス・書き込み要求の実行時拒否等が未確認。ADR-0189の実装後3件の運用評価と4体分担の効果も未評価。
 - 目的参照の実運用評価は、2026-09-14・09-15・09-18の開始で3件とも正本の読取りと版照合が成立した（予定件数に到達）。評価のまとめ方は未定。
@@ -55,20 +58,20 @@
 
 ## 節目ごとの確認記録
 
-- 2026-09-19 セッション終了・次サイクルの主題の合意（振り返り完了後）: ADR=なし（次サイクルの作業順の合意で、方針の決定は次セッションで行う） / worklog=棄却（delta なし）
-- 2026-09-19 0.1.30導入確認とメモリ削除（計画Task 6完了）: ADR=なし（合意済み手順の実行） / worklog=棄却（delta なし）
+- 2026-09-20 0.1.30導入確認とメモリ削除（計画Task 6完了）: ADR=なし（合意済み手順の実行） / worklog=棄却（delta なし）
 - 2026-09-20 主題をAI組織の必要性の検討へ変更・ADR-0204 Accepted 昇格: ADR=0204 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-20 AI組織の必要性の検討の結論・ADR-0205 Accepted 昇格: ADR=0205 / worklog=`MakeAiInstructions-2026-09-20-01` / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-20 隔離検証の方針決定・ADR-0206 Accepted 昇格: ADR=0206 / worklog=棄却（delta なし） / cyclecheck=非該当（対象文書の変更なし）
 - 2026-09-20 後片付けの範囲の決定（3種類とも削除・手順作成）: ADR=なし（ADR-0206の帰結の実行範囲。Issue-0157に記録） / worklog=棄却（delta なし）
-- 2026-09-20 後片付けの実行完了・Issue-0157 クローズ: ADR=なし（合意済み範囲の実行） / worklog=棄却（delta なし）
+- 2026-09-20 後片付けの実行完了・Issue-0157 クローズ: ADR=なし（合意済み範囲の実行） / worklog=`MakeAiInstructions-2026-09-20-02`
+- 2026-09-20 セッション終了: ADR=なし（終了処理で未コミットのドラフト・昇格漏れなしを確認） / worklog=`MakeAiInstructions-2026-09-20-02`（後片付けの節目と同一エントリ）
 
 ## 次セッション開始時のアクション
 
 1. 最初に確認すべきファイル: ADR-0205・ADR-0206（`docs/records/decisions/`）、Issue-0157（`docs/working/issues/system/0157-pilot-vms-oauth-and-policies-not-cleaned-up.md`）。
-2. 後片付け（Issue-0157）は完了・クローズ済み。再確認は不要。削除（`sbx secret`・`sbx rm`・通信規則）は利用者の操作と個別承認が前提で、AIからdaemonの起動・再起動やVM/画像の削除を行わない。証跡として残すVMを先に区別する。
-3. 次の主題「不在中の判断要請を減らす」の設計へ進む（規範の変更を伴うなら `extend-guidelines` から）。材料: ADR-0205、`skills/start-work/references/decision-delegation.md`、Issue-0159・0158。
-4. 留意点: 利用者は仕事中にリモートコントロールで応答していることがある。承認プロンプトを伴う操作を避け、判断要請はまとめて少なくする。Git Bashの `TZ=Asia/Tokyo date` はUTCを返すため、時刻はPowerShellの `Get-Date` で取る。Git Bashでは `git show <ref>:<.で始まるパス>` が失敗するためPowerShellで実行する。
+2. 最初に実行すべきスキル: 次の主題「不在中の判断要請を減らす」の設計へ進む。設計はbrainstormingから入り、規範・スキルの変更を伴うなら `extend-guidelines` を通す。材料は上記「関連ドキュメント」の次の主題の材料。
+3. 未pushのコミットが7件ある（`git log origin/master..HEAD`）。pushは外部への書き込みのため、利用者の承認を得てから行う。
+4. 留意点: 利用者は仕事中にリモートコントロールで応答していることがある。承認プロンプトを伴う操作を避け、判断要請はまとめて少なくする（この不満自体が次の主題）。Git Bashの `TZ=Asia/Tokyo date` はUTCを返すため、時刻はPowerShellの `Get-Date` で取る。Git Bashでは `git show <ref>:<.で始まるパス>` が失敗するためPowerShellで実行する。
 
 ## 重要な意思決定の履歴
 
